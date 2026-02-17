@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:idle_laboratory/features/home/presentation/screens/home_screen.dart';
 
 class AppRouter {
+  AppRouter._();
+
   static const String home = '/';
 
   static final GoRouter router = GoRouter(

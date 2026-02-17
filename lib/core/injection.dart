@@ -9,5 +9,5 @@ Future<void> init() async {
       await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
 
-  // TODO: Register repositories, services, and blocs here
+  // TODO(Denis): Register repositories, services, and blocs here
 }
