@@ -164,6 +164,9 @@ class BigNumber {
     if (exponent > 308) {
       return double.infinity;
     }
+    if (exponent < -308) {
+      return 0.0;
+    }
     return mantissa * math.pow(10, exponent);
   }
 
