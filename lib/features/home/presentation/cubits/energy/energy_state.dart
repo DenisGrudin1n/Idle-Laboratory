@@ -12,7 +12,7 @@ abstract class EnergyState with _$EnergyState {
   }) = _EnergyState;
 
   factory EnergyState.initial() => EnergyState(
-    currentEnergy: GameConstants.initialEnergy.copy(),
-    energyPerSecond: GameConstants.startingEnergyPerSecond.copy(),
+    currentEnergy: GameConstants.initialEnergy,
+    energyPerSecond: GameConstants.startingEnergyPerSecond,
   );
 }

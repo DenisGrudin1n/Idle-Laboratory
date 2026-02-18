@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              EnergyDisplay(useScientific: useScientific),
+              const EnergyDisplay(),
               SizedBox(height: 16.h),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),

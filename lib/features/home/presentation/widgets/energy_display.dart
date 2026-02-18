@@ -6,15 +6,17 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../lib.dart';
 
 class EnergyDisplay extends StatelessWidget {
-  const EnergyDisplay({super.key, required this.useScientific});
-  final bool useScientific;
-
+  const EnergyDisplay({super.key});
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
 
     final EnergyState energyState = context.select(
       (EnergyCubit cubit) => cubit.state,
+    );
+
+    final bool useScientific = context.select(
+      (SettingsCubit cubit) => cubit.state.isScientificNotation,
     );
 
     return Container(

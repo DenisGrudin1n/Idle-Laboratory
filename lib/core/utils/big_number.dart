@@ -5,14 +5,28 @@ import '../constants/game_constants.dart';
 /// Represents large numbers using mantissa and exponent
 /// Similar to scientific notation: mantissa * 10^exponent
 /// Example: 1.5e12 is stored as mantissa=1.5, exponent=12
+/// This class is immutable - all operations return new instances.
 class BigNumber {
-  BigNumber(this.mantissa, this.exponent) {
-    _normalize();
+  factory BigNumber(double mantissa, int exponent) {
+    final (double normalizedMantissa, int normalizedExponent) = _normalize(
+      mantissa,
+      exponent,
+    );
+    return BigNumber._internal(normalizedMantissa, normalizedExponent);
   }
 
+  const BigNumber._internal(this.mantissa, this.exponent);
+
   factory BigNumber.fromDouble(double value) {
+    // Handle special double values
+    if (value.isNaN || value.isInfinite) {
+      throw ArgumentError(
+        'Cannot create BigNumber from ${value.isNaN ? "NaN" : "Infinity"}',
+      );
+    }
+
     if (value == 0) {
-      return BigNumber(0, 0);
+      return BigNumber.zero();
     }
 
     final int exponent = (math.log(value.abs()) / math.ln10).floor();
@@ -21,27 +35,32 @@ class BigNumber {
     return BigNumber(mantissa, exponent);
   }
 
-  factory BigNumber.zero() => BigNumber(0, 0);
+  factory BigNumber.zero() => const BigNumber._internal(0.0, 0);
 
-  double mantissa;
-  int exponent;
+  final double mantissa;
+  final int exponent;
 
   /// Normalizes mantissa to be between 1.0 and 10.0 (or 0)
-  void _normalize() {
+  /// Returns a record with (mantissa, exponent)
+  static (double, int) _normalize(double mantissa, int exponent) {
     if (mantissa == 0) {
-      exponent = 0;
-      return;
+      return (0.0, 0);
     }
 
-    while (mantissa.abs() >= 10) {
-      mantissa /= 10;
-      exponent++;
+    double m = mantissa;
+    int e = exponent;
+
+    while (m.abs() >= 10) {
+      m /= 10;
+      e++;
     }
 
-    while (mantissa.abs() < 1 && mantissa != 0) {
-      mantissa *= 10;
-      exponent--;
+    while (m.abs() < 1 && m != 0) {
+      m *= 10;
+      e--;
     }
+
+    return (m, e);
   }
 
   BigNumber operator +(BigNumber other) {
@@ -159,6 +178,12 @@ class BigNumber {
       return '${mantissa.toStringAsFixed(2)}e$exponent';
     }
 
+    // Handle numbers less than 1.0 (negative exponents)
+    if (exponent < 0) {
+      final double value = toDouble();
+      return value.toStringAsFixed(compact ? 3 : 4);
+    }
+
     // Group into thousands (K, M, B, T, etc.)
     final int groupIndex = (exponent / 3).floor();
 
@@ -179,7 +204,7 @@ class BigNumber {
     return '${displayValue.toStringAsFixed(decimals)}${GameConstants.suffixes[groupIndex]}';
   }
 
-  BigNumber copy() => BigNumber(mantissa, exponent);
+  BigNumber copy() => BigNumber._internal(mantissa, exponent);
 
   @override
   String toString() => format();

@@ -46,7 +46,7 @@ class AppColor extends ThemeExtension<AppColor> {
       secondary: Color.lerp(secondary, other.secondary, t)!,
       accent: Color.lerp(accent, other.accent, t)!,
       primaryText: Color.lerp(primaryText, other.primaryText, t)!,
-      background: Color.lerp(primaryText, other.background, t)!,
+      background: Color.lerp(background, other.background, t)!,
     );
   }
 }

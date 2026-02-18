@@ -35,7 +35,7 @@ class EnergyCubit extends Cubit<EnergyState> {
 
   void _generateEnergy() {
     final BigNumber increment = state.energyPerSecond.multiplyByDouble(
-      GameConstants.energyUpdateIntervalMs / 1000,
+      GameConstants.energyUpdateIntervalMs * 0.001,
     );
 
     final BigNumber newEnergy = state.currentEnergy + increment;
