@@ -99,6 +99,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Idle Laboratory'**
   String get appTitle;
+
+  /// Label for energy units
+  ///
+  /// In en, this message translates to:
+  /// **'Energy Units (EU)'**
+  String get energyUnits;
+
+  /// Energy units per second abbreviation
+  ///
+  /// In en, this message translates to:
+  /// **'EU/s'**
+  String get perSecond;
+
+  /// Label for scientific notation toggle
+  ///
+  /// In en, this message translates to:
+  /// **'Scientific Notation'**
+  String get scientificNotation;
+
+  /// On state label
+  ///
+  /// In en, this message translates to:
+  /// **'ON'**
+  String get on;
+
+  /// Off state label
+  ///
+  /// In en, this message translates to:
+  /// **'OFF'**
+  String get off;
 }
 
 class _AppLocalizationsDelegate

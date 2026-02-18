@@ -4,5 +4,6 @@
 export 'app/app.dart';
 export 'core/core.dart';
 export 'features/features.dart';
+export 'gen/gen.dart';
 export 'l10n/l10n.dart';
 export 'main.dart';

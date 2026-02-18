@@ -10,6 +10,7 @@ class AppTheme {
       secondary: LightColor.secondary,
       accent: LightColor.accent,
       primaryText: LightColor.primaryText,
+      background: LightColor.background,
     ),
   );
 
@@ -19,6 +20,7 @@ class AppTheme {
       secondary: DarkColor.secondary,
       accent: DarkColor.accent,
       primaryText: DarkColor.primaryText,
+      background: DarkColor.background,
     ),
   );
 
@@ -26,7 +28,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: false,
       extensions: <ThemeExtension<dynamic>>[color],
-      scaffoldBackgroundColor: color.accent,
+      scaffoldBackgroundColor: color.background,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(backgroundColor: color.primary),
       ),
