@@ -3,5 +3,25 @@
     "appTitle": "Idle Laboratory",
     "@appTitle": {
         "description": "The title of the application"
+    },
+    "energyUnits": "Energy Units (EU)",
+    "@energyUnits": {
+        "description": "Label for energy units"
+    },
+    "perSecond": "EU/s",
+    "@perSecond": {
+        "description": "Energy units per second abbreviation"
+    },
+    "scientificNotation": "Scientific Notation",
+    "@scientificNotation": {
+        "description": "Label for scientific notation toggle"
+    },
+    "on": "ON",
+    "@on": {
+        "description": "On state label"
+    },
+    "off": "OFF",
+    "@off": {
+        "description": "Off state label"
     }
 }

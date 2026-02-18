@@ -10,4 +10,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appTitle => 'Idle Laboratory';
+
+  @override
+  String get energyUnits => 'Energy Units (EU)';
+
+  @override
+  String get perSecond => 'EU/s';
+
+  @override
+  String get scientificNotation => 'Scientific Notation';
+
+  @override
+  String get on => 'ON';
+
+  @override
+  String get off => 'OFF';
 }
