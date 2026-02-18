@@ -16,7 +16,11 @@ class AppWidget extends StatelessWidget {
     return MultiBlocProvider(
       providers: <BlocProvider<dynamic>>[
         BlocProvider<EnergyCubit>(
-          create: (BuildContext context) => sl<EnergyCubit>(),
+          create: (BuildContext context) {
+            final EnergyCubit cubit = sl<EnergyCubit>();
+            cubit.start();
+            return cubit;
+          },
         ),
         BlocProvider<SettingsCubit>(
           create: (BuildContext context) => sl<SettingsCubit>(),

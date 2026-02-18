@@ -87,18 +87,58 @@ class BigNumber {
   }
 
   bool operator >(BigNumber other) {
+    // Handle signs first
+    final bool thisIsNegative = mantissa < 0;
+    final bool otherIsNegative = other.mantissa < 0;
+
+    if (thisIsNegative != otherIsNegative) {
+      return !thisIsNegative; // Positive is always greater than negative
+    }
+
+    // Both have the same sign
     if (exponent != other.exponent) {
+      if (thisIsNegative) {
+        return exponent <
+            other.exponent; // For negatives, smaller exponent is greater
+      }
       return exponent > other.exponent;
     }
     return mantissa > other.mantissa;
   }
 
   bool operator <(BigNumber other) {
+    // Handle signs first
+    final bool thisIsNegative = mantissa < 0;
+    final bool otherIsNegative = other.mantissa < 0;
+
+    if (thisIsNegative != otherIsNegative) {
+      return thisIsNegative; // Negative is always less than positive
+    }
+
+    // Both have the same sign
     if (exponent != other.exponent) {
+      if (thisIsNegative) {
+        return exponent >
+            other.exponent; // For negatives, larger exponent is smaller
+      }
       return exponent < other.exponent;
     }
     return mantissa < other.mantissa;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other is! BigNumber) {
+      return false;
+    }
+    return mantissa == other.mantissa && exponent == other.exponent;
+  }
+
+  @override
+  int get hashCode => Object.hash(mantissa, exponent);
 
   /// Converts to double (may lose precision for very large numbers)
   double toDouble() {
