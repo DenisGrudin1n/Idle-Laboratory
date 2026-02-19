@@ -4,23 +4,16 @@ import 'package:idle_laboratory/core/theme/app_color.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get light => _base(
+  static ThemeData get defaultTheme => _base(
     AppColor(
-      primary: LightColor.primary,
-      secondary: LightColor.secondary,
-      accent: LightColor.accent,
-      primaryText: LightColor.primaryText,
-      background: LightColor.background,
-    ),
-  );
-
-  static ThemeData get dark => _base(
-    AppColor(
-      primary: DarkColor.primary,
-      secondary: DarkColor.secondary,
-      accent: DarkColor.accent,
-      primaryText: DarkColor.primaryText,
-      background: DarkColor.background,
+      primary: DefaultColor.primary,
+      secondary: DefaultColor.secondary,
+      accent: DefaultColor.accent,
+      primaryText: DefaultColor.primaryText,
+      background: DefaultColor.background,
+      drawerBackground: DefaultColor.drawerBackground,
+      titleText: DefaultColor.titleText,
+      green: DefaultColor.green,
     ),
   );
 
