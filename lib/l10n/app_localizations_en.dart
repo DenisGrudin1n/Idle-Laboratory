@@ -25,4 +25,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get off => 'OFF';
+
+  @override
+  String get cells => 'Cells';
+
+  @override
+  String get chemicals => 'Chemicals';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get statistics => 'Statistics';
+
+  @override
+  String get achievements => 'Achievements';
+
+  @override
+  String get energyCells => 'Energy Cells';
+
+  @override
+  String get production => 'Production';
+
+  @override
+  String get storage => 'Storage';
+
+  @override
+  String get overview => 'Overview';
+
+  @override
+  String get basicEnergyCell => 'Basic Energy Cell';
+
+  @override
+  String get heatCell => 'Heat Cell';
+
+  @override
+  String get iceCell => 'Ice Cell';
+
+  @override
+  String get darkMatterCell => 'Dark Matter Cell';
+
+  @override
+  String get energyType => 'Energy';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get select => 'Select';
+
+  @override
+  String get level => 'Level';
+
+  @override
+  String get required => 'Required';
+
+  @override
+  String get unlockMoreCells => 'Unlock more cells by\nupgrading further.';
+
+  @override
+  String get sec => 'sec';
+
+  @override
+  String get s => 's';
 }

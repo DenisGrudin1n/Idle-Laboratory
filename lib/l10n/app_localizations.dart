@@ -129,6 +129,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OFF'**
   String get off;
+
+  /// Cells tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Cells'**
+  String get cells;
+
+  /// Chemicals tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Chemicals'**
+  String get chemicals;
+
+  /// Settings tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// Statistics tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// Achievements tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achievements;
+
+  /// Energy Cells tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Energy Cells'**
+  String get energyCells;
+
+  /// Production tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Production'**
+  String get production;
+
+  /// Storage tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get storage;
+
+  /// Overview tab label
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get overview;
+
+  /// Basic Energy Cell name
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Energy Cell'**
+  String get basicEnergyCell;
+
+  /// Heat Cell name
+  ///
+  /// In en, this message translates to:
+  /// **'Heat Cell'**
+  String get heatCell;
+
+  /// Ice Cell name
+  ///
+  /// In en, this message translates to:
+  /// **'Ice Cell'**
+  String get iceCell;
+
+  /// Dark Matter Cell name
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Matter Cell'**
+  String get darkMatterCell;
+
+  /// Energy cell type
+  ///
+  /// In en, this message translates to:
+  /// **'Energy'**
+  String get energyType;
+
+  /// Type label
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// Select button label
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select;
+
+  /// Level label
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get level;
+
+  /// Required label
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get required;
+
+  /// Footer text in cells drawer
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock more cells by\nupgrading further.'**
+  String get unlockMoreCells;
+
+  /// No description provided for @sec.
+  ///
+  /// In en, this message translates to:
+  /// **'sec'**
+  String get sec;
+
+  /// No description provided for @s.
+  ///
+  /// In en, this message translates to:
+  /// **'s'**
+  String get s;
 }
 
 class _AppLocalizationsDelegate

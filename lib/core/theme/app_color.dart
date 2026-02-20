@@ -72,12 +72,12 @@ class AppColor extends ThemeExtension<AppColor> {
 
 class DefaultColor {
   DefaultColor._();
-  static const Color primary = Color(0xFF9698A4); // Primary text/icon color
-  static const Color secondary = Color(0xFF625B71);
-  static const Color accent = Color(0xFF7D5260);
-  static const Color primaryText = Color(0xFF9698A4); // Drawer text
-  static const Color background = Color(0xFF525463); // Main background
-  static const Color drawerBackground = Color(0xFF2E3140); // Drawer background
-  static const Color titleText = Color(0xFFD2D3D8); // Title text color
-  static const Color green = Color(0xFF7F9E7C); // Green accent
+  static const Color primary = Color(0xFFB8BAC9); // Primary text/icon color
+  static const Color secondary = Color(0xFF8B7FA1);
+  static const Color accent = Color(0xFFA87489);
+  static const Color primaryText = Color(0xFFB8BAC9); // Drawer text
+  static const Color background = Color(0xFF6B6D7E); // Main background
+  static const Color drawerBackground = Color(0xFF3D4153); // Drawer background
+  static const Color titleText = Color(0xFFE8E9EE); // Title text color
+  static const Color green = Color(0xFF9DBF99); // Green accent
 }
