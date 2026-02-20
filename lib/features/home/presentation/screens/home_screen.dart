@@ -26,21 +26,19 @@ class _HomeScreenState extends State<HomeScreen> {
     body: SafeArea(
       top: false,
       bottom: false,
-      child: Padding(
-        padding: EdgeInsets.only(right: 10.w),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Left navigation drawer with energy display inside
-            NavigationDrawerWidget(
-              selectedTab: _selectedTab,
-              onTabSelected: (MainNavigationTab tab) =>
-                  setState(() => _selectedTab = tab),
-            ),
-            // Right content area - full width
-            Expanded(child: _buildContent()),
-          ],
-        ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Left navigation drawer with energy display inside
+          MainNavigationDrawer(
+            selectedTab: _selectedTab,
+            onTabSelected: (MainNavigationTab tab) =>
+                setState(() => _selectedTab = tab),
+          ),
+          SizedBox(width: 12.w),
+          // Right content area - full width
+          Expanded(child: _buildContent()),
+        ],
       ),
     ),
   );

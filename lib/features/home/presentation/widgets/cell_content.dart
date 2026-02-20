@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/enums.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/widgets.dart';
 
@@ -20,15 +21,20 @@ class _CellContentState extends State<CellContent> {
         selectedTab: _selectedTab,
         onTabSelected: (CellsTab tab) => setState(() => _selectedTab = tab),
       ),
+      SizedBox(height: 12.w),
       // Content area with cells drawer
-      const Expanded(
+      Expanded(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // Cells list drawer
-            CellsListDrawer(),
+            const CellsListDrawer(),
+            SizedBox(width: 12.w),
+            // Cell container display
+            const CellContainerDisplay(),
+            SizedBox(width: 12.w),
             // Main content area (empty for now)
-            Expanded(child: SizedBox.shrink()),
+            const Expanded(child: SizedBox.shrink()),
           ],
         ),
       ),

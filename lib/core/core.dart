@@ -3,6 +3,7 @@
 
 export 'constants/constants.dart';
 export 'enums/enums.dart';
+export 'extensions/extensions.dart';
 export 'injection.dart';
 export 'interfaces/interfaces.dart';
 export 'router/router.dart';
