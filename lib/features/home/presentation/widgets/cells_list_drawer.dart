@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/features/home/domain/models/cell_model.dart';
+import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
 
@@ -12,74 +12,80 @@ class CellsListDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
 
-    return BlocBuilder<CellsCubit, CellsState>(
-      builder: (BuildContext context, CellsState state) => Container(
-        width: 0.25.sw,
-        decoration: BoxDecoration(color: context.color.drawerBackground),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // Header
-            Container(
-              padding: EdgeInsets.all(12.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    l10n.cells,
-                    style: TextStyle(
-                      color: context.color.titleText,
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Icon(
-                    Icons.refresh,
-                    color: context.color.primaryText,
-                    size: 16.sp,
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: 1,
-              thickness: 1,
-              color: context.color.primaryText.withValues(alpha: 0.2),
-            ),
-            // Cells list
-            Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.all(8.w),
-                itemCount: state.availableCells.length,
-                separatorBuilder: (BuildContext context, int index) =>
-                    SizedBox(height: 8.h),
-                itemBuilder: (BuildContext context, int index) {
-                  final CellModel cell = state.availableCells[index];
-                  final bool isSelected = state.selectedCellId == cell.id;
+    final List<CellModel> cells = context.select(
+      (CellProgressionCubit cubit) => cubit.state.cells,
+    );
 
-                  return _CellItem(
-                    cell: cell,
-                    isSelected: isSelected,
-                    onTap: () => context.read<CellsCubit>().selectCell(cell.id),
-                  );
-                },
-              ),
-            ),
-            // Footer text
-            Container(
-              padding: EdgeInsets.all(12.w),
-              child: Text(
-                l10n.unlockMoreCells,
-                style: TextStyle(
-                  color: context.color.primaryText,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w400,
+    final String? selectedCellId = context.select(
+      (CellsCubit cubit) => cubit.state.selectedCellId,
+    );
+
+    return Container(
+      width: 0.25.sw,
+      decoration: BoxDecoration(color: context.color.drawerBackground),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          // Header
+          Container(
+            padding: EdgeInsets.all(12.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  l10n.cells,
+                  style: TextStyle(
+                    color: context.color.titleText,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
+                Icon(
+                  Icons.refresh,
+                  color: context.color.primaryText,
+                  size: 16.sp,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: context.color.primaryText.withValues(alpha: 0.2),
+          ),
+          // Cells list
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.all(8.w),
+              itemCount: cells.length,
+              separatorBuilder: (BuildContext context, int index) =>
+                  SizedBox(height: 8.h),
+              itemBuilder: (BuildContext context, int index) {
+                final CellModel cell = cells[index];
+                final bool isSelected = selectedCellId == cell.id;
+
+                return _CellItem(
+                  cell: cell,
+                  isSelected: isSelected,
+                  onTap: () => context.read<CellsCubit>().selectCell(cell.id),
+                );
+              },
+            ),
+          ),
+          // Footer text
+          Container(
+            padding: EdgeInsets.all(12.w),
+            child: Text(
+              l10n.unlockMoreCells,
+              style: TextStyle(
+                color: context.color.primaryText,
+                fontSize: 10.sp,
+                fontWeight: FontWeight.w400,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -132,18 +138,21 @@ class _CellItem extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 4.h),
-              // Type and Level
+              // Level and Select button
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
-                    '${l10n.type}: ${cell.type.localize(l10n)}',
-                    style: TextStyle(
-                      color: context.color.primaryText,
-                      fontSize: 9.sp,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  if (!cell.isLocked)
+                    Text(
+                      '${l10n.level}: ${cell.level}',
+                      style: TextStyle(
+                        color: context.color.primaryText,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    )
+                  else
+                    const SizedBox.shrink(),
                   if (!cell.isLocked)
                     Container(
                       padding: EdgeInsets.symmetric(
@@ -165,47 +174,7 @@ class _CellItem extends StatelessWidget {
                     ),
                 ],
               ),
-              if (!cell.isLocked) ...<Widget>[
-                SizedBox(height: 4.h),
-                Text(
-                  '${l10n.level}: ${cell.level}',
-                  style: TextStyle(
-                    color: context.color.primaryText,
-                    fontSize: 9.sp,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-              if (cell.isLocked && cell.requiredLevel != null) ...<Widget>[
-                SizedBox(height: 6.h),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                  decoration: BoxDecoration(
-                    color: context.color.background,
-                    borderRadius: BorderRadius.circular(4.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.lock,
-                        color: context.color.primaryText,
-                        size: 10.sp,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        '${l10n.level} ${cell.requiredLevel} ${l10n.required}',
-                        style: TextStyle(
-                          color: context.color.primaryText,
-                          fontSize: 9.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-              if (cell.energyPerSecond != null) ...<Widget>[
+              if (!cell.isLocked && cell.energyPerSecond != null) ...<Widget>[
                 SizedBox(height: 4.h),
                 Row(
                   children: <Widget>[
@@ -224,6 +193,35 @@ class _CellItem extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+              ],
+              if (cell.isLocked) ...<Widget>[
+                SizedBox(height: 6.h),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+                  decoration: BoxDecoration(
+                    color: context.color.background,
+                    borderRadius: BorderRadius.circular(4.r),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.lock,
+                        color: context.color.primaryText,
+                        size: 10.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        l10n.unlockAt,
+                        style: TextStyle(
+                          color: context.color.primaryText,
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ],

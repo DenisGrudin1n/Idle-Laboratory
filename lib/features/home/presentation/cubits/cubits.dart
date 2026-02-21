@@ -4,3 +4,4 @@
 export 'cells/cells.dart';
 export 'energy/energy.dart';
 export 'settings/settings.dart';
+export 'cell_progression/cell_progression_cubit.dart';

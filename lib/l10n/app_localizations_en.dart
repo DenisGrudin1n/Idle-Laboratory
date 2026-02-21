@@ -88,4 +88,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get s => 's';
+
+  @override
+  String get unlockAt => 'Unlock at';
 }

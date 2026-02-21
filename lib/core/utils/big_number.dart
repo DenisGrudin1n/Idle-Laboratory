@@ -145,6 +145,36 @@ class BigNumber {
     return mantissa < other.mantissa;
   }
 
+  bool operator >=(BigNumber other) => this > other || this == other;
+
+  bool operator <=(BigNumber other) => this < other || this == other;
+
+  BigNumber operator -(BigNumber other) {
+    // Convert to same exponent for subtraction
+    if (mantissa == 0) {
+      return BigNumber(-other.mantissa, other.exponent);
+    }
+    if (other.mantissa == 0) {
+      return this;
+    }
+
+    // Align exponents
+    if (exponent == other.exponent) {
+      return BigNumber(mantissa - other.mantissa, exponent);
+    }
+
+    // Use the larger exponent
+    if (exponent > other.exponent) {
+      final double adjustedOther =
+          other.mantissa * math.pow(10, other.exponent - exponent);
+      return BigNumber(mantissa - adjustedOther, exponent);
+    } else {
+      final double adjustedThis =
+          mantissa * math.pow(10, exponent - other.exponent);
+      return BigNumber(adjustedThis - other.mantissa, other.exponent);
+    }
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {

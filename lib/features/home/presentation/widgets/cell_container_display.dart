@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/lib.dart';
 
@@ -41,17 +42,26 @@ class _CellContainerDisplayState extends State<CellContainerDisplay>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           // Cell container with energy
-          RepaintBoundary(
-            child: SizedBox(
-              width: 120.w,
-              height: 72.h,
-              child: CustomPaint(
-                painter: _CellContainerPainter(
-                  fillLevel: 0.5,
-                  animationValue: _animationController,
+          Builder(
+            builder: (BuildContext context) {
+              final double fillLevel = context.select(
+                (CellProgressionCubit cubit) =>
+                    cubit.getFillLevel(CellId.basicEnergyCell.id),
+              );
+
+              return RepaintBoundary(
+                child: SizedBox(
+                  width: 120.w,
+                  height: 72.h,
+                  child: CustomPaint(
+                    painter: _CellContainerPainter(
+                      fillLevel: fillLevel,
+                      animationValue: _animationController,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),
@@ -127,15 +137,17 @@ class _CellContainerPainter extends CustomPainter {
       ],
     );
 
-    // Draw electric lightning using extension
-    canvas.drawElectricLightning(
-      centerX: centerX,
-      fillTop: fillTop,
-      bottomY: bottomY,
-      width: width,
-      animationValue: animationValue.value,
-      lightningColor: const Color(0xFF5CB3E0),
-    );
+    // Draw electric lightning using extension (only when fill level is above 15%)
+    if (fillLevel >= 0.15) {
+      canvas.drawElectricLightning(
+        centerX: centerX,
+        fillTop: fillTop,
+        bottomY: bottomY,
+        width: width,
+        animationValue: animationValue.value,
+        lightningColor: const Color(0xFF5CB3E0),
+      );
+    }
 
     // Draw energy particles using extension
     canvas.drawEnergyParticles(

@@ -13,13 +13,15 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create EnergyCubit first as it's needed by CellProgressionCubit
+    final EnergyCubit energyCubit = sl<EnergyCubit>();
+
     return MultiBlocProvider(
       providers: <BlocProvider<dynamic>>[
         BlocProvider<EnergyCubit>(
           create: (BuildContext context) {
-            final EnergyCubit cubit = sl<EnergyCubit>();
-            cubit.start();
-            return cubit;
+            energyCubit.start();
+            return energyCubit;
           },
         ),
         BlocProvider<SettingsCubit>(
@@ -27,6 +29,14 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider<CellsCubit>(
           create: (BuildContext context) => sl<CellsCubit>(),
+        ),
+        BlocProvider<CellProgressionCubit>(
+          create: (BuildContext context) {
+            final CellProgressionCubit cellProgressionCubit =
+                CellProgressionCubit(sl(), energyCubit);
+            cellProgressionCubit.start();
+            return cellProgressionCubit;
+          },
         ),
       ],
       child: ScreenUtilInit(
