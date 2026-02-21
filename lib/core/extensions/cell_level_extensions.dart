@@ -15,6 +15,7 @@ extension CellLevelConfigExtension on List<CellLevelModel> {
   }
 
   /// Get energy requirement for next level
+  // TODO: implement method later
   BigNumber? getCellNextLevelRequirement(int currentLevel) {
     final CellLevelModel? nextConfig = getConfig(currentLevel + 1);
     return nextConfig?.energyRequired;
@@ -48,6 +49,7 @@ class CellEnergyPerSecond {
   }
 
   /// Get energy requirement to unlock a specific cell
+  // TODO: implement method later
   static String? getNewCellUnlockRequirement(CellId cellId) {
     final BigNumber? requirement =
         CellLevelConstants.cellUnlockRequirements[cellId];

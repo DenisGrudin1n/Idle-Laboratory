@@ -178,11 +178,6 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
     _energyCubit.updateEnergyPerSecond(totalEPS);
   }
 
-  /// Update total energy from external source (EnergyCubit)
-  void updateTotalEnergy(BigNumber energy) {
-    emit(state.copyWith(totalEnergy: energy));
-  }
-
   /// Get fill level (0.0 to 1.0) for cell container visualization
   double getFillLevel(String cellId) {
     final CellModel? cell = _findCellById(cellId);
@@ -205,6 +200,18 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
     final BigNumber previousRequired = currentConfig.energyRequired;
     final BigNumber nextRequired = nextConfig.energyRequired;
 
+    // If current energy is below the previous level requirement, return 0.0
+    // This handles cases where energy might be reduced or spent
+    if (currentEnergy < previousRequired) {
+      return 0.0;
+    }
+
+    // If current energy meets or exceeds the next level requirement, return 1.0
+    // This handles the brief moment before level-up occurs
+    if (currentEnergy >= nextRequired) {
+      return 1.0;
+    }
+
     // Calculate progress from previous level to next level
     final BigNumber progressEnergy = currentEnergy - previousRequired;
     final BigNumber levelRange = nextRequired - previousRequired;
@@ -215,22 +222,6 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
 
     final double fillLevel = progressEnergy.toDouble() / levelRange.toDouble();
     return fillLevel.clamp(0.0, 1.0);
-  }
-
-  /// Get energy per second for active cell
-  BigNumber getEnergyPerSecond() {
-    final CellModel? basicCell = _findCellById(CellId.basicEnergyCell.id);
-
-    if (basicCell == null || basicCell.isLocked) {
-      return BigNumber.zero();
-    }
-
-    final CellId? cellId = CellId.fromString(basicCell.id);
-    if (cellId == null) {
-      return BigNumber.zero();
-    }
-
-    return CellEnergyPerSecond.getEPS(cellId, basicCell.level);
   }
 
   @override

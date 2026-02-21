@@ -16,9 +16,13 @@ class CellsListDrawer extends StatelessWidget {
       (CellProgressionCubit cubit) => cubit.state.cells,
     );
 
-    final String? selectedCellId = context.select(
+    final String? rawSelectedCellId = context.select(
       (CellsCubit cubit) => cubit.state.selectedCellId,
     );
+    final String? selectedCellId =
+        cells.any((CellModel cell) => cell.id == rawSelectedCellId)
+        ? rawSelectedCellId
+        : null;
 
     return Container(
       width: 0.25.sw,
@@ -213,7 +217,8 @@ class _CellItem extends StatelessWidget {
                       ),
                       SizedBox(width: 4.w),
                       Text(
-                        l10n.unlockAt,
+                        // TODO: add unlock requirement values
+                        '${l10n.unlockAt}: ',
                         style: TextStyle(
                           color: context.color.primaryText,
                           fontSize: 9.sp,
