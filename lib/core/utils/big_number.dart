@@ -163,6 +163,16 @@ class BigNumber {
       return BigNumber(mantissa - other.mantissa, exponent);
     }
 
+    // Check for precision loss with large exponent differences
+    final int expDiff = (exponent - other.exponent).abs();
+    if (expDiff > 15) {
+      // If the difference is too large, return the larger number
+      // (the smaller one is negligible)
+      return exponent > other.exponent
+          ? this
+          : BigNumber(-other.mantissa, other.exponent);
+    }
+
     // Use the larger exponent
     if (exponent > other.exponent) {
       final double adjustedOther =

@@ -30,9 +30,13 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider<CellProgressionCubit>(
           create: (BuildContext context) {
+            // Retrieve EnergyCubit from context (must be provided before this)
             final EnergyCubit energyCubit = context.read<EnergyCubit>();
             final CellProgressionCubit cellProgressionCubit =
                 CellProgressionCubit(sl(), energyCubit);
+            // Initialize progression: sets up stream subscription to EnergyCubit,
+            // calculates initial energy per second from unlocked cells,
+            // and performs initial progression check (unlocks/level-ups)
             cellProgressionCubit.start();
             return cellProgressionCubit;
           },

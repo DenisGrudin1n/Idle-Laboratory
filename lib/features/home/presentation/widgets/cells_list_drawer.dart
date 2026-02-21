@@ -154,9 +154,7 @@ class _CellItem extends StatelessWidget {
                         fontSize: 9.sp,
                         fontWeight: FontWeight.w400,
                       ),
-                    )
-                  else
-                    const SizedBox.shrink(),
+                    ),
                   if (!cell.isLocked)
                     Container(
                       padding: EdgeInsets.symmetric(
@@ -217,8 +215,7 @@ class _CellItem extends StatelessWidget {
                       ),
                       SizedBox(width: 4.w),
                       Text(
-                        // TODO: add unlock requirement values
-                        '${l10n.unlockAt}: ',
+                        '${l10n.unlockAt}: ${CellEnergyPerSecond.getNewCellUnlockRequirement(CellId.fromString(cell.id) ?? CellId.basicEnergyCell) ?? '???'}',
                         style: TextStyle(
                           color: context.color.primaryText,
                           fontSize: 9.sp,

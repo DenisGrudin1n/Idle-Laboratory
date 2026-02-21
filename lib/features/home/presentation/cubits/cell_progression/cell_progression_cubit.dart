@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
-import 'package:idle_laboratory/core/constants/game_constants.dart';
 import 'package:idle_laboratory/core/enums/enums.dart';
 import 'package:idle_laboratory/core/extensions/extensions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
@@ -47,18 +46,22 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
 
   void _onEnergyUpdate(EnergyState energyState) {
     emit(state.copyWith(totalEnergy: energyState.currentEnergy));
+    // Trigger progression updates whenever energy changes
+    _updateProgression();
   }
 
-  /// Starts the progression system with 10 updates per second
+  /// Starts the progression system
+  /// Progression is driven by energy updates from EnergyCubit, not a separate timer
   void start() {
     // Set initial energy per second from unlocked cells
     _updateEnergyPerSecond();
 
+    // Ensure no periodic timer is running; progression is driven by energy updates
     _timer?.cancel();
-    _timer = Timer.periodic(
-      const Duration(milliseconds: GameConstants.energyUpdateIntervalMs),
-      (_) => _updateProgression(),
-    );
+    _timer = null;
+
+    // Perform an initial progression update to sync state on start
+    _updateProgression();
   }
 
   void _updateProgression() {

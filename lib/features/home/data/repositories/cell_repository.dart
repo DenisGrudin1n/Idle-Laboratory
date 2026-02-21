@@ -14,7 +14,7 @@ class CellRepository {
       level: 1,
       isLocked: false,
       requiredLevel: null,
-      energyPerSecond: null,
+      energyPerSecond: '1.00',
     ),
     CellModel(
       id: CellId.heatCell.id,
