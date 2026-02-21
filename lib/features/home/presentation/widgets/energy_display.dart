@@ -7,6 +7,7 @@ import '../../../../lib.dart';
 
 class EnergyDisplay extends StatelessWidget {
   const EnergyDisplay({super.key});
+
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
@@ -20,41 +21,29 @@ class EnergyDisplay extends StatelessWidget {
     );
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: context.color.primary.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: context.color.primary, width: 2.w),
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
-            l10n.energyUnits,
-            style: TextStyle(
-              color: context.color.primaryText,
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Text(
             energyState.currentEnergy.format(useScientific: useScientific),
             style: TextStyle(
-              color: context.color.primaryText,
-              fontSize: 24.sp,
+              color: context.color.titleText,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 2.h),
           Text(
-            '${energyState.energyPerSecond.format(useScientific: useScientific)} ${l10n.perSecond}',
+            '+${energyState.energyPerSecond.format(useScientific: useScientific)} ${l10n.perSecond}',
             style: TextStyle(
-              color: context.color.primaryText,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
+              color: context.color.green,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w500,
             ),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

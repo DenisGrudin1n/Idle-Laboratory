@@ -25,6 +25,9 @@ class AppWidget extends StatelessWidget {
         BlocProvider<SettingsCubit>(
           create: (BuildContext context) => sl<SettingsCubit>(),
         ),
+        BlocProvider<CellsCubit>(
+          create: (BuildContext context) => sl<CellsCubit>(),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: Size(
@@ -38,9 +41,7 @@ class AppWidget extends StatelessWidget {
           ).copyWith(textScaler: const TextScaler.linear(1)),
           child: MaterialApp.router(
             routerConfig: AppRouter.router,
-            themeMode: ThemeMode.dark,
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
+            theme: AppTheme.defaultTheme,
             localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

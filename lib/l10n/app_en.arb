@@ -1,27 +1,30 @@
 {
     "@@locale": "en",
     "appTitle": "Idle Laboratory",
-    "@appTitle": {
-        "description": "The title of the application"
-    },
     "energyUnits": "Energy Units (EU)",
-    "@energyUnits": {
-        "description": "Label for energy units"
-    },
     "perSecond": "EU/s",
-    "@perSecond": {
-        "description": "Energy units per second abbreviation"
-    },
     "scientificNotation": "Scientific Notation",
-    "@scientificNotation": {
-        "description": "Label for scientific notation toggle"
-    },
     "on": "ON",
-    "@on": {
-        "description": "On state label"
-    },
     "off": "OFF",
-    "@off": {
-        "description": "Off state label"
-    }
+    "cells": "Cells",
+    "chemicals": "Chemicals",
+    "settings": "Settings",
+    "statistics": "Statistics",
+    "achievements": "Achievements",
+    "energyCells": "Energy Cells",
+    "production": "Production",
+    "storage": "Storage",
+    "overview": "Overview",
+    "basicEnergyCell": "Basic Energy Cell",
+    "heatCell": "Heat Cell",
+    "iceCell": "Ice Cell",
+    "darkMatterCell": "Dark Matter Cell",
+    "energyType": "Energy",
+    "type": "Type",
+    "select": "Select",
+    "level": "Level",
+    "required": "Required",
+    "unlockMoreCells": "Unlock more cells by\nupgrading further.",
+    "sec": "sec",
+    "s": "s"
 }

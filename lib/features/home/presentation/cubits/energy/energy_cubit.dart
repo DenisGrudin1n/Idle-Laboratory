@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
-import 'package:idle_laboratory/features/home/presentation/cubits/energy/energy_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'energy_state.dart';
+part 'energy_cubit.freezed.dart';
 
 /// Manages the energy generation system for the idle game.
 ///

@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/cubits/settings/settings_state.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'settings_state.dart';
+part 'settings_cubit.freezed.dart';
 
 /// Manages UI settings and preferences for the application.
 ///

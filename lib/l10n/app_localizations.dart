@@ -94,41 +94,167 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// The title of the application
+  /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
   /// **'Idle Laboratory'**
   String get appTitle;
 
-  /// Label for energy units
+  /// No description provided for @energyUnits.
   ///
   /// In en, this message translates to:
   /// **'Energy Units (EU)'**
   String get energyUnits;
 
-  /// Energy units per second abbreviation
+  /// No description provided for @perSecond.
   ///
   /// In en, this message translates to:
   /// **'EU/s'**
   String get perSecond;
 
-  /// Label for scientific notation toggle
+  /// No description provided for @scientificNotation.
   ///
   /// In en, this message translates to:
   /// **'Scientific Notation'**
   String get scientificNotation;
 
-  /// On state label
+  /// No description provided for @on.
   ///
   /// In en, this message translates to:
   /// **'ON'**
   String get on;
 
-  /// Off state label
+  /// No description provided for @off.
   ///
   /// In en, this message translates to:
   /// **'OFF'**
   String get off;
+
+  /// No description provided for @cells.
+  ///
+  /// In en, this message translates to:
+  /// **'Cells'**
+  String get cells;
+
+  /// No description provided for @chemicals.
+  ///
+  /// In en, this message translates to:
+  /// **'Chemicals'**
+  String get chemicals;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// No description provided for @achievements.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achievements;
+
+  /// No description provided for @energyCells.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy Cells'**
+  String get energyCells;
+
+  /// No description provided for @production.
+  ///
+  /// In en, this message translates to:
+  /// **'Production'**
+  String get production;
+
+  /// No description provided for @storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get storage;
+
+  /// No description provided for @overview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get overview;
+
+  /// No description provided for @basicEnergyCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Basic Energy Cell'**
+  String get basicEnergyCell;
+
+  /// No description provided for @heatCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat Cell'**
+  String get heatCell;
+
+  /// No description provided for @iceCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Ice Cell'**
+  String get iceCell;
+
+  /// No description provided for @darkMatterCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Matter Cell'**
+  String get darkMatterCell;
+
+  /// No description provided for @energyType.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy'**
+  String get energyType;
+
+  /// No description provided for @type.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get type;
+
+  /// No description provided for @select.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get select;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'Level'**
+  String get level;
+
+  /// No description provided for @required.
+  ///
+  /// In en, this message translates to:
+  /// **'Required'**
+  String get required;
+
+  /// No description provided for @unlockMoreCells.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock more cells by\nupgrading further.'**
+  String get unlockMoreCells;
+
+  /// No description provided for @sec.
+  ///
+  /// In en, this message translates to:
+  /// **'sec'**
+  String get sec;
+
+  /// No description provided for @s.
+  ///
+  /// In en, this message translates to:
+  /// **'s'**
+  String get s;
 }
 
 class _AppLocalizationsDelegate

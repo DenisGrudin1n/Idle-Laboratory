@@ -7,6 +7,9 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.accent,
     required this.primaryText,
     required this.background,
+    required this.drawerBackground,
+    required this.titleText,
+    required this.green,
   });
 
   final Color primary;
@@ -14,6 +17,9 @@ class AppColor extends ThemeExtension<AppColor> {
   final Color accent;
   final Color primaryText;
   final Color background;
+  final Color drawerBackground;
+  final Color titleText;
+  final Color green;
 
   @override
   ThemeExtension<AppColor> copyWith({
@@ -22,6 +28,9 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? accent,
     Color? primaryText,
     Color? background,
+    Color? drawerBackground,
+    Color? titleText,
+    Color? green,
   }) {
     return AppColor(
       primary: primary ?? this.primary,
@@ -29,6 +38,9 @@ class AppColor extends ThemeExtension<AppColor> {
       accent: accent ?? this.accent,
       primaryText: primaryText ?? this.primaryText,
       background: background ?? this.background,
+      drawerBackground: drawerBackground ?? this.drawerBackground,
+      titleText: titleText ?? this.titleText,
+      green: green ?? this.green,
     );
   }
 
@@ -47,24 +59,25 @@ class AppColor extends ThemeExtension<AppColor> {
       accent: Color.lerp(accent, other.accent, t)!,
       primaryText: Color.lerp(primaryText, other.primaryText, t)!,
       background: Color.lerp(background, other.background, t)!,
+      drawerBackground: Color.lerp(
+        drawerBackground,
+        other.drawerBackground,
+        t,
+      )!,
+      titleText: Color.lerp(titleText, other.titleText, t)!,
+      green: Color.lerp(green, other.green, t)!,
     );
   }
 }
 
-class LightColor {
-  LightColor._();
-  static const Color primary = Color(0xFF6750A4);
-  static const Color secondary = Color(0xFF625B71);
-  static const Color accent = Color(0xFF7D5260);
-  static const Color primaryText = Color(0xFF1C1B1F);
-  static const Color background = Color(0xFFFFFFFF);
-}
-
-class DarkColor {
-  DarkColor._();
-  static const Color primary = Color(0xFFD0BCFF);
-  static const Color secondary = Color(0xFFCCC2DC);
-  static const Color accent = Color(0xFFEFB8C8);
-  static const Color primaryText = Color(0xFFE6E1E5);
-  static const Color background = Color(0xFF121212);
+class DefaultColor {
+  DefaultColor._();
+  static const Color primary = Color(0xFFB8BAC9); // Primary text/icon color
+  static const Color secondary = Color(0xFF8B7FA1);
+  static const Color accent = Color(0xFFA87489);
+  static const Color primaryText = Color(0xFFB8BAC9); // Drawer text
+  static const Color background = Color(0xFF6B6D7E); // Main background
+  static const Color drawerBackground = Color(0xFF3D4153); // Drawer background
+  static const Color titleText = Color(0xFFE8E9EE); // Title text color
+  static const Color green = Color(0xFF9DBF99); // Green accent
 }
