@@ -69,9 +69,17 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
         final BigNumber? unlockRequirement =
             CellLevelConstants.cellUnlockRequirements[cellId];
         if (unlockRequirement != null &&
-            state.totalEnergy > unlockRequirement) {
+            state.totalEnergy >= unlockRequirement) {
           needsUpdate = true;
-          return cell.copyWith(isLocked: false);
+          // Set energyPerSecond when unlocking the cell
+          final BigNumber energyPerSecond = CellEnergyPerSecond.getEPS(
+            cellId,
+            cell.level,
+          );
+          return cell.copyWith(
+            isLocked: false,
+            energyPerSecond: energyPerSecond.format(),
+          );
         }
       }
       return cell;
@@ -85,12 +93,16 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
   }
 
   void _updateLevelProgress() {
-    final CellModel? basicCell = state.cells.firstWhere(
+    if (state.cells.isEmpty) {
+      return;
+    }
+
+    final CellModel basicCell = state.cells.firstWhere(
       (CellModel cell) => cell.id == CellId.basicEnergyCell.id,
       orElse: () => state.cells.first,
     );
 
-    if (basicCell == null || basicCell.isLocked) {
+    if (basicCell.isLocked) {
       return;
     }
 
