@@ -94,151 +94,151 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// The title of the application
+  /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
   /// **'Idle Laboratory'**
   String get appTitle;
 
-  /// Label for energy units
+  /// No description provided for @energyUnits.
   ///
   /// In en, this message translates to:
   /// **'Energy Units (EU)'**
   String get energyUnits;
 
-  /// Energy units per second abbreviation
+  /// No description provided for @perSecond.
   ///
   /// In en, this message translates to:
   /// **'EU/s'**
   String get perSecond;
 
-  /// Label for scientific notation toggle
+  /// No description provided for @scientificNotation.
   ///
   /// In en, this message translates to:
   /// **'Scientific Notation'**
   String get scientificNotation;
 
-  /// On state label
+  /// No description provided for @on.
   ///
   /// In en, this message translates to:
   /// **'ON'**
   String get on;
 
-  /// Off state label
+  /// No description provided for @off.
   ///
   /// In en, this message translates to:
   /// **'OFF'**
   String get off;
 
-  /// Cells tab label
+  /// No description provided for @cells.
   ///
   /// In en, this message translates to:
   /// **'Cells'**
   String get cells;
 
-  /// Chemicals tab label
+  /// No description provided for @chemicals.
   ///
   /// In en, this message translates to:
   /// **'Chemicals'**
   String get chemicals;
 
-  /// Settings tab label
+  /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
-  /// Statistics tab label
+  /// No description provided for @statistics.
   ///
   /// In en, this message translates to:
   /// **'Statistics'**
   String get statistics;
 
-  /// Achievements tab label
+  /// No description provided for @achievements.
   ///
   /// In en, this message translates to:
   /// **'Achievements'**
   String get achievements;
 
-  /// Energy Cells tab label
+  /// No description provided for @energyCells.
   ///
   /// In en, this message translates to:
   /// **'Energy Cells'**
   String get energyCells;
 
-  /// Production tab label
+  /// No description provided for @production.
   ///
   /// In en, this message translates to:
   /// **'Production'**
   String get production;
 
-  /// Storage tab label
+  /// No description provided for @storage.
   ///
   /// In en, this message translates to:
   /// **'Storage'**
   String get storage;
 
-  /// Overview tab label
+  /// No description provided for @overview.
   ///
   /// In en, this message translates to:
   /// **'Overview'**
   String get overview;
 
-  /// Basic Energy Cell name
+  /// No description provided for @basicEnergyCell.
   ///
   /// In en, this message translates to:
   /// **'Basic Energy Cell'**
   String get basicEnergyCell;
 
-  /// Heat Cell name
+  /// No description provided for @heatCell.
   ///
   /// In en, this message translates to:
   /// **'Heat Cell'**
   String get heatCell;
 
-  /// Ice Cell name
+  /// No description provided for @iceCell.
   ///
   /// In en, this message translates to:
   /// **'Ice Cell'**
   String get iceCell;
 
-  /// Dark Matter Cell name
+  /// No description provided for @darkMatterCell.
   ///
   /// In en, this message translates to:
   /// **'Dark Matter Cell'**
   String get darkMatterCell;
 
-  /// Energy cell type
+  /// No description provided for @energyType.
   ///
   /// In en, this message translates to:
   /// **'Energy'**
   String get energyType;
 
-  /// Type label
+  /// No description provided for @type.
   ///
   /// In en, this message translates to:
   /// **'Type'**
   String get type;
 
-  /// Select button label
+  /// No description provided for @select.
   ///
   /// In en, this message translates to:
   /// **'Select'**
   String get select;
 
-  /// Level label
+  /// No description provided for @level.
   ///
   /// In en, this message translates to:
   /// **'Level'**
   String get level;
 
-  /// Required label
+  /// No description provided for @required.
   ///
   /// In en, this message translates to:
   /// **'Required'**
   String get required;
 
-  /// Footer text in cells drawer
+  /// No description provided for @unlockMoreCells.
   ///
   /// In en, this message translates to:
   /// **'Unlock more cells by\nupgrading further.'**

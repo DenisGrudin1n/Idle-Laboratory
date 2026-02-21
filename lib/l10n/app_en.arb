@@ -1,105 +1,30 @@
 {
     "@@locale": "en",
     "appTitle": "Idle Laboratory",
-    "@appTitle": {
-        "description": "The title of the application"
-    },
     "energyUnits": "Energy Units (EU)",
-    "@energyUnits": {
-        "description": "Label for energy units"
-    },
     "perSecond": "EU/s",
-    "@perSecond": {
-        "description": "Energy units per second abbreviation"
-    },
     "scientificNotation": "Scientific Notation",
-    "@scientificNotation": {
-        "description": "Label for scientific notation toggle"
-    },
     "on": "ON",
-    "@on": {
-        "description": "On state label"
-    },
     "off": "OFF",
-    "@off": {
-        "description": "Off state label"
-    },
     "cells": "Cells",
-    "@cells": {
-        "description": "Cells tab label"
-    },
     "chemicals": "Chemicals",
-    "@chemicals": {
-        "description": "Chemicals tab label"
-    },
     "settings": "Settings",
-    "@settings": {
-        "description": "Settings tab label"
-    },
     "statistics": "Statistics",
-    "@statistics": {
-        "description": "Statistics tab label"
-    },
     "achievements": "Achievements",
-    "@achievements": {
-        "description": "Achievements tab label"
-    },
     "energyCells": "Energy Cells",
-    "@energyCells": {
-        "description": "Energy Cells tab label"
-    },
     "production": "Production",
-    "@production": {
-        "description": "Production tab label"
-    },
     "storage": "Storage",
-    "@storage": {
-        "description": "Storage tab label"
-    },
     "overview": "Overview",
-    "@overview": {
-        "description": "Overview tab label"
-    },
     "basicEnergyCell": "Basic Energy Cell",
-    "@basicEnergyCell": {
-        "description": "Basic Energy Cell name"
-    },
     "heatCell": "Heat Cell",
-    "@heatCell": {
-        "description": "Heat Cell name"
-    },
     "iceCell": "Ice Cell",
-    "@iceCell": {
-        "description": "Ice Cell name"
-    },
     "darkMatterCell": "Dark Matter Cell",
-    "@darkMatterCell": {
-        "description": "Dark Matter Cell name"
-    },
     "energyType": "Energy",
-    "@energyType": {
-        "description": "Energy cell type"
-    },
     "type": "Type",
-    "@type": {
-        "description": "Type label"
-    },
     "select": "Select",
-    "@select": {
-        "description": "Select button label"
-    },
     "level": "Level",
-    "@level": {
-        "description": "Level label"
-    },
     "required": "Required",
-    "@required": {
-        "description": "Required label"
-    },
     "unlockMoreCells": "Unlock more cells by\nupgrading further.",
-    "@unlockMoreCells": {
-        "description": "Footer text in cells drawer"
-    },
     "sec": "sec",
     "s": "s"
 }

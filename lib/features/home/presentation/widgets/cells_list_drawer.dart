@@ -1,89 +1,85 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
 
-class CellsListDrawer extends StatefulWidget {
+class CellsListDrawer extends StatelessWidget {
   const CellsListDrawer({super.key});
-
-  @override
-  State<CellsListDrawer> createState() => _CellsListDrawerState();
-}
-
-class _CellsListDrawerState extends State<CellsListDrawer> {
-  String? _selectedCellId = CellModel.availableCells.first.id;
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
 
-    return Container(
-      width: 0.25.sw,
-      decoration: BoxDecoration(color: context.color.drawerBackground),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          // Header
-          Container(
-            padding: EdgeInsets.all(12.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  l10n.cells,
-                  style: TextStyle(
-                    color: context.color.titleText,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.bold,
+    return BlocBuilder<CellsCubit, CellsState>(
+      builder: (BuildContext context, CellsState state) => Container(
+        width: 0.25.sw,
+        decoration: BoxDecoration(color: context.color.drawerBackground),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // Header
+            Container(
+              padding: EdgeInsets.all(12.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    l10n.cells,
+                    style: TextStyle(
+                      color: context.color.titleText,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.refresh,
-                  color: context.color.primaryText,
-                  size: 16.sp,
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: context.color.primaryText.withValues(alpha: 0.2),
-          ),
-          // Cells list
-          Expanded(
-            child: ListView.separated(
-              padding: EdgeInsets.all(8.w),
-              itemCount: CellModel.availableCells.length,
-              separatorBuilder: (BuildContext context, int index) =>
-                  SizedBox(height: 8.h),
-              itemBuilder: (BuildContext context, int index) {
-                final CellModel cell = CellModel.availableCells[index];
-                final bool isSelected = _selectedCellId == cell.id;
-
-                return _CellItem(
-                  cell: cell,
-                  isSelected: isSelected,
-                  onTap: () => setState(() => _selectedCellId = cell.id),
-                );
-              },
-            ),
-          ),
-          // Footer text
-          Container(
-            padding: EdgeInsets.all(12.w),
-            child: Text(
-              l10n.unlockMoreCells,
-              style: TextStyle(
-                color: context.color.primaryText,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w400,
+                  Icon(
+                    Icons.refresh,
+                    color: context.color.primaryText,
+                    size: 16.sp,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: context.color.primaryText.withValues(alpha: 0.2),
+            ),
+            // Cells list
+            Expanded(
+              child: ListView.separated(
+                padding: EdgeInsets.all(8.w),
+                itemCount: state.availableCells.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    SizedBox(height: 8.h),
+                itemBuilder: (BuildContext context, int index) {
+                  final CellModel cell = state.availableCells[index];
+                  final bool isSelected = state.selectedCellId == cell.id;
+
+                  return _CellItem(
+                    cell: cell,
+                    isSelected: isSelected,
+                    onTap: () => context.read<CellsCubit>().selectCell(cell.id),
+                  );
+                },
+              ),
+            ),
+            // Footer text
+            Container(
+              padding: EdgeInsets.all(12.w),
+              child: Text(
+                l10n.unlockMoreCells,
+                style: TextStyle(
+                  color: context.color.primaryText,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -198,7 +194,7 @@ class _CellItem extends StatelessWidget {
                       ),
                       SizedBox(width: 4.w),
                       Text(
-                        '${l10n.level}.${cell.requiredLevel} ${l10n.required}',
+                        '${l10n.level} ${cell.requiredLevel} ${l10n.required}',
                         style: TextStyle(
                           color: context.color.primaryText,
                           fontSize: 9.sp,

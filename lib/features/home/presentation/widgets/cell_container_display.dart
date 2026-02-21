@@ -41,13 +41,15 @@ class _CellContainerDisplayState extends State<CellContainerDisplay>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           // Cell container with energy
-          SizedBox(
-            width: 120.w,
-            height: 72.h,
-            child: CustomPaint(
-              painter: _CellContainerPainter(
-                fillLevel: 0.5,
-                animationValue: _animationController,
+          RepaintBoundary(
+            child: SizedBox(
+              width: 120.w,
+              height: 72.h,
+              child: CustomPaint(
+                painter: _CellContainerPainter(
+                  fillLevel: 0.5,
+                  animationValue: _animationController,
+                ),
               ),
             ),
           ),

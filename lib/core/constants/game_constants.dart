@@ -8,7 +8,7 @@ class GameConstants {
 
   // Instead of using a huge double, we define mantissa and exponent directly
   // Example: mantissa=1.0, exponent=90 means 1.0 × 10^90
-  static final BigNumber startingEnergyPerSecond = BigNumber(1.0, 90);
+  static final BigNumber startingEnergyPerSecond = BigNumber(1.0, 0);
 
   // Update intervals
   static const int energyUpdateIntervalMs = 100; // Update 10 times per second

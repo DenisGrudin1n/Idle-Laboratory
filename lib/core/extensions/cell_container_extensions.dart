@@ -193,7 +193,7 @@ extension EnergyEffectsPainter on Canvas {
     required Color lightningColor,
     int boltCount = 8,
   }) {
-    final math.Random random = math.Random(animationValue.hashCode);
+    final math.Random random = math.Random((animationValue * 1000000).toInt());
 
     for (int i = 0; i < boltCount; i++) {
       final Paint lightningPaint = Paint()
@@ -258,7 +258,7 @@ extension EnergyEffectsPainter on Canvas {
     required Color particleColor2,
     int particleCount = 20,
   }) {
-    final math.Random random = math.Random(animationValue.hashCode);
+    final math.Random random = math.Random((animationValue * 1000000).toInt());
     final Paint particlePaint = Paint()..style = PaintingStyle.fill;
 
     for (int i = 0; i < particleCount; i++) {

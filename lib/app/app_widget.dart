@@ -25,6 +25,9 @@ class AppWidget extends StatelessWidget {
         BlocProvider<SettingsCubit>(
           create: (BuildContext context) => sl<SettingsCubit>(),
         ),
+        BlocProvider<CellsCubit>(
+          create: (BuildContext context) => sl<CellsCubit>(),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: Size(
