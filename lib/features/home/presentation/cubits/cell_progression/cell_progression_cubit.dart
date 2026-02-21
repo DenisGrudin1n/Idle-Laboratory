@@ -28,6 +28,18 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
   Timer? _timer;
   StreamSubscription<EnergyState>? _energySubscription;
 
+  /// Helper method to safely find a cell by ID
+  CellModel? _findCellById(String cellId) {
+    if (state.cells.isEmpty) {
+      return null;
+    }
+    try {
+      return state.cells.firstWhere((CellModel c) => c.id == cellId);
+    } catch (_) {
+      return null;
+    }
+  }
+
   void _loadCells() {
     final List<CellModel> cells = _cellRepository.getAvailableCells();
     emit(state.copyWith(cells: cells));
@@ -93,16 +105,9 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
   }
 
   void _updateLevelProgress() {
-    if (state.cells.isEmpty) {
-      return;
-    }
+    final CellModel? basicCell = _findCellById(CellId.basicEnergyCell.id);
 
-    final CellModel basicCell = state.cells.firstWhere(
-      (CellModel cell) => cell.id == CellId.basicEnergyCell.id,
-      orElse: () => state.cells.first,
-    );
-
-    if (basicCell.isLocked) {
+    if (basicCell == null || basicCell.isLocked) {
       return;
     }
 
@@ -180,10 +185,7 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
 
   /// Get fill level (0.0 to 1.0) for cell container visualization
   double getFillLevel(String cellId) {
-    final CellModel? cell = state.cells.firstWhere(
-      (CellModel c) => c.id == cellId,
-      orElse: () => state.cells.first,
-    );
+    final CellModel? cell = _findCellById(cellId);
 
     if (cell == null || cell.isLocked) {
       return 0.0;
@@ -217,10 +219,7 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
 
   /// Get energy per second for active cell
   BigNumber getEnergyPerSecond() {
-    final CellModel? basicCell = state.cells.firstWhere(
-      (CellModel cell) => cell.id == CellId.basicEnergyCell.id,
-      orElse: () => state.cells.first,
-    );
+    final CellModel? basicCell = _findCellById(CellId.basicEnergyCell.id);
 
     if (basicCell == null || basicCell.isLocked) {
       return BigNumber.zero();
