@@ -218,8 +218,11 @@ class BigNumber {
   /// This is useful for UI scenarios where you need a bounded ratio (e.g., progress bars).
   double ratio(BigNumber divisor, {double? max}) {
     // Handle zero cases
+    // Handle zero divisor: return a safe finite value instead of NaN
     if (divisor.mantissa == 0) {
-      return double.nan; // Avoid division by zero
+      // If clamping is enabled, treat this as an "infinite" ratio capped at max.
+      // Otherwise return a large finite value suitable for UI.
+      return max ?? double.maxFinite;
     }
     if (mantissa == 0) {
       return 0.0;
