@@ -256,10 +256,10 @@ class CellsCubit extends Cubit<CellsState> {
 
     // Use BigNumber.ratio() to avoid precision loss with very large numbers
     // This keeps the calculation in BigNumber space and only converts the final ratio
-    final double fillLevel = progressEnergy.ratio(levelRange);
+    // The max parameter clamps the result to [0.0, 1.0] for UI display
+    final double fillLevel = progressEnergy.ratio(levelRange, max: 1.0);
 
-    // Clamp to ensure valid range, even if ratio returns unexpected values
-    return fillLevel.clamp(0.0, 1.0);
+    return fillLevel;
   }
 
   @override

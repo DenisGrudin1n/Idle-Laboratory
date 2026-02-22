@@ -214,8 +214,8 @@ class _CellItem extends StatelessWidget {
                         size: 10.sp,
                       ),
                       SizedBox(width: 4.w),
-                      Builder(
-                        builder: (BuildContext context) {
+                      Text(
+                        () {
                           final CellId? cellId = CellId.fromString(cell.id);
                           final String unlockRequirement = cellId != null
                               ? CellEnergyPerSecond.getNewCellUnlockRequirement(
@@ -223,15 +223,13 @@ class _CellItem extends StatelessWidget {
                                     ) ??
                                     '???'
                               : '???';
-                          return Text(
-                            '${l10n.unlockAt}: $unlockRequirement',
-                            style: TextStyle(
-                              color: context.color.primaryText,
-                              fontSize: 9.sp,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          );
-                        },
+                          return '${l10n.unlockAt}: $unlockRequirement';
+                        }(),
+                        style: TextStyle(
+                          color: context.color.primaryText,
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ],
                   ),

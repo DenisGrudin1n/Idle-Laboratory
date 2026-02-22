@@ -213,10 +213,13 @@ class BigNumber {
   /// Calculates the ratio of this number to another as a double (0.0 to infinity)
   /// Designed for calculating percentages and fill levels without precision loss
   /// Returns a finite value suitable for UI display (e.g., 0.0 to 1.0 for progress)
-  double ratio(BigNumber divisor) {
+  ///
+  /// If [max] is provided, the result will be clamped to [0.0, max].
+  /// This is useful for UI scenarios where you need a bounded ratio (e.g., progress bars).
+  double ratio(BigNumber divisor, {double? max}) {
     // Handle zero cases
     if (divisor.mantissa == 0) {
-      return 0.0; // Avoid division by zero
+      return double.nan; // Avoid division by zero
     }
     if (mantissa == 0) {
       return 0.0;
@@ -225,9 +228,10 @@ class BigNumber {
     // Calculate exponent difference
     final int expDiff = exponent - divisor.exponent;
 
-    // If the dividend is much larger than divisor, return a large finite value
+    // If the dividend is much larger than divisor
     if (expDiff > 15) {
-      return double.maxFinite; // Very large ratio, but keep it finite
+      // Return max if clamping is enabled, otherwise return a large finite value
+      return max ?? double.maxFinite;
     }
 
     // If the dividend is much smaller than divisor, return 0.0
@@ -243,7 +247,8 @@ class BigNumber {
       return 0.0;
     }
 
-    return result;
+    // Apply clamping if max is provided
+    return max != null ? result.clamp(0.0, max) : result;
   }
 
   /// Formats the number with suffix notation
