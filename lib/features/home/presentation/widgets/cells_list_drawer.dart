@@ -187,7 +187,7 @@ class _CellItem extends StatelessWidget {
                     ),
                     SizedBox(width: 2.w),
                     Text(
-                      '${cell.energyPerSecond} / ${l10n.sec}',
+                      '${cell.energyPerSecond ?? '0.0'} / ${l10n.sec}',
                       style: TextStyle(
                         color: context.color.green,
                         fontSize: 9.sp,

@@ -83,67 +83,91 @@ class CellsCubit extends Cubit<CellsState> {
   }
 
   void _checkUnlocks() {
-    // Can't check unlocks if totalEnergy hasn't been initialized
     if (state.totalEnergy == null) {
       return;
     }
-
-    bool needsUpdate = false;
-    final List<CellModel> updatedCells = state.cells.map((CellModel cell) {
-      if (cell.isLocked) {
-        final CellId? cellId = CellId.fromString(cell.id);
-        if (cellId == null) {
-          return cell;
-        }
-
-        final BigNumber? unlockRequirement =
-            CellLevelConstants.cellUnlockRequirements[cellId];
-        if (unlockRequirement != null &&
-            state.totalEnergy! >= unlockRequirement) {
-          needsUpdate = true;
-          // Set energyPerSecond when unlocking the cell
-          final BigNumber energyPerSecond = CellEnergyPerSecond.getEPS(
-            cellId,
-            cell.level,
-          );
-          return cell.copyWith(
-            isLocked: false,
-            energyPerSecond: energyPerSecond.format(),
-          );
-        }
-      }
-      return cell;
-    }).toList();
-
-    if (needsUpdate) {
-      emit(state.copyWith(cells: updatedCells));
-      // Update energy per second when cells are unlocked
-      _updateEnergyPerSecond();
+    if (!state.cells.any((CellModel cell) => cell.isLocked)) {
+      return;
     }
+    if (!_hasAnyUnlockableCell()) {
+      return;
+    }
+
+    final List<CellModel> updatedCells = state.cells
+        .map((CellModel cell) => _tryUnlockCell(cell))
+        .toList();
+
+    emit(state.copyWith(cells: updatedCells));
+    _updateEnergyPerSecond();
+  }
+
+  /// Checks if any locked cell meets unlock requirements
+  bool _hasAnyUnlockableCell() {
+    return state.cells.any((CellModel cell) {
+      if (!cell.isLocked) {
+        return false;
+      }
+      return _canUnlockCell(cell);
+    });
+  }
+
+  /// Checks if a specific cell can be unlocked based on current energy
+  bool _canUnlockCell(CellModel cell) {
+    final CellId? cellId = CellId.fromString(cell.id);
+    if (cellId == null) {
+      return false;
+    }
+
+    final BigNumber? unlockRequirement =
+        CellLevelConstants.cellUnlockRequirements[cellId];
+    if (unlockRequirement == null) {
+      return false;
+    }
+
+    return state.totalEnergy! >= unlockRequirement;
+  }
+
+  /// Attempts to unlock a cell, returns the unlocked or original cell
+  CellModel _tryUnlockCell(CellModel cell) {
+    if (!cell.isLocked) {
+      return cell;
+    }
+    if (!_canUnlockCell(cell)) {
+      return cell;
+    }
+
+    final CellId cellId = CellId.fromString(cell.id)!;
+    final BigNumber energyPerSecond = CellEnergyPerSecond.getEPS(
+      cellId,
+      cell.level,
+    );
+
+    return cell.copyWith(
+      isLocked: false,
+      energyPerSecond: energyPerSecond.format(),
+    );
   }
 
   void _updateLevelProgress() {
     final CellModel? basicCell = _findCellById(CellId.basicEnergyCell.id);
-
     if (basicCell == null || basicCell.isLocked || state.totalEnergy == null) {
       return;
     }
 
-    final int currentLevel = basicCell.level;
+    if (_shouldLevelUp(basicCell)) {
+      _levelUpCell(basicCell, basicCell.level + 1);
+    }
+  }
+
+  /// Checks if a cell should level up based on current energy
+  bool _shouldLevelUp(CellModel cell) {
     final CellLevelModel? nextLevelConfig = CellLevelConstants.energyCellLevels
-        .getConfig(currentLevel + 1);
-
+        .getConfig(cell.level + 1);
     if (nextLevelConfig == null) {
-      return; // Max level reached
+      return false; // Max level reached
     }
 
-    final BigNumber currentEnergy = state.totalEnergy!;
-    final BigNumber requiredEnergy = nextLevelConfig.energyRequired;
-
-    // Check if level up is achieved
-    if (currentEnergy >= requiredEnergy) {
-      _levelUpCell(basicCell, currentLevel + 1);
-    }
+    return state.totalEnergy! >= nextLevelConfig.energyRequired;
   }
 
   void _levelUpCell(CellModel cell, int newLevel) {
@@ -158,108 +182,95 @@ class CellsCubit extends Cubit<CellsState> {
       return;
     }
 
-    // Get energy per second for the new level
     final BigNumber energyPerSecond = CellEnergyPerSecond.getEPS(
       cellId,
       newLevel,
     );
 
-    final List<CellModel> updatedCells = state.cells.map((CellModel c) {
-      if (c.id == cell.id) {
-        return c.copyWith(
-          level: newLevel,
-          energyPerSecond: energyPerSecond.format(),
-        );
-      }
-      return c;
-    }).toList();
+    final List<CellModel> updatedCells = state.cells
+        .map(
+          (CellModel c) => c.id == cell.id
+              ? c.copyWith(
+                  level: newLevel,
+                  energyPerSecond: energyPerSecond.format(),
+                )
+              : c,
+        )
+        .toList();
 
     emit(state.copyWith(cells: updatedCells));
-
-    // Update energy per second in EnergyCubit
     _updateEnergyPerSecond();
   }
 
   /// Updates the EnergyCubit with the total energy per second from all cells
   void _updateEnergyPerSecond() {
-    // Prevent circular updates: if we're already updating EPS, don't trigger another update
     if (_isUpdatingEPS) {
       return;
     }
 
     _isUpdatingEPS = true;
     try {
-      BigNumber totalEPS = BigNumber.zero();
-
-      for (final CellModel cell in state.cells) {
-        if (!cell.isLocked) {
-          final CellId? cellId = CellId.fromString(cell.id);
-          if (cellId != null) {
-            totalEPS =
-                totalEPS + CellEnergyPerSecond.getEPS(cellId, cell.level);
-          }
-        }
-      }
-
+      final BigNumber totalEPS = _calculateTotalEPS();
       _energyCubit.updateEnergyPerSecond(totalEPS);
     } finally {
       _isUpdatingEPS = false;
     }
   }
 
+  /// Calculates total energy per second from all unlocked cells
+  BigNumber _calculateTotalEPS() {
+    return state.cells.where((CellModel cell) => !cell.isLocked).fold(
+      BigNumber.zero(),
+      (BigNumber total, CellModel cell) {
+        final CellId? cellId = CellId.fromString(cell.id);
+        if (cellId == null) {
+          return total;
+        }
+        return total + CellEnergyPerSecond.getEPS(cellId, cell.level);
+      },
+    );
+  }
+
   /// Get fill level (0.0 to 1.0) for cell container visualization
   double getFillLevel(String cellId) {
     final CellModel? cell = _findCellById(cellId);
-
-    if (cell == null || cell.isLocked) {
+    if (cell == null || cell.isLocked || state.totalEnergy == null) {
       return 0.0;
     }
 
-    // If totalEnergy hasn't been initialized yet, return 0.0
-    if (state.totalEnergy == null) {
-      return 0.0;
-    }
-
-    final int currentLevel = cell.level;
-    final CellLevelModel? currentConfig = CellLevelConstants.energyCellLevels
-        .getConfig(currentLevel);
-    final CellLevelModel? nextConfig = CellLevelConstants.energyCellLevels
-        .getConfig(currentLevel + 1);
-
+    final (CellLevelModel?, CellLevelModel?) configs = _getLevelConfigs(cell);
+    final (CellLevelModel? currentConfig, CellLevelModel? nextConfig) = configs;
     if (currentConfig == null || nextConfig == null) {
       return 1.0;
     }
 
     final BigNumber currentEnergy = state.totalEnergy!;
-    final BigNumber previousRequired = currentConfig.energyRequired;
-    final BigNumber nextRequired = nextConfig.energyRequired;
-
-    // If current energy is below the previous level requirement, return 0.0
-    // This handles cases where energy might be reduced or spent
-    if (currentEnergy < previousRequired) {
+    if (currentEnergy < currentConfig.energyRequired) {
       return 0.0;
     }
-
-    // If current energy meets or exceeds the next level requirement, return 1.0
-    // This handles the brief moment before level-up occurs
-    if (currentEnergy >= nextRequired) {
+    if (currentEnergy >= nextConfig.energyRequired) {
       return 1.0;
     }
 
-    // Calculate progress from previous level to next level
-    final BigNumber progressEnergy = currentEnergy - previousRequired;
-    final BigNumber levelRange = nextRequired - previousRequired;
+    final BigNumber progressEnergy =
+        currentEnergy - currentConfig.energyRequired;
+    final BigNumber levelRange =
+        nextConfig.energyRequired - currentConfig.energyRequired;
 
     if (levelRange <= BigNumber.zero()) {
       return 1.0;
     }
 
-    // Use BigNumber.ratio() to avoid precision loss with very large numbers
-    // This keeps the calculation in BigNumber space and only converts the final ratio
-    // The max parameter clamps the result to [0.0, 1.0] for UI display
-    final double fillLevel = progressEnergy.ratio(levelRange, max: 1.0);
+    return progressEnergy.ratio(levelRange, max: 1.0);
+  }
 
-    return fillLevel;
+  /// Gets the current and next level configurations for a cell
+  (CellLevelModel?, CellLevelModel?) _getLevelConfigs(CellModel cell) {
+    final CellLevelModel? currentConfig = CellLevelConstants.energyCellLevels
+        .getConfig(cell.level);
+    final CellLevelModel? nextConfig = CellLevelConstants.energyCellLevels
+        .getConfig(cell.level + 1);
+    return (currentConfig, nextConfig);
   }
 
   @override
