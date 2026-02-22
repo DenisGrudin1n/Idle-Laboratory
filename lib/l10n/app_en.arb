@@ -26,5 +26,6 @@
     "required": "Required",
     "unlockMoreCells": "Unlock more cells by\nupgrading further.",
     "sec": "sec",
-    "s": "s"
+    "s": "s",
+    "unlockAt": "Unlock at"
 }

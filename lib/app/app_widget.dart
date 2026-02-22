@@ -17,16 +17,28 @@ class AppWidget extends StatelessWidget {
       providers: <BlocProvider<dynamic>>[
         BlocProvider<EnergyCubit>(
           create: (BuildContext context) {
-            final EnergyCubit cubit = sl<EnergyCubit>();
-            cubit.start();
-            return cubit;
+            final EnergyCubit energyCubit = sl<EnergyCubit>();
+            energyCubit.start();
+            return energyCubit;
           },
         ),
         BlocProvider<SettingsCubit>(
           create: (BuildContext context) => sl<SettingsCubit>(),
         ),
         BlocProvider<CellsCubit>(
-          create: (BuildContext context) => sl<CellsCubit>(),
+          create: (BuildContext context) {
+            // Retrieve EnergyCubit from context (must be provided before this)
+            final EnergyCubit energyCubit = context.read<EnergyCubit>();
+            final CellsCubit cellProgressionCubit = CellsCubit(
+              sl(),
+              energyCubit,
+            );
+            // Initialize progression: sets up stream subscription to EnergyCubit,
+            // calculates initial energy per second from unlocked cells,
+            // and performs initial progression check (unlocks/level-ups)
+            cellProgressionCubit.start();
+            return cellProgressionCubit;
+          },
         ),
       ],
       child: ScreenUtilInit(

@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'energy_state.dart';
 part 'energy_cubit.freezed.dart';
+part 'energy_state.dart';
 
 /// Manages the energy generation system for the idle game.
 ///
@@ -44,6 +44,11 @@ class EnergyCubit extends Cubit<EnergyState> {
     final BigNumber newEnergy = state.currentEnergy + increment;
 
     emit(state.copyWith(currentEnergy: newEnergy));
+  }
+
+  /// Updates the energy per second rate
+  void updateEnergyPerSecond(BigNumber newEnergyPerSecond) {
+    emit(state.copyWith(energyPerSecond: newEnergyPerSecond));
   }
 
   @override

@@ -1,44 +1,47 @@
 import 'package:idle_laboratory/core/enums/enums.dart';
-import 'package:idle_laboratory/features/home/domain/models/cell_model.dart';
+import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 
 /// Repository for managing cell data
 class CellRepository {
   const CellRepository();
 
-  /// Returns the list of available cells
-  List<CellModel> getAvailableCells() => const <CellModel>[
+  /// Returns the list of available cells with initial configuration
+  List<CellModel> getAvailableCells() => <CellModel>[
     CellModel(
-      id: 'basic_energy_cell',
+      id: CellId.basicEnergyCell.id,
       name: CellName.basicEnergyCell,
       type: CellType.energy,
-      level: 3,
+      level: 1,
       isLocked: false,
       requiredLevel: null,
-      energyPerSecond: '1',
+      energyPerSecond: '1.00',
     ),
     CellModel(
-      id: 'heat_cell',
+      id: CellId.heatCell.id,
       name: CellName.heatCell,
       type: CellType.energy,
-      level: 0,
+      level: 1,
       isLocked: true,
-      requiredLevel: 2,
+      requiredLevel: null,
+      energyPerSecond: null,
     ),
     CellModel(
-      id: 'ice_cell',
+      id: CellId.iceCell.id,
       name: CellName.iceCell,
       type: CellType.energy,
-      level: 0,
+      level: 1,
       isLocked: true,
-      requiredLevel: 4,
+      requiredLevel: null,
+      energyPerSecond: null,
     ),
     CellModel(
-      id: 'dark_matter_cell',
+      id: CellId.darkMatterCell.id,
       name: CellName.darkMatterCell,
       type: CellType.energy,
-      level: 0,
+      level: 1,
       isLocked: true,
-      requiredLevel: 6,
+      requiredLevel: null,
+      energyPerSecond: null,
     ),
   ];
 }

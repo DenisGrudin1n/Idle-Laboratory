@@ -255,6 +255,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'s'**
   String get s;
+
+  /// No description provided for @unlockAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock at'**
+  String get unlockAt;
 }
 
 class _AppLocalizationsDelegate

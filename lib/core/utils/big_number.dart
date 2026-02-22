@@ -145,6 +145,46 @@ class BigNumber {
     return mantissa < other.mantissa;
   }
 
+  bool operator >=(BigNumber other) => this > other || this == other;
+
+  bool operator <=(BigNumber other) => this < other || this == other;
+
+  BigNumber operator -(BigNumber other) {
+    // Convert to same exponent for subtraction
+    if (mantissa == 0) {
+      return BigNumber(-other.mantissa, other.exponent);
+    }
+    if (other.mantissa == 0) {
+      return this;
+    }
+
+    // Align exponents
+    if (exponent == other.exponent) {
+      return BigNumber(mantissa - other.mantissa, exponent);
+    }
+
+    // Check for precision loss with large exponent differences
+    final int expDiff = (exponent - other.exponent).abs();
+    if (expDiff > 15) {
+      // If the difference is too large, return the larger number
+      // (the smaller one is negligible)
+      return exponent > other.exponent
+          ? this
+          : BigNumber(-other.mantissa, other.exponent);
+    }
+
+    // Use the larger exponent
+    if (exponent > other.exponent) {
+      final double adjustedOther =
+          other.mantissa * math.pow(10, other.exponent - exponent);
+      return BigNumber(mantissa - adjustedOther, exponent);
+    } else {
+      final double adjustedThis =
+          mantissa * math.pow(10, exponent - other.exponent);
+      return BigNumber(adjustedThis - other.mantissa, other.exponent);
+    }
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -168,6 +208,50 @@ class BigNumber {
       return 0.0;
     }
     return mantissa * math.pow(10, exponent);
+  }
+
+  /// Calculates the ratio of this number to another as a double (0.0 to infinity)
+  /// Designed for calculating percentages and fill levels without precision loss
+  /// Returns a finite value suitable for UI display (e.g., 0.0 to 1.0 for progress)
+  ///
+  /// If [max] is provided, the result will be clamped to [0.0, max].
+  /// This is useful for UI scenarios where you need a bounded ratio (e.g., progress bars).
+  double ratio(BigNumber divisor, {double? max}) {
+    // Handle zero cases
+    // Handle zero divisor: return a safe finite value instead of NaN
+    if (divisor.mantissa == 0) {
+      // If clamping is enabled, treat this as an "infinite" ratio capped at max.
+      // Otherwise return a large finite value suitable for UI.
+      return max ?? double.maxFinite;
+    }
+    if (mantissa == 0) {
+      return 0.0;
+    }
+
+    // Calculate exponent difference
+    final int expDiff = exponent - divisor.exponent;
+
+    // If the dividend is much larger than divisor
+    if (expDiff > 15) {
+      // Return max if clamping is enabled, otherwise return a large finite value
+      return max ?? double.maxFinite;
+    }
+
+    // If the dividend is much smaller than divisor, return 0.0
+    if (expDiff < -15) {
+      return 0.0; // Very small ratio, essentially zero
+    }
+
+    // Perform division in mantissa space with exponent adjustment
+    final double result = (mantissa / divisor.mantissa) * math.pow(10, expDiff);
+
+    // Safety check for invalid results
+    if (!result.isFinite || result < 0) {
+      return 0.0;
+    }
+
+    // Apply clamping if max is provided
+    return max != null ? result.clamp(0.0, max) : result;
   }
 
   /// Formats the number with suffix notation
