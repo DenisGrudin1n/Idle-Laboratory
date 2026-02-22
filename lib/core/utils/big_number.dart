@@ -210,6 +210,42 @@ class BigNumber {
     return mantissa * math.pow(10, exponent);
   }
 
+  /// Calculates the ratio of this number to another as a double (0.0 to infinity)
+  /// Designed for calculating percentages and fill levels without precision loss
+  /// Returns a finite value suitable for UI display (e.g., 0.0 to 1.0 for progress)
+  double ratio(BigNumber divisor) {
+    // Handle zero cases
+    if (divisor.mantissa == 0) {
+      return 0.0; // Avoid division by zero
+    }
+    if (mantissa == 0) {
+      return 0.0;
+    }
+
+    // Calculate exponent difference
+    final int expDiff = exponent - divisor.exponent;
+
+    // If the dividend is much larger than divisor, return a large finite value
+    if (expDiff > 15) {
+      return double.maxFinite; // Very large ratio, but keep it finite
+    }
+
+    // If the dividend is much smaller than divisor, return 0.0
+    if (expDiff < -15) {
+      return 0.0; // Very small ratio, essentially zero
+    }
+
+    // Perform division in mantissa space with exponent adjustment
+    final double result = (mantissa / divisor.mantissa) * math.pow(10, expDiff);
+
+    // Safety check for invalid results
+    if (!result.isFinite || result < 0) {
+      return 0.0;
+    }
+
+    return result;
+  }
+
   /// Formats the number with suffix notation
   String format({bool compact = false, bool useScientific = false}) {
     if (mantissa == 0) {

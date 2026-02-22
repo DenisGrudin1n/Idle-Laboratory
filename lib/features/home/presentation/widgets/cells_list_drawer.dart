@@ -176,7 +176,7 @@ class _CellItem extends StatelessWidget {
                     ),
                 ],
               ),
-              if (!cell.isLocked && cell.energyPerSecond != null) ...<Widget>[
+              if (!cell.isLocked) ...<Widget>[
                 SizedBox(height: 4.h),
                 Row(
                   children: <Widget>[
@@ -214,13 +214,24 @@ class _CellItem extends StatelessWidget {
                         size: 10.sp,
                       ),
                       SizedBox(width: 4.w),
-                      Text(
-                        '${l10n.unlockAt}: ${CellEnergyPerSecond.getNewCellUnlockRequirement(CellId.fromString(cell.id) ?? CellId.basicEnergyCell) ?? '???'}',
-                        style: TextStyle(
-                          color: context.color.primaryText,
-                          fontSize: 9.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      Builder(
+                        builder: (BuildContext context) {
+                          final CellId? cellId = CellId.fromString(cell.id);
+                          final String unlockRequirement = cellId != null
+                              ? CellEnergyPerSecond.getNewCellUnlockRequirement(
+                                      cellId,
+                                    ) ??
+                                    '???'
+                              : '???';
+                          return Text(
+                            '${l10n.unlockAt}: $unlockRequirement',
+                            style: TextStyle(
+                              color: context.color.primaryText,
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

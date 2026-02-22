@@ -17,14 +17,15 @@ part 'cell_progression_state.dart';
 /// Manages cell level progression and energy-based unlocking
 class CellProgressionCubit extends Cubit<CellProgressionState> {
   CellProgressionCubit(this._cellRepository, this._energyCubit)
-    : super(CellProgressionState(totalEnergy: BigNumber.zero())) {
+    : super(
+        CellProgressionState(totalEnergy: _energyCubit.state.currentEnergy),
+      ) {
     _loadCells();
-    _energySubscription = _energyCubit.stream.listen(_onEnergyUpdate);
   }
 
   final CellRepository _cellRepository;
   final EnergyCubit _energyCubit;
-  Timer? _timer;
+
   StreamSubscription<EnergyState>? _energySubscription;
 
   /// Helper method to safely find a cell by ID
@@ -56,12 +57,12 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
     // Set initial energy per second from unlocked cells
     _updateEnergyPerSecond();
 
-    // Ensure no periodic timer is running; progression is driven by energy updates
-    _timer?.cancel();
-    _timer = null;
-
     // Perform an initial progression update to sync state on start
     _updateProgression();
+
+    // Set up stream subscription after initialization to avoid race conditions
+    _energySubscription?.cancel();
+    _energySubscription = _energyCubit.stream.listen(_onEnergyUpdate);
   }
 
   void _updateProgression() {
@@ -223,13 +224,16 @@ class CellProgressionCubit extends Cubit<CellProgressionState> {
       return 1.0;
     }
 
-    final double fillLevel = progressEnergy.toDouble() / levelRange.toDouble();
+    // Use BigNumber.ratio() to avoid precision loss with very large numbers
+    // This keeps the calculation in BigNumber space and only converts the final ratio
+    final double fillLevel = progressEnergy.ratio(levelRange);
+
+    // Clamp to ensure valid range, even if ratio returns unexpected values
     return fillLevel.clamp(0.0, 1.0);
   }
 
   @override
   Future<void> close() {
-    _timer?.cancel();
     _energySubscription?.cancel();
     return super.close();
   }
