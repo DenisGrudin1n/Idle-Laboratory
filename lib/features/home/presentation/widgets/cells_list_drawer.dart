@@ -13,7 +13,7 @@ class CellsListDrawer extends StatelessWidget {
     final AppLocalizations l10n = context.l10n;
 
     final List<CellModel> cells = context.select(
-      (CellProgressionCubit cubit) => cubit.state.cells,
+      (CellsCubit cubit) => cubit.state.cells,
     );
 
     final String? rawSelectedCellId = context.select(

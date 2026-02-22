@@ -45,7 +45,7 @@ class _CellContainerDisplayState extends State<CellContainerDisplay>
           Builder(
             builder: (BuildContext context) {
               final double fillLevel = context.select(
-                (CellProgressionCubit cubit) =>
+                (CellsCubit cubit) =>
                     cubit.getFillLevel(CellId.basicEnergyCell.id),
               );
 

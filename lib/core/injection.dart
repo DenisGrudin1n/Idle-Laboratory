@@ -17,5 +17,4 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory<EnergyCubit>(() => EnergyCubit());
   sl.registerFactory<SettingsCubit>(() => SettingsCubit());
-  sl.registerFactory<CellsCubit>(() => CellsCubit(sl()));
 }
