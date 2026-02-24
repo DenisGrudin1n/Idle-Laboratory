@@ -14,6 +14,18 @@ class AppTheme {
       drawerBackground: DefaultColor.drawerBackground,
       titleText: DefaultColor.titleText,
       green: DefaultColor.green,
+      sectionBorder: DefaultColor.sectionBorder,
+      sectionGradient: DefaultColor.sectionGradient,
+      cellBodyGradient: DefaultColor.cellBodyGradient,
+      cellTopCapGradient: DefaultColor.cellTopCapGradient,
+      cellBottomCapGradient: DefaultColor.cellBottomCapGradient,
+      cellTopRimGradient: DefaultColor.cellTopRimGradient,
+      cellBottomRimGradient: DefaultColor.cellBottomRimGradient,
+      energyFillGradient: DefaultColor.energyFillGradient,
+      energyGlowGradient: DefaultColor.energyGlowGradient,
+      energyLightningColor: DefaultColor.energyLightningColor,
+      energyParticleColor1: DefaultColor.energyParticleColor1,
+      energyParticleColor2: DefaultColor.energyParticleColor2,
     ),
   );
 

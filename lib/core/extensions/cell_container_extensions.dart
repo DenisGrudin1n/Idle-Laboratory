@@ -4,54 +4,159 @@ import 'package:flutter/material.dart';
 
 /// Extension for drawing cell container components
 extension CellContainerPainter on Canvas {
-  /// Draws the cylindrical container with rims
+  /// Draws the full 3-D cylindrical container.
+  ///
+  /// Layer order (back → front):
+  ///  1. Outer ambient shadow / glow halo
+  ///  2. Cylindrical body (side-lit gradient)
+  ///  3. Bottom ellipse cap (dark)
+  ///  4. Top ellipse cap (lighter, reflective)
+  ///  5. Metallic bottom rim
+  ///  6. Metallic top rim with specular highlight
+  ///
+  /// All gradient parameters are sourced from the app theme to avoid
+  /// hardcoded colours. Pass them from [_CellContainerPainter] which has
+  /// access to [BuildContext].
   void drawCellContainer({
     required double centerX,
     required double topY,
     required double bottomY,
     required double width,
-    Color containerColor = const Color(0xFF4A5568),
-    Color rimColor = const Color(0xFF718096),
+    required LinearGradient bodyGradient,
+    required RadialGradient topCapGradient,
+    required RadialGradient bottomCapGradient,
+    required LinearGradient topRimGradient,
+    required LinearGradient bottomRimGradient,
   }) {
-    final Paint containerPaint = Paint()
-      ..color = containerColor
-      ..style = PaintingStyle.fill;
+    final double left = centerX - width / 2;
+    final double radius = width * 0.08; // corner radius of the body rect
+    final double ellipseH = width * 0.18; // height of the top/bottom ellipses
 
-    final Paint rimPaint = Paint()
-      ..color = rimColor
-      ..style = PaintingStyle.fill;
+    // ── 1. Outer ambient shadow / glow halo ───────────────────────────────
+    final Paint haloPaint = Paint()
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14)
+      ..color = Colors.black.withValues(alpha: 0.55);
+    drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(left - 4, topY - 4, width + 8, bottomY - topY + 8),
+        Radius.circular(radius + 4),
+      ),
+      haloPaint,
+    );
 
-    // Bottom rim
-    final Path bottomRim = Path()
-      ..addOval(
+    // ── 2. Cylindrical body – side-lit gradient ───────────────────────────
+    final Paint bodyPaint = Paint()
+      ..shader = bodyGradient.createShader(
+        Rect.fromLTWH(left, topY, width, bottomY - topY),
+      );
+
+    drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(left, topY, width, bottomY - topY),
+        Radius.circular(radius),
+      ),
+      bodyPaint,
+    );
+
+    // ── 3. Bottom cap (dark ellipse) ──────────────────────────────────────
+    final Paint bottomCapPaint = Paint()
+      ..shader = bottomCapGradient.createShader(
         Rect.fromCenter(
           center: Offset(centerX, bottomY),
-          width: width * 1.1,
-          height: width * 0.15,
+          width: width,
+          height: ellipseH,
         ),
       );
-    drawPath(bottomRim, rimPaint);
+    drawOval(
+      Rect.fromCenter(
+        center: Offset(centerX, bottomY),
+        width: width,
+        height: ellipseH,
+      ),
+      bottomCapPaint,
+    );
 
-    // Main container body
-    final Path body = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(centerX - width / 2, topY, width, bottomY - topY),
-          Radius.circular(width * 0.1),
-        ),
-      );
-    drawPath(body, containerPaint);
-
-    // Top rim
-    final Path topRim = Path()
-      ..addOval(
+    // ── 4. Top cap (brighter – faces the light source) ───────────────────
+    final Paint topCapPaint = Paint()
+      ..shader = topCapGradient.createShader(
         Rect.fromCenter(
           center: Offset(centerX, topY),
-          width: width * 1.1,
-          height: width * 0.15,
+          width: width,
+          height: ellipseH,
         ),
       );
-    drawPath(topRim, rimPaint);
+    drawOval(
+      Rect.fromCenter(
+        center: Offset(centerX, topY),
+        width: width,
+        height: ellipseH,
+      ),
+      topCapPaint,
+    );
+
+    // ── 5. Metallic bottom rim ─────────────────────────────────────────────
+    _drawMetallicRim(
+      canvas: this,
+      centerX: centerX,
+      centerY: bottomY,
+      width: width * 1.06,
+      height: ellipseH * 1.15,
+      isTopRim: false,
+      topRimGradient: topRimGradient,
+      bottomRimGradient: bottomRimGradient,
+    );
+
+    // ── 6. Metallic top rim with specular ─────────────────────────────────
+    _drawMetallicRim(
+      canvas: this,
+      centerX: centerX,
+      centerY: topY,
+      width: width * 1.06,
+      height: ellipseH * 1.15,
+      isTopRim: true,
+      topRimGradient: topRimGradient,
+      bottomRimGradient: bottomRimGradient,
+    );
+  }
+
+  /// Draws a metallic elliptical rim with gradient highlights.
+  void _drawMetallicRim({
+    required Canvas canvas,
+    required double centerX,
+    required double centerY,
+    required double width,
+    required double height,
+    required bool isTopRim,
+    required LinearGradient topRimGradient,
+    required LinearGradient bottomRimGradient,
+  }) {
+    final Rect rimRect = Rect.fromCenter(
+      center: Offset(centerX, centerY),
+      width: width,
+      height: height,
+    );
+
+    // Main rim fill
+    final Paint rimPaint = Paint()
+      ..shader = (isTopRim ? topRimGradient : bottomRimGradient).createShader(
+        rimRect,
+      );
+    canvas.drawOval(rimRect, rimPaint);
+
+    // Thin bright specular streak across the top of the rim
+    if (isTopRim) {
+      final Paint specularPaint = Paint()
+        ..color = Colors.white.withValues(alpha: 0.18)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(centerX, centerY - height * 0.15),
+          width: width * 0.65,
+          height: height * 0.3,
+        ),
+        specularPaint,
+      );
+    }
   }
 
   /// Draws glass overlay effect on the container
@@ -61,54 +166,84 @@ extension CellContainerPainter on Canvas {
     required double bottomY,
     required double width,
   }) {
-    // Glass reflection effect
-    final Paint glassPaint = Paint()
+    final double left = centerX - width / 2;
+    final double height = bottomY - topY;
+    final double radius = width * 0.08;
+
+    // ── Left-edge bright reflection strip ─────────────────────────────────
+    final Paint reflectionPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: <Color>[
+          Colors.white.withValues(alpha: 0.18),
+          Colors.white.withValues(alpha: 0.06),
+          Colors.transparent,
+        ],
+        stops: const <double>[0.0, 0.4, 1.0],
+      ).createShader(Rect.fromLTWH(left, topY, width * 0.28, height));
+
+    final Path reflectionPath = Path()
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(left + 2, topY + 2, width * 0.22, height - 4),
+          Radius.circular(radius),
+        ),
+      );
+    drawPath(reflectionPath, reflectionPaint);
+
+    // ── Thin right-edge bounce-light strip ────────────────────────────────
+    final Paint bouncePaint = Paint()
       ..shader =
           LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
+            begin: Alignment.centerRight,
+            end: Alignment.centerLeft,
             colors: <Color>[
-              Colors.white.withValues(alpha: 0.1),
-              Colors.white.withValues(alpha: 0.05),
+              Colors.white.withValues(alpha: 0.07),
               Colors.transparent,
-              Colors.white.withValues(alpha: 0.03),
             ],
-            stops: const <double>[0.0, 0.3, 0.7, 1.0],
           ).createShader(
-            Rect.fromLTWH(centerX - width / 2, topY, width, bottomY - topY),
-          )
-      ..style = PaintingStyle.fill;
-
-    final Path glassPath = Path()
+            Rect.fromLTWH(left + width * 0.82, topY, width * 0.18, height),
+          );
+    final Path bouncePath = Path()
       ..addRRect(
         RRect.fromRectAndRadius(
           Rect.fromLTWH(
-            centerX - width / 2,
-            topY,
-            width * 0.25,
-            bottomY - topY,
+            left + width * 0.82,
+            topY + 2,
+            width * 0.16,
+            height - 4,
           ),
-          Radius.circular(width * 0.1),
+          Radius.circular(radius),
         ),
       );
+    drawPath(bouncePath, bouncePaint);
 
-    drawPath(glassPath, glassPaint);
-
-    // Container outline
+    // ── Dark outline to separate the container from the background ─────────
     final Paint outlinePaint = Paint()
-      ..color = const Color(0xFF94A3B8).withValues(alpha: 0.5)
+      ..color = Colors.black.withValues(alpha: 0.6)
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
+      ..strokeWidth = 1.5;
+    drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(left, topY, width, height),
+        Radius.circular(radius),
+      ),
+      outlinePaint,
+    );
 
-    final Path outline = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(centerX - width / 2, topY, width, bottomY - topY),
-          Radius.circular(width * 0.1),
-        ),
-      );
-
-    drawPath(outline, outlinePaint);
+    // ── Inner bright edge line (top inner rim) ─────────────────────────────
+    final Paint innerEdgePaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.08)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+    drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(left + 1.5, topY + 1.5, width - 3, height - 3),
+        Radius.circular(radius - 1),
+      ),
+      innerEdgePaint,
+    );
   }
 
   /// Creates a clip path for the container bounds
@@ -121,7 +256,7 @@ extension CellContainerPainter on Canvas {
     ..addRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(centerX - width / 2, topY, width, bottomY - topY),
-        Radius.circular(width * 0.1),
+        Radius.circular(width * 0.08),
       ),
     );
 }

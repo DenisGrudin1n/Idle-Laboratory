@@ -17,45 +17,47 @@ class MainNavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
 
-    return Container(
-      width: 0.2.sw,
-      height: double.infinity,
-      decoration: BoxDecoration(color: context.color.drawerBackground),
-      child: ListView.separated(
-        itemCount: MainNavigationTab.values.length + 1, // +1 for energy display
-        separatorBuilder: (BuildContext context, int index) {
-          if (index == 0) {
-            // Full divider after energy display
+    return SectionCard(
+      child: SizedBox(
+        width: 0.2.sw,
+        height: double.infinity,
+        child: ListView.separated(
+          itemCount:
+              MainNavigationTab.values.length + 1, // +1 for energy display
+          separatorBuilder: (BuildContext context, int index) {
+            if (index == 0) {
+              // Full divider after energy display
+              return Divider(
+                height: 1,
+                thickness: 1,
+                color: context.color.primaryText.withValues(alpha: 0.2),
+              );
+            }
+            // Small dividers between tabs
             return Divider(
               height: 1,
               thickness: 1,
-              color: context.color.primaryText.withValues(alpha: 0.2),
+              indent: 12.w,
+              endIndent: 12.w,
+              color: context.color.primaryText.withValues(alpha: 0.1),
             );
-          }
-          // Small dividers between tabs
-          return Divider(
-            height: 1,
-            thickness: 1,
-            indent: 12.w,
-            endIndent: 12.w,
-            color: context.color.primaryText.withValues(alpha: 0.1),
-          );
-        },
-        itemBuilder: (BuildContext context, int index) {
-          if (index == 0) {
-            return const EnergyDisplay();
-          }
+          },
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 0) {
+              return const EnergyDisplay();
+            }
 
-          final MainNavigationTab tab = MainNavigationTab.values[index - 1];
-          final bool isActive = selectedTab == tab;
+            final MainNavigationTab tab = MainNavigationTab.values[index - 1];
+            final bool isActive = selectedTab == tab;
 
-          return _DrawerTab(
-            icon: tab.icon,
-            label: tab.localize(l10n),
-            isActive: isActive,
-            onTap: () => onTabSelected(tab),
-          );
-        },
+            return _DrawerTab(
+              icon: tab.icon,
+              label: tab.localize(l10n),
+              isActive: isActive,
+              onTap: () => onTabSelected(tab),
+            );
+          },
+        ),
       ),
     );
   }

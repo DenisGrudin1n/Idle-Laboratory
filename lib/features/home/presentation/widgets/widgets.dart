@@ -7,5 +7,6 @@ export 'cell_content.dart';
 export 'cells_list_drawer.dart';
 export 'energy_display.dart';
 export 'main_navigation_drawer.dart';
+export 'section_card.dart';
 export 'settings_toggle.dart';
 export 'top_navigation_bar.dart';

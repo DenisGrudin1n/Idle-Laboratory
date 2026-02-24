@@ -17,19 +17,20 @@ class TopNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
 
-    return Container(
-      height: 50.h,
-      decoration: BoxDecoration(color: context.color.drawerBackground),
-      child: Row(
-        children: CellsTab.values
-            .map(
-              (CellsTab tab) => _TopTab(
-                label: tab.localize(l10n),
-                isActive: selectedTab == tab,
-                onTap: () => onTabSelected(tab),
-              ),
-            )
-            .toList(),
+    return SectionCard(
+      child: SizedBox(
+        height: 50.h,
+        child: Row(
+          children: CellsTab.values
+              .map(
+                (CellsTab tab) => _TopTab(
+                  label: tab.localize(l10n),
+                  isActive: selectedTab == tab,
+                  onTap: () => onTabSelected(tab),
+                ),
+              )
+              .toList(),
+        ),
       ),
     );
   }
