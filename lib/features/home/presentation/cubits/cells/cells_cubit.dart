@@ -57,11 +57,11 @@ class CellsCubit extends Cubit<CellsState> {
   void _onEnergyUpdate(EnergyState energyState) {
     emit(state.copyWith(totalEnergy: energyState.currentEnergy));
 
-    // Update per-cell dedicated energies for unlocked cells
-    _updateCellEnergies(energyState.currentEnergy);
-
-    // Trigger progression updates whenever energy changes
+    // Trigger progression updates (includes unlocking new cells)
     _updateProgression();
+
+    // Update per-cell dedicated energies after unlocks to ensure new cells get entries
+    _updateCellEnergies(energyState.currentEnergy);
   }
 
   /// Starts the progression system
@@ -143,6 +143,12 @@ class CellsCubit extends Cubit<CellsState> {
       cell.level,
     );
 
+    // Initialize energy entry for newly unlocked cell
+    final Map<String, BigNumber> updatedCellEnergies =
+        Map<String, BigNumber>.from(state.cellEnergies);
+    updatedCellEnergies[cell.id] = state.totalEnergy ?? BigNumber.zero();
+    emit(state.copyWith(cellEnergies: updatedCellEnergies));
+
     return cell.copyWith(
       isLocked: false,
       energyPerSecond: energyPerSecond.format(),
@@ -164,7 +170,7 @@ class CellsCubit extends Cubit<CellsState> {
         updatedCellEnergies[cell.id] = BigNumber.zero();
       }
 
-      // Each cell accumulates its own portion of total energy
+      // Each cell accumulates its own portion of EPS
       // based on its contribution to the total EPS
       final CellId? cellId = CellId.fromString(cell.id);
       if (cellId != null) {
