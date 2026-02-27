@@ -91,4 +91,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unlockAt => 'Unlock at';
+
+  @override
+  String get maxLvl => 'Max Lvl';
+
+  @override
+  String get nextLvl => 'Next Lvl';
 }

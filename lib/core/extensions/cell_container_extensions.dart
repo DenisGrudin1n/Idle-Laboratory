@@ -412,4 +412,77 @@ extension EnergyEffectsPainter on Canvas {
       drawCircle(Offset(particleX, particleY), particleSize, particlePaint);
     }
   }
+
+  /// Draws floating lava chunks (dirt/rock pieces) for heat cell
+  void drawLavaChunks({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color chunkColor,
+    required Color emberColor1,
+    required Color emberColor2,
+    int chunkCount = 12,
+  }) {
+    final math.Random random = math.Random((animationValue * 1000000).toInt());
+    final Paint chunkPaint = Paint()..style = PaintingStyle.fill;
+    final Paint emberPaint = Paint()..style = PaintingStyle.fill;
+
+    for (int i = 0; i < chunkCount; i++) {
+      final double baseX = centerX - width / 2 + (width * random.nextDouble());
+      final double offset = (animationValue * 0.5 + i * 0.1) % 1.0;
+      final double baseY = fillTop + (bottomY - fillTop) * offset;
+
+      // Wobble horizontally for organic movement
+      final double wobble =
+          math.sin((animationValue + i) * math.pi * 2) * (width * 0.08);
+      final double chunkX = baseX + wobble;
+      final double chunkY = baseY;
+
+      final double chunkSize = 3.0 + random.nextDouble() * 4.5;
+
+      // Draw dark chunk body (irregular shape)
+      chunkPaint.color = chunkColor.withValues(
+        alpha: 0.85 + random.nextDouble() * 0.15,
+      );
+
+      // Irregular chunk shape (rounded rect rotated)
+      save();
+      translate(chunkX, chunkY);
+      rotate(random.nextDouble() * math.pi * 2);
+      drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: chunkSize,
+            height: chunkSize * 0.8,
+          ),
+          Radius.circular(chunkSize * 0.3),
+        ),
+        chunkPaint,
+      );
+      restore();
+
+      // Draw glowing ember edges (small bright spots on chunk)
+      final int emberCount = random.nextInt(2) + 1;
+      for (int j = 0; j < emberCount; j++) {
+        final double emberOffsetX = (random.nextDouble() - 0.5) * chunkSize;
+        final double emberOffsetY = (random.nextDouble() - 0.5) * chunkSize;
+        final double emberSize = 0.6 + random.nextDouble() * 1.2;
+
+        emberPaint.color = Color.lerp(
+          emberColor1,
+          emberColor2,
+          random.nextDouble(),
+        )!.withValues(alpha: 0.7 + random.nextDouble() * 0.3);
+
+        drawCircle(
+          Offset(chunkX + emberOffsetX, chunkY + emberOffsetY),
+          emberSize,
+          emberPaint,
+        );
+      }
+    }
+  }
 }

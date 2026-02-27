@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CellsState {
 
- List<CellModel> get cells; BigNumber? get totalEnergy; String? get selectedCellId;
+ List<CellModel> get cells; BigNumber? get totalEnergy; String? get selectedCellId;/// Per-cell dedicated energy for level progression (separate from totalEnergy)
+ Map<String, BigNumber> get cellEnergies;
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $CellsStateCopyWith<CellsState> get copyWith => _$CellsStateCopyWithImpl<CellsSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CellsState&&const DeepCollectionEquality().equals(other.cells, cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CellsState&&const DeepCollectionEquality().equals(other.cells, cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&const DeepCollectionEquality().equals(other.cellEnergies, cellEnergies));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(cells),totalEnergy,selectedCellId);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(cells),totalEnergy,selectedCellId,const DeepCollectionEquality().hash(cellEnergies));
 
 @override
 String toString() {
-  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId)';
+  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId, cellEnergies: $cellEnergies)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $CellsStateCopyWith<$Res>  {
   factory $CellsStateCopyWith(CellsState value, $Res Function(CellsState) _then) = _$CellsStateCopyWithImpl;
 @useResult
 $Res call({
- List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId
+ List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId, Map<String, BigNumber> cellEnergies
 });
 
 
@@ -62,12 +63,13 @@ class _$CellsStateCopyWithImpl<$Res>
 
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,Object? cellEnergies = null,}) {
   return _then(_self.copyWith(
 cells: null == cells ? _self.cells : cells // ignore: cast_nullable_to_non_nullable
 as List<CellModel>,totalEnergy: freezed == totalEnergy ? _self.totalEnergy : totalEnergy // ignore: cast_nullable_to_non_nullable
 as BigNumber?,selectedCellId: freezed == selectedCellId ? _self.selectedCellId : selectedCellId // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,cellEnergies: null == cellEnergies ? _self.cellEnergies : cellEnergies // ignore: cast_nullable_to_non_nullable
+as Map<String, BigNumber>,
   ));
 }
 
@@ -152,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CellsState() when $default != null:
-return $default(_that.cells,_that.totalEnergy,_that.selectedCellId);case _:
+return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies);case _:
   return orElse();
 
 }
@@ -173,10 +175,10 @@ return $default(_that.cells,_that.totalEnergy,_that.selectedCellId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies)  $default,) {final _that = this;
 switch (_that) {
 case _CellsState():
-return $default(_that.cells,_that.totalEnergy,_that.selectedCellId);case _:
+return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -193,10 +195,10 @@ return $default(_that.cells,_that.totalEnergy,_that.selectedCellId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies)?  $default,) {final _that = this;
 switch (_that) {
 case _CellsState() when $default != null:
-return $default(_that.cells,_that.totalEnergy,_that.selectedCellId);case _:
+return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies);case _:
   return null;
 
 }
@@ -208,7 +210,7 @@ return $default(_that.cells,_that.totalEnergy,_that.selectedCellId);case _:
 
 
 class _CellsState implements CellsState {
-  const _CellsState({final  List<CellModel> cells = const <CellModel>[], this.totalEnergy, this.selectedCellId}): _cells = cells;
+  const _CellsState({final  List<CellModel> cells = const <CellModel>[], this.totalEnergy, this.selectedCellId, final  Map<String, BigNumber> cellEnergies = const <String, BigNumber>{}}): _cells = cells,_cellEnergies = cellEnergies;
   
 
  final  List<CellModel> _cells;
@@ -220,6 +222,15 @@ class _CellsState implements CellsState {
 
 @override final  BigNumber? totalEnergy;
 @override final  String? selectedCellId;
+/// Per-cell dedicated energy for level progression (separate from totalEnergy)
+ final  Map<String, BigNumber> _cellEnergies;
+/// Per-cell dedicated energy for level progression (separate from totalEnergy)
+@override@JsonKey() Map<String, BigNumber> get cellEnergies {
+  if (_cellEnergies is EqualUnmodifiableMapView) return _cellEnergies;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_cellEnergies);
+}
+
 
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
@@ -231,16 +242,16 @@ _$CellsStateCopyWith<_CellsState> get copyWith => __$CellsStateCopyWithImpl<_Cel
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CellsState&&const DeepCollectionEquality().equals(other._cells, _cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CellsState&&const DeepCollectionEquality().equals(other._cells, _cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&const DeepCollectionEquality().equals(other._cellEnergies, _cellEnergies));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cells),totalEnergy,selectedCellId);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cells),totalEnergy,selectedCellId,const DeepCollectionEquality().hash(_cellEnergies));
 
 @override
 String toString() {
-  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId)';
+  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId, cellEnergies: $cellEnergies)';
 }
 
 
@@ -251,7 +262,7 @@ abstract mixin class _$CellsStateCopyWith<$Res> implements $CellsStateCopyWith<$
   factory _$CellsStateCopyWith(_CellsState value, $Res Function(_CellsState) _then) = __$CellsStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId
+ List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId, Map<String, BigNumber> cellEnergies
 });
 
 
@@ -268,12 +279,13 @@ class __$CellsStateCopyWithImpl<$Res>
 
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,Object? cellEnergies = null,}) {
   return _then(_CellsState(
 cells: null == cells ? _self._cells : cells // ignore: cast_nullable_to_non_nullable
 as List<CellModel>,totalEnergy: freezed == totalEnergy ? _self.totalEnergy : totalEnergy // ignore: cast_nullable_to_non_nullable
 as BigNumber?,selectedCellId: freezed == selectedCellId ? _self.selectedCellId : selectedCellId // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,cellEnergies: null == cellEnergies ? _self._cellEnergies : cellEnergies // ignore: cast_nullable_to_non_nullable
+as Map<String, BigNumber>,
   ));
 }
 

@@ -6,5 +6,8 @@ abstract class CellsState with _$CellsState {
     @Default(<CellModel>[]) List<CellModel> cells,
     BigNumber? totalEnergy,
     String? selectedCellId,
+
+    /// Per-cell dedicated energy for level progression (separate from totalEnergy)
+    @Default(<String, BigNumber>{}) Map<String, BigNumber> cellEnergies,
   }) = _CellsState;
 }

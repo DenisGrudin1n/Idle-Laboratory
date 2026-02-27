@@ -6,9 +6,9 @@ import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cel
 class CellLevelConstants {
   CellLevelConstants._();
 
-  /// Energy cell level configurations
+  /// Basic energy cell level configurations
   /// Each level requires exponentially more energy
-  static final List<CellLevelModel> energyCellLevels = <CellLevelModel>[
+  static final List<CellLevelModel> basicEnergyCellLevels = <CellLevelModel>[
     // Level 1: Starting level
     CellLevelModel(
       level: 1,
@@ -36,10 +36,54 @@ class CellLevelConstants {
     ),
   ];
 
+  /// Heat cell level configurations
+  /// Requires more energy than basic cell (10x multiplier)
+  static final List<CellLevelModel> heatCellLevels = <CellLevelModel>[
+    // Level 1: Starting level
+    CellLevelModel(
+      level: 1,
+      energyRequired: BigNumber.zero(), // No requirement for level 1
+    ),
+    // Level 2: 500 energy required (10x basic)
+    CellLevelModel(
+      level: 2,
+      energyRequired: BigNumber(5.0, 2), // 500
+    ),
+    // Level 3: 10,000 energy required (10x basic)
+    CellLevelModel(
+      level: 3,
+      energyRequired: BigNumber(1.0, 4), // 10K
+    ),
+    // Level 4: 250,000 energy required (10x basic)
+    CellLevelModel(
+      level: 4,
+      energyRequired: BigNumber(2.5, 5), // 250K
+    ),
+    // Level 5: 5,000,000 energy required (10x basic)
+    CellLevelModel(
+      level: 5,
+      energyRequired: BigNumber(5.0, 6), // 5M
+    ),
+  ];
+
+  /// Get level configurations for a specific cell type
+  static List<CellLevelModel> getLevelConfigs(CellId cellId) {
+    switch (cellId) {
+      case CellId.basicEnergyCell:
+        return basicEnergyCellLevels;
+      case CellId.heatCell:
+        return heatCellLevels;
+      case CellId.iceCell:
+      case CellId.darkMatterCell:
+        // TODO: Implement for other cells
+        return basicEnergyCellLevels; // Fallback for now
+    }
+  }
+
   /// Energy requirements for unlocking cells
   static final Map<CellId, BigNumber> cellUnlockRequirements =
       <CellId, BigNumber>{
-        CellId.heatCell: BigNumber(1.0, 3), // 1K
+        CellId.heatCell: BigNumber(1.0, 1), // 1K
         CellId.iceCell: BigNumber(1.0, 5), // 100K
         CellId.darkMatterCell: BigNumber(1.0, 7), // 10M
       };

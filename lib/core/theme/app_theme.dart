@@ -26,6 +26,11 @@ class AppTheme {
       energyLightningColor: DefaultColor.energyLightningColor,
       energyParticleColor1: DefaultColor.energyParticleColor1,
       energyParticleColor2: DefaultColor.energyParticleColor2,
+      heatFillGradient: DefaultColor.heatFillGradient,
+      heatGlowGradient: DefaultColor.heatGlowGradient,
+      heatChunkColor: DefaultColor.heatChunkColor,
+      heatEmberColor1: DefaultColor.heatEmberColor1,
+      heatEmberColor2: DefaultColor.heatEmberColor2,
     ),
   );
 

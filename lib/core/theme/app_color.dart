@@ -26,6 +26,12 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.energyLightningColor,
     required this.energyParticleColor1,
     required this.energyParticleColor2,
+    // ── Heat cell fill effects ─────────────────────────────────────────────
+    required this.heatFillGradient,
+    required this.heatGlowGradient,
+    required this.heatChunkColor,
+    required this.heatEmberColor1,
+    required this.heatEmberColor2,
   });
 
   // ── Base UI ──────────────────────────────────────────────────────────────
@@ -77,6 +83,22 @@ class AppColor extends ThemeExtension<AppColor> {
   /// Second particle color (darker).
   final Color energyParticleColor2;
 
+  // ── Heat cell fill effects ────────────────────────────────────────────────
+  /// Top-to-bottom gradient for molten lava fill.
+  final LinearGradient heatFillGradient;
+
+  /// Radial gradient for the glow at the top of the lava surface.
+  final RadialGradient heatGlowGradient;
+
+  /// Color for floating lava chunks / dirt pieces.
+  final Color heatChunkColor;
+
+  /// First ember/spark color (brighter).
+  final Color heatEmberColor1;
+
+  /// Second ember/spark color (darker orange).
+  final Color heatEmberColor2;
+
   @override
   ThemeExtension<AppColor> copyWith({
     Color? primary,
@@ -99,6 +121,11 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? energyLightningColor,
     Color? energyParticleColor1,
     Color? energyParticleColor2,
+    LinearGradient? heatFillGradient,
+    RadialGradient? heatGlowGradient,
+    Color? heatChunkColor,
+    Color? heatEmberColor1,
+    Color? heatEmberColor2,
   }) {
     return AppColor(
       primary: primary ?? this.primary,
@@ -123,6 +150,11 @@ class AppColor extends ThemeExtension<AppColor> {
       energyLightningColor: energyLightningColor ?? this.energyLightningColor,
       energyParticleColor1: energyParticleColor1 ?? this.energyParticleColor1,
       energyParticleColor2: energyParticleColor2 ?? this.energyParticleColor2,
+      heatFillGradient: heatFillGradient ?? this.heatFillGradient,
+      heatGlowGradient: heatGlowGradient ?? this.heatGlowGradient,
+      heatChunkColor: heatChunkColor ?? this.heatChunkColor,
+      heatEmberColor1: heatEmberColor1 ?? this.heatEmberColor1,
+      heatEmberColor2: heatEmberColor2 ?? this.heatEmberColor2,
     );
   }
 
@@ -204,6 +236,19 @@ class AppColor extends ThemeExtension<AppColor> {
         other.energyParticleColor2,
         t,
       )!,
+      heatFillGradient: LinearGradient.lerp(
+        heatFillGradient,
+        other.heatFillGradient,
+        t,
+      )!,
+      heatGlowGradient: RadialGradient.lerp(
+        heatGlowGradient,
+        other.heatGlowGradient,
+        t,
+      )!,
+      heatChunkColor: Color.lerp(heatChunkColor, other.heatChunkColor, t)!,
+      heatEmberColor1: Color.lerp(heatEmberColor1, other.heatEmberColor1, t)!,
+      heatEmberColor2: Color.lerp(heatEmberColor2, other.heatEmberColor2, t)!,
     );
   }
 }
@@ -304,4 +349,31 @@ class DefaultColor {
   // Particles shifted slightly darker
   static const Color energyParticleColor1 = Color(0xFF56AECF); // was 6DC4E8
   static const Color energyParticleColor2 = Color(0xFF1F82B5); // was 2E99CF
+
+  // ── Heat cell fill effects ────────────────────────────────────────────────
+  // Red/orange/yellow lava gradient
+  static const LinearGradient heatFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: <Color>[
+      Color(0xFFFF6B35), // bright molten orange top
+      Color(0xFFD73502), // deep orange-red mid
+      Color(0xFF8B1F00), // dark crimson bottom
+    ],
+  );
+
+  static const RadialGradient heatGlowGradient = RadialGradient(
+    colors: <Color>[
+      Color(0xFFFFA500), // bright amber glow
+      Color(0xFFD73502),
+      Colors.transparent,
+    ],
+  );
+
+  // Lava chunk (dark dirty rock with ember glow)
+  static const Color heatChunkColor = Color(0xFF3D2416); // dark brown/charcoal
+
+  // Embers/sparks - bright orange/yellow
+  static const Color heatEmberColor1 = Color(0xFFFFB84D); // bright golden
+  static const Color heatEmberColor2 = Color(0xFFFF7A33); // orange spark
 }
