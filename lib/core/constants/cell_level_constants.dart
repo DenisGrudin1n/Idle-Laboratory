@@ -83,7 +83,7 @@ class CellLevelConstants {
   /// Energy requirements for unlocking cells
   static final Map<CellId, BigNumber> cellUnlockRequirements =
       <CellId, BigNumber>{
-        CellId.heatCell: BigNumber(1.0, 1), // 1K
+        CellId.heatCell: BigNumber(1.0, 3), // 1K
         CellId.iceCell: BigNumber(1.0, 5), // 100K
         CellId.darkMatterCell: BigNumber(1.0, 7), // 10M
       };

@@ -24,12 +24,11 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius radius = borderRadius ?? BorderRadius.circular(10);
+    final BorderRadius radius = borderRadius ?? BorderRadius.circular(10.r);
 
     return Container(
       padding: padding,
       decoration: BoxDecoration(
-        color: context.color.drawerBackground,
         borderRadius: radius,
         border: Border.all(color: context.color.sectionBorder, width: 3.r),
         gradient: context.color.sectionGradient,

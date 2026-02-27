@@ -133,10 +133,7 @@ class CellsCubit extends Cubit<CellsState> {
 
   /// Attempts to unlock a cell, returns the unlocked or original cell
   CellModel _tryUnlockCell(CellModel cell) {
-    if (!cell.isLocked) {
-      return cell;
-    }
-    if (!_canUnlockCell(cell)) {
+    if (!cell.isLocked || !_canUnlockCell(cell)) {
       return cell;
     }
 
@@ -145,12 +142,6 @@ class CellsCubit extends Cubit<CellsState> {
       cellId,
       cell.level,
     );
-
-    // Initialize this cell's dedicated energy pool at zero
-    final Map<String, BigNumber> updatedCellEnergies =
-        Map<String, BigNumber>.from(state.cellEnergies);
-    updatedCellEnergies[cell.id] = BigNumber.zero();
-    emit(state.copyWith(cellEnergies: updatedCellEnergies));
 
     return cell.copyWith(
       isLocked: false,
