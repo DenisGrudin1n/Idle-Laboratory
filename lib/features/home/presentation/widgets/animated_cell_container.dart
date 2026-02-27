@@ -88,6 +88,9 @@ class _CellContainerPainter extends CustomPainter {
     final double fillHeight = containerHeight * fillLevel;
     final double fillTop = bottomY - fillHeight;
 
+    // Save canvas state before clipping
+    canvas.save();
+
     // Clip to container bounds using extension
     final Path clipPath = canvas.getContainerClipPath(
       centerX: centerX,
@@ -162,6 +165,9 @@ class _CellContainerPainter extends CustomPainter {
       width: width,
       glowColors: glowColors,
     );
+
+    // Restore canvas state to remove clipping
+    canvas.restore();
   }
 
   @override

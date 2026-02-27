@@ -143,11 +143,8 @@ class CellsCubit extends Cubit<CellsState> {
       cell.level,
     );
 
-    // Initialize energy entry for newly unlocked cell
-    final Map<String, BigNumber> updatedCellEnergies =
-        Map<String, BigNumber>.from(state.cellEnergies);
-    updatedCellEnergies[cell.id] = state.totalEnergy ?? BigNumber.zero();
-    emit(state.copyWith(cellEnergies: updatedCellEnergies));
+    // Note: cellEnergies and state emission are handled in higher-level flows
+    // (e.g., via _updateCellEnergies) to avoid intermediate emits during unlocks.
 
     return cell.copyWith(
       isLocked: false,
