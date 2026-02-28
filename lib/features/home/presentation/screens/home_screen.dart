@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/core/enums/enums.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/widgets.dart';
+import 'package:idle_laboratory/lib.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+    backgroundColor: context.color.background,
     body: SafeArea(
       top: false,
       bottom: false,

@@ -27,5 +27,7 @@
     "unlockMoreCells": "Unlock more cells by\nupgrading further.",
     "sec": "sec",
     "s": "s",
-    "unlockAt": "Unlock at"
+    "unlockAt": "Unlock at",
+    "maxLvl": "Max Lvl",
+    "nextLvl": "Next Lvl"
 }

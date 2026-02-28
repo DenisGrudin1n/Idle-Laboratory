@@ -261,6 +261,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unlock at'**
   String get unlockAt;
+
+  /// No description provided for @maxLvl.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Lvl'**
+  String get maxLvl;
+
+  /// No description provided for @nextLvl.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Lvl'**
+  String get nextLvl;
 }
 
 class _AppLocalizationsDelegate

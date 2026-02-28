@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
@@ -24,72 +25,73 @@ class CellsListDrawer extends StatelessWidget {
         ? rawSelectedCellId
         : null;
 
-    return Container(
-      width: 0.25.sw,
-      decoration: BoxDecoration(color: context.color.drawerBackground),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          // Header
-          Container(
-            padding: EdgeInsets.all(12.w),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  l10n.cells,
-                  style: TextStyle(
-                    color: context.color.titleText,
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.bold,
+    return SectionCard(
+      child: SizedBox(
+        width: 0.25.sw,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // Header
+            Container(
+              padding: EdgeInsets.all(12.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    l10n.cells,
+                    style: TextStyle(
+                      color: context.color.titleText,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.refresh,
-                  color: context.color.primaryText,
-                  size: 16.sp,
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            height: 1,
-            thickness: 1,
-            color: context.color.primaryText.withValues(alpha: 0.2),
-          ),
-          // Cells list
-          Expanded(
-            child: ListView.separated(
-              padding: EdgeInsets.all(8.w),
-              itemCount: cells.length,
-              separatorBuilder: (BuildContext context, int index) =>
-                  SizedBox(height: 8.h),
-              itemBuilder: (BuildContext context, int index) {
-                final CellModel cell = cells[index];
-                final bool isSelected = selectedCellId == cell.id;
-
-                return _CellItem(
-                  cell: cell,
-                  isSelected: isSelected,
-                  onTap: () => context.read<CellsCubit>().selectCell(cell.id),
-                );
-              },
-            ),
-          ),
-          // Footer text
-          Container(
-            padding: EdgeInsets.all(12.w),
-            child: Text(
-              l10n.unlockMoreCells,
-              style: TextStyle(
-                color: context.color.primaryText,
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w400,
+                  Icon(
+                    Icons.refresh,
+                    color: context.color.primaryText,
+                    size: 16.sp,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            Divider(
+              height: 1,
+              thickness: 1,
+              color: context.color.primaryText.withValues(alpha: 0.2),
+            ),
+            // Cells list
+            Expanded(
+              child: ListView.separated(
+                padding: EdgeInsets.all(8.w),
+                itemCount: cells.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    SizedBox(height: 8.h),
+                itemBuilder: (BuildContext context, int index) {
+                  final CellModel cell = cells[index];
+                  final bool isSelected = selectedCellId == cell.id;
+
+                  return _CellItem(
+                    cell: cell,
+                    isSelected: isSelected,
+                    onTap: () => context.read<CellsCubit>().selectCell(cell.id),
+                  );
+                },
+              ),
+            ),
+            // Footer text
+            Container(
+              padding: EdgeInsets.all(12.w),
+              child: Text(
+                l10n.unlockMoreCells,
+                style: TextStyle(
+                  color: context.color.primaryText,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -177,6 +179,44 @@ class _CellItem extends StatelessWidget {
                 ],
               ),
               if (!cell.isLocked) ...<Widget>[
+                SizedBox(height: 4.h),
+                // Energy requirement for next level
+                () {
+                  final CellId? cellId = CellId.fromString(cell.id);
+                  if (cellId == null) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final CellLevelModel? nextLevelConfig =
+                      CellLevelConstants.getLevelConfigs(
+                        cellId,
+                      ).getConfig(cell.level + 1);
+
+                  final bool isScientific = context.select<SettingsCubit, bool>(
+                    (SettingsCubit cubit) => cubit.state.isScientificNotation,
+                  );
+                  final String text = nextLevelConfig == null
+                      ? l10n.maxLvl
+                      : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format(useScientific: isScientific)}';
+                  return Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.battery_charging_full,
+                        color: context.color.primaryText,
+                        size: 10.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        text,
+                        style: TextStyle(
+                          color: context.color.primaryText,
+                          fontSize: 9.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  );
+                }(),
                 SizedBox(height: 4.h),
                 Row(
                   children: <Widget>[

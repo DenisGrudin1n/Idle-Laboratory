@@ -35,12 +35,22 @@ class CellEnergyPerSecond {
     5: BigNumber(2.5, 2), // 250 EU/s
   };
 
+  /// Energy per second mapping for heat cell levels
+  static final Map<int, BigNumber> heatCellEPS = <int, BigNumber>{
+    1: BigNumber(5.0, 1), // 50 EU/s
+    2: BigNumber(1.75, 2), // 175 EU/s
+    3: BigNumber(6.0, 2), // 600 EU/s
+    4: BigNumber(2.5, 3), // 2,500 EU/s
+    5: BigNumber(1.25, 4), // 12,500 EU/s
+  };
+
   /// Get energy per second for a specific cell and level
   static BigNumber getEPS(CellId cellId, int level) {
     switch (cellId) {
       case CellId.basicEnergyCell:
         return basicEnergyCellEPS[level] ?? BigNumber.zero();
       case CellId.heatCell:
+        return heatCellEPS[level] ?? BigNumber.zero();
       case CellId.iceCell:
       case CellId.darkMatterCell:
         // TODO: Implement for other cells

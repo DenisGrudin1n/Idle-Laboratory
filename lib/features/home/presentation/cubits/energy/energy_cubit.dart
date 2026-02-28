@@ -4,56 +4,53 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 
 part 'energy_cubit.freezed.dart';
 part 'energy_state.dart';
 
-/// Manages the energy generation system for the idle game.
+/// Thin wrapper around EnergyService for UI state management.
 ///
-/// This cubit handles:
-/// - Passive energy generation over time
-/// - Energy per second (EU/s) tracking
-/// - Timer-based updates at configurable intervals
-///
-/// The timer starts when [start] is called explicitly to avoid
-/// resource leaks if the cubit is created but not immediately used.
+/// This cubit subscribes to EnergyService streams and emits states
+/// for the UI layer. All business logic is in EnergyService.
 class EnergyCubit extends Cubit<EnergyState> {
-  EnergyCubit() : super(EnergyState.initial());
+  EnergyCubit(this._energyService) : super(EnergyState.initial());
 
-  Timer? _timer;
+  final EnergyService _energyService;
 
-  /// Starts the passive energy generation timer.
-  /// Should be called when the cubit is ready to begin generating energy.
+  StreamSubscription<BigNumber>? _energySubscription;
+  StreamSubscription<BigNumber>? _epsSubscription;
+
+  /// Starts the cubit by subscribing to energy service streams
   void start() {
-    _startEnergyGeneration();
-  }
+    // Cancel existing subscriptions to prevent duplicates
+    _energySubscription?.cancel();
+    _epsSubscription?.cancel();
 
-  void _startEnergyGeneration() {
-    _timer?.cancel(); // Cancel existing timer if any
-    _timer = Timer.periodic(
-      const Duration(milliseconds: GameConstants.energyUpdateIntervalMs),
-      (_) => _generateEnergy(),
-    );
-  }
+    // Subscribe to energy changes
+    _energySubscription = _energyService.energy$.listen((BigNumber energy) {
+      emit(state.copyWith(currentEnergy: energy));
+    });
 
-  void _generateEnergy() {
-    final BigNumber increment = state.energyPerSecond.multiplyByDouble(
-      GameConstants.energyUpdateIntervalMs * 0.001,
-    );
+    // Subscribe to EPS changes
+    _epsSubscription = _energyService.eps$.listen((BigNumber eps) {
+      emit(state.copyWith(energyPerSecond: eps));
+    });
 
-    final BigNumber newEnergy = state.currentEnergy + increment;
-
-    emit(state.copyWith(currentEnergy: newEnergy));
+    // Start the energy service
+    _energyService.start();
   }
 
   /// Updates the energy per second rate
+  /// (Called by CellsCubit when cells change)
   void updateEnergyPerSecond(BigNumber newEnergyPerSecond) {
-    emit(state.copyWith(energyPerSecond: newEnergyPerSecond));
+    _energyService.updateEPS(newEnergyPerSecond);
   }
 
   @override
   Future<void> close() {
-    _timer?.cancel();
+    _energySubscription?.cancel();
+    _epsSubscription?.cancel();
     return super.close();
   }
 }

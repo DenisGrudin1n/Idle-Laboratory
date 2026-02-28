@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
+import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/presentation/cubits/cubits.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +16,22 @@ Future<void> init() async {
   // Repositories
   sl.registerLazySingleton<CellRepository>(() => const CellRepository());
 
-  // Cubits
-  sl.registerFactory<EnergyCubit>(() => EnergyCubit());
+  // Services (Singletons - they manage state via streams)
+  sl.registerLazySingleton<EnergyService>(
+    () => EnergyService(),
+    dispose: (EnergyService service) => service.dispose(),
+  );
+  sl.registerLazySingleton<CellsService>(
+    () => CellsService(sl<CellRepository>(), sl<EnergyService>()),
+    dispose: (CellsService service) => service.dispose(),
+  );
+
+  // Cubits (UI state wrappers around services)
+  sl.registerFactory<EnergyCubit>(() => EnergyCubit(sl<EnergyService>()));
   sl.registerFactory<SettingsCubit>(() => SettingsCubit());
+}
+
+/// Call this on app shutdown / test teardown to dispose all registered services.
+Future<void> disposeInjection() async {
+  await sl.reset(dispose: true);
 }
