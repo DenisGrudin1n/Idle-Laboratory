@@ -32,8 +32,8 @@ class CellsService {
   final BehaviorSubject<Map<String, BigNumber>> _cellEnergiesSubject =
       BehaviorSubject<Map<String, BigNumber>>.seeded(<String, BigNumber>{});
 
-  StreamSubscription<void>? _energySubscription;
-  StreamSubscription<void>? _cellsSubscription;
+  StreamSubscription<List<CellModel>>? _energySubscription;
+  StreamSubscription<BigNumber>? _cellsSubscription;
 
   /// Stream of all cells (locked and unlocked).
   /// Emits when cells are unlocked or leveled up.

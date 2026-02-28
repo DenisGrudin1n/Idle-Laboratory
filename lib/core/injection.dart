@@ -17,12 +17,21 @@ Future<void> init() async {
   sl.registerLazySingleton<CellRepository>(() => const CellRepository());
 
   // Services (Singletons - they manage state via streams)
-  sl.registerLazySingleton<EnergyService>(() => EnergyService());
+  sl.registerLazySingleton<EnergyService>(
+    () => EnergyService(),
+    dispose: (EnergyService service) => service.dispose(),
+  );
   sl.registerLazySingleton<CellsService>(
     () => CellsService(sl<CellRepository>(), sl<EnergyService>()),
+    dispose: (CellsService service) => service.dispose(),
   );
 
   // Cubits (UI state wrappers around services)
   sl.registerFactory<EnergyCubit>(() => EnergyCubit(sl<EnergyService>()));
   sl.registerFactory<SettingsCubit>(() => SettingsCubit());
+}
+
+/// Call this on app shutdown / test teardown to dispose all registered services.
+Future<void> disposeInjection() async {
+  await sl.reset(dispose: true);
 }

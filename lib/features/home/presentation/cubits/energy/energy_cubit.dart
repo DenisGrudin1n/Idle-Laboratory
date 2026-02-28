@@ -23,6 +23,10 @@ class EnergyCubit extends Cubit<EnergyState> {
 
   /// Starts the cubit by subscribing to energy service streams
   void start() {
+    // Cancel existing subscriptions to prevent duplicates
+    _energySubscription?.cancel();
+    _epsSubscription?.cancel();
+
     // Subscribe to energy changes
     _energySubscription = _energyService.energy$.listen((BigNumber energy) {
       emit(state.copyWith(currentEnergy: energy));
