@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/enums.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/prestige_info_section.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/widgets.dart';
 
 class CellContent extends StatefulWidget {

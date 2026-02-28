@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
 import 'package:idle_laboratory/features/home/presentation/cubits/cubits.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,13 +22,31 @@ Future<void> init() async {
     () => EnergyService(),
     dispose: (EnergyService service) => service.dispose(),
   );
+  sl.registerLazySingleton<PrestigeService>(
+    () => PrestigeService(sl<EnergyService>(), sl<SharedPreferences>()),
+    dispose: (PrestigeService service) => service.dispose(),
+  );
   sl.registerLazySingleton<CellsService>(
-    () => CellsService(sl<CellRepository>(), sl<EnergyService>()),
+    () => CellsService(
+      sl<CellRepository>(),
+      sl<EnergyService>(),
+      sl<PrestigeService>(),
+    ),
     dispose: (CellsService service) => service.dispose(),
   );
 
   // Cubits (UI state wrappers around services)
   sl.registerFactory<EnergyCubit>(() => EnergyCubit(sl<EnergyService>()));
+  sl.registerFactory<CellsCubit>(
+    () => CellsCubit(sl<CellsService>(), sl<EnergyService>()),
+  );
+  sl.registerFactory<PrestigeCubit>(
+    () => PrestigeCubit(
+      sl<PrestigeService>(),
+      sl<EnergyService>(),
+      sl<CellsService>(),
+    ),
+  );
   sl.registerFactory<SettingsCubit>(() => SettingsCubit());
 }
 

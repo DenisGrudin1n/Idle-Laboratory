@@ -5,8 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/injection.dart';
 import 'package:idle_laboratory/core/router/app_router.dart';
 import 'package:idle_laboratory/core/theme/app_theme.dart';
-import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
-import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/presentation/cubits/cubits.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
@@ -24,16 +22,19 @@ class AppWidget extends StatelessWidget {
             return energyCubit;
           },
         ),
+        BlocProvider<PrestigeCubit>(
+          create: (BuildContext context) {
+            final PrestigeCubit prestigeCubit = sl<PrestigeCubit>();
+            prestigeCubit.start();
+            return prestigeCubit;
+          },
+        ),
         BlocProvider<SettingsCubit>(
           create: (BuildContext context) => sl<SettingsCubit>(),
         ),
         BlocProvider<CellsCubit>(
           create: (BuildContext context) {
-            final CellsCubit cellsCubit = CellsCubit(
-              sl<CellsService>(),
-              sl<EnergyService>(),
-            );
-            // Start the cells service (initializes stream subscriptions)
+            final CellsCubit cellsCubit = sl<CellsCubit>();
             cellsCubit.start();
             return cellsCubit;
           },

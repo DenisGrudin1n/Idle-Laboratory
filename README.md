@@ -1,16 +1,36 @@
 # idle_laboratory
 
-A new Flutter project.
+An idle clicker game built with Flutter featuring reactive stream-based architecture.
+
+## Features
+
+### Stream-Based Architecture
+The game utilizes a reactive architecture with RxDart streams for real-time state management. See [STREAM_ARCHITECTURE.md](STREAM_ARCHITECTURE.md) for detailed documentation.
+
+### Prestige System
+Progressive reset mechanism that provides permanent multipliers for faster gameplay. See [PRESTIGE_SYSTEM.md](PRESTIGE_SYSTEM.md) for complete mechanics.
+
+### Energy System
+- Real-time energy generation
+- Multiple energy cells with different production rates
+- Automatic progression and cell unlocking
+
+## Architecture
+
+- **Services Layer**: Pure business logic with RxDart streams
+- **Cubits Layer**: BLoC pattern wrappers for UI state
+- **UI Layer**: Reactive widgets with stream builders
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is built with Flutter. To run:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter pub get
+flutter run
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Documentation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Stream Architecture](STREAM_ARCHITECTURE.md) - Reactive architecture details
+- [Prestige System](PRESTIGE_SYSTEM.md) - Prestige mechanics and progression

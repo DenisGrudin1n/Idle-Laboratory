@@ -62,6 +62,11 @@ class EnergyService {
     }
   }
 
+  void reset() {
+    _energySubject.add(BigNumber.zero());
+    _epsSubject.add(BigNumber.zero());
+  }
+
   /// Disposes of all streams and timers
   void dispose() {
     _timer?.cancel();

@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
 
@@ -10,32 +13,56 @@ class PrestigeInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppLocalizations l10n = context.l10n;
 
-    return SectionCard(
-      child: SizedBox(
-        width: 0.2.sw,
-        child: Padding(
-          padding: EdgeInsets.all(12.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              _buildHeader(context, l10n),
-              SizedBox(height: 8.h),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    _buildMultiplierDisplay(context, l10n),
-                    SizedBox(height: 12.h),
-                    _buildProgressSection(context, l10n),
-                    SizedBox(height: 12.h),
-                    _buildPrestigeButton(context, l10n),
-                  ],
-                ),
+    return BlocBuilder<PrestigeCubit, PrestigeState>(
+      builder: (BuildContext context, PrestigeState state) {
+        final PrestigeStateModel? prestigeState = state.prestigeState;
+        if (prestigeState == null) {
+          return const SizedBox.shrink();
+        }
+
+        return SectionCard(
+          child: SizedBox(
+            width: 0.2.sw,
+            child: Padding(
+              padding: EdgeInsets.all(12.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _buildHeader(context, l10n),
+                  SizedBox(height: 8.h),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        _buildMultiplierDisplay(context, l10n, prestigeState),
+                        SizedBox(height: 8.h),
+                        _buildProgressSection(context, l10n, prestigeState),
+                        SizedBox(height: 12.h),
+                        if (kDebugMode)
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: _buildPrestigeButton(
+                                  context,
+                                  l10n,
+                                  prestigeState,
+                                ),
+                              ),
+                              SizedBox(width: 8.w),
+                              _buildResetButton(context),
+                            ],
+                          )
+                        else
+                          _buildPrestigeButton(context, l10n, prestigeState),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -85,9 +112,17 @@ class PrestigeInfoSection extends StatelessWidget {
     );
   }
 
-  Widget _buildMultiplierDisplay(BuildContext context, AppLocalizations l10n) {
-    const double currentMultiplier = 10.0;
-    const double nextBonus = 1.5;
+  Widget _buildMultiplierDisplay(
+    BuildContext context,
+    AppLocalizations l10n,
+    PrestigeStateModel prestigeState,
+  ) {
+    final String currentMultiplier = prestigeState.totalMultiplier.format(
+      compact: true,
+    );
+    final String nextBonus = prestigeState.currentMultiplier.format(
+      compact: true,
+    );
 
     return Container(
       padding: EdgeInsets.all(12.w),
@@ -99,36 +134,25 @@ class PrestigeInfoSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Text(
-                l10n.prestigeMultiplier,
-                style: TextStyle(
-                  color: context.color.primaryText,
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(width: 3.w),
-              Text(
-                '${currentMultiplier.toStringAsFixed(1)}x',
-                style: TextStyle(
-                  color: context.color.primary,
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          Text(
+            '${l10n.prestigeMultiplier}: ${currentMultiplier}x',
+            style: TextStyle(
+              color: context.color.primary,
+              fontSize: 10.sp,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
 
           SizedBox(height: 3.h),
           Text(
-            '+ ${nextBonus.toStringAsFixed(1)}x ${l10n.prestigeBonus}',
+            '+ ${nextBonus}x ${l10n.prestigeBonus}',
             style: TextStyle(
-              color: context.color.green,
+              color: prestigeState.isUnlocked
+                  ? context.color.green
+                  : context.color.primaryText.withValues(alpha: 0.5),
               fontSize: 11.sp,
               fontWeight: FontWeight.w600,
             ),
@@ -141,29 +165,45 @@ class PrestigeInfoSection extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressSection(BuildContext context, AppLocalizations l10n) {
-    const String currentEnergy = '15.0K';
-    const String requirement = '10.0K';
-    const double progress = 1.5;
+  Widget _buildProgressSection(
+    BuildContext context,
+    AppLocalizations l10n,
+    PrestigeStateModel prestigeState,
+  ) {
+    return BlocBuilder<CellsCubit, CellsState>(
+      builder: (BuildContext context, CellsState cellsState) {
+        final String currentEnergy =
+            cellsState.totalEnergy?.format(compact: true) ?? '0.0';
+        final String requirement = prestigeState.currentThreshold.format(
+          compact: true,
+        );
+        final double progress = cellsState.totalEnergy != null
+            ? cellsState.totalEnergy!.ratio(
+                prestigeState.currentThreshold,
+                max: 1.0,
+              )
+            : 0.0;
 
-    return Column(
-      children: <Widget>[
-        _buildInfoRow(
-          context,
-          l10n.totalEnergy,
-          currentEnergy,
-          context.color.titleText,
-        ),
-        SizedBox(height: 3.h),
-        _buildInfoRow(
-          context,
-          l10n.prestigeRequirement,
-          requirement,
-          context.color.primaryText,
-        ),
-        SizedBox(height: 6.h),
-        _buildProgressBar(context, progress),
-      ],
+        return Column(
+          children: <Widget>[
+            _buildInfoRow(
+              context,
+              l10n.totalEnergy,
+              currentEnergy,
+              context.color.titleText,
+            ),
+            SizedBox(height: 3.h),
+            _buildInfoRow(
+              context,
+              l10n.prestigeRequirement,
+              requirement,
+              context.color.primaryText,
+            ),
+            SizedBox(height: 6.h),
+            _buildProgressBar(context, progress),
+          ],
+        );
+      },
     );
   }
 
@@ -201,54 +241,103 @@ class PrestigeInfoSection extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(6.r),
           child: SizedBox(
-            height: 6.h,
-            child: LinearProgressIndicator(
-              value: clampedProgress,
-              backgroundColor: context.color.background,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isUnlocked ? context.color.green : context.color.primary,
-              ),
+            height: 8.h,
+            child: Stack(
+              children: <Widget>[
+                SizedBox(
+                  height: 12.h,
+                  child: LinearProgressIndicator(
+                    value: clampedProgress,
+                    backgroundColor: context.color.background,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      isUnlocked ? context.color.green : context.color.primary,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: Center(
+                    child: Text(
+                      '${(progress * 100).toStringAsFixed(1)}%',
+                      style: TextStyle(
+                        color: context.color.titleText,
+                        fontSize: 9.sp,
+                        fontWeight: FontWeight.bold,
+                        shadows: <Shadow>[
+                          Shadow(
+                            color: context.color.background,
+                            blurRadius: 4,
+                          ),
+                          Shadow(
+                            color: context.color.background,
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ),
-        SizedBox(height: 6.h),
-        Text(
-          '${(progress * 100).toStringAsFixed(1)}%',
-          style: TextStyle(
-            color: isUnlocked ? context.color.green : context.color.primaryText,
-            fontSize: 9.sp,
-            fontWeight: FontWeight.w500,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildPrestigeButton(BuildContext context, AppLocalizations l10n) {
+  Widget _buildPrestigeButton(
+    BuildContext context,
+    AppLocalizations l10n,
+    PrestigeStateModel prestigeState,
+  ) {
+    final bool isLocked = !prestigeState.isUnlocked;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: isLocked
+            ? null
+            : () {
+                context.read<PrestigeCubit>().prestige();
+              },
         borderRadius: BorderRadius.circular(8.r),
         child: Container(
-          padding: EdgeInsets.all(6.w),
+          padding: EdgeInsets.all(4.w),
           decoration: BoxDecoration(
-            color: context.color.primary,
+            color: isLocked
+                ? context.color.primaryText.withValues(alpha: 0.3)
+                : context.color.primary,
             borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: context.color.primary, width: 1.5.w),
+            border: Border.all(
+              color: isLocked
+                  ? context.color.primaryText.withValues(alpha: 0.5)
+                  : context.color.primary,
+              width: 1.5.w,
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Icon(Icons.auto_awesome, color: Colors.white, size: 14.sp),
+              Icon(
+                Icons.auto_awesome,
+                color: isLocked
+                    ? context.color.primaryText.withValues(alpha: 0.5)
+                    : Colors.white,
+                size: 14.sp,
+              ),
               SizedBox(width: 6.w),
               Flexible(
                 child: Text(
-                  l10n.prestigeButton,
+                  isLocked
+                      ? l10n.prestigeLocked(
+                          prestigeState.currentThreshold.format(compact: true),
+                        )
+                      : l10n.prestigeButton,
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11.sp,
+                    color: isLocked
+                        ? context.color.primaryText.withValues(alpha: 0.5)
+                        : Colors.white,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
@@ -258,6 +347,52 @@ class PrestigeInfoSection extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResetButton(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () async {
+          final bool? confirm = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext ctx) => AlertDialog(
+              title: const Text('Reset Prestige'),
+              content: const Text(
+                'This will reset all prestige progress to zero. Continue?',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(true),
+                  child: const Text('Reset'),
+                ),
+              ],
+            ),
+          );
+
+          if (confirm == true && context.mounted) {
+            context.read<PrestigeCubit>().resetPrestige();
+          }
+        },
+        borderRadius: BorderRadius.circular(8.r),
+        child: Container(
+          padding: EdgeInsets.all(4.w),
+          decoration: BoxDecoration(
+            color: Colors.red.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: Colors.red.withValues(alpha: 0.5),
+              width: 1.5.w,
+            ),
+          ),
+          child: Icon(Icons.refresh, color: Colors.red, size: 14.sp),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:idle_laboratory/features/home/data/repositories/cell_repository.
 import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Stream-based cells management service.
@@ -18,7 +19,11 @@ import 'package:rxdart/rxdart.dart';
 /// - Calculate total EPS
 /// - Track per-cell energy
 class CellsService {
-  CellsService(this._cellRepository, this._energyService) {
+  CellsService(
+    this._cellRepository,
+    this._energyService,
+    this._prestigeService,
+  ) {
     _initializeCells();
     _setupEnergyReaction();
     _setupEPSCalculation();
@@ -26,6 +31,7 @@ class CellsService {
 
   final CellRepository _cellRepository;
   final EnergyService _energyService;
+  final PrestigeService _prestigeService;
 
   final BehaviorSubject<List<CellModel>> _cellsSubject =
       BehaviorSubject<List<CellModel>>();
@@ -185,16 +191,18 @@ class CellsService {
 
   /// Calculate total EPS from all unlocked cells
   BigNumber _calculateTotalEPS(List<CellModel> cells) {
-    return cells.where((CellModel cell) => !cell.isLocked).fold(
-      BigNumber.zero(),
-      (BigNumber total, CellModel cell) {
-        final CellId? cellId = CellId.fromString(cell.id);
-        if (cellId == null) {
-          return total;
-        }
-        return total + CellEnergyPerSecond.getEPS(cellId, cell.level);
-      },
-    );
+    final BigNumber baseEPS = cells
+        .where((CellModel cell) => !cell.isLocked)
+        .fold(BigNumber.zero(), (BigNumber total, CellModel cell) {
+          final CellId? cellId = CellId.fromString(cell.id);
+          if (cellId == null) {
+            return total;
+          }
+          return total + CellEnergyPerSecond.getEPS(cellId, cell.level);
+        });
+
+    final BigNumber multiplier = _prestigeService.getEffectiveMultiplier();
+    return baseEPS * multiplier;
   }
 
   /// Check if cells have actually changed (avoid redundant emits)
@@ -267,6 +275,11 @@ class CellsService {
     // Trigger initial EPS calculation
     final BigNumber initialEPS = _calculateTotalEPS(currentCells);
     _energyService.updateEPS(initialEPS);
+  }
+
+  void reset() {
+    _initializeCells();
+    _cellEnergiesSubject.add(<String, BigNumber>{});
   }
 
   /// Disposes of all streams and subscriptions
