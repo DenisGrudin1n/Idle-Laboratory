@@ -172,5 +172,6 @@ class _CellContainerPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _CellContainerPainter oldDelegate) =>
-      oldDelegate.fillLevel != fillLevel;
+      oldDelegate.fillLevel != fillLevel ||
+      oldDelegate.visualTheme != visualTheme;
 }

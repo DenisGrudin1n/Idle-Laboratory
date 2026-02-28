@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/injection.dart';
 import 'package:idle_laboratory/core/router/app_router.dart';
 import 'package:idle_laboratory/core/theme/app_theme.dart';
+import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/presentation/cubits/cubits.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
@@ -27,17 +29,13 @@ class AppWidget extends StatelessWidget {
         ),
         BlocProvider<CellsCubit>(
           create: (BuildContext context) {
-            // Retrieve EnergyCubit from context (must be provided before this)
-            final EnergyCubit energyCubit = context.read<EnergyCubit>();
-            final CellsCubit cellProgressionCubit = CellsCubit(
-              sl(),
-              energyCubit,
+            final CellsCubit cellsCubit = CellsCubit(
+              sl<CellsService>(),
+              sl<EnergyService>(),
             );
-            // Initialize progression: sets up stream subscription to EnergyCubit,
-            // calculates initial energy per second from unlocked cells,
-            // and performs initial progression check (unlocks/level-ups)
-            cellProgressionCubit.start();
-            return cellProgressionCubit;
+            // Start the cells service (initializes stream subscriptions)
+            cellsCubit.start();
+            return cellsCubit;
           },
         ),
       ],

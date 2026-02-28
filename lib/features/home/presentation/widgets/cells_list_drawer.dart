@@ -192,10 +192,13 @@ class _CellItem extends StatelessWidget {
                         cellId,
                       ).getConfig(cell.level + 1);
 
+                  final bool isScientific = context
+                      .read<SettingsCubit>()
+                      .state
+                      .isScientificNotation;
                   final String text = nextLevelConfig == null
                       ? l10n.maxLvl
-                      : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format()}';
-
+                      : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format(useScientific: isScientific)}';
                   return Row(
                     children: <Widget>[
                       Icon(
