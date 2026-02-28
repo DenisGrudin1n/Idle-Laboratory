@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           // Left navigation drawer with energy display inside
-          MainNavigationDrawer(
+          MainNavigationBar(
             selectedTab: _selectedTab,
             onTabSelected: (MainNavigationTab tab) =>
                 setState(() => _selectedTab = tab),

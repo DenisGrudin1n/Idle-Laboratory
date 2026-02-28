@@ -273,6 +273,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next Lvl'**
   String get nextLvl;
+
+  /// No description provided for @prestige.
+  ///
+  /// In en, this message translates to:
+  /// **'Prestige'**
+  String get prestige;
+
+  /// No description provided for @prestigeMultiplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Prestige Multiplier'**
+  String get prestigeMultiplier;
+
+  /// No description provided for @currentMultiplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get currentMultiplier;
+
+  /// No description provided for @nextPrestige.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Prestige'**
+  String get nextPrestige;
+
+  /// No description provided for @totalEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Energy'**
+  String get totalEnergy;
+
+  /// No description provided for @prestigeRequirement.
+  ///
+  /// In en, this message translates to:
+  /// **'Requirement'**
+  String get prestigeRequirement;
+
+  /// No description provided for @prestigeBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus Multiplier'**
+  String get prestigeBonus;
+
+  /// No description provided for @prestigeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Prestige Now'**
+  String get prestigeButton;
+
+  /// No description provided for @prestigeLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach {requirement} to unlock'**
+  String prestigeLocked(Object requirement);
+
+  /// No description provided for @prestigeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset progress for permanent EPS multiplier'**
+  String get prestigeDescription;
 }
 
 class _AppLocalizationsDelegate

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/enums.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/prestige_info_section.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/widgets.dart';
 
 class CellContent extends StatefulWidget {
@@ -28,13 +29,13 @@ class _CellContentState extends State<CellContent> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // Cells list drawer
-            const CellsListDrawer(),
+            const CellsListSection(),
             SizedBox(width: 12.w),
             // Cell container display
-            const CellContainerDisplay(),
+            const Expanded(child: CellContainerSection()),
             SizedBox(width: 12.w),
-            // Main content area (empty for now)
-            const Expanded(child: SizedBox.shrink()),
+            // Prestige drawer
+            const PrestigeInfoSection(),
           ],
         ),
       ),

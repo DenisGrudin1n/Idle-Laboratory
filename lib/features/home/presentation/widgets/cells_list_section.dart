@@ -6,8 +6,8 @@ import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_mode
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
 
-class CellsListDrawer extends StatelessWidget {
-  const CellsListDrawer({super.key});
+class CellsListSection extends StatelessWidget {
+  const CellsListSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class CellsListDrawer extends StatelessWidget {
 
     return SectionCard(
       child: SizedBox(
-        width: 0.25.sw,
+        width: 0.2.sw,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[

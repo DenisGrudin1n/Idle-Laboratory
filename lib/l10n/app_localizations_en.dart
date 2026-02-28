@@ -97,4 +97,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nextLvl => 'Next Lvl';
+
+  @override
+  String get prestige => 'Prestige';
+
+  @override
+  String get prestigeMultiplier => 'Prestige Multiplier';
+
+  @override
+  String get currentMultiplier => 'Current';
+
+  @override
+  String get nextPrestige => 'Next Prestige';
+
+  @override
+  String get totalEnergy => 'Total Energy';
+
+  @override
+  String get prestigeRequirement => 'Requirement';
+
+  @override
+  String get prestigeBonus => 'Bonus Multiplier';
+
+  @override
+  String get prestigeButton => 'Prestige Now';
+
+  @override
+  String prestigeLocked(Object requirement) {
+    return 'Reach $requirement to unlock';
+  }
+
+  @override
+  String get prestigeDescription =>
+      'Reset progress for permanent EPS multiplier';
 }

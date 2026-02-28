@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/lib.dart';
 
-class CellContainerDisplay extends StatefulWidget {
-  const CellContainerDisplay({super.key});
+class CellContainerSection extends StatefulWidget {
+  const CellContainerSection({super.key});
 
   @override
-  State<CellContainerDisplay> createState() => _CellContainerDisplayState();
+  State<CellContainerSection> createState() => _CellContainerSectionState();
 }
 
-class _CellContainerDisplayState extends State<CellContainerDisplay>
+class _CellContainerSectionState extends State<CellContainerSection>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
