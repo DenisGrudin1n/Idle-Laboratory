@@ -51,9 +51,11 @@ class _CellContainerDisplayState extends State<CellContainerDisplay>
                   return SizedBox(width: 120.w, height: 72.h);
                 }
 
-                // Parse cell ID - fallback to basic energy if null
-                final CellId cellId =
-                    CellId.fromString(selectedCellId) ?? CellId.basicEnergyCell;
+                // Parse cell ID - early return if invalid
+                final CellId? cellId = CellId.fromString(selectedCellId);
+                if (cellId == null) {
+                  return SizedBox(width: 120.w, height: 72.h);
+                }
 
                 // Get fill level for the selected cell
                 final double fillLevel = context.select(

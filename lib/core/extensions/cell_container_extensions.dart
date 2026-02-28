@@ -240,7 +240,7 @@ extension CellContainerPainter on Canvas {
     drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(left + 1.5, topY + 1.5, width - 3, height - 3),
-        Radius.circular(radius - 1),
+        Radius.circular(math.max(0, radius - 1)),
       ),
       innerEdgePaint,
     );

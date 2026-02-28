@@ -32,22 +32,14 @@ class CellsService {
   final BehaviorSubject<Map<String, BigNumber>> _cellEnergiesSubject =
       BehaviorSubject<Map<String, BigNumber>>.seeded(<String, BigNumber>{});
 
-  StreamSubscription<List<CellModel>>? _energySubscription;
-  StreamSubscription<BigNumber>? _cellsSubscription;
+  StreamSubscription<List<CellModel>>? _progressionSubscription;
+  StreamSubscription<BigNumber>? _epsCalculationSubscription;
 
-  /// Stream of all cells (locked and unlocked).
-  /// Emits when cells are unlocked or leveled up.
   Stream<List<CellModel>> get cells$ => _cellsSubject.stream;
-
-  /// Stream of per-cell energy pools.
-  /// Each cell tracks its own energy for independent progression.
   Stream<Map<String, BigNumber>> get cellEnergies$ =>
       _cellEnergiesSubject.stream;
 
-  /// Current cells value (synchronous access)
   List<CellModel> get currentCells => _cellsSubject.value;
-
-  /// Current cell energies (synchronous access)
   Map<String, BigNumber> get currentCellEnergies => _cellEnergiesSubject.value;
 
   void _initializeCells() {
@@ -58,7 +50,7 @@ class CellsService {
   /// Setup reaction to energy changes:
   /// Energy changes → Check unlocks → Check level-ups → Update cell energies
   void _setupEnergyReaction() {
-    _energySubscription = _energyService.energy$
+    _progressionSubscription = _energyService.energy$
         .map((BigNumber energy) => _processProgression(energy))
         .listen((List<CellModel> updatedCells) {
           if (_cellsHaveChanged(updatedCells)) {
@@ -70,7 +62,7 @@ class CellsService {
   /// Setup EPS calculation that reacts to cell changes:
   /// Cells change → Calculate total EPS → Update EnergyService
   void _setupEPSCalculation() {
-    _cellsSubscription = cells$
+    _epsCalculationSubscription = cells$
         .map((List<CellModel> cells) => _calculateTotalEPS(cells))
         .distinct()
         .listen((BigNumber totalEPS) {
@@ -279,8 +271,8 @@ class CellsService {
 
   /// Disposes of all streams and subscriptions
   void dispose() {
-    _energySubscription?.cancel();
-    _cellsSubscription?.cancel();
+    _progressionSubscription?.cancel();
+    _epsCalculationSubscription?.cancel();
     _cellsSubject.close();
     _cellEnergiesSubject.close();
   }
