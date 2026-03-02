@@ -19,10 +19,6 @@ extension CellContainerPainter on Canvas {
     required double bottomY,
     required double width,
     required LinearGradient bodyGradient,
-    required RadialGradient topCapGradient,
-    required RadialGradient bottomCapGradient,
-    required LinearGradient topRimGradient,
-    required LinearGradient bottomRimGradient,
   }) {
     final double left = centerX - width / 2;
     final double radius = width * 0.08; // corner radius of the body rect
