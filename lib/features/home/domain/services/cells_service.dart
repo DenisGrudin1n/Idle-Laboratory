@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
-import 'package:idle_laboratory/core/enums/enums.dart';
 import 'package:idle_laboratory/core/extensions/extensions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
-import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
@@ -98,35 +95,13 @@ class CellsService {
     BigNumber totalEnergy,
   ) {
     return cells.map((CellModel cell) {
-      if (!cell.isLocked) {
+      // Use extension method to check if cell can be unlocked
+      if (!cell.canUnlock(totalEnergy)) {
         return cell;
       }
 
-      final CellId? cellId = CellId.fromString(cell.id);
-      if (cellId == null) {
-        return cell;
-      }
-
-      final BigNumber? unlockRequirement =
-          CellLevelConstants.cellUnlockRequirements[cellId];
-      if (unlockRequirement == null) {
-        return cell;
-      }
-
-      if (totalEnergy >= unlockRequirement) {
-        // Unlock the cell
-        final BigNumber energyPerSecond = CellEnergyPerSecond.getEPS(
-          cellId,
-          cell.level,
-        );
-
-        return cell.copyWith(
-          isLocked: false,
-          energyPerSecond: energyPerSecond.format(),
-        );
-      }
-
-      return cell;
+      // Unlock the cell with its EPS from extension
+      return cell.copyWith(isLocked: false, energyPerSecond: cell.eps.format());
     }).toList();
   }
 
@@ -154,51 +129,31 @@ class CellsService {
   /// Check and process level-ups for all unlocked cells
   List<CellModel> _processLevelUps(List<CellModel> cells) {
     return cells.map((CellModel cell) {
-      if (cell.isLocked) {
-        return cell;
-      }
-
       final BigNumber? cellEnergy = currentCellEnergies[cell.id];
       if (cellEnergy == null) {
         return cell;
       }
 
-      final CellId? cellId = CellId.fromString(cell.id);
-      if (cellId == null) {
+      // Use extension method to check if cell can level up
+      if (!cell.canLevelUp(cellEnergy)) {
         return cell;
       }
 
-      final CellLevelModel? nextLevelConfig =
-          CellLevelConstants.getLevelConfigs(cellId).getConfig(cell.level + 1);
-
-      if (nextLevelConfig != null &&
-          cellEnergy >= nextLevelConfig.energyRequired) {
-        // Level up the cell
-        final BigNumber energyPerSecond = CellEnergyPerSecond.getEPS(
-          cellId,
-          cell.level + 1,
-        );
-
-        return cell.copyWith(
-          level: cell.level + 1,
-          energyPerSecond: energyPerSecond.format(),
-        );
-      }
-
-      return cell;
+      // Level up the cell with its next level EPS from extension
+      return cell.copyWith(
+        level: cell.level + 1,
+        energyPerSecond: cell.nextLevelEPS.format(),
+      );
     }).toList();
   }
 
   /// Calculate total EPS from all unlocked cells
   BigNumber _calculateTotalEPS(List<CellModel> cells) {
+    // Use extension method to get EPS directly from cell
     final BigNumber baseEPS = cells
         .where((CellModel cell) => !cell.isLocked)
         .fold(BigNumber.zero(), (BigNumber total, CellModel cell) {
-          final CellId? cellId = CellId.fromString(cell.id);
-          if (cellId == null) {
-            return total;
-          }
-          return total + CellEnergyPerSecond.getEPS(cellId, cell.level);
+          return total + cell.eps;
         });
 
     final BigNumber multiplier = _prestigeService.getEffectiveMultiplier();
@@ -228,7 +183,7 @@ class CellsService {
       orElse: () => null,
     );
 
-    if (cell == null || cell.isLocked) {
+    if (cell == null) {
       return 0.0;
     }
 
@@ -237,37 +192,8 @@ class CellsService {
       return 0.0;
     }
 
-    final CellId? cellIdEnum = CellId.fromString(cell.id);
-    if (cellIdEnum == null) {
-      return 0.0;
-    }
-
-    final List<CellLevelModel> configs = CellLevelConstants.getLevelConfigs(
-      cellIdEnum,
-    );
-    final CellLevelModel? currentConfig = configs.getConfig(cell.level);
-    final CellLevelModel? nextConfig = configs.getConfig(cell.level + 1);
-
-    if (currentConfig == null || nextConfig == null) {
-      return 1.0;
-    }
-
-    if (cellEnergy < currentConfig.energyRequired) {
-      return 0.0;
-    }
-    if (cellEnergy >= nextConfig.energyRequired) {
-      return 1.0;
-    }
-
-    final BigNumber progressEnergy = cellEnergy - currentConfig.energyRequired;
-    final BigNumber levelRange =
-        nextConfig.energyRequired - currentConfig.energyRequired;
-
-    if (levelRange <= BigNumber.zero()) {
-      return 1.0;
-    }
-
-    return progressEnergy.ratio(levelRange, max: 1.0);
+    // Use extension method to calculate progress
+    return cell.getProgressToNextLevel(cellEnergy);
   }
 
   /// Starts the service (initializes EPS calculation)

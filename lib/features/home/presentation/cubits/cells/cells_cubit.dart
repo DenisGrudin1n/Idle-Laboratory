@@ -30,28 +30,34 @@ class CellsCubit extends Cubit<CellsState> {
   void _initialize() {
     // Subscribe to cells changes
     _cellsSubscription = _cellsService.cells$.listen((List<CellModel> cells) {
-      emit(
-        state.copyWith(
-          cells: cells,
-          selectedCellId:
-              state.selectedCellId ??
-              (cells.isNotEmpty ? cells.first.id : null),
-        ),
+      final CellsState newState = state.copyWith(
+        cells: cells,
+        selectedCellId:
+            state.selectedCellId ?? (cells.isNotEmpty ? cells.first.id : null),
       );
+      if (newState != state) {
+        emit(newState);
+      }
     });
 
     // Subscribe to per-cell energies
     _cellEnergiesSubscription = _cellsService.cellEnergies$.listen((
       Map<String, BigNumber> cellEnergies,
     ) {
-      emit(state.copyWith(cellEnergies: cellEnergies));
+      final CellsState newState = state.copyWith(cellEnergies: cellEnergies);
+      if (newState != state) {
+        emit(newState);
+      }
     });
 
     // Subscribe to total energy changes
     _totalEnergySubscription = _energyService.energy$.listen((
       BigNumber energy,
     ) {
-      emit(state.copyWith(totalEnergy: energy));
+      final CellsState newState = state.copyWith(totalEnergy: energy);
+      if (newState != state) {
+        emit(newState);
+      }
     });
   }
 

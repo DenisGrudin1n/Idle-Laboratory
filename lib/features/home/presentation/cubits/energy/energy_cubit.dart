@@ -29,12 +29,18 @@ class EnergyCubit extends Cubit<EnergyState> {
 
     // Subscribe to energy changes
     _energySubscription = _energyService.energy$.listen((BigNumber energy) {
-      emit(state.copyWith(currentEnergy: energy));
+      final EnergyState newState = state.copyWith(currentEnergy: energy);
+      if (newState != state) {
+        emit(newState);
+      }
     });
 
     // Subscribe to EPS changes
     _epsSubscription = _energyService.eps$.listen((BigNumber eps) {
-      emit(state.copyWith(energyPerSecond: eps));
+      final EnergyState newState = state.copyWith(energyPerSecond: eps);
+      if (newState != state) {
+        emit(newState);
+      }
     });
 
     // Start the energy service

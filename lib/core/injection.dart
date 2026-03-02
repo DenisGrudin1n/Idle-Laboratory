@@ -1,5 +1,10 @@
 import 'package:get_it/get_it.dart';
+import 'package:idle_laboratory/features/home/data/data_sources/local_storage_data_source.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
+import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
+import 'package:idle_laboratory/features/home/data/repositories/prestige_repository_impl.dart';
+import 'package:idle_laboratory/features/home/data/repositories/settings_repository.dart';
+import 'package:idle_laboratory/features/home/data/repositories/settings_repository_impl.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
@@ -14,8 +19,19 @@ Future<void> init() async {
       await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
 
+  // Data Sources
+  sl.registerLazySingleton<LocalStorageDataSource>(
+    () => LocalStorageDataSource(sl<SharedPreferences>()),
+  );
+
   // Repositories
   sl.registerLazySingleton<CellRepository>(() => const CellRepository());
+  sl.registerLazySingleton<PrestigeRepository>(
+    () => PrestigeRepositoryImpl(sl<LocalStorageDataSource>()),
+  );
+  sl.registerLazySingleton<SettingsRepository>(
+    () => SettingsRepositoryImpl(sl<LocalStorageDataSource>()),
+  );
 
   // Services (Singletons - they manage state via streams)
   sl.registerLazySingleton<EnergyService>(
@@ -23,7 +39,7 @@ Future<void> init() async {
     dispose: (EnergyService service) => service.dispose(),
   );
   sl.registerLazySingleton<PrestigeService>(
-    () => PrestigeService(sl<EnergyService>(), sl<SharedPreferences>()),
+    () => PrestigeService(sl<EnergyService>(), sl<PrestigeRepository>()),
     dispose: (PrestigeService service) => service.dispose(),
   );
   sl.registerLazySingleton<CellsService>(
@@ -47,7 +63,9 @@ Future<void> init() async {
       sl<CellsService>(),
     ),
   );
-  sl.registerFactory<SettingsCubit>(() => SettingsCubit());
+  sl.registerFactory<SettingsCubit>(
+    () => SettingsCubit(sl<SettingsRepository>()),
+  );
 }
 
 /// Call this on app shutdown / test teardown to dispose all registered services.

@@ -1,21 +1,21 @@
 import 'dart:async';
 
 import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PrestigeService {
-  PrestigeService(this._energyService, this._prefs) {
+  PrestigeService(this._energyService, this._prestigeRepository) {
     _initializeState();
   }
 
   final EnergyService _energyService;
-  final SharedPreferences _prefs;
+  final PrestigeRepository _prestigeRepository;
 
   final BehaviorSubject<PrestigeStateModel> _prestigeStateSubject =
-      BehaviorSubject<PrestigeStateModel>();
+      BehaviorSubject<PrestigeStateModel>.seeded(PrestigeStateModel.initial());
 
   StreamSubscription<BigNumber>? _energySubscription;
 
@@ -23,8 +23,9 @@ class PrestigeService {
   PrestigeStateModel get currentState => _prestigeStateSubject.value;
 
   void _initializeState() {
-    final PrestigeStateModel loadedState = _loadState();
-    _prestigeStateSubject.add(loadedState);
+    _loadState().then((PrestigeStateModel loadedState) {
+      _prestigeStateSubject.add(loadedState);
+    });
   }
 
   void start() {
@@ -81,17 +82,17 @@ class PrestigeService {
 
   BigNumber getEffectiveMultiplier() => currentState.totalMultiplier;
 
-  PrestigeStateModel _loadState() {
-    final String? totalMultiplierJson = _prefs.getString(
-      'prestige_total_multiplier',
-    );
-    final String? thresholdJson = _prefs.getString('prestige_threshold');
-    final int? count = _prefs.getInt('prestige_count');
+  Future<PrestigeStateModel> _loadState() async {
+    final BigNumber? totalMultiplier = await _prestigeRepository
+        .getTotalMultiplier();
+    final BigNumber? threshold = await _prestigeRepository
+        .getCurrentThreshold();
+    final int? count = await _prestigeRepository.getPrestigeCount();
 
-    if (totalMultiplierJson != null && thresholdJson != null && count != null) {
+    if (totalMultiplier != null && threshold != null && count != null) {
       return PrestigeStateModel(
-        totalMultiplier: _parseBigNumber(totalMultiplierJson),
-        currentThreshold: _parseBigNumber(thresholdJson),
+        totalMultiplier: totalMultiplier,
+        currentThreshold: threshold,
         currentMultiplier: BigNumber.zero(),
         isUnlocked: false,
         prestigeCount: count,
@@ -101,30 +102,10 @@ class PrestigeService {
     return PrestigeStateModel.initial();
   }
 
-  BigNumber _parseBigNumber(String json) {
-    final List<String> parts = json.split('e');
-    if (parts.length == 2) {
-      final double mantissa = double.parse(parts[0]);
-      final int exponent = int.parse(parts[1]);
-      return BigNumber(mantissa, exponent);
-    }
-    return BigNumber.fromDouble(double.parse(json));
-  }
-
-  String _serializeBigNumber(BigNumber value) {
-    return '${value.mantissa}e${value.exponent}';
-  }
-
   Future<void> _saveState(PrestigeStateModel state) async {
-    await _prefs.setString(
-      'prestige_total_multiplier',
-      _serializeBigNumber(state.totalMultiplier),
-    );
-    await _prefs.setString(
-      'prestige_threshold',
-      _serializeBigNumber(state.currentThreshold),
-    );
-    await _prefs.setInt('prestige_count', state.prestigeCount);
+    await _prestigeRepository.saveTotalMultiplier(state.totalMultiplier);
+    await _prestigeRepository.saveCurrentThreshold(state.currentThreshold);
+    await _prestigeRepository.savePrestigeCount(state.prestigeCount);
   }
 
   Future<void> reset() async {

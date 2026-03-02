@@ -26,7 +26,12 @@ class PrestigeCubit extends Cubit<PrestigeState> {
     _prestigeSubscription = _prestigeService.prestigeState$.listen((
       PrestigeStateModel prestigeState,
     ) {
-      emit(state.copyWith(prestigeState: prestigeState));
+      final PrestigeState newState = state.copyWith(
+        prestigeState: prestigeState,
+      );
+      if (newState != state) {
+        emit(newState);
+      }
     });
   }
 
