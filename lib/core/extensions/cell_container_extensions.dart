@@ -9,10 +9,6 @@ extension CellContainerPainter on Canvas {
   /// Layer order (back → front):
   ///  1. Outer ambient shadow / glow halo
   ///  2. Cylindrical body (side-lit gradient)
-  ///  3. Bottom ellipse cap (dark)
-  ///  4. Top ellipse cap (lighter, reflective)
-  ///  5. Metallic bottom rim
-  ///  6. Metallic top rim with specular highlight
   ///
   /// All gradient parameters are sourced from the app theme to avoid
   /// hardcoded colours. Pass them from [_CellContainerPainter] which has
@@ -23,14 +19,9 @@ extension CellContainerPainter on Canvas {
     required double bottomY,
     required double width,
     required LinearGradient bodyGradient,
-    required RadialGradient topCapGradient,
-    required RadialGradient bottomCapGradient,
-    required LinearGradient topRimGradient,
-    required LinearGradient bottomRimGradient,
   }) {
     final double left = centerX - width / 2;
     final double radius = width * 0.08; // corner radius of the body rect
-    final double ellipseH = width * 0.18; // height of the top/bottom ellipses
 
     // ── 1. Outer ambient shadow / glow halo ───────────────────────────────
     final Paint haloPaint = Paint()
@@ -57,106 +48,6 @@ extension CellContainerPainter on Canvas {
       ),
       bodyPaint,
     );
-
-    // ── 3. Bottom cap (dark ellipse) ──────────────────────────────────────
-    final Paint bottomCapPaint = Paint()
-      ..shader = bottomCapGradient.createShader(
-        Rect.fromCenter(
-          center: Offset(centerX, bottomY),
-          width: width,
-          height: ellipseH,
-        ),
-      );
-    drawOval(
-      Rect.fromCenter(
-        center: Offset(centerX, bottomY),
-        width: width,
-        height: ellipseH,
-      ),
-      bottomCapPaint,
-    );
-
-    // ── 4. Top cap (brighter – faces the light source) ───────────────────
-    final Paint topCapPaint = Paint()
-      ..shader = topCapGradient.createShader(
-        Rect.fromCenter(
-          center: Offset(centerX, topY),
-          width: width,
-          height: ellipseH,
-        ),
-      );
-    drawOval(
-      Rect.fromCenter(
-        center: Offset(centerX, topY),
-        width: width,
-        height: ellipseH,
-      ),
-      topCapPaint,
-    );
-
-    // ── 5. Metallic bottom rim ─────────────────────────────────────────────
-    _drawMetallicRim(
-      canvas: this,
-      centerX: centerX,
-      centerY: bottomY,
-      width: width * 1.06,
-      height: ellipseH * 1.15,
-      isTopRim: false,
-      topRimGradient: topRimGradient,
-      bottomRimGradient: bottomRimGradient,
-    );
-
-    // ── 6. Metallic top rim with specular ─────────────────────────────────
-    _drawMetallicRim(
-      canvas: this,
-      centerX: centerX,
-      centerY: topY,
-      width: width * 1.06,
-      height: ellipseH * 1.15,
-      isTopRim: true,
-      topRimGradient: topRimGradient,
-      bottomRimGradient: bottomRimGradient,
-    );
-  }
-
-  /// Draws a metallic elliptical rim with gradient highlights.
-  void _drawMetallicRim({
-    required Canvas canvas,
-    required double centerX,
-    required double centerY,
-    required double width,
-    required double height,
-    required bool isTopRim,
-    required LinearGradient topRimGradient,
-    required LinearGradient bottomRimGradient,
-  }) {
-    final Rect rimRect = Rect.fromCenter(
-      center: Offset(centerX, centerY),
-      width: width,
-      height: height,
-    );
-
-    // Main rim fill
-    final Paint rimPaint = Paint()
-      ..shader = (isTopRim ? topRimGradient : bottomRimGradient).createShader(
-        rimRect,
-      );
-    canvas.drawOval(rimRect, rimPaint);
-
-    // Thin bright specular streak across the top of the rim
-    if (isTopRim) {
-      final Paint specularPaint = Paint()
-        ..color = Colors.white.withValues(alpha: 0.18)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2);
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: Offset(centerX, centerY - height * 0.15),
-          width: width * 0.65,
-          height: height * 0.3,
-        ),
-        specularPaint,
-      );
-    }
   }
 
   /// Draws glass overlay effect on the container

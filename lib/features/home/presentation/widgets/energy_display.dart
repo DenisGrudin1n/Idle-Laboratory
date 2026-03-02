@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../l10n/app_localizations.dart';
-import '../../../../lib.dart';
+import 'package:idle_laboratory/l10n/app_localizations.dart';
+import 'package:idle_laboratory/lib.dart';
 
 class EnergyDisplay extends StatelessWidget {
   const EnergyDisplay({super.key});

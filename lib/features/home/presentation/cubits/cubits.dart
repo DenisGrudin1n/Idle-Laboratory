@@ -3,4 +3,5 @@
 
 export 'cells/cells.dart';
 export 'energy/energy.dart';
+export 'prestige/prestige.dart';
 export 'settings/settings.dart';

@@ -59,10 +59,6 @@ class _CellContainerPainter extends CustomPainter {
       bottomY: bottomY,
       width: containerWidth,
       bodyGradient: visualTheme.cellBodyGradient,
-      topCapGradient: visualTheme.cellTopCapGradient,
-      bottomCapGradient: visualTheme.cellBottomCapGradient,
-      topRimGradient: visualTheme.cellTopRimGradient,
-      bottomRimGradient: visualTheme.cellBottomRimGradient,
     );
 
     // Draw energy/lava fill with effects

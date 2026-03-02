@@ -28,13 +28,13 @@ class _CellContentState extends State<CellContent> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             // Cells list drawer
-            const CellsListDrawer(),
+            const CellsListSection(),
             SizedBox(width: 12.w),
             // Cell container display
-            const CellContainerDisplay(),
+            const Expanded(child: CellContainerSection()),
             SizedBox(width: 12.w),
-            // Main content area (empty for now)
-            const Expanded(child: SizedBox.shrink()),
+            // Prestige drawer
+            const PrestigeInfoSection(),
           ],
         ),
       ),

@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
 
-class MainNavigationDrawer extends StatelessWidget {
-  const MainNavigationDrawer({
+class MainNavigationBar extends StatelessWidget {
+  const MainNavigationBar({
     required this.selectedTab,
     required this.onTabSelected,
     super.key,

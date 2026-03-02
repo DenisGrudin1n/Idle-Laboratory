@@ -29,5 +29,15 @@
     "s": "s",
     "unlockAt": "Unlock at",
     "maxLvl": "Max Lvl",
-    "nextLvl": "Next Lvl"
+    "nextLvl": "Next Lvl",
+    "prestige": "Prestige",
+    "prestigeMultiplier": "Prestige Multiplier",
+    "currentMultiplier": "Current",
+    "nextPrestige": "Next Prestige",
+    "totalEnergy": "Total Energy",
+    "prestigeRequirement": "Requirement",
+    "prestigeBonus": "Bonus Multiplier",
+    "prestigeButton": "Prestige Now",
+    "prestigeLocked": "Reach {requirement} to unlock",
+    "prestigeDescription": "Reset progress for permanent EPS multiplier"
 }
