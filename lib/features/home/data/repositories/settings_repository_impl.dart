@@ -7,7 +7,6 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   const SettingsRepositoryImpl(this._dataSource);
-
   final LocalStorageDataSource _dataSource;
 
   @override
@@ -15,11 +14,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       return _dataSource.getBool(StorageKeys.useScientificNotation);
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to load settings',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to load settings', error.toString(), stackTrace);
     }
   }
 
@@ -28,11 +23,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       await _dataSource.setBool(StorageKeys.useScientificNotation, useScientific);
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to save settings',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to save settings', error.toString(), stackTrace);
     }
   }
 
@@ -41,11 +32,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
     try {
       await _dataSource.remove(StorageKeys.useScientificNotation);
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to clear settings',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to clear settings', error.toString(), stackTrace);
     }
   }
 }

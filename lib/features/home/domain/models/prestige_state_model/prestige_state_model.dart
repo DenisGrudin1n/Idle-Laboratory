@@ -15,14 +15,13 @@ abstract class PrestigeStateModel with _$PrestigeStateModel {
     required int prestigeCount,
   }) = _PrestigeStateModel;
 
-  factory PrestigeStateModel.fromJson(Map<String, dynamic> json) =>
-      _$PrestigeStateModelFromJson(json);
+  factory PrestigeStateModel.fromJson(Map<String, dynamic> json) => _$PrestigeStateModelFromJson(json);
 
   factory PrestigeStateModel.initial() => PrestigeStateModel(
-    totalMultiplier: BigNumber(1, 0),
-    currentThreshold: BigNumber(1, 2),
-    currentMultiplier: BigNumber.zero(),
-    isUnlocked: false,
-    prestigeCount: 0,
-  );
+        totalMultiplier: BigNumber(1, 0),
+        currentThreshold: BigNumber(1, 2),
+        currentMultiplier: BigNumber.zero(),
+        isUnlocked: false,
+        prestigeCount: 0,
+      );
 }

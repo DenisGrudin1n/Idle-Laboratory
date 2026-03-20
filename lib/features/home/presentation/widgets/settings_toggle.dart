@@ -9,56 +9,28 @@ class SettingsToggle extends StatelessWidget {
   const SettingsToggle({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final useScientific = context.select(
-      (SettingsBloc bloc) => bloc.state.isScientificNotation,
-    );
-
-    return Container(
-      margin: EdgeInsets.all(16.w),
-      height: 40.h,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-      decoration: BoxDecoration(
-        color: context.color.drawerBackground,
-        borderRadius: BorderRadius.circular(8.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            l10n.scientificNotation,
-            style: TextStyle(
-              color: context.color.primaryText,
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          InkWell(
-            onTap: () => context.read<SettingsBloc>().add(
-              const SettingsEvent.toggleScientificNotation(),
-            ),
-            borderRadius: BorderRadius.circular(8.r),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
-              decoration: BoxDecoration(
-                color: useScientific
-                    ? context.color.primary
-                    : context.color.background,
+  Widget build(BuildContext context) => BlocSelector<SettingsBloc, SettingsState, bool>(
+        selector: (state) => state.isScientificNotation,
+        builder: (context, isScientific) => Container(
+          margin: EdgeInsets.all(16.w),
+          height: 40.h,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+          decoration: BoxDecoration(color: context.color.drawerBackground, borderRadius: BorderRadius.circular(8.r)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(context.l10n.scientificNotation, style: TextStyle(color: context.color.primaryText, fontSize: 12.sp, fontWeight: FontWeight.w500)),
+              InkWell(
+                onTap: () => context.read<SettingsBloc>().add(const SettingsEvent.toggleScientificNotation()),
                 borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                useScientific ? l10n.on : l10n.off,
-                style: TextStyle(
-                  color: context.color.primaryText,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.bold,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                  decoration: BoxDecoration(color: isScientific ? context.color.primary : context.color.background, borderRadius: BorderRadius.circular(8.r)),
+                  child: Text(isScientific ? context.l10n.on : context.l10n.off, style: TextStyle(color: context.color.primaryText, fontSize: 12.sp, fontWeight: FontWeight.bold)),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      );
 }

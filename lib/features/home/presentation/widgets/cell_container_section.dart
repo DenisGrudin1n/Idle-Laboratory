@@ -9,72 +9,51 @@ import 'package:idle_laboratory/features/home/presentation/widgets/animated_cell
 
 class CellContainerSection extends StatefulWidget {
   const CellContainerSection({super.key});
-
   @override
   State<CellContainerSection> createState() => _CellContainerSectionState();
 }
 
-class _CellContainerSectionState extends State<CellContainerSection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+class _CellContainerSectionState extends State<CellContainerSection> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000))..repeat();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => SectionCard(
-    child: SizedBox(
-      width: 0.2.sw,
-      height: double.infinity,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // Cell container with energy
-            Builder(
-              builder: (context) {
-                final selectedCellId = context.select(
-                  (CellsBloc bloc) => bloc.state.selectedCellId,
-                );
-                if (selectedCellId == null)
-                  return SizedBox(width: 120.w, height: 72.h);
-
+        child: SizedBox(
+          width: 0.2.sw,
+          height: double.infinity,
+          child: Center(
+            child: BlocSelector<CellsBloc, CellsState, String?>(
+              selector: (state) => state.selectedCellId,
+              builder: (context, selectedCellId) {
+                if (selectedCellId == null) return SizedBox(width: 120.w, height: 72.h);
                 final cellId = CellId.fromString(selectedCellId);
                 if (cellId == null) return SizedBox(width: 120.w, height: 72.h);
 
-                final fillLevel = context.select(
-                  (CellsBloc bloc) => bloc.getFillLevel(selectedCellId),
-                );
-                final visualTheme = context.getCellTheme(cellId);
-
-                return RepaintBoundary(
-                  child: SizedBox(
-                    width: 120.w,
-                    height: 72.h,
-                    child: AnimatedCellContainer(
-                      fillLevel: fillLevel,
-                      visualTheme: visualTheme,
-                      animation: _animationController,
+                return BlocSelector<CellsBloc, CellsState, double>(
+                  selector: (state) => context.read<CellsBloc>().getFillLevel(selectedCellId),
+                  builder: (context, fillLevel) => RepaintBoundary(
+                    child: SizedBox(
+                      width: 120.w,
+                      height: 72.h,
+                      child: AnimatedCellContainer(fillLevel: fillLevel, visualTheme: context.getCellTheme(cellId), animation: _controller),
                     ),
                   ),
                 );
               },
             ),
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 }

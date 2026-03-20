@@ -14,35 +14,23 @@ part 'prestige_bloc.freezed.dart';
 
 @injectable
 class PrestigeBloc extends SafeBloc<PrestigeEvent, PrestigeState> {
-  PrestigeBloc(this._prestigeService, this._energyService, this._cellsService)
-    : super(PrestigeState(prestigeState: PrestigeStateModel.initial())) {
+  PrestigeBloc(this._prestigeService, this._energyService, this._cellsService) : super(PrestigeState(prestigeState: PrestigeStateModel.initial())) {
     on<_PrestigeStateChanged>(_onPrestigeStateChanged);
     on<_Start>(_onStart);
     on<_Prestige>(_onPrestige);
     on<_ResetPrestige>(_onResetPrestige);
-
     _initialize();
   }
 
   final PrestigeService _prestigeService;
   final EnergyService _energyService;
   final CellsService _cellsService;
-
   StreamSubscription<PrestigeStateModel>? _prestigeSubscription;
 
-  void _initialize() {
-    _prestigeSubscription = _prestigeService.prestigeState$.listen(
-      (prestigeState) => add(PrestigeEvent.prestigeStateChanged(prestigeState)),
-    );
-  }
+  void _initialize() => _prestigeSubscription = _prestigeService.prestigeState$.listen((prestigeState) => add(PrestigeEvent.prestigeStateChanged(prestigeState)));
 
-  void _onPrestigeStateChanged(
-    _PrestigeStateChanged event,
-    Emitter<PrestigeState> emit,
-  ) => emit(state.copyWith(prestigeState: event.prestigeState));
-
-  void _onStart(_Start event, Emitter<PrestigeState> emit) =>
-      _prestigeService.start();
+  void _onPrestigeStateChanged(_PrestigeStateChanged event, Emitter<PrestigeState> emit) => emit(state.copyWith(prestigeState: event.prestigeState));
+  void _onStart(_Start event, Emitter<PrestigeState> emit) => _prestigeService.start();
 
   Future<void> _onPrestige(_Prestige event, Emitter<PrestigeState> emit) async {
     if (state.prestigeState == null || !state.prestigeState!.isUnlocked) return;
@@ -51,10 +39,7 @@ class PrestigeBloc extends SafeBloc<PrestigeEvent, PrestigeState> {
     _cellsService.reset();
   }
 
-  Future<void> _onResetPrestige(
-    _ResetPrestige event,
-    Emitter<PrestigeState> emit,
-  ) async {
+  Future<void> _onResetPrestige(_ResetPrestige event, Emitter<PrestigeState> emit) async {
     await _prestigeService.reset();
     _energyService.reset();
     _cellsService.reset();

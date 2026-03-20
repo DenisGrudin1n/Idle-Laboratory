@@ -17,6 +17,5 @@ abstract class CellModel with _$CellModel {
     String? energyPerSecond,
   }) = _CellModel;
 
-  factory CellModel.fromJson(Map<String, dynamic> json) =>
-      _$CellModelFromJson(json);
+  factory CellModel.fromJson(Map<String, dynamic> json) => _$CellModelFromJson(json);
 }

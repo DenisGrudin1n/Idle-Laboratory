@@ -8,7 +8,6 @@ import 'package:idle_laboratory/features/home/presentation/widgets/top_navigatio
 
 class CellContent extends StatefulWidget {
   const CellContent({super.key});
-
   @override
   State<CellContent> createState() => _CellContentState();
 }
@@ -18,25 +17,20 @@ class _CellContentState extends State<CellContent> {
 
   @override
   Widget build(BuildContext context) => Column(
-    children: <Widget>[
-      // Top navigation bar
+    children: [
       TopNavigationBar(
         selectedTab: _selectedTab,
-        onTabSelected: (CellsTab tab) => setState(() => _selectedTab = tab),
+        onTabSelected: (tab) => setState(() => _selectedTab = tab),
       ),
       SizedBox(height: 12.w),
-      // Content area with cells drawer
       Expanded(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            // Cells list drawer
+          children: [
             const CellsListSection(),
             SizedBox(width: 12.w),
-            // Cell container display
             const Expanded(child: CellContainerSection()),
             SizedBox(width: 12.w),
-            // Prestige drawer
             const PrestigeInfoSection(),
           ],
         ),

@@ -8,7 +8,6 @@ import 'package:idle_laboratory/features/home/presentation/widgets/settings_togg
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -17,33 +16,27 @@ class _HomeScreenState extends State<HomeScreen> {
   MainNavigationTab _selectedTab = MainNavigationTab.cells;
 
   Widget _buildContent() => switch (_selectedTab) {
-    MainNavigationTab.cells => const CellContent(),
-    MainNavigationTab.chemicals => const SizedBox.shrink(),
-    MainNavigationTab.settings => const SettingsToggle(),
-    MainNavigationTab.statistics => const SizedBox.shrink(),
-    MainNavigationTab.achievements => const SizedBox.shrink(),
-  };
+        MainNavigationTab.cells => const CellContent(),
+        MainNavigationTab.chemicals => const SizedBox.shrink(),
+        MainNavigationTab.settings => const SettingsToggle(),
+        MainNavigationTab.statistics => const SizedBox.shrink(),
+        MainNavigationTab.achievements => const SizedBox.shrink(),
+      };
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: context.color.background,
-    body: SafeArea(
-      top: false,
-      bottom: false,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // Left navigation drawer with energy display inside
-          MainNavigationBar(
-            selectedTab: _selectedTab,
-            onTabSelected: (MainNavigationTab tab) =>
-                setState(() => _selectedTab = tab),
+        backgroundColor: context.color.background,
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              MainNavigationBar(selectedTab: _selectedTab, onTabSelected: (tab) => setState(() => _selectedTab = tab)),
+              SizedBox(width: 12.w),
+              Expanded(child: _buildContent()),
+            ],
           ),
-          SizedBox(width: 12.w),
-          // Right content area - full width
-          Expanded(child: _buildContent()),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 }

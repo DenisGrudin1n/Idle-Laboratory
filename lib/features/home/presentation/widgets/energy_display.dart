@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 
@@ -10,40 +11,25 @@ class EnergyDisplay extends StatelessWidget {
   const EnergyDisplay({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-
-    final energyState = context.select((EnergyBloc bloc) => bloc.state);
-    final useScientific = context.select(
-      (SettingsBloc bloc) => bloc.state.isScientificNotation,
-    );
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            energyState.currentEnergy.format(useScientific: useScientific),
-            style: TextStyle(
-              color: context.color.titleText,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            '+${energyState.energyPerSecond.format(useScientific: useScientific)} ${l10n.perSecond}',
-            style: TextStyle(
-              color: context.color.green,
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => BlocSelector<SettingsBloc, SettingsState, bool>(
+        selector: (state) => state.isScientificNotation,
+        builder: (context, isScientific) => BlocSelector<EnergyBloc, EnergyState, (BigNumber, BigNumber)>(
+          selector: (state) => (state.currentEnergy, state.energyPerSecond),
+          builder: (context, data) {
+            final (currentEnergy, energyPerSecond) = data;
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(currentEnergy.format(useScientific: isScientific), style: TextStyle(color: context.color.titleText, fontSize: 20.sp, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                  SizedBox(height: 2.h),
+                  Text('+${energyPerSecond.format(useScientific: isScientific)} ${context.l10n.perSecond}',
+                      style: TextStyle(color: context.color.green, fontSize: 11.sp, fontWeight: FontWeight.w500), textAlign: TextAlign.center),
+                ],
+              ),
+            );
+          },
+        ),
+      );
 }

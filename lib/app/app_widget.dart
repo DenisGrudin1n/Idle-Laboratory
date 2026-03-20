@@ -15,45 +15,31 @@ class AppWidget extends StatelessWidget {
   const AppWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) => getIt<EnergyBloc>()..add(const EnergyEvent.start()),
-        ),
-        BlocProvider(
-          create: (_) =>
-              getIt<PrestigeBloc>()..add(const PrestigeEvent.start()),
-        ),
-        BlocProvider(create: (_) => getIt<SettingsBloc>()),
-        BlocProvider(
-          create: (_) => getIt<CellsBloc>()..add(const CellsEvent.start()),
-        ),
-      ],
-      child: ScreenUtilInit(
-        designSize: Size(
-          390 * (MediaQuery.sizeOf(context).width / 390),
-          844 * (MediaQuery.sizeOf(context).height / 844),
-        ),
-        splitScreenMode: true,
-        child: MediaQuery(
-          data: MediaQuery.of(
-            context,
-          ).copyWith(textScaler: TextScaler.noScaling),
-          child: MaterialApp.router(
-            routerConfig: AppRouter.router,
-            theme: AppTheme.defaultTheme,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [Locale('en')],
-            debugShowCheckedModeBanner: false,
+  Widget build(BuildContext context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => getIt<EnergyBloc>()..add(const EnergyEvent.start())),
+          BlocProvider(create: (_) => getIt<PrestigeBloc>()..add(const PrestigeEvent.start())),
+          BlocProvider(create: (_) => getIt<SettingsBloc>()),
+          BlocProvider(create: (_) => getIt<CellsBloc>()..add(const CellsEvent.start())),
+        ],
+        child: ScreenUtilInit(
+          designSize: Size(390 * (MediaQuery.sizeOf(context).width / 390), 844 * (MediaQuery.sizeOf(context).height / 844)),
+          splitScreenMode: true,
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+            child: MaterialApp.router(
+              routerConfig: AppRouter.router,
+              theme: AppTheme.defaultTheme,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('en')],
+              debugShowCheckedModeBanner: false,
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }

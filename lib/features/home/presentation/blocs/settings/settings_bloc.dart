@@ -20,15 +20,10 @@ class SettingsBloc extends SafeBloc<SettingsEvent, SettingsState> {
 
   Future<void> _loadSettings() async {
     final useScientific = await _settingsRepository.getUseScientificNotation();
-    if (useScientific != null) {
-      emit(state.copyWith(isScientificNotation: useScientific));
-    }
+    if (useScientific != null) emit(state.copyWith(isScientificNotation: useScientific));
   }
 
-  Future<void> _onToggleScientificNotation(
-    _ToggleScientificNotation event,
-    Emitter<SettingsState> emit,
-  ) async {
+  Future<void> _onToggleScientificNotation(_ToggleScientificNotation event, Emitter<SettingsState> emit) async {
     final newValue = !state.isScientificNotation;
     emit(state.copyWith(isScientificNotation: newValue));
     await _settingsRepository.saveUseScientificNotation(newValue);

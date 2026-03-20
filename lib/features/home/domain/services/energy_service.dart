@@ -13,34 +13,25 @@ class EnergyService {
 
   final BehaviorSubject<BigNumber> _energySubject = BehaviorSubject<BigNumber>();
   final BehaviorSubject<BigNumber> _epsSubject = BehaviorSubject<BigNumber>();
-
   Timer? _timer;
 
   Stream<BigNumber> get energy$ => _energySubject.stream.distinct();
   Stream<BigNumber> get eps$ => _epsSubject.stream.distinct();
-
   BigNumber get currentEnergy => _energySubject.value;
   BigNumber get currentEPS => _epsSubject.value;
 
   void start() {
     _timer?.cancel();
-    _timer = Timer.periodic(
-      const Duration(milliseconds: GameConstants.energyUpdateIntervalMs),
-      (_) => _generateEnergy(),
-    );
+    _timer = Timer.periodic(const Duration(milliseconds: GameConstants.energyUpdateIntervalMs), (_) => _generateEnergy());
   }
 
   void _generateEnergy() {
-    final increment = _epsSubject.value.multiplyByDouble(
-      GameConstants.energyUpdateIntervalMs * 0.001,
-    );
+    final increment = _epsSubject.value.multiplyByDouble(GameConstants.energyUpdateIntervalMs * 0.001);
     _energySubject.add(_energySubject.value + increment);
   }
 
   void updateEPS(BigNumber newEPS) {
-    if (_epsSubject.value != newEPS) {
-      _epsSubject.add(newEPS);
-    }
+    if (_epsSubject.value != newEPS) _epsSubject.add(newEPS);
   }
 
   void reset() {

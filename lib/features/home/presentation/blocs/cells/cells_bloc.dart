@@ -14,67 +14,41 @@ part 'cells_bloc.freezed.dart';
 
 @injectable
 class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
-  CellsBloc(this._cellsService, this._energyService)
-    : super(const CellsState()) {
+  CellsBloc(this._cellsService, this._energyService) : super(const CellsState()) {
     on<_CellsChanged>(_onCellsChanged);
     on<_CellEnergiesChanged>(_onCellEnergiesChanged);
     on<_TotalEnergyChanged>(_onTotalEnergyChanged);
     on<_SelectCell>(_onSelectCell);
     on<_Start>(_onStart);
-
     _initialize();
   }
 
   final CellsService _cellsService;
   final EnergyService _energyService;
-
   StreamSubscription<List<CellModel>>? _cellsSubscription;
   StreamSubscription<Map<String, BigNumber>>? _cellEnergiesSubscription;
   StreamSubscription<BigNumber>? _totalEnergySubscription;
 
   void _initialize() {
-    _cellsSubscription = _cellsService.cells$.listen(
-      (cells) => add(CellsEvent.cellsChanged(cells)),
-    );
-
-    _cellEnergiesSubscription = _cellsService.cellEnergies$.listen(
-      (cellEnergies) => add(CellsEvent.cellEnergiesChanged(cellEnergies)),
-    );
-
-    _totalEnergySubscription = _energyService.energy$.listen(
-      (energy) => add(CellsEvent.totalEnergyChanged(energy)),
-    );
+    _cellsSubscription = _cellsService.cells$.listen((cells) => add(CellsEvent.cellsChanged(cells)));
+    _cellEnergiesSubscription = _cellsService.cellEnergies$.listen((cellEnergies) => add(CellsEvent.cellEnergiesChanged(cellEnergies)));
+    _totalEnergySubscription = _energyService.energy$.listen((energy) => add(CellsEvent.totalEnergyChanged(energy)));
   }
 
-  void _onCellsChanged(_CellsChanged event, Emitter<CellsState> emit) {
-    emit(
-      state.copyWith(
+  void _onCellsChanged(_CellsChanged event, Emitter<CellsState> emit) => emit(state.copyWith(
         cells: event.cells,
-        selectedCellId:
-            state.selectedCellId ??
-            (event.cells.isNotEmpty ? event.cells.first.id : null),
-      ),
-    );
-  }
+        selectedCellId: state.selectedCellId ?? (event.cells.isNotEmpty ? event.cells.first.id : null),
+      ));
 
-  void _onCellEnergiesChanged(
-    _CellEnergiesChanged event,
-    Emitter<CellsState> emit,
-  ) => emit(state.copyWith(cellEnergies: event.cellEnergies));
+  void _onCellEnergiesChanged(_CellEnergiesChanged event, Emitter<CellsState> emit) => emit(state.copyWith(cellEnergies: event.cellEnergies));
 
-  void _onTotalEnergyChanged(
-    _TotalEnergyChanged event,
-    Emitter<CellsState> emit,
-  ) => emit(state.copyWith(totalEnergy: event.energy));
+  void _onTotalEnergyChanged(_TotalEnergyChanged event, Emitter<CellsState> emit) => emit(state.copyWith(totalEnergy: event.energy));
 
-  void _onSelectCell(_SelectCell event, Emitter<CellsState> emit) =>
-      emit(state.copyWith(selectedCellId: event.cellId));
+  void _onSelectCell(_SelectCell event, Emitter<CellsState> emit) => emit(state.copyWith(selectedCellId: event.cellId));
 
-  void _onStart(_Start event, Emitter<CellsState> emit) =>
-      _cellsService.start();
+  void _onStart(_Start event, Emitter<CellsState> emit) => _cellsService.start();
 
-  double getFillLevel(String? cellId) =>
-      cellId == null ? 0.0 : _cellsService.getFillLevel(cellId);
+  double getFillLevel(String? cellId) => cellId == null ? 0.0 : _cellsService.getFillLevel(cellId);
 
   @override
   Future<void> close() async {

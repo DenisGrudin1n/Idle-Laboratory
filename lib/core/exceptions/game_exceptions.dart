@@ -6,14 +6,7 @@ class GameException implements Exception {
   final StackTrace? stackTrace;
 
   @override
-  String toString() {
-    final buffer = StringBuffer('GameException: $message');
-    if (details != null) {
-      buffer.write('\nDetails: $details');
-    }
-    if (stackTrace != null) {
-      buffer.write('\nStack trace:\n$stackTrace');
-    }
-    return buffer.toString();
-  }
+  String toString() => 'GameException: $message'
+      '${details != null ? '\nDetails: $details' : ''}'
+      '${stackTrace != null ? '\nStack trace:\n$stackTrace' : ''}';
 }

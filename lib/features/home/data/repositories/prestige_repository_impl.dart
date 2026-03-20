@@ -8,7 +8,6 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: PrestigeRepository)
 class PrestigeRepositoryImpl implements PrestigeRepository {
   const PrestigeRepositoryImpl(this._dataSource);
-
   final LocalStorageDataSource _dataSource;
 
   @override
@@ -17,27 +16,16 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
       final json = _dataSource.getString(StorageKeys.prestigeTotalMultiplier);
       return json != null ? _parseBigNumber(json) : null;
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to load prestige multiplier',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to load prestige multiplier', error.toString(), stackTrace);
     }
   }
 
   @override
   Future<void> saveTotalMultiplier(BigNumber multiplier) async {
     try {
-      await _dataSource.setString(
-        StorageKeys.prestigeTotalMultiplier,
-        _serializeBigNumber(multiplier),
-      );
+      await _dataSource.setString(StorageKeys.prestigeTotalMultiplier, _serializeBigNumber(multiplier));
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to save prestige multiplier',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to save prestige multiplier', error.toString(), stackTrace);
     }
   }
 
@@ -47,27 +35,16 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
       final json = _dataSource.getString(StorageKeys.prestigeThreshold);
       return json != null ? _parseBigNumber(json) : null;
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to load prestige threshold',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to load prestige threshold', error.toString(), stackTrace);
     }
   }
 
   @override
   Future<void> saveCurrentThreshold(BigNumber threshold) async {
     try {
-      await _dataSource.setString(
-        StorageKeys.prestigeThreshold,
-        _serializeBigNumber(threshold),
-      );
+      await _dataSource.setString(StorageKeys.prestigeThreshold, _serializeBigNumber(threshold));
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to save prestige threshold',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to save prestige threshold', error.toString(), stackTrace);
     }
   }
 
@@ -76,11 +53,7 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
     try {
       return _dataSource.getInt(StorageKeys.prestigeCount);
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to load prestige count',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to load prestige count', error.toString(), stackTrace);
     }
   }
 
@@ -89,11 +62,7 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
     try {
       await _dataSource.setInt(StorageKeys.prestigeCount, count);
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to save prestige count',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to save prestige count', error.toString(), stackTrace);
     }
   }
 
@@ -104,24 +73,14 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
       await _dataSource.remove(StorageKeys.prestigeThreshold);
       await _dataSource.remove(StorageKeys.prestigeCount);
     } catch (error, stackTrace) {
-      throw GameException(
-        'Failed to clear prestige data',
-        error.toString(),
-        stackTrace,
-      );
+      throw GameException('Failed to clear prestige data', error.toString(), stackTrace);
     }
   }
 
   BigNumber _parseBigNumber(String json) {
     final parts = json.split('e');
-    if (parts.length == 2) {
-      final mantissa = double.parse(parts[0]);
-      final exponent = int.parse(parts[1]);
-      return BigNumber(mantissa, exponent);
-    }
-    return BigNumber.fromDouble(double.parse(json));
+    return parts.length == 2 ? BigNumber(double.parse(parts[0]), int.parse(parts[1])) : BigNumber.fromDouble(double.parse(json));
   }
 
-  String _serializeBigNumber(BigNumber value) =>
-      '${value.mantissa}e${value.exponent}';
+  String _serializeBigNumber(BigNumber value) => '${value.mantissa}e${value.exponent}';
 }
