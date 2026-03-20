@@ -76,7 +76,8 @@ class SectionHeader extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color: iconBackgroundColor ??
+              color:
+                  iconBackgroundColor ??
                   context.color.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8.r),
             ),
@@ -106,7 +107,8 @@ class SectionHeader extends StatelessWidget {
                 Text(
                   description!,
                   style: TextStyle(
-                    color: descriptionColor ??
+                    color:
+                        descriptionColor ??
                         context.color.primaryText.withValues(alpha: 0.7),
                     fontSize: descriptionFontSize ?? 9.sp,
                   ),

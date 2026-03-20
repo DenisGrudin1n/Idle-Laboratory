@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
@@ -23,9 +24,13 @@ class PrestigeService {
   PrestigeStateModel get currentState => _prestigeStateSubject.value;
 
   void _initializeState() {
-    _loadState().then((PrestigeStateModel loadedState) {
-      _prestigeStateSubject.add(loadedState);
-    });
+    _loadState()
+        .then((PrestigeStateModel loadedState) {
+          _prestigeStateSubject.add(loadedState);
+        })
+        .catchError((Object error) {
+          _prestigeStateSubject.add(PrestigeStateModel.initial());
+        });
   }
 
   void start() {
@@ -103,15 +108,31 @@ class PrestigeService {
   }
 
   Future<void> _saveState(PrestigeStateModel state) async {
-    await _prestigeRepository.saveTotalMultiplier(state.totalMultiplier);
-    await _prestigeRepository.saveCurrentThreshold(state.currentThreshold);
-    await _prestigeRepository.savePrestigeCount(state.prestigeCount);
+    try {
+      await _prestigeRepository.saveTotalMultiplier(state.totalMultiplier);
+      await _prestigeRepository.saveCurrentThreshold(state.currentThreshold);
+      await _prestigeRepository.savePrestigeCount(state.prestigeCount);
+    } catch (error, stackTrace) {
+      throw GameException(
+        'Failed to persist prestige state',
+        error.toString(),
+        stackTrace,
+      );
+    }
   }
 
   Future<void> reset() async {
-    final PrestigeStateModel initialState = PrestigeStateModel.initial();
-    _prestigeStateSubject.add(initialState);
-    await _saveState(initialState);
+    try {
+      final PrestigeStateModel initialState = PrestigeStateModel.initial();
+      _prestigeStateSubject.add(initialState);
+      await _saveState(initialState);
+    } catch (error, stackTrace) {
+      throw GameException(
+        'Failed to reset prestige',
+        error.toString(),
+        stackTrace,
+      );
+    }
   }
 
   void dispose() {

@@ -71,7 +71,9 @@ class ProgressBarWidget extends StatelessWidget {
                 backgroundColor: backgroundColor ?? context.color.background,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   progressColor ??
-                      (isUnlocked ? context.color.green : context.color.primary),
+                      (isUnlocked
+                          ? context.color.green
+                          : context.color.primary),
                 ),
               ),
             ),
@@ -86,11 +88,13 @@ class ProgressBarWidget extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       shadows: <Shadow>[
                         Shadow(
-                          color: percentageShadowColor ?? context.color.background,
+                          color:
+                              percentageShadowColor ?? context.color.background,
                           blurRadius: 4,
                         ),
                         Shadow(
-                          color: percentageShadowColor ?? context.color.background,
+                          color:
+                              percentageShadowColor ?? context.color.background,
                           blurRadius: 4,
                         ),
                       ],

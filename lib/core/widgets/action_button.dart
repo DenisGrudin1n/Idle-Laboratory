@@ -90,7 +90,7 @@ class ActionButton extends StatelessWidget {
     final Color foregroundColor = isEnabled
         ? (enabledTextColor ?? Colors.white)
         : (disabledTextColor ??
-            context.color.primaryText.withValues(alpha: 0.5));
+              context.color.primaryText.withValues(alpha: 0.5));
 
     final double radius = borderRadius ?? 8.r;
 
@@ -113,11 +113,7 @@ class ActionButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: mainAxisSize,
             children: <Widget>[
-              Icon(
-                icon,
-                color: foregroundColor,
-                size: iconSize ?? 14.sp,
-              ),
+              Icon(icon, color: foregroundColor, size: iconSize ?? 14.sp),
               SizedBox(width: 6.w),
               Flexible(
                 child: Text(
