@@ -55,8 +55,8 @@ class ProgressBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double clampedProgress = progress.clamp(0.0, 1.0);
-    final bool isUnlocked = progress >= 1.0;
+    final clampedProgress = progress.clamp(0.0, 1.0);
+    final isUnlocked = progress >= 1.0;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius ?? 6.r),

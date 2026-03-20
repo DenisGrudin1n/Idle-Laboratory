@@ -46,11 +46,11 @@ class _CellContainerPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double containerWidth = size.width * 0.7;
-    final double containerHeight = size.height * 0.85;
-    final double centerX = size.width / 2;
-    final double topY = size.height * 0.1;
-    final double bottomY = topY + containerHeight;
+    final containerWidth = size.width * 0.7;
+    final containerHeight = size.height * 0.85;
+    final centerX = size.width / 2;
+    final topY = size.height * 0.1;
+    final bottomY = topY + containerHeight;
 
     // Draw container base using extension
     canvas.drawCellContainer(
@@ -80,15 +80,15 @@ class _CellContainerPainter extends CustomPainter {
     double bottomY,
     double width,
   ) {
-    final double containerHeight = bottomY - topY;
-    final double fillHeight = containerHeight * fillLevel;
-    final double fillTop = bottomY - fillHeight;
+    final containerHeight = bottomY - topY;
+    final fillHeight = containerHeight * fillLevel;
+    final fillTop = bottomY - fillHeight;
 
     // Save canvas state before clipping
     canvas.save();
 
     // Clip to container bounds using extension
-    final Path clipPath = canvas.getContainerClipPath(
+    final clipPath = canvas.getContainerClipPath(
       centerX: centerX,
       topY: topY,
       bottomY: bottomY,
@@ -97,7 +97,7 @@ class _CellContainerPainter extends CustomPainter {
     canvas.clipPath(clipPath);
 
     // Build the per-draw gradient colors with the required alpha values.
-    final List<Color> fillColors = <Color>[
+    final fillColors = <Color>[
       visualTheme.energyFillGradient.colors[0].withValues(alpha: 0.7),
       visualTheme.energyFillGradient.colors[1].withValues(alpha: 0.85),
       visualTheme.energyFillGradient.colors[2],
@@ -150,20 +150,20 @@ class _CellContainerPainter extends CustomPainter {
     );
 
     // Draw glow at the top
-    final List<Color> glowColors = <Color>[
+    final glowColors = <Color>[
       visualTheme.energyGlowGradient.colors[0].withValues(alpha: 0.8),
       visualTheme.energyGlowGradient.colors[1].withValues(alpha: 0.5),
       Colors.transparent,
     ];
-    canvas.drawEnergyGlow(
-      centerX: centerX,
-      fillTop: fillTop,
-      width: width,
-      glowColors: glowColors,
-    );
-
+    canvas
+      ..drawEnergyGlow(
+        centerX: centerX,
+        fillTop: fillTop,
+        width: width,
+        glowColors: glowColors,
+      )
+      ..restore();
     // Restore canvas state to remove clipping
-    canvas.restore();
   }
 
   @override

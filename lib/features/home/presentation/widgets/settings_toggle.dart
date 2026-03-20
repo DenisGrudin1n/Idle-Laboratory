@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 
 class SettingsToggle extends StatelessWidget {
   const SettingsToggle({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
-    final bool useScientific = context.select(
-      (SettingsCubit cubit) => cubit.state.isScientificNotation,
+    final l10n = context.l10n;
+    final useScientific = context.select(
+      (SettingsBloc bloc) => bloc.state.isScientificNotation,
     );
 
     return Container(
@@ -23,7 +25,7 @@ class SettingsToggle extends StatelessWidget {
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
+        children: [
           Text(
             l10n.scientificNotation,
             style: TextStyle(
@@ -33,9 +35,9 @@ class SettingsToggle extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {
-              context.read<SettingsCubit>().toggleScientificNotation();
-            },
+            onTap: () => context.read<SettingsBloc>().add(
+              const SettingsEvent.toggleScientificNotation(),
+            ),
             borderRadius: BorderRadius.circular(8.r),
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),

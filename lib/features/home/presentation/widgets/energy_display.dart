@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 
 class EnergyDisplay extends StatelessWidget {
   const EnergyDisplay({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
+    final l10n = context.l10n;
 
-    final EnergyState energyState = context.select(
-      (EnergyCubit cubit) => cubit.state,
-    );
-
-    final bool useScientific = context.select(
-      (SettingsCubit cubit) => cubit.state.isScientificNotation,
+    final energyState = context.select((EnergyBloc bloc) => bloc.state);
+    final useScientific = context.select(
+      (SettingsBloc bloc) => bloc.state.isScientificNotation,
     );
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+        children: [
           Text(
             energyState.currentEnergy.format(useScientific: useScientific),
             style: TextStyle(

@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
+import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/extensions/cell_level_extensions.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/core/widgets/status_badge.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 
 class CellsListSection extends StatelessWidget {
   const CellsListSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
+    final l10n = context.l10n;
 
-    final List<CellModel> cells = context.select(
-      (CellsCubit cubit) => cubit.state.cells,
+    final cells = context.select((CellsBloc bloc) => bloc.state.cells);
+    final rawSelectedCellId = context.select(
+      (CellsBloc bloc) => bloc.state.selectedCellId,
     );
-
-    final String? rawSelectedCellId = context.select(
-      (CellsCubit cubit) => cubit.state.selectedCellId,
-    );
-    final String? selectedCellId =
-        cells.any((CellModel cell) => cell.id == rawSelectedCellId)
+    final selectedCellId = cells.any((cell) => cell.id == rawSelectedCellId)
         ? rawSelectedCellId
         : null;
 
@@ -62,16 +65,17 @@ class CellsListSection extends StatelessWidget {
               child: ListView.separated(
                 padding: EdgeInsets.all(8.w),
                 itemCount: cells.length,
-                separatorBuilder: (BuildContext context, int index) =>
-                    SizedBox(height: 8.h),
-                itemBuilder: (BuildContext context, int index) {
-                  final CellModel cell = cells[index];
-                  final bool isSelected = selectedCellId == cell.id;
+                separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                itemBuilder: (context, index) {
+                  final cell = cells[index];
+                  final isSelected = selectedCellId == cell.id;
 
                   return _CellItem(
                     cell: cell,
                     isSelected: isSelected,
-                    onTap: () => context.read<CellsCubit>().selectCell(cell.id),
+                    onTap: () => context.read<CellsBloc>().add(
+                      CellsEvent.selectCell(cell.id),
+                    ),
                   );
                 },
               ),
@@ -109,7 +113,7 @@ class _CellItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
+    final l10n = context.l10n;
 
     return Material(
       color: Colors.transparent,
@@ -163,24 +167,23 @@ class _CellItem extends StatelessWidget {
                 SizedBox(height: 4.h),
                 // Energy requirement for next level
                 () {
-                  final CellId? cellId = CellId.fromString(cell.id);
+                  final cellId = CellId.fromString(cell.id);
                   if (cellId == null) {
                     return const SizedBox.shrink();
                   }
 
-                  final CellLevelModel? nextLevelConfig =
-                      CellLevelConstants.getLevelConfigs(
-                        cellId,
-                      ).getConfig(cell.level + 1);
+                  final nextLevelConfig = CellLevelConstants.getLevelConfigs(
+                    cellId,
+                  ).getConfig(cell.level + 1);
 
-                  final bool isScientific = context.select<SettingsCubit, bool>(
-                    (SettingsCubit cubit) => cubit.state.isScientificNotation,
+                  final isScientific = context.select(
+                    (SettingsBloc bloc) => bloc.state.isScientificNotation,
                   );
-                  final String text = nextLevelConfig == null
+                  final text = nextLevelConfig == null
                       ? l10n.maxLvl
                       : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format(useScientific: isScientific)}';
                   return Row(
-                    children: <Widget>[
+                    children: [
                       Icon(
                         Icons.battery_charging_full,
                         color: context.color.primaryText,
@@ -200,7 +203,7 @@ class _CellItem extends StatelessWidget {
                 }(),
                 SizedBox(height: 4.h),
                 Row(
-                  children: <Widget>[
+                  children: [
                     Icon(
                       Icons.arrow_upward,
                       color: context.color.green,
@@ -218,12 +221,12 @@ class _CellItem extends StatelessWidget {
                   ],
                 ),
               ],
-              if (cell.isLocked) ...<Widget>[
+              if (cell.isLocked) ...[
                 SizedBox(height: 6.h),
                 StatusBadge(
                   text: () {
-                    final CellId? cellId = CellId.fromString(cell.id);
-                    final String unlockRequirement = cellId != null
+                    final cellId = CellId.fromString(cell.id);
+                    final unlockRequirement = cellId != null
                         ? CellEnergyPerSecond.getNewCellUnlockRequirement(
                                 cellId,
                               ) ??

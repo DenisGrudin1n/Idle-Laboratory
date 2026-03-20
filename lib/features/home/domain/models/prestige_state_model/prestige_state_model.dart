@@ -19,8 +19,8 @@ abstract class PrestigeStateModel with _$PrestigeStateModel {
       _$PrestigeStateModelFromJson(json);
 
   factory PrestigeStateModel.initial() => PrestigeStateModel(
-    totalMultiplier: BigNumber(1.0, 0),
-    currentThreshold: BigNumber(1.0, 2),
+    totalMultiplier: BigNumber(1, 0),
+    currentThreshold: BigNumber(1, 2),
     currentMultiplier: BigNumber.zero(),
     isUnlocked: false,
     prestigeCount: 0,

@@ -1,5 +1,5 @@
 import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
-import 'package:idle_laboratory/core/enums/enums.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_level_extensions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
@@ -14,7 +14,7 @@ extension CellModelExt on CellModel {
   /// Gets the level configurations for this cell.
   /// Returns an empty list if cellId is invalid.
   List<CellLevelModel> get levelConfigs {
-    final CellId? id = cellId;
+    final id = cellId;
     if (id == null) {
       return <CellLevelModel>[];
     }
@@ -39,7 +39,7 @@ extension CellModelExt on CellModel {
   /// Returns the energy required to unlock this cell.
   /// Returns null if the cell id is invalid or no requirement is defined.
   BigNumber? get unlockRequirement {
-    final CellId? id = cellId;
+    final id = cellId;
     if (id == null) {
       return null;
     }
@@ -63,7 +63,7 @@ extension CellModelExt on CellModel {
     if (!isLocked) {
       return false;
     }
-    final BigNumber? requirement = unlockRequirement;
+    final requirement = unlockRequirement;
     if (requirement == null) {
       return false;
     }
@@ -78,7 +78,7 @@ extension CellModelExt on CellModel {
     if (isMaxLevel) {
       return false;
     }
-    final BigNumber? requirement = nextLevelEnergyRequired;
+    final requirement = nextLevelEnergyRequired;
     if (requirement == null) {
       return false;
     }
@@ -91,7 +91,7 @@ extension CellModelExt on CellModel {
     if (isLocked) {
       return BigNumber.zero();
     }
-    final CellId? id = cellId;
+    final id = cellId;
     if (id == null) {
       return BigNumber.zero();
     }
@@ -104,7 +104,7 @@ extension CellModelExt on CellModel {
     if (isLocked || isMaxLevel) {
       return BigNumber.zero();
     }
-    final CellId? id = cellId;
+    final id = cellId;
     if (id == null) {
       return BigNumber.zero();
     }
@@ -115,33 +115,33 @@ extension CellModelExt on CellModel {
   /// Returns 0.0 if locked or at max level.
   double getProgressToNextLevel(BigNumber currentEnergy) {
     if (isLocked || isMaxLevel) {
-      return 0.0;
+      return 0;
     }
 
-    final BigNumber? currentReq = currentLevelEnergyRequired;
-    final BigNumber? nextReq = nextLevelEnergyRequired;
+    final currentReq = currentLevelEnergyRequired;
+    final nextReq = nextLevelEnergyRequired;
 
     if (currentReq == null || nextReq == null) {
-      return 0.0;
+      return 0;
     }
 
     if (currentEnergy < currentReq) {
-      return 0.0;
+      return 0;
     }
     if (currentEnergy >= nextReq) {
-      return 1.0;
+      return 1;
     }
 
-    final BigNumber progressEnergy = currentEnergy - currentReq;
-    final BigNumber levelRange = nextReq - currentReq;
+    final progressEnergy = currentEnergy - currentReq;
+    final levelRange = nextReq - currentReq;
 
-    return progressEnergy.ratio(levelRange, max: 1.0);
+    return progressEnergy.ratio(levelRange, max: 1);
   }
 
   /// Returns the unlock requirement as a formatted string.
   /// Returns '???' if requirement is not defined.
   String getUnlockRequirementFormatted({bool compact = true}) {
-    final BigNumber? requirement = unlockRequirement;
+    final requirement = unlockRequirement;
     if (requirement == null) {
       return '???';
     }

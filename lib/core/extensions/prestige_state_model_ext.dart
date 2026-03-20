@@ -28,14 +28,14 @@ extension PrestigeStateModelExt on PrestigeStateModel {
   /// Requires current energy to calculate.
   double getProgress(BigNumber currentEnergy) {
     if (currentThreshold <= BigNumber.zero()) {
-      return 0.0;
+      return 0;
     }
-    return currentEnergy.ratio(currentThreshold, max: 1.0);
+    return currentEnergy.ratio(currentThreshold, max: 1);
   }
 
   /// Gets progress as a percentage string (e.g., "75%").
   String getProgressFormatted(BigNumber currentEnergy, {int decimals = 1}) {
-    final double progress = getProgress(currentEnergy);
+    final progress = getProgress(currentEnergy);
     return '${(progress * 100).toStringAsFixed(decimals)}%';
   }
 
@@ -54,6 +54,6 @@ extension PrestigeStateModelExt on PrestigeStateModel {
 
   /// Returns true if the multiplier gain is significant (>= 1.0).
   bool hasSignificantGain() {
-    return currentMultiplier >= BigNumber(1.0, 0);
+    return currentMultiplier >= BigNumber(1, 0);
   }
 }

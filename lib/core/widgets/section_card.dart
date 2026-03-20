@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
 /// A card that wraps home screen sections.
 ///
@@ -24,7 +24,7 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BorderRadius radius = borderRadius ?? BorderRadius.circular(10.r);
+    final radius = borderRadius ?? BorderRadius.circular(10.r);
 
     return ClipRRect(
       borderRadius: radius,

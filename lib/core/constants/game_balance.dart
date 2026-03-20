@@ -20,14 +20,14 @@ class GameBalance {
 
   /// Minimum multiplier gain required for prestige to be considered worthwhile.
   /// If gain is less than this, prestige is not recommended.
-  static final BigNumber prestigeMinimumGain = BigNumber(1.0, 0);
+  static final BigNumber prestigeMinimumGain = BigNumber(1, 0);
 
   /// Initial prestige threshold (first prestige unlock requirement).
-  static final BigNumber prestigeInitialThreshold = BigNumber(1.0, 3); // 1000
+  static final BigNumber prestigeInitialThreshold = BigNumber(1, 3); // 1000
 
   /// Multiplier for calculating prestige bonus from energy.
   /// Higher value = more generous prestige rewards.
-  static const double prestigeMultiplierFactor = 1.0;
+  static const double prestigeMultiplierFactor = 1;
 
   // ============================================================================
   // ENERGY CONSTANTS
@@ -38,7 +38,7 @@ class GameBalance {
 
   /// Maximum energy value (soft cap, can be exceeded but with diminishing returns).
   /// Set very high to effectively have no cap.
-  static final BigNumber maxEnergy = BigNumber(1.0, 308); // ~10^308
+  static final BigNumber maxEnergy = BigNumber(1, 308); // ~10^308
 
   /// Energy update tick rate in milliseconds.
   /// Lower value = smoother updates but more CPU usage.
@@ -79,7 +79,7 @@ class GameBalance {
 
   /// Precision threshold for energy comparisons.
   /// Values within this threshold are considered equal.
-  static final BigNumber energyPrecisionThreshold = BigNumber(1.0, -10);
+  static final BigNumber energyPrecisionThreshold = BigNumber(1, -10);
 
   // ============================================================================
   // UI/UX CONSTANTS
@@ -137,8 +137,7 @@ class GameBalance {
     if (level <= 1) {
       return baseCost;
     }
-    final double scaledCost =
-        baseCost.toDouble() * (cellLevelCostScaleFactor * level);
+    final scaledCost = baseCost.toDouble() * (cellLevelCostScaleFactor * level);
     return BigNumber.fromDouble(scaledCost);
   }
 
@@ -149,7 +148,7 @@ class GameBalance {
     if (level <= 1) {
       return baseEPS;
     }
-    final double scaledEPS = baseEPS.toDouble() * (cellEPSScaleFactor * level);
+    final scaledEPS = baseEPS.toDouble() * (cellEPSScaleFactor * level);
     return BigNumber.fromDouble(scaledEPS);
   }
 
@@ -161,7 +160,7 @@ class GameBalance {
     if (threshold <= BigNumber.zero()) {
       return BigNumber.zero();
     }
-    final double ratio = energy.ratio(threshold);
+    final ratio = energy.ratio(threshold);
     return BigNumber.fromDouble(ratio * prestigeMultiplierFactor);
   }
 }

@@ -53,18 +53,18 @@ extension BigNumberExt on BigNumber {
   /// Note: Only supports integer powers for precision.
   BigNumber pow(int power) {
     if (power == 0) {
-      return BigNumber(1.0, 0);
+      return BigNumber(1, 0);
     }
     if (power == 1) {
       return this;
     }
     if (power < 0) {
       // For negative powers, calculate 1 / (this^abs(power))
-      return BigNumber(1.0, 0).divide(pow(-power));
+      return BigNumber(1, 0).divide(pow(-power));
     }
 
-    BigNumber result = this;
-    for (int i = 1; i < power; i++) {
+    var result = this;
+    for (var i = 1; i < power; i++) {
       result = result * this;
     }
     return result;
@@ -77,12 +77,12 @@ extension BigNumberExt on BigNumber {
   String formatScientific() => format(useScientific: true);
 
   /// Formats the number with full precision.
-  String formatFull() => format(compact: false);
+  String formatFull() => format();
 
   /// Returns a percentage string (multiplies by 100 and adds %).
   /// Example: 0.75 -> "75%"
   String formatPercent({int decimals = 0}) {
-    final double percent = toDouble() * 100;
+    final percent = toDouble() * 100;
     return '${percent.toStringAsFixed(decimals)}%';
   }
 }

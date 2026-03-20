@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/energy_display.dart';
 
 class MainNavigationBar extends StatelessWidget {
   const MainNavigationBar({
@@ -14,7 +18,7 @@ class MainNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
+    final l10n = context.l10n;
 
     return SectionCard(
       child: SizedBox(
@@ -46,8 +50,8 @@ class MainNavigationBar extends StatelessWidget {
               return const EnergyDisplay();
             }
 
-            final MainNavigationTab tab = MainNavigationTab.values[index - 1];
-            final bool isActive = selectedTab == tab;
+            final tab = MainNavigationTab.values[index - 1];
+            final isActive = selectedTab == tab;
 
             return _DrawerTab(
               icon: tab.icon,

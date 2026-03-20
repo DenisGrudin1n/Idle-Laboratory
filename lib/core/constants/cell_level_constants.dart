@@ -17,12 +17,12 @@ class CellLevelConstants {
     // Level 2: 50 energy required
     CellLevelModel(
       level: 2,
-      energyRequired: BigNumber(5.0, 1), // 50
+      energyRequired: BigNumber(5, 1), // 50
     ),
     // Level 3: 1,000 energy required
     CellLevelModel(
       level: 3,
-      energyRequired: BigNumber(1.0, 3), // 1K
+      energyRequired: BigNumber(1, 3), // 1K
     ),
     // Level 4: 25,000 energy required
     CellLevelModel(
@@ -32,7 +32,7 @@ class CellLevelConstants {
     // Level 5: 500,000 energy required
     CellLevelModel(
       level: 5,
-      energyRequired: BigNumber(5.0, 5), // 500K
+      energyRequired: BigNumber(5, 5), // 500K
     ),
   ];
 
@@ -47,12 +47,12 @@ class CellLevelConstants {
     // Level 2: 500 energy required (10x basic)
     CellLevelModel(
       level: 2,
-      energyRequired: BigNumber(5.0, 2), // 500
+      energyRequired: BigNumber(5, 2), // 500
     ),
     // Level 3: 10,000 energy required (10x basic)
     CellLevelModel(
       level: 3,
-      energyRequired: BigNumber(1.0, 4), // 10K
+      energyRequired: BigNumber(1, 4), // 10K
     ),
     // Level 4: 250,000 energy required (10x basic)
     CellLevelModel(
@@ -62,7 +62,7 @@ class CellLevelConstants {
     // Level 5: 5,000,000 energy required (10x basic)
     CellLevelModel(
       level: 5,
-      energyRequired: BigNumber(5.0, 6), // 5M
+      energyRequired: BigNumber(5, 6), // 5M
     ),
   ];
 
@@ -83,8 +83,8 @@ class CellLevelConstants {
   /// Energy requirements for unlocking cells
   static final Map<CellId, BigNumber> cellUnlockRequirements =
       <CellId, BigNumber>{
-        CellId.heatCell: BigNumber(1.0, 3), // 1K
-        CellId.iceCell: BigNumber(1.0, 5), // 100K
-        CellId.darkMatterCell: BigNumber(1.0, 7), // 10M
+        CellId.heatCell: BigNumber(1, 3), // 1K
+        CellId.iceCell: BigNumber(1, 5), // 100K
+        CellId.darkMatterCell: BigNumber(1, 7), // 10M
       };
 }

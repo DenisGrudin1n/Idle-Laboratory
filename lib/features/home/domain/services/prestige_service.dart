@@ -1,12 +1,13 @@
 import 'dart:async';
-
 import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
+@lazySingleton
 class PrestigeService {
   PrestigeService(this._energyService, this._prestigeRepository) {
     _initializeState();
@@ -25,12 +26,10 @@ class PrestigeService {
 
   void _initializeState() {
     _loadState()
-        .then((PrestigeStateModel loadedState) {
-          _prestigeStateSubject.add(loadedState);
-        })
-        .catchError((Object error) {
-          _prestigeStateSubject.add(PrestigeStateModel.initial());
-        });
+        .then(_prestigeStateSubject.add)
+        .catchError(
+          (_) => _prestigeStateSubject.add(PrestigeStateModel.initial()),
+        );
   }
 
   void start() {
@@ -39,12 +38,12 @@ class PrestigeService {
   }
 
   void _onEnergyChanged(BigNumber totalEnergy) {
-    final PrestigeStateModel state = currentState;
-    final BigNumber newMultiplier = _calculateMultiplier(
+    final state = currentState;
+    final newMultiplier = _calculateMultiplier(
       totalEnergy,
       state.currentThreshold,
     );
-    final bool newIsUnlocked = newMultiplier >= BigNumber(1.0, 0);
+    final newIsUnlocked = newMultiplier >= BigNumber(1, 0);
 
     if (newMultiplier != state.currentMultiplier ||
         newIsUnlocked != state.isUnlocked) {
@@ -58,22 +57,18 @@ class PrestigeService {
   }
 
   BigNumber _calculateMultiplier(BigNumber energy, BigNumber threshold) {
-    if (threshold <= BigNumber.zero()) {
-      return BigNumber.zero();
-    }
-    final double ratio = energy.ratio(threshold);
+    if (threshold <= BigNumber.zero()) return BigNumber.zero();
+    final ratio = energy.ratio(threshold);
     return BigNumber.fromDouble(ratio);
   }
 
   Future<void> performPrestige() async {
-    if (!currentState.isUnlocked) {
-      return;
-    }
+    if (!currentState.isUnlocked) return;
 
-    final BigNumber currentEnergy = _energyService.currentEnergy;
-    final PrestigeStateModel oldState = currentState;
+    final currentEnergy = _energyService.currentEnergy;
+    final oldState = currentState;
 
-    final PrestigeStateModel newState = oldState.copyWith(
+    final newState = oldState.copyWith(
       totalMultiplier: oldState.totalMultiplier + oldState.currentMultiplier,
       currentThreshold: currentEnergy,
       currentMultiplier: BigNumber.zero(),
@@ -88,11 +83,9 @@ class PrestigeService {
   BigNumber getEffectiveMultiplier() => currentState.totalMultiplier;
 
   Future<PrestigeStateModel> _loadState() async {
-    final BigNumber? totalMultiplier = await _prestigeRepository
-        .getTotalMultiplier();
-    final BigNumber? threshold = await _prestigeRepository
-        .getCurrentThreshold();
-    final int? count = await _prestigeRepository.getPrestigeCount();
+    final totalMultiplier = await _prestigeRepository.getTotalMultiplier();
+    final threshold = await _prestigeRepository.getCurrentThreshold();
+    final count = await _prestigeRepository.getPrestigeCount();
 
     if (totalMultiplier != null && threshold != null && count != null) {
       return PrestigeStateModel(
@@ -123,7 +116,7 @@ class PrestigeService {
 
   Future<void> reset() async {
     try {
-      final PrestigeStateModel initialState = PrestigeStateModel.initial();
+      final initialState = PrestigeStateModel.initial();
       _prestigeStateSubject.add(initialState);
       await _saveState(initialState);
     } catch (error, stackTrace) {
@@ -135,6 +128,7 @@ class PrestigeService {
     }
   }
 
+  @disposeMethod
   void dispose() {
     _energySubscription?.cancel();
     _prestigeStateSubject.close();

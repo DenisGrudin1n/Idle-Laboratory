@@ -8,7 +8,7 @@ extension ThemeExt on BuildContext {
 
   /// Returns the appropriate [CellVisualTheme] for a given [CellId]
   CellVisualTheme getCellTheme(CellId cellId) {
-    final AppColor colors = color;
+    final colors = color;
 
     return cellId.getVisualTheme(
       energyTheme: CellVisualTheme.energy(

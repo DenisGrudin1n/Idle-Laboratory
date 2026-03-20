@@ -2,7 +2,9 @@ import 'package:idle_laboratory/core/constants/storage_keys.dart';
 import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/features/home/data/data_sources/local_storage_data_source.dart';
 import 'package:idle_laboratory/features/home/data/repositories/settings_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: SettingsRepository)
 class SettingsRepositoryImpl implements SettingsRepository {
   const SettingsRepositoryImpl(this._dataSource);
 
@@ -24,10 +26,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   @override
   Future<void> saveUseScientificNotation(bool useScientific) async {
     try {
-      await _dataSource.setBool(
-        StorageKeys.useScientificNotation,
-        useScientific,
-      );
+      await _dataSource.setBool(StorageKeys.useScientificNotation, useScientific);
     } catch (error, stackTrace) {
       throw GameException(
         'Failed to save settings',

@@ -7,7 +7,7 @@ class GameException implements Exception {
 
   @override
   String toString() {
-    final StringBuffer buffer = StringBuffer('GameException: $message');
+    final buffer = StringBuffer('GameException: $message');
     if (details != null) {
       buffer.write('\nDetails: $details');
     }

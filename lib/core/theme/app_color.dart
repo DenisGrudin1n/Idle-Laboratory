@@ -277,15 +277,13 @@ class DefaultColor {
 
   // ── Energy cell container ──────────────────────────────────────────────────
   static const LinearGradient cellBodyGradient = LinearGradient(
-    begin: Alignment.centerLeft,
-    end: Alignment.centerRight,
     colors: <Color>[
       Color(0xFF5A637A), // lit left edge
       Color(0xFF3D4460), // midpoint
       Color(0xFF282E42), // dark right edge
       Color(0xFF353C55), // slight bounce-light on far right
     ],
-    stops: <double>[0.0, 0.35, 0.75, 1.0],
+    stops: <double>[0, 0.35, 0.75, 1],
   );
 
   static const RadialGradient cellTopCapGradient = RadialGradient(
@@ -295,11 +293,10 @@ class DefaultColor {
       Color(0xFF454E68),
       Color(0xFF2C3348),
     ],
-    stops: <double>[0.0, 0.5, 1.0],
+    stops: <double>[0, 0.5, 1],
   );
 
   static const RadialGradient cellBottomCapGradient = RadialGradient(
-    center: Alignment.center,
     colors: <Color>[Color(0xFF3A4259), Color(0xFF1E2333)],
   );
 

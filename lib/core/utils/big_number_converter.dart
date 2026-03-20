@@ -1,5 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 /// JSON converter for BigNumber serialization
 class BigNumberConverter

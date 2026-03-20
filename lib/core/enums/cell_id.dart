@@ -11,7 +11,7 @@ enum CellId {
 
   /// Get CellId from string id
   static CellId? fromString(String id) {
-    for (final CellId cellId in CellId.values) {
+    for (final cellId in CellId.values) {
       if (cellId.id == id) {
         return cellId;
       }

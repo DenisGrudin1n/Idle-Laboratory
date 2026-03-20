@@ -20,11 +20,11 @@ extension CellContainerPainter on Canvas {
     required double width,
     required LinearGradient bodyGradient,
   }) {
-    final double left = centerX - width / 2;
-    final double radius = width * 0.08; // corner radius of the body rect
+    final left = centerX - width / 2;
+    final radius = width * 0.08; // corner radius of the body rect
 
     // ── 1. Outer ambient shadow / glow halo ───────────────────────────────
-    final Paint haloPaint = Paint()
+    final haloPaint = Paint()
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14)
       ..color = Colors.black.withValues(alpha: 0.55);
     drawRRect(
@@ -36,7 +36,7 @@ extension CellContainerPainter on Canvas {
     );
 
     // ── 2. Cylindrical body – side-lit gradient ───────────────────────────
-    final Paint bodyPaint = Paint()
+    final bodyPaint = Paint()
       ..shader = bodyGradient.createShader(
         Rect.fromLTWH(left, topY, width, bottomY - topY),
       );
@@ -57,24 +57,22 @@ extension CellContainerPainter on Canvas {
     required double bottomY,
     required double width,
   }) {
-    final double left = centerX - width / 2;
-    final double height = bottomY - topY;
-    final double radius = width * 0.08;
+    final left = centerX - width / 2;
+    final height = bottomY - topY;
+    final radius = width * 0.08;
 
     // ── Left-edge bright reflection strip ─────────────────────────────────
-    final Paint reflectionPaint = Paint()
+    final reflectionPaint = Paint()
       ..shader = LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
         colors: <Color>[
           Colors.white.withValues(alpha: 0.18),
           Colors.white.withValues(alpha: 0.06),
           Colors.transparent,
         ],
-        stops: const <double>[0.0, 0.4, 1.0],
+        stops: const <double>[0, 0.4, 1],
       ).createShader(Rect.fromLTWH(left, topY, width * 0.28, height));
 
-    final Path reflectionPath = Path()
+    final reflectionPath = Path()
       ..addRRect(
         RRect.fromRectAndRadius(
           Rect.fromLTWH(left + 2, topY + 2, width * 0.22, height - 4),
@@ -84,7 +82,7 @@ extension CellContainerPainter on Canvas {
     drawPath(reflectionPath, reflectionPaint);
 
     // ── Thin right-edge bounce-light strip ────────────────────────────────
-    final Paint bouncePaint = Paint()
+    final bouncePaint = Paint()
       ..shader =
           LinearGradient(
             begin: Alignment.centerRight,
@@ -96,7 +94,7 @@ extension CellContainerPainter on Canvas {
           ).createShader(
             Rect.fromLTWH(left + width * 0.82, topY, width * 0.18, height),
           );
-    final Path bouncePath = Path()
+    final bouncePath = Path()
       ..addRRect(
         RRect.fromRectAndRadius(
           Rect.fromLTWH(
@@ -111,7 +109,7 @@ extension CellContainerPainter on Canvas {
     drawPath(bouncePath, bouncePaint);
 
     // ── Dark outline to separate the container from the background ─────────
-    final Paint outlinePaint = Paint()
+    final outlinePaint = Paint()
       ..color = Colors.black.withValues(alpha: 0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
@@ -124,7 +122,7 @@ extension CellContainerPainter on Canvas {
     );
 
     // ── Inner bright edge line (top inner rim) ─────────────────────────────
-    final Paint innerEdgePaint = Paint()
+    final innerEdgePaint = Paint()
       ..color = Colors.white.withValues(alpha: 0.08)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
@@ -162,7 +160,7 @@ extension EnergyEffectsPainter on Canvas {
     required double fillHeight,
     required List<Color> gradientColors,
   }) {
-    final Paint energyPaint = Paint()
+    final energyPaint = Paint()
       ..shader =
           LinearGradient(
             begin: Alignment.topCenter,
@@ -173,7 +171,7 @@ extension EnergyEffectsPainter on Canvas {
           )
       ..style = PaintingStyle.fill;
 
-    final Rect energyRect = Rect.fromLTWH(
+    final energyRect = Rect.fromLTWH(
       centerX - width / 2 + 2,
       fillTop,
       width - 4,
@@ -189,7 +187,7 @@ extension EnergyEffectsPainter on Canvas {
     required double width,
     required List<Color> glowColors,
   }) {
-    final Paint glowPaint = Paint()
+    final glowPaint = Paint()
       ..shader = RadialGradient(colors: glowColors).createShader(
         Rect.fromCenter(
           center: Offset(centerX, fillTop + 10),
@@ -219,10 +217,10 @@ extension EnergyEffectsPainter on Canvas {
     required Color lightningColor,
     int boltCount = 8,
   }) {
-    final math.Random random = math.Random((animationValue * 1000000).toInt());
+    final random = math.Random((animationValue * 1000000).toInt());
 
-    for (int i = 0; i < boltCount; i++) {
-      final Paint lightningPaint = Paint()
+    for (var i = 0; i < boltCount; i++) {
+      final lightningPaint = Paint()
         ..color = lightningColor.withValues(
           alpha: 0.5 + random.nextDouble() * 0.4,
         )
@@ -230,19 +228,19 @@ extension EnergyEffectsPainter on Canvas {
         ..strokeWidth = 0.8 + random.nextDouble() * 2.5
         ..strokeCap = StrokeCap.round;
 
-      final double startY =
+      final startY =
           fillTop + (bottomY - fillTop) * (random.nextDouble() * 0.8);
-      final double startX = centerX - width / 2 + (width * random.nextDouble());
+      final startX = centerX - width / 2 + (width * random.nextDouble());
 
-      final Path lightning = Path()..moveTo(startX, startY);
+      final lightning = Path()..moveTo(startX, startY);
 
-      double currentY = startY;
-      double currentX = startX;
-      final int segments = 5 + random.nextInt(8);
+      var currentY = startY;
+      var currentX = startX;
+      final segments = 5 + random.nextInt(8);
 
-      for (int j = 0; j < segments; j++) {
-        final double horizontalMove = (random.nextDouble() - 0.5) * width * 0.6;
-        final double verticalMove = (random.nextDouble() - 0.3) * 15;
+      for (var j = 0; j < segments; j++) {
+        final horizontalMove = (random.nextDouble() - 0.5) * width * 0.6;
+        final verticalMove = (random.nextDouble() - 0.3) * 15;
 
         currentX += horizontalMove;
         currentY += verticalMove;
@@ -253,13 +251,11 @@ extension EnergyEffectsPainter on Canvas {
         );
         currentY = currentY.clamp(fillTop + 5, bottomY - 5);
 
-        if (j % 2 == 0 && j < segments - 1) {
-          final double ctrlX =
-              currentX + (random.nextDouble() - 0.5) * width * 0.3;
-          final double ctrlY = currentY + (random.nextDouble() - 0.5) * 20;
-          final double endX =
-              currentX + (random.nextDouble() - 0.5) * width * 0.4;
-          final double endY = currentY + (random.nextDouble() - 0.5) * 15;
+        if (j.isEven && j < (segments - 1)) {
+          final ctrlX = currentX + (random.nextDouble() - 0.5) * width * 0.3;
+          final ctrlY = currentY + (random.nextDouble() - 0.5) * 20;
+          final endX = currentX + (random.nextDouble() - 0.5) * width * 0.4;
+          final endY = currentY + (random.nextDouble() - 0.5) * 15;
 
           lightning.quadraticBezierTo(ctrlX, ctrlY, endX, endY);
           currentX = endX;
@@ -284,15 +280,14 @@ extension EnergyEffectsPainter on Canvas {
     required Color particleColor2,
     int particleCount = 20,
   }) {
-    final math.Random random = math.Random((animationValue * 1000000).toInt());
-    final Paint particlePaint = Paint()..style = PaintingStyle.fill;
+    final random = math.Random((animationValue * 1000000).toInt());
+    final particlePaint = Paint()..style = PaintingStyle.fill;
 
-    for (int i = 0; i < particleCount; i++) {
-      final double particleX =
-          centerX - width / 2 + (width * random.nextDouble());
-      final double particleOffset = (animationValue + i * 0.08) % 1.0;
-      final double particleY = fillTop + (bottomY - fillTop) * particleOffset;
-      final double particleSize = 0.8 + random.nextDouble() * 2;
+    for (var i = 0; i < particleCount; i++) {
+      final particleX = centerX - width / 2 + (width * random.nextDouble());
+      final particleOffset = (animationValue + i * 0.08) % 1.0;
+      final particleY = fillTop + (bottomY - fillTop) * particleOffset;
+      final particleSize = 0.8 + random.nextDouble() * 2;
 
       particlePaint.color = Color.lerp(
         particleColor1,
@@ -316,22 +311,22 @@ extension EnergyEffectsPainter on Canvas {
     required Color emberColor2,
     int chunkCount = 12,
   }) {
-    final math.Random random = math.Random((animationValue * 1000000).toInt());
-    final Paint chunkPaint = Paint()..style = PaintingStyle.fill;
-    final Paint emberPaint = Paint()..style = PaintingStyle.fill;
+    final random = math.Random((animationValue * 1000000).toInt());
+    final chunkPaint = Paint()..style = PaintingStyle.fill;
+    final emberPaint = Paint()..style = PaintingStyle.fill;
 
-    for (int i = 0; i < chunkCount; i++) {
-      final double baseX = centerX - width / 2 + (width * random.nextDouble());
-      final double offset = (animationValue * 0.5 + i * 0.1) % 1.0;
-      final double baseY = fillTop + (bottomY - fillTop) * offset;
+    for (var i = 0; i < chunkCount; i++) {
+      final baseX = centerX - width / 2 + (width * random.nextDouble());
+      final offset = (animationValue * 0.5 + i * 0.1) % 1.0;
+      final baseY = fillTop + (bottomY - fillTop) * offset;
 
       // Wobble horizontally for organic movement
-      final double wobble =
+      final wobble =
           math.sin((animationValue + i) * math.pi * 2) * (width * 0.08);
-      final double chunkX = baseX + wobble;
-      final double chunkY = baseY;
+      final chunkX = baseX + wobble;
+      final chunkY = baseY;
 
-      final double chunkSize = 3.0 + random.nextDouble() * 4.5;
+      final chunkSize = 3.0 + random.nextDouble() * 4.5;
 
       // Draw dark chunk body (irregular shape)
       chunkPaint.color = chunkColor.withValues(
@@ -356,11 +351,11 @@ extension EnergyEffectsPainter on Canvas {
       restore();
 
       // Draw glowing ember edges (small bright spots on chunk)
-      final int emberCount = random.nextInt(2) + 1;
-      for (int j = 0; j < emberCount; j++) {
-        final double emberOffsetX = (random.nextDouble() - 0.5) * chunkSize;
-        final double emberOffsetY = (random.nextDouble() - 0.5) * chunkSize;
-        final double emberSize = 0.6 + random.nextDouble() * 1.2;
+      final emberCount = random.nextInt(2) + 1;
+      for (var j = 0; j < emberCount; j++) {
+        final emberOffsetX = (random.nextDouble() - 0.5) * chunkSize;
+        final emberOffsetY = (random.nextDouble() - 0.5) * chunkSize;
+        final emberSize = 0.6 + random.nextDouble() * 1.2;
 
         emberPaint.color = Color.lerp(
           emberColor1,

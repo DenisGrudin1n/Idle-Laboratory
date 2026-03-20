@@ -3,7 +3,9 @@ import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/data_sources/local_storage_data_source.dart';
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: PrestigeRepository)
 class PrestigeRepositoryImpl implements PrestigeRepository {
   const PrestigeRepositoryImpl(this._dataSource);
 
@@ -12,9 +14,7 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
   @override
   Future<BigNumber?> getTotalMultiplier() async {
     try {
-      final String? json = _dataSource.getString(
-        StorageKeys.prestigeTotalMultiplier,
-      );
+      final json = _dataSource.getString(StorageKeys.prestigeTotalMultiplier);
       return json != null ? _parseBigNumber(json) : null;
     } catch (error, stackTrace) {
       throw GameException(
@@ -44,7 +44,7 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
   @override
   Future<BigNumber?> getCurrentThreshold() async {
     try {
-      final String? json = _dataSource.getString(StorageKeys.prestigeThreshold);
+      final json = _dataSource.getString(StorageKeys.prestigeThreshold);
       return json != null ? _parseBigNumber(json) : null;
     } catch (error, stackTrace) {
       throw GameException(
@@ -113,16 +113,15 @@ class PrestigeRepositoryImpl implements PrestigeRepository {
   }
 
   BigNumber _parseBigNumber(String json) {
-    final List<String> parts = json.split('e');
+    final parts = json.split('e');
     if (parts.length == 2) {
-      final double mantissa = double.parse(parts[0]);
-      final int exponent = int.parse(parts[1]);
+      final mantissa = double.parse(parts[0]);
+      final exponent = int.parse(parts[1]);
       return BigNumber(mantissa, exponent);
     }
     return BigNumber.fromDouble(double.parse(json));
   }
 
-  String _serializeBigNumber(BigNumber value) {
-    return '${value.mantissa}e${value.exponent}';
-  }
+  String _serializeBigNumber(BigNumber value) =>
+      '${value.mantissa}e${value.exponent}';
 }

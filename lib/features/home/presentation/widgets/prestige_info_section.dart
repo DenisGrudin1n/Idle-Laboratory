@@ -2,23 +2,29 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/action_button.dart';
+import 'package:idle_laboratory/core/widgets/info_row.dart';
+import 'package:idle_laboratory/core/widgets/progress_bar_widget.dart';
+import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/core/widgets/section_header.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
+import 'package:idle_laboratory/l10n/app_localizations.dart';
 
 class PrestigeInfoSection extends StatelessWidget {
   const PrestigeInfoSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
+    final l10n = context.l10n;
 
-    final PrestigeStateModel? prestigeState = context.select(
-      (PrestigeCubit cubit) => cubit.state.prestigeState,
+    final prestigeState = context.select(
+      (PrestigeBloc bloc) => bloc.state.prestigeState,
     );
-
-    if (prestigeState == null) {
-      return const SizedBox.shrink();
-    }
+    if (prestigeState == null) return const SizedBox.shrink();
 
     return SectionCard(
       child: SizedBox(
@@ -73,12 +79,10 @@ class PrestigeInfoSection extends StatelessWidget {
     AppLocalizations l10n,
     PrestigeStateModel prestigeState,
   ) {
-    final String currentMultiplier = prestigeState.totalMultiplier.format(
+    final currentMultiplier = prestigeState.totalMultiplier.format(
       compact: true,
     );
-    final String nextBonus = prestigeState.currentMultiplier.format(
-      compact: true,
-    );
+    final nextBonus = prestigeState.currentMultiplier.format(compact: true);
 
     return Container(
       padding: EdgeInsets.all(12.w),
@@ -126,23 +130,21 @@ class PrestigeInfoSection extends StatelessWidget {
     AppLocalizations l10n,
     PrestigeStateModel prestigeState,
   ) {
-    final String currentEnergy = context.select(
-      (CellsCubit cubit) =>
-          cubit.state.totalEnergy?.format(compact: true) ?? '0.0',
+    final currentEnergy = context.select(
+      (CellsBloc bloc) =>
+          bloc.state.totalEnergy?.format(compact: true) ?? '0.0',
     );
 
-    final double progress = context.select(
-      (CellsCubit cubit) => cubit.state.totalEnergy != null
-          ? cubit.state.totalEnergy!.ratio(
+    final progress = context.select(
+      (CellsBloc bloc) => bloc.state.totalEnergy != null
+          ? bloc.state.totalEnergy!.ratio(
               prestigeState.currentThreshold,
-              max: 1.0,
+              max: 1,
             )
           : 0.0,
     );
 
-    final String requirement = prestigeState.currentThreshold.format(
-      compact: true,
-    );
+    final requirement = prestigeState.currentThreshold.format(compact: true);
 
     return Column(
       children: <Widget>[
@@ -168,7 +170,7 @@ class PrestigeInfoSection extends StatelessWidget {
     AppLocalizations l10n,
     PrestigeStateModel prestigeState,
   ) {
-    final bool isUnlocked = prestigeState.isUnlocked;
+    final isUnlocked = prestigeState.isUnlocked;
 
     return ActionButton(
       icon: Icons.auto_awesome,
@@ -177,7 +179,8 @@ class PrestigeInfoSection extends StatelessWidget {
           : l10n.prestigeLocked(
               prestigeState.currentThreshold.format(compact: true),
             ),
-      onTap: () => context.read<PrestigeCubit>().prestige(),
+      onTap: () =>
+          context.read<PrestigeBloc>().add(const PrestigeEvent.prestige()),
       isEnabled: isUnlocked,
     );
   }
@@ -187,7 +190,7 @@ class PrestigeInfoSection extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () async {
-          final bool? confirm = await showDialog<bool>(
+          final confirm = await showDialog<bool>(
             context: context,
             builder: (BuildContext ctx) => AlertDialog(
               title: const Text('Reset Prestige'),
@@ -207,8 +210,10 @@ class PrestigeInfoSection extends StatelessWidget {
             ),
           );
 
-          if (confirm == true && context.mounted) {
-            context.read<PrestigeCubit>().resetPrestige();
+          if ((confirm ?? false) && context.mounted) {
+            context.read<PrestigeBloc>().add(
+              const PrestigeEvent.resetPrestige(),
+            );
           }
         },
         borderRadius: BorderRadius.circular(8.r),

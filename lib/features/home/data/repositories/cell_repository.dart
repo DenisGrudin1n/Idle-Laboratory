@@ -1,11 +1,13 @@
-import 'package:idle_laboratory/core/enums/enums.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/enums/cell_name.dart';
+import 'package:idle_laboratory/core/enums/cell_type.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
+import 'package:injectable/injectable.dart';
 
-/// Repository for managing cell data
+@lazySingleton
 class CellRepository {
   const CellRepository();
 
-  /// Returns the list of available cells with initial configuration
   List<CellModel> getAvailableCells() => <CellModel>[
     CellModel(
       id: CellId.basicEnergyCell.id,
@@ -13,7 +15,6 @@ class CellRepository {
       type: CellType.energy,
       level: 1,
       isLocked: false,
-      requiredLevel: null,
       energyPerSecond: '1.00',
     ),
     CellModel(
@@ -22,8 +23,6 @@ class CellRepository {
       type: CellType.energy,
       level: 1,
       isLocked: true,
-      requiredLevel: null,
-      energyPerSecond: null,
     ),
     CellModel(
       id: CellId.iceCell.id,
@@ -31,8 +30,6 @@ class CellRepository {
       type: CellType.energy,
       level: 1,
       isLocked: true,
-      requiredLevel: null,
-      energyPerSecond: null,
     ),
     CellModel(
       id: CellId.darkMatterCell.id,
@@ -40,8 +37,6 @@ class CellRepository {
       type: CellType.energy,
       level: 1,
       isLocked: true,
-      requiredLevel: null,
-      energyPerSecond: null,
     ),
   ];
 }

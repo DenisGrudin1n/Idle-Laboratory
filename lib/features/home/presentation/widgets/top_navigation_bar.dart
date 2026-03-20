@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/core/enums/cells_tab.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/section_card.dart';
 
 class TopNavigationBar extends StatelessWidget {
   const TopNavigationBar({
@@ -14,7 +17,7 @@ class TopNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = context.l10n;
+    final l10n = context.l10n;
 
     return SectionCard(
       child: SizedBox(
