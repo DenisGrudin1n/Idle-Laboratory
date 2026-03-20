@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
-import 'package:idle_laboratory/l10n/app_localizations.dart';
 import 'package:idle_laboratory/lib.dart';
 
 class CellsListSection extends StatelessWidget {
@@ -157,25 +156,7 @@ class _CellItem extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                  if (!cell.isLocked)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 6.w,
-                        vertical: 2.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.color.background,
-                        borderRadius: BorderRadius.circular(4.r),
-                      ),
-                      child: Text(
-                        l10n.select,
-                        style: TextStyle(
-                          color: context.color.primaryText,
-                          fontSize: 9.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                  if (!cell.isLocked) StatusBadge(text: l10n.select),
                 ],
               ),
               if (!cell.isLocked) ...<Widget>[
@@ -239,40 +220,17 @@ class _CellItem extends StatelessWidget {
               ],
               if (cell.isLocked) ...<Widget>[
                 SizedBox(height: 6.h),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-                  decoration: BoxDecoration(
-                    color: context.color.background,
-                    borderRadius: BorderRadius.circular(4.r),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Icon(
-                        Icons.lock,
-                        color: context.color.primaryText,
-                        size: 10.sp,
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        () {
-                          final CellId? cellId = CellId.fromString(cell.id);
-                          final String unlockRequirement = cellId != null
-                              ? CellEnergyPerSecond.getNewCellUnlockRequirement(
-                                      cellId,
-                                    ) ??
-                                    '???'
-                              : '???';
-                          return '${l10n.unlockAt}: $unlockRequirement';
-                        }(),
-                        style: TextStyle(
-                          color: context.color.primaryText,
-                          fontSize: 9.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
+                StatusBadge(
+                  text: () {
+                    final CellId? cellId = CellId.fromString(cell.id);
+                    final String unlockRequirement = cellId != null
+                        ? CellEnergyPerSecond.getNewCellUnlockRequirement(
+                                cellId,
+                              ) ??
+                              '???'
+                        : '???';
+                    return '${l10n.unlockAt}: $unlockRequirement';
+                  }(),
                 ),
               ],
             ],

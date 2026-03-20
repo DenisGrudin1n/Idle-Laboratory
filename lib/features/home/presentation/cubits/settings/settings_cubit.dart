@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:idle_laboratory/features/home/data/repositories/settings_repository.dart';
 
 part 'settings_state.dart';
 part 'settings_cubit.freezed.dart';
@@ -14,10 +15,26 @@ part 'settings_cubit.freezed.dart';
 /// - Visual effects toggles
 /// - Auto-save preferences
 class SettingsCubit extends Cubit<SettingsState> {
-  SettingsCubit() : super(SettingsState.initial());
+  SettingsCubit(this._settingsRepository) : super(SettingsState.initial()) {
+    _loadSettings();
+  }
+
+  final SettingsRepository _settingsRepository;
+
+  /// Loads settings from repository on initialization.
+  Future<void> _loadSettings() async {
+    final bool? useScientific = await _settingsRepository
+        .getUseScientificNotation();
+
+    if (useScientific != null) {
+      emit(state.copyWith(isScientificNotation: useScientific));
+    }
+  }
 
   /// Toggles between scientific notation (1.23e15) and suffix notation (1.23Qa).
-  void toggleScientificNotation() {
-    emit(state.copyWith(isScientificNotation: !state.isScientificNotation));
+  Future<void> toggleScientificNotation() async {
+    final bool newValue = !state.isScientificNotation;
+    emit(state.copyWith(isScientificNotation: newValue));
+    await _settingsRepository.saveUseScientificNotation(newValue);
   }
 }
