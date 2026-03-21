@@ -20,11 +20,20 @@ class MainNavigationBar extends StatelessWidget {
             itemCount: MainNavigationTab.values.length + 1,
             separatorBuilder: (context, index) => index == 0
                 ? Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2))
-                : Divider(height: 1, thickness: 1, indent: 12.w, endIndent: 12.w, color: context.color.primaryText.withValues(alpha: 0.1)),
+                : Divider(
+                    height: 1,
+                    thickness: 1,
+                    indent: 12.w,
+                    endIndent: 12.w,
+                    color: context.color.primaryText.withValues(alpha: 0.1)),
             itemBuilder: (context, index) {
               if (index == 0) return const EnergyDisplay();
               final tab = MainNavigationTab.values[index - 1];
-              return _DrawerTab(icon: tab.icon, label: tab.localize(context.l10n), isActive: selectedTab == tab, onTap: () => onTabSelected(tab));
+              return _DrawerTab(
+                  icon: tab.icon,
+                  label: tab.localize(context.l10n),
+                  isActive: selectedTab == tab,
+                  onTap: () => onTabSelected(tab));
             },
           ),
         ),
@@ -55,7 +64,12 @@ class _DrawerTab extends StatelessWidget {
               children: [
                 Icon(icon, color: context.color.primaryText, size: 16.sp),
                 SizedBox(width: 8.w),
-                Expanded(child: Text(label, style: TextStyle(color: context.color.primaryText, fontSize: 12.sp, fontWeight: isActive ? FontWeight.w600 : FontWeight.w400))),
+                Expanded(
+                    child: Text(label,
+                        style: TextStyle(
+                            color: context.color.primaryText,
+                            fontSize: 12.sp,
+                            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400))),
               ],
             ),
           ),

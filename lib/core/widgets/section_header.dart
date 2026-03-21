@@ -34,16 +34,14 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = spacing ?? 8.w;
+    final effectiveSpacing = spacing ?? 8.w;
     return Row(
       children: [
         if (icon != null) ...[
           Container(
             padding: EdgeInsets.all(8.w),
             decoration: BoxDecoration(
-              color:
-                  iconBackgroundColor ??
-                  context.color.primary.withValues(alpha: 0.2),
+              color: iconBackgroundColor ?? context.color.primary.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(8.r),
             ),
             child: Icon(
@@ -52,7 +50,7 @@ class SectionHeader extends StatelessWidget {
               size: iconSize ?? 16.sp,
             ),
           ),
-          SizedBox(width: s),
+          SizedBox(width: effectiveSpacing),
         ],
         Expanded(
           child: Column(
@@ -72,9 +70,7 @@ class SectionHeader extends StatelessWidget {
                 Text(
                   description!,
                   style: TextStyle(
-                    color:
-                        descriptionColor ??
-                        context.color.primaryText.withValues(alpha: 0.7),
+                    color: descriptionColor ?? context.color.primaryText.withValues(alpha: 0.7),
                     fontSize: descriptionFontSize ?? 9.sp,
                   ),
                   maxLines: 2,
@@ -84,7 +80,7 @@ class SectionHeader extends StatelessWidget {
             ],
           ),
         ),
-        if (trailing != null) ...[SizedBox(width: s), trailing!],
+        if (trailing != null) ...[SizedBox(width: effectiveSpacing), trailing!],
       ],
     );
   }

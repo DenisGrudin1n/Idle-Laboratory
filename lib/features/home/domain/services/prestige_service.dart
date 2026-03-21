@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
@@ -15,13 +16,17 @@ class PrestigeService {
 
   final EnergyService _energyService;
   final PrestigeRepository _prestigeRepository;
-  final BehaviorSubject<PrestigeStateModel> _prestigeStateSubject = BehaviorSubject<PrestigeStateModel>.seeded(PrestigeStateModel.initial());
+  final BehaviorSubject<PrestigeStateModel> _prestigeStateSubject = BehaviorSubject<PrestigeStateModel>.seeded(
+    PrestigeStateModel.initial(),
+  );
   StreamSubscription<BigNumber>? _energySubscription;
 
   Stream<PrestigeStateModel> get prestigeState$ => _prestigeStateSubject.stream;
   PrestigeStateModel get currentState => _prestigeStateSubject.value;
 
-  void _initializeState() => _loadState().then(_prestigeStateSubject.add).catchError((_) => _prestigeStateSubject.add(PrestigeStateModel.initial()));
+  void _initializeState() => _loadState()
+      .then(_prestigeStateSubject.add)
+      .catchError((_) => _prestigeStateSubject.add(PrestigeStateModel.initial()));
 
   void start() {
     _energySubscription?.cancel();
@@ -30,15 +35,13 @@ class PrestigeService {
 
   void _onEnergyChanged(BigNumber totalEnergy) {
     final state = currentState;
-    final newMultiplier = _calculateMultiplier(totalEnergy, state.currentThreshold);
-    final newIsUnlocked = newMultiplier >= BigNumber(1, 0);
+    final newMultiplier = GameBalance.calculatePrestigeMultiplier(totalEnergy, state.currentThreshold);
+    final newIsUnlocked = newMultiplier >= GameBalance.prestigeMinimumGain;
 
-    if (newMultiplier != state.currentMultiplier || newIsUnlocked != state.isUnlocked)
+    if (newMultiplier != state.currentMultiplier || newIsUnlocked != state.isUnlocked) {
       _prestigeStateSubject.add(state.copyWith(currentMultiplier: newMultiplier, isUnlocked: newIsUnlocked));
+    }
   }
-
-  BigNumber _calculateMultiplier(BigNumber energy, BigNumber threshold) =>
-      threshold <= BigNumber.zero() ? BigNumber.zero() : BigNumber.fromDouble(energy.ratio(threshold));
 
   Future<void> performPrestige() async {
     if (!currentState.isUnlocked) return;
@@ -52,15 +55,22 @@ class PrestigeService {
       prestigeCount: oldState.prestigeCount + 1,
     );
     _prestigeStateSubject.add(newState);
-    await _saveState(newState);
+    await saveState(newState);
   }
 
   BigNumber getEffectiveMultiplier() => currentState.totalMultiplier;
 
   Future<PrestigeStateModel> _loadState() async {
-    final totalMultiplier = await _prestigeRepository.getTotalMultiplier();
-    final threshold = await _prestigeRepository.getCurrentThreshold();
-    final count = await _prestigeRepository.getPrestigeCount();
+    final results = await Future.wait([
+      _prestigeRepository.getTotalMultiplier(),
+      _prestigeRepository.getCurrentThreshold(),
+      _prestigeRepository.getPrestigeCount(),
+    ]);
+
+    final totalMultiplier = results[0] as BigNumber?;
+    final threshold = results[1] as BigNumber?;
+    final count = results[2] as int?;
+
     return totalMultiplier != null && threshold != null && count != null
         ? PrestigeStateModel(
             totalMultiplier: totalMultiplier,
@@ -72,25 +82,18 @@ class PrestigeService {
         : PrestigeStateModel.initial();
   }
 
-  Future<void> _saveState(PrestigeStateModel state) async {
-    try {
-      await _prestigeRepository.saveTotalMultiplier(state.totalMultiplier);
-      await _prestigeRepository.saveCurrentThreshold(state.currentThreshold);
-      await _prestigeRepository.savePrestigeCount(state.prestigeCount);
-    } catch (error, stackTrace) {
-      throw GameException('Failed to persist prestige state', error.toString(), stackTrace);
-    }
-  }
+  Future<void> saveState([PrestigeStateModel? state]) => guardAsync(() async {
+    final s = state ?? currentState;
+    await _prestigeRepository.saveTotalMultiplier(s.totalMultiplier);
+    await _prestigeRepository.saveCurrentThreshold(s.currentThreshold);
+    await _prestigeRepository.savePrestigeCount(s.prestigeCount);
+  });
 
-  Future<void> reset() async {
-    try {
-      final initialState = PrestigeStateModel.initial();
+  Future<void> reset() => guardAsync(() async {
+    final initialState = PrestigeStateModel.initial();
       _prestigeStateSubject.add(initialState);
-      await _saveState(initialState);
-    } catch (error, stackTrace) {
-      throw GameException('Failed to reset prestige', error.toString(), stackTrace);
-    }
-  }
+      await saveState(initialState);
+    });
 
   @disposeMethod
   void dispose() {

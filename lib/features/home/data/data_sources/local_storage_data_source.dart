@@ -12,7 +12,7 @@ class LocalStorageDataSource {
   int? getInt(String key) => _prefs.getInt(key);
   Future<bool> setDouble(String key, double value) async => _prefs.setDouble(key, value);
   double? getDouble(String key) => _prefs.getDouble(key);
-  Future<bool> setBool(String key, bool value) async => _prefs.setBool(key, value);
+  Future<bool> setBool(String key, {required bool value}) async => _prefs.setBool(key, value);
   bool? getBool(String key) => _prefs.getBool(key);
   Future<bool> setStringList(String key, List<String> value) async => _prefs.setStringList(key, value);
   List<String>? getStringList(String key) => _prefs.getStringList(key);

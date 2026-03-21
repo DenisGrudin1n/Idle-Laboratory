@@ -128,6 +128,5 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get prestigeDescription =>
-      'Reset progress for permanent EPS multiplier';
+  String get prestigeDescription => 'Reset progress for permanent EPS multiplier';
 }

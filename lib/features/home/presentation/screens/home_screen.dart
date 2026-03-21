@@ -32,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              MainNavigationBar(selectedTab: _selectedTab, onTabSelected: (tab) => setState(() => _selectedTab = tab)),
+              MainNavigationBar(
+                  selectedTab: _selectedTab, onTabSelected: (tab) => setState(() => _selectedTab = tab)),
               SizedBox(width: 12.w),
               Expanded(child: _buildContent()),
             ],

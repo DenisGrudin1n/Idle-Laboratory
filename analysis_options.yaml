@@ -10,6 +10,7 @@ analyzer:
     one_member_abstracts: ignore
     only_throw_errors: ignore
     unused_shown_name: ignore
+    avoid_positional_boolean_parameters: error
   exclude:
     - lib/**.g.dart
     - lib/**.freezed.dart
@@ -19,3 +20,6 @@ linter:
   rules:
     public_member_api_docs: false
     prefer_relative_imports: false
+
+formatter:
+  page_width: 120

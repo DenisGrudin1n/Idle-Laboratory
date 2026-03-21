@@ -31,10 +31,7 @@ class InfoRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(
-            color: labelColor ?? context.color.primaryText,
-            fontSize: labelFontSize ?? 10.sp,
-          ),
+          style: TextStyle(color: labelColor ?? context.color.primaryText, fontSize: labelFontSize ?? 10.sp),
         ),
         Text(
           value,

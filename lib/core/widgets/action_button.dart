@@ -40,13 +40,11 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = isEnabled
-        ? (enabledColor ?? context.color.primary)
-        : (disabledColor ?? context.color.primaryText.withValues(alpha: 0.3));
+    final backgroundColor =
+        isEnabled ? (enabledColor ?? context.color.primary) : (disabledColor ?? context.color.primaryText.withValues(alpha: 0.3));
     final foregroundColor = isEnabled
         ? (enabledTextColor ?? Colors.white)
-        : (disabledTextColor ??
-              context.color.primaryText.withValues(alpha: 0.5));
+        : (disabledTextColor ?? context.color.primaryText.withValues(alpha: 0.5));
     final radius = borderRadius ?? 8.r;
 
     return Material(

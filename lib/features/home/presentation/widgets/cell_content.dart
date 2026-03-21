@@ -17,24 +17,24 @@ class _CellContentState extends State<CellContent> {
 
   @override
   Widget build(BuildContext context) => Column(
-    children: [
-      TopNavigationBar(
-        selectedTab: _selectedTab,
-        onTabSelected: (tab) => setState(() => _selectedTab = tab),
-      ),
-      SizedBox(height: 12.w),
-      Expanded(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const CellsListSection(),
-            SizedBox(width: 12.w),
-            const Expanded(child: CellContainerSection()),
-            SizedBox(width: 12.w),
-            const PrestigeInfoSection(),
-          ],
-        ),
-      ),
-    ],
-  );
+        children: [
+          TopNavigationBar(
+            selectedTab: _selectedTab,
+            onTabSelected: (tab) => setState(() => _selectedTab = tab),
+          ),
+          SizedBox(height: 12.w),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const CellsListSection(),
+                SizedBox(width: 12.w),
+                const Expanded(child: CellContainerSection()),
+                SizedBox(width: 12.w),
+                const PrestigeInfoSection(),
+              ],
+            ),
+          ),
+        ],
+      );
 }

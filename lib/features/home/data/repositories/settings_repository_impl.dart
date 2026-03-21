@@ -10,29 +10,12 @@ class SettingsRepositoryImpl implements SettingsRepository {
   final LocalStorageDataSource _dataSource;
 
   @override
-  Future<bool?> getUseScientificNotation() async {
-    try {
-      return _dataSource.getBool(StorageKeys.useScientificNotation);
-    } catch (error, stackTrace) {
-      throw GameException('Failed to load settings', error.toString(), stackTrace);
-    }
-  }
+  Future<bool?> getUseScientificNotation() => guardAsync(() => _dataSource.getBool(StorageKeys.useScientificNotation));
 
   @override
-  Future<void> saveUseScientificNotation(bool useScientific) async {
-    try {
-      await _dataSource.setBool(StorageKeys.useScientificNotation, useScientific);
-    } catch (error, stackTrace) {
-      throw GameException('Failed to save settings', error.toString(), stackTrace);
-    }
-  }
+  Future<void> saveUseScientificNotation({required bool useScientific}) =>
+      guardAsync(() => _dataSource.setBool(StorageKeys.useScientificNotation, value: useScientific));
 
   @override
-  Future<void> clearAll() async {
-    try {
-      await _dataSource.remove(StorageKeys.useScientificNotation);
-    } catch (error, stackTrace) {
-      throw GameException('Failed to clear settings', error.toString(), stackTrace);
-    }
-  }
+  Future<void> clearAll() => guardAsync(() => _dataSource.remove(StorageKeys.useScientificNotation));
 }
