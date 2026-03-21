@@ -1,75 +1,73 @@
 import 'dart:async';
-
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/features/home/data/repositories/energy_repository.dart';
+import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
-/// Stream-based energy management service.
-///
-/// Provides reactive streams for energy and EPS (Energy Per Second).
-/// All energy-related calculations flow through these streams.
+@lazySingleton
 class EnergyService {
-  EnergyService() {
-    // Start with initial values
-    _energySubject.add(BigNumber.zero());
-    _epsSubject.add(BigNumber.zero());
+  EnergyService(this._energyRepository) {
+    _initialize();
   }
 
-  final BehaviorSubject<BigNumber> _energySubject =
-      BehaviorSubject<BigNumber>();
+  final EnergyRepository _energyRepository;
+  final BehaviorSubject<BigNumber> _energySubject = BehaviorSubject<BigNumber>();
   final BehaviorSubject<BigNumber> _epsSubject = BehaviorSubject<BigNumber>();
-
   Timer? _timer;
+  Timer? _saveTimer;
 
-  /// Stream of current energy value.
-  /// Emits only when energy changes (distinct values only).
   Stream<BigNumber> get energy$ => _energySubject.stream.distinct();
-
-  /// Stream of energy per second value.
-  /// Emits only when EPS changes (distinct values only).
   Stream<BigNumber> get eps$ => _epsSubject.stream.distinct();
-
-  /// Current energy value (synchronous access)
   BigNumber get currentEnergy => _energySubject.value;
-
-  /// Current EPS value (synchronous access)
   BigNumber get currentEPS => _epsSubject.value;
 
-  /// Starts the passive energy generation timer.
+  void _initialize() {
+    _energySubject.add(BigNumber.zero());
+    _epsSubject.add(BigNumber.zero());
+    _loadEnergy();
+  }
+
+  Future<void> _loadEnergy() async {
+    final savedEnergy = await _energyRepository.getTotalEnergy();
+    if (savedEnergy != null) _energySubject.add(savedEnergy);
+  }
+
   void start() {
     _timer?.cancel();
     _timer = Timer.periodic(
       const Duration(milliseconds: GameConstants.energyUpdateIntervalMs),
       (_) => _generateEnergy(),
     );
-  }
 
-  /// Generates energy based on current EPS
-  void _generateEnergy() {
-    final BigNumber increment = _epsSubject.value.multiplyByDouble(
-      GameConstants.energyUpdateIntervalMs * 0.001,
+    _saveTimer?.cancel();
+    _saveTimer = Timer.periodic(
+      const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs),
+      (_) => saveEnergy(),
     );
-
-    final BigNumber newEnergy = _energySubject.value + increment;
-    _energySubject.add(newEnergy);
   }
 
-  /// Updates the energy per second rate.
-  /// Called by CellsService when cells change.
-  void updateEPS(BigNumber newEPS) {
-    if (_epsSubject.value != newEPS) {
-      _epsSubject.add(newEPS);
-    }
+  void _generateEnergy() {
+    final increment = _epsSubject.value.multiplyByDouble(GameConstants.energyUpdateIntervalMs * 0.001);
+    _energySubject.add(_energySubject.value + increment);
   }
+
+  Future<void> saveEnergy() async => _energyRepository.saveTotalEnergy(currentEnergy);
+
+  void updateEPS(BigNumber newEPS) => _epsSubject.value != newEPS ? _epsSubject.add(newEPS) : null;
 
   void reset() {
     _energySubject.add(BigNumber.zero());
     _epsSubject.add(BigNumber.zero());
+    saveEnergy();
   }
 
-  /// Disposes of all streams and timers
+  @disposeMethod
   void dispose() {
     _timer?.cancel();
+    _saveTimer?.cancel();
+    saveEnergy();
     _energySubject.close();
     _epsSubject.close();
   }

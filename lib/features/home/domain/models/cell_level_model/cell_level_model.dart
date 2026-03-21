@@ -5,8 +5,6 @@ import 'package:idle_laboratory/core/utils/big_number_converter.dart';
 part 'cell_level_model.freezed.dart';
 part 'cell_level_model.g.dart';
 
-/// Configuration for a specific cell level
-/// Defines energy requirements for progression
 @freezed
 abstract class CellLevelModel with _$CellLevelModel {
   const factory CellLevelModel({
@@ -14,6 +12,5 @@ abstract class CellLevelModel with _$CellLevelModel {
     @BigNumberConverter() required BigNumber energyRequired,
   }) = _CellLevelModel;
 
-  factory CellLevelModel.fromJson(Map<String, dynamic> json) =>
-      _$CellLevelModelFromJson(json);
+  factory CellLevelModel.fromJson(Map<String, dynamic> json) => _$CellLevelModelFromJson(json);
 }

@@ -1,88 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/lib.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/animated_cell_container.dart';
 
 class CellContainerSection extends StatefulWidget {
   const CellContainerSection({super.key});
-
   @override
   State<CellContainerSection> createState() => _CellContainerSectionState();
 }
 
-class _CellContainerSectionState extends State<CellContainerSection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+class _CellContainerSectionState extends State<CellContainerSection> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000))..repeat();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => SectionCard(
-    child: SizedBox(
-      width: 0.2.sw,
-      height: double.infinity,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // Cell container with energy
-            Builder(
-              builder: (BuildContext context) {
-                // Get selected cell ID from state
-                final String? selectedCellId = context.select(
-                  (CellsCubit cubit) => cubit.state.selectedCellId,
-                );
+        child: SizedBox(
+          width: 0.2.sw,
+          height: double.infinity,
+          child: Center(
+            child: BlocSelector<CellsBloc, CellsState, String?>(
+              selector: (state) => state.selectedCellId,
+              builder: (context, selectedCellId) {
+                if (selectedCellId == null) return SizedBox(width: 120.w, height: 72.h);
+                final cellId = CellId.fromString(selectedCellId);
+                if (cellId == null) return SizedBox(width: 120.w, height: 72.h);
 
-                // If no cell is selected, show empty container
-                if (selectedCellId == null) {
-                  return SizedBox(width: 120.w, height: 72.h);
-                }
-
-                // Parse cell ID - early return if invalid
-                final CellId? cellId = CellId.fromString(selectedCellId);
-                if (cellId == null) {
-                  return SizedBox(width: 120.w, height: 72.h);
-                }
-
-                // Get fill level for the selected cell
-                final double fillLevel = context.select(
-                  (CellsCubit cubit) => cubit.getFillLevel(selectedCellId),
-                );
-
-                // Get visual theme for this cell type
-                final CellVisualTheme visualTheme = context.getCellTheme(
-                  cellId,
-                );
-
-                return RepaintBoundary(
-                  child: SizedBox(
-                    width: 120.w,
-                    height: 72.h,
-                    child: AnimatedCellContainer(
-                      fillLevel: fillLevel,
-                      visualTheme: visualTheme,
-                      animation: _animationController,
+                return BlocSelector<CellsBloc, CellsState, double>(
+                  selector: (state) => context.read<CellsBloc>().getFillLevel(selectedCellId),
+                  builder: (context, fillLevel) => RepaintBoundary(
+                    child: SizedBox(
+                      width: 120.w,
+                      height: 72.h,
+                      child: AnimatedCellContainer(fillLevel: fillLevel, visualTheme: context.getCellTheme(cellId), animation: _controller),
                     ),
                   ),
                 );
               },
             ),
-          ],
+          ),
         ),
-      ),
-    ),
-  );
+      );
 }

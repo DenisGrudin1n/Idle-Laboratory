@@ -1,19 +1,22 @@
-class GameException implements Exception {
-  const GameException(this.message, [this.details, this.stackTrace]);
+import 'dart:async';
 
-  final String message;
+class GameException implements Exception {
+  const GameException([this.details, this.stackTrace]);
+
   final String? details;
   final StackTrace? stackTrace;
 
   @override
-  String toString() {
-    final StringBuffer buffer = StringBuffer('GameException: $message');
-    if (details != null) {
-      buffer.write('\nDetails: $details');
-    }
-    if (stackTrace != null) {
-      buffer.write('\nStack trace:\n$stackTrace');
-    }
-    return buffer.toString();
+  String toString() => 'GameException'
+      '${details != null ? ': $details' : ''}'
+      '${stackTrace != null ? '\nStack trace:\n$stackTrace' : ''}';
+}
+
+/// Helper for wrapping async repository or service calls with GameException
+Future<T> guardAsync<T>(FutureOr<T> Function() call) async {
+  try {
+    return await call();
+  } catch (error, stackTrace) {
+    throw GameException(error.toString(), stackTrace);
   }
 }

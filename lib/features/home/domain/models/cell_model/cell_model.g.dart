@@ -27,13 +27,11 @@ Map<String, dynamic> _$CellModelToJson(_CellModel instance) =>
       'energyPerSecond': instance.energyPerSecond,
     };
 
-const Map<CellName, String> _$CellNameEnumMap = <CellName, String>{
+const _$CellNameEnumMap = {
   CellName.basicEnergyCell: 'basicEnergyCell',
   CellName.heatCell: 'heatCell',
   CellName.iceCell: 'iceCell',
   CellName.darkMatterCell: 'darkMatterCell',
 };
 
-const Map<CellType, String> _$CellTypeEnumMap = <CellType, String>{
-  CellType.energy: 'energy',
-};
+const _$CellTypeEnumMap = {CellType.energy: 'energy'};

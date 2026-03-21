@@ -5,43 +5,41 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData get defaultTheme => _base(
-    AppColor(
-      primary: DefaultColor.primary,
-      secondary: DefaultColor.secondary,
-      accent: DefaultColor.accent,
-      primaryText: DefaultColor.primaryText,
-      background: DefaultColor.background,
-      drawerBackground: DefaultColor.drawerBackground,
-      titleText: DefaultColor.titleText,
-      green: DefaultColor.green,
-      sectionBorder: DefaultColor.sectionBorder,
-      sectionGradient: DefaultColor.sectionGradient,
-      cellBodyGradient: DefaultColor.cellBodyGradient,
-      cellTopCapGradient: DefaultColor.cellTopCapGradient,
-      cellBottomCapGradient: DefaultColor.cellBottomCapGradient,
-      cellTopRimGradient: DefaultColor.cellTopRimGradient,
-      cellBottomRimGradient: DefaultColor.cellBottomRimGradient,
-      energyFillGradient: DefaultColor.energyFillGradient,
-      energyGlowGradient: DefaultColor.energyGlowGradient,
-      energyLightningColor: DefaultColor.energyLightningColor,
-      energyParticleColor1: DefaultColor.energyParticleColor1,
-      energyParticleColor2: DefaultColor.energyParticleColor2,
-      heatFillGradient: DefaultColor.heatFillGradient,
-      heatGlowGradient: DefaultColor.heatGlowGradient,
-      heatChunkColor: DefaultColor.heatChunkColor,
-      heatEmberColor1: DefaultColor.heatEmberColor1,
-      heatEmberColor2: DefaultColor.heatEmberColor2,
-    ),
-  );
+        AppColor(
+          primary: DefaultColor.primary,
+          secondary: DefaultColor.secondary,
+          accent: DefaultColor.accent,
+          primaryText: DefaultColor.primaryText,
+          background: DefaultColor.background,
+          drawerBackground: DefaultColor.drawerBackground,
+          titleText: DefaultColor.titleText,
+          green: DefaultColor.green,
+          sectionBorder: DefaultColor.sectionBorder,
+          sectionGradient: DefaultColor.sectionGradient,
+          cellBodyGradient: DefaultColor.cellBodyGradient,
+          cellTopCapGradient: DefaultColor.cellTopCapGradient,
+          cellBottomCapGradient: DefaultColor.cellBottomCapGradient,
+          cellTopRimGradient: DefaultColor.cellTopRimGradient,
+          cellBottomRimGradient: DefaultColor.cellBottomRimGradient,
+          energyFillGradient: DefaultColor.energyFillGradient,
+          energyGlowGradient: DefaultColor.energyGlowGradient,
+          energyLightningColor: DefaultColor.energyLightningColor,
+          energyParticleColor1: DefaultColor.energyParticleColor1,
+          energyParticleColor2: DefaultColor.energyParticleColor2,
+          heatFillGradient: DefaultColor.heatFillGradient,
+          heatGlowGradient: DefaultColor.heatGlowGradient,
+          heatChunkColor: DefaultColor.heatChunkColor,
+          heatEmberColor1: DefaultColor.heatEmberColor1,
+          heatEmberColor2: DefaultColor.heatEmberColor2,
+        ),
+      );
 
-  static ThemeData _base(AppColor color) {
-    return ThemeData(
-      useMaterial3: false,
-      extensions: <ThemeExtension<dynamic>>[color],
-      scaffoldBackgroundColor: color.background,
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(backgroundColor: color.primary),
-      ),
-    );
-  }
+  static ThemeData _base(AppColor color) => ThemeData(
+        useMaterial3: false,
+        extensions: [color],
+        scaffoldBackgroundColor: color.background,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(backgroundColor: color.primary),
+        ),
+      );
 }
