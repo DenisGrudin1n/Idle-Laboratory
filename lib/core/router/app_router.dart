@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:idle_laboratory/features/home/presentation/screens/home_screen.dart';
+import 'package:idle_laboratory/features/home/presentation/screens/cells_screen.dart';
 
 class AppRouter {
   AppRouter._();
@@ -10,7 +10,7 @@ class AppRouter {
     routes: [
       GoRoute(
         path: home,
-        builder: (context, state) => const HomeScreen(),
+        builder: (context, state) => const CellsScreen(),
       ),
     ],
   );

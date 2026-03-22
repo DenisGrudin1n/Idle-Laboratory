@@ -30,6 +30,53 @@ extension CellContainerPainter on Canvas {
     );
   }
 
+  void drawCellCap({
+    required double centerX,
+    required double topY,
+    required double width,
+    required LinearGradient capGradient,
+  }) {
+    final capWidth = width * 0.5;
+    final capHeight = width * 0.2;
+    final left = centerX - capWidth / 2;
+    final top = topY - capHeight;
+
+    final capPaint = Paint()..shader = capGradient.createShader(Rect.fromLTWH(left, top, capWidth, capHeight));
+
+    final borderPaint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1;
+
+    final capRRect = RRect.fromRectAndCorners(
+      Rect.fromLTWH(left, top, capWidth, capHeight),
+      topLeft: Radius.circular(capHeight * 0.45),
+      topRight: Radius.circular(capHeight * 0.45),
+    );
+
+    drawRRect(capRRect, capPaint);
+    drawRRect(capRRect, borderPaint);
+  }
+
+  void drawFillDividers({
+    required double centerX,
+    required double topY,
+    required double bottomY,
+    required double width,
+    required Color dividerColor,
+  }) {
+    final left = centerX - width / 2;
+    final height = bottomY - topY;
+    final dividerPaint = Paint()
+      ..color = dividerColor.withValues(alpha: 0.3)
+      ..strokeWidth = 1.2;
+
+    for (var i = 1; i <= 4; i++) {
+      final y = bottomY - (height * (i * 0.2));
+      drawLine(Offset(left + 2, y), Offset(left + width - 2, y), dividerPaint);
+    }
+  }
+
   void drawGlassOverlay({
     required double centerX,
     required double topY,
@@ -42,11 +89,7 @@ extension CellContainerPainter on Canvas {
 
     final reflectionPaint = Paint()
       ..shader = LinearGradient(
-        colors: [
-          Colors.white.withValues(alpha: 0.18),
-          Colors.white.withValues(alpha: 0.06),
-          Colors.transparent,
-        ],
+        colors: [Colors.white.withValues(alpha: 0.18), Colors.white.withValues(alpha: 0.06), Colors.transparent],
         stops: const [0, 0.4, 1],
       ).createShader(Rect.fromLTWH(left, topY, width * 0.28, height));
 
@@ -85,7 +128,10 @@ extension CellContainerPainter on Canvas {
     );
 
     drawRRect(
-      RRect.fromRectAndRadius(Rect.fromLTWH(left + 1.5, topY + 1.5, width - 3, height - 3), Radius.circular(math.max(0, radius - 1))),
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(left + 1.5, topY + 1.5, width - 3, height - 3),
+        Radius.circular(math.max(0, radius - 1)),
+      ),
       Paint()
         ..color = Colors.white.withValues(alpha: 0.08)
         ..style = PaintingStyle.stroke
@@ -119,8 +165,11 @@ extension EnergyEffectsPainter on Canvas {
       drawRect(
         Rect.fromLTWH(centerX - width / 2 + 2, fillTop, width - 4, fillHeight),
         Paint()
-          ..shader = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: gradientColors)
-              .createShader(Rect.fromLTWH(centerX - width / 2, fillTop, width, fillHeight))
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: gradientColors,
+          ).createShader(Rect.fromLTWH(centerX - width / 2, fillTop, width, fillHeight))
           ..style = PaintingStyle.fill,
       );
 
@@ -133,8 +182,9 @@ extension EnergyEffectsPainter on Canvas {
       drawOval(
         Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width - 4, height: 30),
         Paint()
-          ..shader = RadialGradient(colors: glowColors)
-              .createShader(Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width, height: 40))
+          ..shader = RadialGradient(
+            colors: glowColors,
+          ).createShader(Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width, height: 40))
           ..style = PaintingStyle.fill,
       );
 
@@ -203,8 +253,11 @@ extension EnergyEffectsPainter on Canvas {
     for (var i = 0; i < particleCount; i++) {
       final x = centerX - width / 2 + (width * random.nextDouble());
       final y = fillTop + (bottomY - fillTop) * ((animationValue + i * 0.08) % 1.0);
-      paint.color = Color.lerp(particleColor1, particleColor2, random.nextDouble())!
-          .withValues(alpha: 0.6 + random.nextDouble() * 0.3);
+      paint.color = Color.lerp(
+        particleColor1,
+        particleColor2,
+        random.nextDouble(),
+      )!.withValues(alpha: 0.6 + random.nextDouble() * 0.3);
       drawCircle(Offset(x, y), 0.8 + random.nextDouble() * 2, paint);
     }
   }
@@ -245,8 +298,11 @@ extension EnergyEffectsPainter on Canvas {
 
       final emberCount = random.nextInt(2) + 1;
       for (var j = 0; j < emberCount; j++) {
-        emberPaint.color = Color.lerp(emberColor1, emberColor2, random.nextDouble())!
-            .withValues(alpha: 0.7 + random.nextDouble() * 0.3);
+        emberPaint.color = Color.lerp(
+          emberColor1,
+          emberColor2,
+          random.nextDouble(),
+        )!.withValues(alpha: 0.7 + random.nextDouble() * 0.3);
         drawCircle(
           Offset(chunkX + (random.nextDouble() - 0.5) * chunkSize, baseY + (random.nextDouble() - 0.5) * chunkSize),
           0.6 + random.nextDouble() * 1.2,

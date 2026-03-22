@@ -119,79 +119,23 @@ class AppColor extends ThemeExtension<AppColor> {
       accent: Color.lerp(accent, other.accent, t)!,
       primaryText: Color.lerp(primaryText, other.primaryText, t)!,
       background: Color.lerp(background, other.background, t)!,
-      drawerBackground: Color.lerp(
-        drawerBackground,
-        other.drawerBackground,
-        t,
-      )!,
+      drawerBackground: Color.lerp(drawerBackground, other.drawerBackground, t)!,
       titleText: Color.lerp(titleText, other.titleText, t)!,
       green: Color.lerp(green, other.green, t)!,
       sectionBorder: Color.lerp(sectionBorder, other.sectionBorder, t)!,
-      sectionGradient: LinearGradient.lerp(
-        sectionGradient,
-        other.sectionGradient,
-        t,
-      )!,
-      cellBodyGradient: LinearGradient.lerp(
-        cellBodyGradient,
-        other.cellBodyGradient,
-        t,
-      )!,
-      cellTopCapGradient: RadialGradient.lerp(
-        cellTopCapGradient,
-        other.cellTopCapGradient,
-        t,
-      )!,
-      cellBottomCapGradient: RadialGradient.lerp(
-        cellBottomCapGradient,
-        other.cellBottomCapGradient,
-        t,
-      )!,
-      cellTopRimGradient: LinearGradient.lerp(
-        cellTopRimGradient,
-        other.cellTopRimGradient,
-        t,
-      )!,
-      cellBottomRimGradient: LinearGradient.lerp(
-        cellBottomRimGradient,
-        other.cellBottomRimGradient,
-        t,
-      )!,
-      energyFillGradient: LinearGradient.lerp(
-        energyFillGradient,
-        other.energyFillGradient,
-        t,
-      )!,
-      energyGlowGradient: RadialGradient.lerp(
-        energyGlowGradient,
-        other.energyGlowGradient,
-        t,
-      )!,
-      energyLightningColor: Color.lerp(
-        energyLightningColor,
-        other.energyLightningColor,
-        t,
-      )!,
-      energyParticleColor1: Color.lerp(
-        energyParticleColor1,
-        other.energyParticleColor1,
-        t,
-      )!,
-      energyParticleColor2: Color.lerp(
-        energyParticleColor2,
-        other.energyParticleColor2,
-        t,
-      )!,
-      heatFillGradient: LinearGradient.lerp(
-        heatFillGradient,
-        other.heatFillGradient,
-        t,
-      )!,
-      heatGlowGradient: RadialGradient.lerp(
-        heatGlowGradient,
-        other.heatGlowGradient,
-        t,
-      )!,
+      sectionGradient: LinearGradient.lerp(sectionGradient, other.sectionGradient, t)!,
+      cellBodyGradient: LinearGradient.lerp(cellBodyGradient, other.cellBodyGradient, t)!,
+      cellTopCapGradient: RadialGradient.lerp(cellTopCapGradient, other.cellTopCapGradient, t)!,
+      cellBottomCapGradient: RadialGradient.lerp(cellBottomCapGradient, other.cellBottomCapGradient, t)!,
+      cellTopRimGradient: LinearGradient.lerp(cellTopRimGradient, other.cellTopRimGradient, t)!,
+      cellBottomRimGradient: LinearGradient.lerp(cellBottomRimGradient, other.cellBottomRimGradient, t)!,
+      energyFillGradient: LinearGradient.lerp(energyFillGradient, other.energyFillGradient, t)!,
+      energyGlowGradient: RadialGradient.lerp(energyGlowGradient, other.energyGlowGradient, t)!,
+      energyLightningColor: Color.lerp(energyLightningColor, other.energyLightningColor, t)!,
+      energyParticleColor1: Color.lerp(energyParticleColor1, other.energyParticleColor1, t)!,
+      energyParticleColor2: Color.lerp(energyParticleColor2, other.energyParticleColor2, t)!,
+      heatFillGradient: LinearGradient.lerp(heatFillGradient, other.heatFillGradient, t)!,
+      heatGlowGradient: RadialGradient.lerp(heatGlowGradient, other.heatGlowGradient, t)!,
       heatChunkColor: Color.lerp(heatChunkColor, other.heatChunkColor, t)!,
       heatEmberColor1: Color.lerp(heatEmberColor1, other.heatEmberColor1, t)!,
       heatEmberColor2: Color.lerp(heatEmberColor2, other.heatEmberColor2, t)!,
@@ -219,12 +163,7 @@ class DefaultColor {
   );
 
   static const cellBodyGradient = LinearGradient(
-    colors: [
-      Color(0xFF5A637A),
-      Color(0xFF3D4460),
-      Color(0xFF282E42),
-      Color(0xFF353C55),
-    ],
+    colors: [Color(0xFF5A637A), Color(0xFF3D4460), Color(0xFF282E42), Color(0xFF353C55)],
     stops: [0, 0.35, 0.75, 1],
   );
 
@@ -234,9 +173,7 @@ class DefaultColor {
     stops: [0, 0.5, 1],
   );
 
-  static const cellBottomCapGradient = RadialGradient(
-    colors: [Color(0xFF3A4259), Color(0xFF1E2333)],
-  );
+  static const cellBottomCapGradient = RadialGradient(colors: [Color(0xFF3A4259), Color(0xFF1E2333)]);
 
   static const cellTopRimGradient = LinearGradient(
     begin: Alignment.topCenter,
@@ -256,9 +193,7 @@ class DefaultColor {
     colors: [Color(0xFF227BB0), Color(0xFF0D5F93), Color(0xFF094A74)],
   );
 
-  static const energyGlowGradient = RadialGradient(
-    colors: [Color(0xFF3192C0), Color(0xFF0D5F93), Colors.transparent],
-  );
+  static const energyGlowGradient = RadialGradient(colors: [Color(0xFF3192C0), Color(0xFF0D5F93), Colors.transparent]);
   static const energyLightningColor = Color(0xFF3D9DC8);
   static const energyParticleColor1 = Color(0xFF56AECF);
   static const energyParticleColor2 = Color(0xFF1F82B5);
@@ -269,9 +204,7 @@ class DefaultColor {
     colors: [Color(0xFFFF6B35), Color(0xFFD73502), Color(0xFF8B1F00)],
   );
 
-  static const heatGlowGradient = RadialGradient(
-    colors: [Color(0xFFFFA500), Color(0xFFD73502), Colors.transparent],
-  );
+  static const heatGlowGradient = RadialGradient(colors: [Color(0xFFFFA500), Color(0xFFD73502), Colors.transparent]);
   static const heatChunkColor = Color(0xFF3D2416);
   static const heatEmberColor1 = Color(0xFFFFB84D);
   static const heatEmberColor2 = Color(0xFFFF7A33);

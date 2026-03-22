@@ -17,11 +17,11 @@ import 'package:idle_laboratory/features/home/data/data_sources/local_storage_da
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart'
     as _i588;
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository_impl.dart'
-    as _i100;
+    as _i1003;
 import 'package:idle_laboratory/features/home/data/repositories/energy_repository.dart'
-    as _i200;
+    as _i312;
 import 'package:idle_laboratory/features/home/data/repositories/energy_repository_impl.dart'
-    as _i300;
+    as _i844;
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart'
     as _i495;
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository_impl.dart'
@@ -31,7 +31,7 @@ import 'package:idle_laboratory/features/home/data/repositories/settings_reposit
 import 'package:idle_laboratory/features/home/data/repositories/settings_repository_impl.dart'
     as _i5;
 import 'package:idle_laboratory/features/home/domain/services/app_lifecycle_service.dart'
-    as _i643;
+    as _i159;
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart'
     as _i643;
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart'
@@ -42,6 +42,8 @@ import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_blo
     as _i461;
 import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_bloc.dart'
     as _i951;
+import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart'
+    as _i249;
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart'
     as _i89;
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart'
@@ -61,24 +63,31 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferencesModule.prefs,
       preResolve: true,
     );
+    gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i588.CellRepository>(
-      () => _i100.CellRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    gh.lazySingleton<_i495.PrestigeRepository>(
+      () => _i362.PrestigeRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
-    gh.lazySingleton<_i200.EnergyRepository>(
-      () => _i300.EnergyRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    gh.lazySingleton<_i312.EnergyRepository>(
+      () => _i844.EnergyRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    );
+    gh.lazySingleton<_i588.CellRepository>(
+      () => _i1003.CellRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    );
+    gh.lazySingleton<_i912.SettingsRepository>(
+      () => _i5.SettingsRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
     gh.lazySingleton<_i57.EnergyService>(
-      () => _i57.EnergyService(gh<_i200.EnergyRepository>()),
+      () => _i57.EnergyService(gh<_i312.EnergyRepository>()),
       dispose: (i) => i.dispose(),
     );
     gh.factory<_i951.EnergyBloc>(
       () => _i951.EnergyBloc(gh<_i57.EnergyService>()),
     );
-    gh.lazySingleton<_i495.PrestigeRepository>(
-      () => _i362.PrestigeRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    gh.factory<_i754.SettingsBloc>(
+      () => _i754.SettingsBloc(gh<_i912.SettingsRepository>()),
     );
     gh.lazySingleton<_i741.PrestigeService>(
       () => _i741.PrestigeService(
@@ -86,17 +95,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i495.PrestigeRepository>(),
       ),
       dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i643.AppLifecycleService>(
-      () => _i643.AppLifecycleService(
-        gh<_i57.EnergyService>(),
-        gh<_i643.CellsService>(),
-        gh<_i741.PrestigeService>(),
-      ),
-      dispose: (i) => i.dispose(),
-    );
-    gh.lazySingleton<_i912.SettingsRepository>(
-      () => _i5.SettingsRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
     gh.lazySingleton<_i643.CellsService>(
       () => _i643.CellsService(
@@ -116,8 +114,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i461.CellsBloc>(
       () => _i461.CellsBloc(gh<_i643.CellsService>(), gh<_i57.EnergyService>()),
     );
-    gh.factory<_i754.SettingsBloc>(
-      () => _i754.SettingsBloc(gh<_i912.SettingsRepository>()),
+    gh.lazySingleton<_i159.AppLifecycleService>(
+      () => _i159.AppLifecycleService(
+        gh<_i57.EnergyService>(),
+        gh<_i643.CellsService>(),
+        gh<_i741.PrestigeService>(),
+      ),
+      dispose: (i) => i.dispose(),
     );
     return this;
   }

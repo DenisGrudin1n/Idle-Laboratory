@@ -24,13 +24,14 @@ class CellsListSection extends StatelessWidget {
             children: [
               Container(
                 padding: EdgeInsets.all(12.w),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(context.l10n.cells,
-                        style: TextStyle(color: context.color.titleText, fontSize: 14.sp, fontWeight: FontWeight.bold)),
-                    Icon(Icons.refresh, color: context.color.primaryText, size: 16.sp),
-                  ],
+                alignment: Alignment.center,
+                child: Text(
+                  context.l10n.cells,
+                  style: TextStyle(
+                    color: context.color.titleText,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2)),
@@ -45,18 +46,21 @@ class CellsListSection extends StatelessWidget {
                       itemCount: cells.length,
                       separatorBuilder: (context, index) => SizedBox(height: 8.h),
                       itemBuilder: (context, index) => _CellItem(
-                          cell: cells[index],
-                          isSelected: selectedId == cells[index].id,
-                          onTap: () => context.read<CellsBloc>().add(CellsEvent.selectCell(cells[index].id))),
+                        cell: cells[index],
+                        isSelected: selectedId == cells[index].id,
+                        onTap: () => context.read<CellsBloc>().add(CellsEvent.selectCell(cells[index].id)),
+                      ),
                     );
                   },
                 ),
               ),
               Container(
                 padding: EdgeInsets.all(12.w),
-                child: Text(context.l10n.unlockMoreCells,
-                    style: TextStyle(color: context.color.primaryText, fontSize: 10.sp, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center),
+                child: Text(
+                  context.l10n.unlockMoreCells,
+                  style: TextStyle(color: context.color.primaryText, fontSize: 10.sp, fontWeight: FontWeight.w400),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
@@ -90,20 +94,33 @@ class _CellItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(cell.name.localize(l10n),
-                  style: TextStyle(
-                      color: cell.isLocked ? context.color.primaryText : context.color.titleText,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600)),
-              SizedBox(height: 4.h),
+              Text(
+                cell.name.localize(l10n),
+                style: TextStyle(
+                  color: cell.isLocked ? context.color.primaryText : context.color.titleText,
+                  fontSize: 11.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               if (!cell.isLocked) ...[
+                SizedBox(height: 6.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${l10n.level}: ${cell.level}',
-                        style:
-                            TextStyle(color: context.color.primaryText, fontSize: 9.sp, fontWeight: FontWeight.w400)),
-                    StatusBadge(text: l10n.select)
+                    Text(
+                      '${l10n.level}: ${cell.level}',
+                      style: TextStyle(color: context.color.primaryText, fontSize: 9.sp, fontWeight: FontWeight.w400),
+                    ),
+                    Row(
+                      children: [
+                        Icon(Icons.arrow_upward, color: context.color.green, size: 10.sp),
+                        SizedBox(width: 2.w),
+                        Text(
+                          '${cell.energyPerSecond ?? '0.0'} / ${l10n.sec}',
+                          style: TextStyle(color: context.color.green, fontSize: 9.sp, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
                 SizedBox(height: 4.h),
@@ -118,30 +135,26 @@ class _CellItem extends StatelessWidget {
                         Icon(Icons.battery_charging_full, color: context.color.primaryText, size: 10.sp),
                         SizedBox(width: 4.w),
                         Text(
-                            nextLevelConfig == null
-                                ? l10n.maxLvl
-                                : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format(useScientific: isScientific)}',
-                            style: TextStyle(
-                                color: context.color.primaryText, fontSize: 9.sp, fontWeight: FontWeight.w500)),
+                          nextLevelConfig == null
+                              ? l10n.maxLvl
+                              : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format(useScientific: isScientific)}',
+                          style: TextStyle(
+                            color: context.color.primaryText,
+                            fontSize: 9.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     );
                   },
-                ),
-                SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    Icon(Icons.arrow_upward, color: context.color.green, size: 10.sp),
-                    SizedBox(width: 2.w),
-                    Text('${cell.energyPerSecond ?? '0.0'} / ${l10n.sec}',
-                        style: TextStyle(color: context.color.green, fontSize: 9.sp, fontWeight: FontWeight.w500)),
-                  ],
                 ),
               ],
               if (cell.isLocked) ...[
                 SizedBox(height: 6.h),
                 StatusBadge(
-                    text:
-                        '${l10n.unlockAt}: ${CellId.fromString(cell.id) != null ? CellEnergyPerSecond.getNewCellUnlockRequirement(CellId.fromString(cell.id)!) ?? '???' : '???' }'),
+                  text:
+                      '${l10n.unlockAt}: ${CellId.fromString(cell.id) != null ? CellEnergyPerSecond.getNewCellUnlockRequirement(CellId.fromString(cell.id)!) ?? '???' : '???' }',
+                ),
               ],
             ],
           ),

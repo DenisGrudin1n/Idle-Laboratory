@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cell_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/main_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/settings_toggle.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+class CellsScreen extends StatelessWidget {
+  const CellsScreen({super.key});
 
-class _HomeScreenState extends State<HomeScreen> {
-  MainNavigationTab _selectedTab = MainNavigationTab.cells;
-
-  Widget _buildContent() => switch (_selectedTab) {
+  Widget _buildContent(MainNavigationTab selectedTab) => switch (selectedTab) {
         MainNavigationTab.cells => const CellContent(),
         MainNavigationTab.chemicals => const SizedBox.shrink(),
         MainNavigationTab.settings => const SettingsToggle(),
@@ -24,8 +20,12 @@ class _HomeScreenState extends State<HomeScreen> {
       };
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: context.color.background,
+  Widget build(BuildContext context) {
+    final color = context.color;
+    return BlocSelector<NavigationBloc, NavigationState, MainNavigationTab>(
+      selector: (state) => state.mainTab,
+      builder: (context, selectedTab) => Scaffold(
+        backgroundColor: color.background,
         body: SafeArea(
           top: false,
           bottom: false,
@@ -33,11 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MainNavigationBar(
-                  selectedTab: _selectedTab, onTabSelected: (tab) => setState(() => _selectedTab = tab)),
+                selectedTab: selectedTab,
+                onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+              ),
               SizedBox(width: 12.w),
-              Expanded(child: _buildContent()),
+              Expanded(child: _buildContent(selectedTab)),
             ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
