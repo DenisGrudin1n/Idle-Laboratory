@@ -199,6 +199,54 @@ abstract class AppLocalizations {
   /// **'Ice Cell'**
   String get iceCell;
 
+  /// No description provided for @steamCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Steam Cell'**
+  String get steamCell;
+
+  /// No description provided for @lightCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Cell'**
+  String get lightCell;
+
+  /// No description provided for @molecularCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Molecular Cell'**
+  String get molecularCell;
+
+  /// No description provided for @bacterialCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Bacterial Cell'**
+  String get bacterialCell;
+
+  /// No description provided for @bloodCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Cell'**
+  String get bloodCell;
+
+  /// No description provided for @bioCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio Cell'**
+  String get bioCell;
+
+  /// No description provided for @radiationCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiation Cell'**
+  String get radiationCell;
+
+  /// No description provided for @plasmaCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Plasma Cell'**
+  String get plasmaCell;
+
   /// No description provided for @darkMatterCell.
   ///
   /// In en, this message translates to:

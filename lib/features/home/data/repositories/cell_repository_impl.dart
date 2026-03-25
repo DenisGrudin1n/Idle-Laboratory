@@ -24,11 +24,33 @@ class CellRepositoryImpl implements CellRepository {
           isLocked: false,
           energyPerSecond: '1.00',
         ),
-        CellModel(id: CellId.heatCell.id, name: CellName.heatCell, type: CellType.energy, level: 1, isLocked: true),
-        CellModel(id: CellId.iceCell.id, name: CellName.iceCell, type: CellType.energy, level: 1, isLocked: true),
         CellModel(
-            id: CellId.darkMatterCell.id, name: CellName.darkMatterCell, type: CellType.energy, level: 1, isLocked: true),
+          id: CellId.heatCell.id,
+          name: CellName.heatCell,
+          type: CellType.energy,
+          level: 1,
+          isLocked: true,
+          energyPerSecond: '2.50',
+        ),
+        _createLockedCell(CellId.iceCell, CellName.iceCell),
+        _createLockedCell(CellId.steamCell, CellName.steamCell),
+        _createLockedCell(CellId.lightCell, CellName.lightCell),
+        _createLockedCell(CellId.molecularCell, CellName.molecularCell),
+        _createLockedCell(CellId.bacterialCell, CellName.bacterialCell),
+        _createLockedCell(CellId.bloodCell, CellName.bloodCell),
+        _createLockedCell(CellId.bioCell, CellName.bioCell),
+        _createLockedCell(CellId.radiationCell, CellName.radiationCell),
+        _createLockedCell(CellId.plasmaCell, CellName.plasmaCell),
+        _createLockedCell(CellId.darkMatterCell, CellName.darkMatterCell),
       ];
+
+  CellModel _createLockedCell(CellId id, CellName name) => CellModel(
+        id: id.id,
+        name: name,
+        type: CellType.energy,
+        level: 1,
+        isLocked: true,
+      );
 
   @override
   Future<List<CellModel>?> getSavedCells() => guardAsync(() async {

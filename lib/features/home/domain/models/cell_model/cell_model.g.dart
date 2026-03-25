@@ -31,6 +31,14 @@ const _$CellNameEnumMap = {
   CellName.basicEnergyCell: 'basicEnergyCell',
   CellName.heatCell: 'heatCell',
   CellName.iceCell: 'iceCell',
+  CellName.steamCell: 'steamCell',
+  CellName.lightCell: 'lightCell',
+  CellName.molecularCell: 'molecularCell',
+  CellName.bacterialCell: 'bacterialCell',
+  CellName.bloodCell: 'bloodCell',
+  CellName.bioCell: 'bioCell',
+  CellName.radiationCell: 'radiationCell',
+  CellName.plasmaCell: 'plasmaCell',
   CellName.darkMatterCell: 'darkMatterCell',
 };
 

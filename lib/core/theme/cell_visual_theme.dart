@@ -86,8 +86,7 @@ extension CellVisualThemeExtension on CellId {
     required CellVisualTheme energyTheme,
     required CellVisualTheme heatTheme,
   }) => switch (this) {
-    CellId.basicEnergyCell => energyTheme,
     CellId.heatCell => heatTheme,
-    CellId.iceCell || CellId.darkMatterCell => energyTheme,
+    _ => energyTheme,
   };
 }

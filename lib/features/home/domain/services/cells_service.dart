@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
@@ -22,8 +23,9 @@ class CellsService {
   final PrestigeService _prestigeService;
 
   final BehaviorSubject<List<CellModel>> _cellsSubject = BehaviorSubject<List<CellModel>>();
-  final BehaviorSubject<Map<String, BigNumber>> _cellEnergiesSubject =
-      BehaviorSubject<Map<String, BigNumber>>.seeded({});
+  final BehaviorSubject<Map<String, BigNumber>> _cellEnergiesSubject = BehaviorSubject<Map<String, BigNumber>>.seeded(
+    {},
+  );
 
   StreamSubscription<List<CellModel>>? _progressionSubscription;
   StreamSubscription<BigNumber>? _epsCalculationSubscription;
@@ -36,11 +38,21 @@ class CellsService {
 
   Future<void> _initializeCells() async {
     final savedCells = await _cellRepository.getSavedCells();
-    _cellsSubject.add(savedCells ?? _cellRepository.getDefaultCells());
+    final defaultCells = _cellRepository.getDefaultCells();
+
+    if (savedCells == null) {
+      _cellsSubject.add(defaultCells);
+      return;
+    }
+
+    final savedCellsMap = {for (final cell in savedCells) cell.id: cell};
+
+    final finalCells = defaultCells.map((defaultCell) => savedCellsMap[defaultCell.id] ?? defaultCell).toList();
+    _cellsSubject.add(finalCells);
   }
 
-  void _setupEnergyReaction() => _progressionSubscription =
-          _energyService.energy$.map(_processProgression).listen((updatedCells) {
+  void _setupEnergyReaction() =>
+      _progressionSubscription = _energyService.energy$.map(_processProgression).listen((updatedCells) {
         if (!listEquals(updatedCells, currentCells)) {
           _cellsSubject.add(updatedCells);
           _cellRepository.saveCells(updatedCells);
@@ -58,9 +70,9 @@ class CellsService {
   }
 
   List<CellModel> _processUnlocks(List<CellModel> cells, BigNumber totalEnergy) => cells.map((cell) {
-        if (!cell.canUnlock(totalEnergy)) return cell;
-        return cell.copyWith(isLocked: false, energyPerSecond: cell.eps.format());
-      }).toList();
+    if (!cell.canUnlock(totalEnergy)) return cell;
+    return cell.copyWith(isLocked: false, energyPerSecond: cell.eps.format());
+  }).toList();
 
   void _updateCellEnergies(List<CellModel> cells, BigNumber totalEnergy) {
     final updatedEnergies = Map<String, BigNumber>.from(currentCellEnergies);
@@ -79,21 +91,24 @@ class CellsService {
   }
 
   List<CellModel> _processLevelUps(List<CellModel> cells) => cells.map((cell) {
-        final cellEnergy = currentCellEnergies[cell.id];
-        if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
-        return cell.copyWith(level: cell.level + 1, energyPerSecond: cell.nextLevelEPS.format());
-      }).toList();
+    final cellEnergy = currentCellEnergies[cell.id];
+    if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
+    return cell.copyWith(level: cell.level + 1, energyPerSecond: cell.nextLevelEPS.format());
+  }).toList();
 
   BigNumber _calculateTotalEPS(List<CellModel> cells) {
-    final baseEPS =
-        cells.where((cell) => !cell.isLocked).fold(BigNumber.zero(), (total, cell) => total + cell.eps);
+    final baseEPS = cells.where((cell) => !cell.isLocked).fold(BigNumber.zero(), (total, cell) => total + cell.eps);
     return baseEPS * _prestigeService.getEffectiveMultiplier();
   }
 
   void saveCells() => _cellRepository.saveCells(currentCells);
 
   double getFillLevel(String cellId) {
+    // For testing: all new cells (level 1) are always full
     final cell = currentCells.cast<CellModel?>().firstWhere((c) => c?.id == cellId, orElse: () => null);
+    if (cell != null && cell.level == 1 && cell.id != CellId.basicEnergyCell.id && cell.id != CellId.heatCell.id) {
+      return 1;
+    }
     final cellEnergy = currentCellEnergies[cellId];
     return cell == null || cellEnergy == null ? 0 : cell.getProgressToNextLevel(cellEnergy);
   }
