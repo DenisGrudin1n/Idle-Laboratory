@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/extensions/cell_container_extensions.dart';
 import 'package:idle_laboratory/core/theme/cell_visual_theme.dart';
+import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
 class AnimatedCellContainer extends StatelessWidget {
-  const AnimatedCellContainer({
-    required this.fillLevel,
-    required this.visualTheme,
-    required this.animation,
-    super.key,
-  });
+  const AnimatedCellContainer({required this.fillLevel, required this.visualTheme, required this.animation, super.key});
   final double fillLevel;
   final CellVisualTheme visualTheme;
   final Animation<double> animation;
 
   @override
-  Widget build(BuildContext context) => CustomPaint(
-    painter: _CellContainerPainter(
-      fillLevel: fillLevel,
-      visualTheme: visualTheme,
-      animationValue: animation,
-    ),
-  );
+  Widget build(BuildContext context) {
+    final color = context.color;
+    return CustomPaint(
+      painter: _CellContainerPainter(
+        fillLevel: fillLevel,
+        visualTheme: visualTheme,
+        animationValue: animation,
+        dividerColor: color.primaryText,
+      ),
+    );
+  }
 }
 
 class _CellContainerPainter extends CustomPainter {
@@ -28,10 +28,12 @@ class _CellContainerPainter extends CustomPainter {
     required this.fillLevel,
     required this.visualTheme,
     required this.animationValue,
+    required this.dividerColor,
   }) : super(repaint: animationValue);
   final double fillLevel;
   final CellVisualTheme visualTheme;
   final Animation<double> animationValue;
+  final Color dividerColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -40,6 +42,8 @@ class _CellContainerPainter extends CustomPainter {
     final centerX = size.width / 2;
     final topY = size.height * 0.1;
     final bottomY = topY + height;
+
+    // 1. Draw Body & Outline
     canvas.drawCellContainer(
       centerX: centerX,
       topY: topY,
@@ -47,34 +51,43 @@ class _CellContainerPainter extends CustomPainter {
       width: width,
       bodyGradient: visualTheme.cellBodyGradient,
     );
-    _drawFill(canvas, centerX, topY, bottomY, width);
-    canvas.drawGlassOverlay(
+
+    // 2. Draw Energy Content
+    _drawEnergyContent(
+      canvas: canvas,
       centerX: centerX,
       topY: topY,
       bottomY: bottomY,
       width: width,
+      fillLevel: fillLevel,
+      clipPath: canvas.getContainerClipPath(centerX: centerX, topY: topY, bottomY: bottomY, width: width),
     );
+
+    // 3. Draw Cap (Same as body gradient)
+    canvas
+      ..drawCellCap(centerX: centerX, topY: topY, width: width, capGradient: visualTheme.cellBodyGradient)
+      // 4. Draw Dividers (PrimaryText color, on top of effects)
+      ..drawFillDividers(centerX: centerX, topY: topY, bottomY: bottomY, width: width, dividerColor: dividerColor)
+      // 5. Final Glass Overlay
+      ..drawGlassOverlay(centerX: centerX, topY: topY, bottomY: bottomY, width: width);
   }
 
-  void _drawFill(
-    Canvas canvas,
-    double centerX,
-    double topY,
-    double bottomY,
-    double width,
-  ) {
+  void _drawEnergyContent({
+    required Canvas canvas,
+    required double centerX,
+    required double topY,
+    required double bottomY,
+    required double width,
+    required double fillLevel,
+    required Path clipPath,
+  }) {
     final fillHeight = (bottomY - topY) * fillLevel;
     final fillTop = bottomY - fillHeight;
+
     canvas
       ..save()
-      ..clipPath(
-        canvas.getContainerClipPath(
-          centerX: centerX,
-          topY: topY,
-          bottomY: bottomY,
-          width: width,
-        ),
-      )
+      ..clipPath(clipPath)
+      // Energy Base
       ..drawEnergyBase(
         centerX: centerX,
         fillTop: fillTop,
@@ -87,7 +100,8 @@ class _CellContainerPainter extends CustomPainter {
         ],
       );
 
-    if (fillLevel >= 0.15) {
+    // Effects
+    if (fillLevel >= 0.1) {
       if (visualTheme.effectType == CellEffectType.lightning) {
         canvas.drawElectricLightning(
           centerX: centerX,
@@ -111,6 +125,7 @@ class _CellContainerPainter extends CustomPainter {
       }
     }
 
+    // Particles
     canvas
       ..drawEnergyParticles(
         centerX: centerX,
@@ -121,6 +136,7 @@ class _CellContainerPainter extends CustomPainter {
         particleColor1: visualTheme.effectSecondaryColor1,
         particleColor2: visualTheme.effectSecondaryColor2,
       )
+      // Glow
       ..drawEnergyGlow(
         centerX: centerX,
         fillTop: fillTop,
@@ -137,5 +153,6 @@ class _CellContainerPainter extends CustomPainter {
   @override
   bool shouldRepaint(_CellContainerPainter oldDelegate) =>
       oldDelegate.fillLevel != fillLevel ||
-      oldDelegate.visualTheme != visualTheme;
+      oldDelegate.visualTheme != visualTheme ||
+      oldDelegate.dividerColor != dividerColor;
 }
