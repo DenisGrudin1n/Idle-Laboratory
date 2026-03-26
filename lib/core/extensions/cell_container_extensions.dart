@@ -333,6 +333,162 @@ extension EnergyEffectsPainter on Canvas {
     }
   }
 
+  void drawLightBeams({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color beamColor,
+    int beamCount = 12,
+  }) {
+    final random = math.Random(777);
+    final centerY = fillTop + (bottomY - fillTop) / 2;
+    final maxLen = math.max(width, bottomY - fillTop) * 1.5;
+
+    // 1. Central High-Intensity Singularity (Quantum Core)
+    final pulse = (math.sin(animationValue * math.pi * 4) + 1) / 2;
+    final coreGlow = Paint()
+      ..shader = RadialGradient(
+        colors: [Colors.white, beamColor.withValues(alpha: 0.8), beamColor.withValues(alpha: 0.2), Colors.transparent],
+        stops: const [0.0, 0.2, 0.6, 1.0],
+      ).createShader(Rect.fromCircle(center: Offset(centerX, centerY), radius: 40))
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 10 + pulse * 10);
+
+    drawCircle(Offset(centerX, centerY), 30 + pulse * 15, coreGlow);
+
+    // 2. Radiating "God Rays" (Light Beams)
+    for (var i = 0; i < beamCount; i++) {
+      final rotation = (animationValue * math.pi * 0.5) + (i * math.pi * 2 / beamCount);
+      final rayWidth = 2.0 + random.nextDouble() * 8.0;
+      final rayOpacity = 0.1 + (random.nextDouble() * 0.2);
+
+      // Prismatic edge color (Subtle Violet/Blue shift)
+      final prismaticColor = i.isEven ? const Color(0xFFB39DDB) : const Color(0xFF81D4FA);
+
+      final rayPaint = Paint()
+        ..shader = LinearGradient(
+          colors: [
+            Colors.transparent,
+            prismaticColor.withValues(alpha: rayOpacity * 0.5),
+            Colors.white.withValues(alpha: rayOpacity),
+            prismaticColor.withValues(alpha: rayOpacity * 0.5),
+            Colors.transparent,
+          ],
+          stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+        ).createShader(Rect.fromLTWH(-rayWidth / 2, 0, rayWidth, maxLen))
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+
+      save();
+      translate(centerX, centerY);
+      rotate(rotation);
+
+      // Draw the long beam radiating from center
+      drawRect(Rect.fromLTWH(-rayWidth / 2, 0, rayWidth, maxLen), rayPaint);
+      rotate(math.pi); // Mirror the ray
+      drawRect(Rect.fromLTWH(-rayWidth / 2, 0, rayWidth, maxLen), rayPaint);
+
+      restore();
+    }
+
+    // 3. High-Frequency "Quantum Sparkles" (Photons)
+    final sparkleRandom = math.Random((animationValue * 100).toInt()); // Flickers very fast
+    for (var i = 0; i < 15; i++) {
+      final sx = centerX - width / 2 + (sparkleRandom.nextDouble() * width);
+      final sy = fillTop + (sparkleRandom.nextDouble() * (bottomY - fillTop));
+      final size = 0.5 + sparkleRandom.nextDouble() * 1.5;
+
+      drawCircle(
+        Offset(sx, sy),
+        size,
+        Paint()
+          ..color = Colors.white
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1),
+      );
+
+      // Horizontal flare line for some sparkles
+      if (sparkleRandom.nextDouble() > 0.7) {
+        drawLine(
+          Offset(sx - 5, sy),
+          Offset(sx + 5, sy),
+          Paint()
+            ..color = Colors.white.withValues(alpha: 0.4)
+            ..strokeWidth = 0.5
+            ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1),
+        );
+      }
+    }
+  }
+
+  void drawMolecularBonds({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color atomColor,
+    required Color bondColor,
+    int rows = 4,
+    int cols = 2,
+  }) {
+    final random = math.Random(101);
+    final atoms = <Offset>[];
+    final rowHeight = (bottomY - fillTop) / rows;
+    final colWidth = width / cols;
+
+    // Grid-based atom placement for even distribution
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        final idx = r * cols + c;
+        final drift = getDriftOffset(animationValue: animationValue, index: idx, random: random, maxDrift: 20);
+
+        final baseX = (centerX - width / 2) + (c * colWidth) + (colWidth / 2);
+        final baseY = fillTop + (r * rowHeight) + (rowHeight / 2);
+
+        // Add a bit of local randomness within the grid cell
+        final jitterX = (random.nextDouble() - 0.5) * (colWidth * 0.6);
+        final jitterY = (random.nextDouble() - 0.5) * (rowHeight * 0.6);
+
+        atoms.add(Offset(baseX + jitterX + drift.dx, baseY + jitterY + drift.dy));
+      }
+    }
+
+    final bondPaint = Paint()
+      ..strokeWidth = 1.2
+      ..style = PaintingStyle.stroke;
+
+    final atomPaint = Paint()..style = PaintingStyle.fill;
+
+    // Draw bonds with distance-based opacity
+    for (var i = 0; i < atoms.length; i++) {
+      for (var j = i + 1; j < atoms.length; j++) {
+        final distance = (atoms[i] - atoms[j]).distance;
+        final maxBondDistance = width * 0.55;
+        if (distance < maxBondDistance) {
+          final opacity = (1.0 - distance / maxBondDistance) * 0.35;
+          bondPaint.color = bondColor.withValues(alpha: opacity);
+          drawLine(atoms[i], atoms[j], bondPaint);
+        }
+      }
+    }
+
+    // Draw atoms
+    for (var i = 0; i < atoms.length; i++) {
+      final size = 3.0 + random.nextDouble() * 3.0;
+      atomPaint.color = atomColor.withValues(alpha: 0.8);
+      drawCircle(atoms[i], size, atomPaint);
+
+      // Secondary glow
+      drawCircle(
+        atoms[i],
+        size * 2.5,
+        Paint()
+          ..color = atomColor.withValues(alpha: 0.15)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+      );
+    }
+  }
+
   void drawEnergyParticles({
     required double centerX,
     required double fillTop,

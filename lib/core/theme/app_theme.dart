@@ -41,6 +41,17 @@ class AppTheme {
           steamVaporColor: DefaultColor.steamVaporColor,
           steamParticleColor1: DefaultColor.steamParticleColor1,
           steamParticleColor2: DefaultColor.steamParticleColor2,
+          lightFillGradient: DefaultColor.lightFillGradient,
+          lightGlowGradient: DefaultColor.lightGlowGradient,
+          lightBeamColor: DefaultColor.lightBeamColor,
+          lightParticleColor1: DefaultColor.lightParticleColor1,
+          lightParticleColor2: DefaultColor.lightParticleColor2,
+          molecularFillGradient: DefaultColor.molecularFillGradient,
+          molecularGlowGradient: DefaultColor.molecularGlowGradient,
+          molecularAtomColor: DefaultColor.molecularAtomColor,
+          molecularBondColor: DefaultColor.molecularBondColor,
+          molecularParticleColor1: DefaultColor.molecularParticleColor1,
+          molecularParticleColor2: DefaultColor.molecularParticleColor2,
         ),
       );
 

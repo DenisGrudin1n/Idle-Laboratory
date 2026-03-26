@@ -27,20 +27,19 @@ class CellVisualTheme {
     required Color lightningColor,
     required Color particleColor1,
     required Color particleColor2,
-  }) =>
-      CellVisualTheme(
-        cellBodyGradient: cellBodyGradient,
-        cellTopCapGradient: cellTopCapGradient,
-        cellBottomCapGradient: cellBottomCapGradient,
-        cellTopRimGradient: cellTopRimGradient,
-        cellBottomRimGradient: cellBottomRimGradient,
-        energyFillGradient: energyFillGradient,
-        energyGlowGradient: energyGlowGradient,
-        effectPrimaryColor: lightningColor,
-        effectSecondaryColor1: particleColor1,
-        effectSecondaryColor2: particleColor2,
-        effectType: CellEffectType.lightning,
-      );
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: energyFillGradient,
+    energyGlowGradient: energyGlowGradient,
+    effectPrimaryColor: lightningColor,
+    effectSecondaryColor1: particleColor1,
+    effectSecondaryColor2: particleColor2,
+    effectType: CellEffectType.lightning,
+  );
 
   factory CellVisualTheme.heat({
     required LinearGradient cellBodyGradient,
@@ -53,20 +52,19 @@ class CellVisualTheme {
     required Color lavaChunkColor,
     required Color emberColor1,
     required Color emberColor2,
-  }) =>
-      CellVisualTheme(
-        cellBodyGradient: cellBodyGradient,
-        cellTopCapGradient: cellTopCapGradient,
-        cellBottomCapGradient: cellBottomCapGradient,
-        cellTopRimGradient: cellTopRimGradient,
-        cellBottomRimGradient: cellBottomRimGradient,
-        energyFillGradient: lavaFillGradient,
-        energyGlowGradient: lavaGlowGradient,
-        effectPrimaryColor: lavaChunkColor,
-        effectSecondaryColor1: emberColor1,
-        effectSecondaryColor2: emberColor2,
-        effectType: CellEffectType.lavaChunks,
-      );
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: lavaFillGradient,
+    energyGlowGradient: lavaGlowGradient,
+    effectPrimaryColor: lavaChunkColor,
+    effectSecondaryColor1: emberColor1,
+    effectSecondaryColor2: emberColor2,
+    effectType: CellEffectType.lavaChunks,
+  );
 
   factory CellVisualTheme.ice({
     required LinearGradient cellBodyGradient,
@@ -79,16 +77,15 @@ class CellVisualTheme {
     required Color iceCrystalColor,
     required Color iceParticleColor1,
     required Color iceParticleColor2,
-  }) =>
-      CellVisualTheme(
-        cellBodyGradient: cellBodyGradient,
-        cellTopCapGradient: cellTopCapGradient,
-        cellBottomCapGradient: cellBottomCapGradient,
-        cellTopRimGradient: cellTopRimGradient,
-        cellBottomRimGradient: cellBottomRimGradient,
-        energyFillGradient: iceFillGradient,
-        energyGlowGradient: iceGlowGradient,
-        effectPrimaryColor: iceCrystalColor,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: iceFillGradient,
+    energyGlowGradient: iceGlowGradient,
+    effectPrimaryColor: iceCrystalColor,
     effectSecondaryColor1: iceParticleColor1,
     effectSecondaryColor2: iceParticleColor2,
     effectType: CellEffectType.iceCubes,
@@ -105,20 +102,69 @@ class CellVisualTheme {
     required Color steamVaporColor,
     required Color steamParticleColor1,
     required Color steamParticleColor2,
-  }) =>
-      CellVisualTheme(
-        cellBodyGradient: cellBodyGradient,
-        cellTopCapGradient: cellTopCapGradient,
-        cellBottomCapGradient: cellBottomCapGradient,
-        cellTopRimGradient: cellTopRimGradient,
-        cellBottomRimGradient: cellBottomRimGradient,
-        energyFillGradient: steamFillGradient,
-        energyGlowGradient: steamGlowGradient,
-        effectPrimaryColor: steamVaporColor,
-        effectSecondaryColor1: steamParticleColor1,
-        effectSecondaryColor2: steamParticleColor2,
-        effectType: CellEffectType.risingVapor,
-      );
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: steamFillGradient,
+    energyGlowGradient: steamGlowGradient,
+    effectPrimaryColor: steamVaporColor,
+    effectSecondaryColor1: steamParticleColor1,
+    effectSecondaryColor2: steamParticleColor2,
+    effectType: CellEffectType.risingVapor,
+  );
+
+  factory CellVisualTheme.light({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient lightFillGradient,
+    required RadialGradient lightGlowGradient,
+    required Color lightBeamColor,
+    required Color lightParticleColor1,
+    required Color lightParticleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: lightFillGradient,
+    energyGlowGradient: lightGlowGradient,
+    effectPrimaryColor: lightBeamColor,
+    effectSecondaryColor1: lightParticleColor1,
+    effectSecondaryColor2: lightParticleColor2,
+    effectType: CellEffectType.lightBeams,
+  );
+
+  factory CellVisualTheme.molecular({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient molecularFillGradient,
+    required RadialGradient molecularGlowGradient,
+    required Color molecularAtomColor,
+    required Color molecularParticleColor1,
+    required Color molecularParticleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: molecularFillGradient,
+    energyGlowGradient: molecularGlowGradient,
+    effectPrimaryColor: molecularAtomColor,
+    effectSecondaryColor1: molecularParticleColor1,
+    effectSecondaryColor2: molecularParticleColor2,
+    effectType: CellEffectType.molecularBonds,
+  );
 
   final LinearGradient cellBodyGradient;
   final LinearGradient cellTopRimGradient;
@@ -133,7 +179,7 @@ class CellVisualTheme {
   final CellEffectType effectType;
 }
 
-enum CellEffectType { lightning, lavaChunks, iceCubes, risingVapor }
+enum CellEffectType { lightning, lavaChunks, iceCubes, risingVapor, lightBeams, molecularBonds }
 
 extension CellVisualThemeExtension on CellId {
   CellVisualTheme getVisualTheme({
@@ -141,11 +187,14 @@ extension CellVisualThemeExtension on CellId {
     required CellVisualTheme heatTheme,
     required CellVisualTheme iceTheme,
     required CellVisualTheme steamTheme,
-  }) =>
-      switch (this) {
-        CellId.heatCell => heatTheme,
-        CellId.iceCell => iceTheme,
-        CellId.steamCell => steamTheme,
-        _ => energyTheme,
-      };
+    required CellVisualTheme lightTheme,
+    required CellVisualTheme molecularTheme,
+  }) => switch (this) {
+    CellId.heatCell => heatTheme,
+    CellId.iceCell => iceTheme,
+    CellId.steamCell => steamTheme,
+    CellId.lightCell => lightTheme,
+    CellId.molecularCell => molecularTheme,
+    _ => energyTheme,
+  };
 }

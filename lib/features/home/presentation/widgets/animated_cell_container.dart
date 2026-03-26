@@ -140,6 +140,25 @@ class _CellContainerPainter extends CustomPainter {
             animationValue: animationValue.value,
             vaporColor: visualTheme.effectPrimaryColor,
           );
+        case CellEffectType.lightBeams:
+          canvas.drawLightBeams(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            beamColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.molecularBonds:
+          canvas.drawMolecularBonds(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            atomColor: visualTheme.effectPrimaryColor,
+            bondColor: visualTheme.effectSecondaryColor1,
+          );
       }
     }
 

@@ -37,6 +37,17 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.steamVaporColor,
     required this.steamParticleColor1,
     required this.steamParticleColor2,
+    required this.lightFillGradient,
+    required this.lightGlowGradient,
+    required this.lightBeamColor,
+    required this.lightParticleColor1,
+    required this.lightParticleColor2,
+    required this.molecularFillGradient,
+    required this.molecularGlowGradient,
+    required this.molecularAtomColor,
+    required this.molecularBondColor,
+    required this.molecularParticleColor1,
+    required this.molecularParticleColor2,
   });
 
   final Color primary;
@@ -56,12 +67,16 @@ class AppColor extends ThemeExtension<AppColor> {
   final LinearGradient heatFillGradient;
   final LinearGradient iceFillGradient;
   final LinearGradient steamFillGradient;
+  final LinearGradient lightFillGradient;
+  final LinearGradient molecularFillGradient;
   final RadialGradient cellTopCapGradient;
   final RadialGradient cellBottomCapGradient;
   final RadialGradient energyGlowGradient;
   final RadialGradient heatGlowGradient;
   final RadialGradient iceGlowGradient;
   final RadialGradient steamGlowGradient;
+  final RadialGradient lightGlowGradient;
+  final RadialGradient molecularGlowGradient;
   final Color energyLightningColor;
   final Color energyParticleColor1;
   final Color energyParticleColor2;
@@ -74,6 +89,13 @@ class AppColor extends ThemeExtension<AppColor> {
   final Color steamVaporColor;
   final Color steamParticleColor1;
   final Color steamParticleColor2;
+  final Color lightBeamColor;
+  final Color lightParticleColor1;
+  final Color lightParticleColor2;
+  final Color molecularAtomColor;
+  final Color molecularBondColor;
+  final Color molecularParticleColor1;
+  final Color molecularParticleColor2;
 
   @override
   AppColor copyWith({
@@ -94,12 +116,16 @@ class AppColor extends ThemeExtension<AppColor> {
     LinearGradient? heatFillGradient,
     LinearGradient? iceFillGradient,
     LinearGradient? steamFillGradient,
+    LinearGradient? lightFillGradient,
+    LinearGradient? molecularFillGradient,
     RadialGradient? cellTopCapGradient,
     RadialGradient? cellBottomCapGradient,
     RadialGradient? energyGlowGradient,
     RadialGradient? heatGlowGradient,
     RadialGradient? iceGlowGradient,
     RadialGradient? steamGlowGradient,
+    RadialGradient? lightGlowGradient,
+    RadialGradient? molecularGlowGradient,
     Color? energyLightningColor,
     Color? energyParticleColor1,
     Color? energyParticleColor2,
@@ -112,43 +138,62 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? steamVaporColor,
     Color? steamParticleColor1,
     Color? steamParticleColor2,
-  }) => AppColor(
-    primary: primary ?? this.primary,
-    secondary: secondary ?? this.secondary,
-    accent: accent ?? this.accent,
-    primaryText: primaryText ?? this.primaryText,
-    background: background ?? this.background,
-    drawerBackground: drawerBackground ?? this.drawerBackground,
-    titleText: titleText ?? this.titleText,
-    green: green ?? this.green,
-    sectionBorder: sectionBorder ?? this.sectionBorder,
-    sectionGradient: sectionGradient ?? this.sectionGradient,
-    cellBodyGradient: cellBodyGradient ?? this.cellBodyGradient,
-    cellTopCapGradient: cellTopCapGradient ?? this.cellTopCapGradient,
-    cellBottomCapGradient: cellBottomCapGradient ?? this.cellBottomCapGradient,
-    cellTopRimGradient: cellTopRimGradient ?? this.cellTopRimGradient,
-    cellBottomRimGradient: cellBottomRimGradient ?? this.cellBottomRimGradient,
-    energyFillGradient: energyFillGradient ?? this.energyFillGradient,
-    energyGlowGradient: energyGlowGradient ?? this.energyGlowGradient,
-    energyLightningColor: energyLightningColor ?? this.energyLightningColor,
-    energyParticleColor1: energyParticleColor1 ?? this.energyParticleColor1,
-    energyParticleColor2: energyParticleColor2 ?? this.energyParticleColor2,
-    heatFillGradient: heatFillGradient ?? this.heatFillGradient,
-    heatGlowGradient: heatGlowGradient ?? this.heatGlowGradient,
-    heatChunkColor: heatChunkColor ?? this.heatChunkColor,
-    heatEmberColor1: heatEmberColor1 ?? this.heatEmberColor1,
-    heatEmberColor2: heatEmberColor2 ?? this.heatEmberColor2,
-    iceFillGradient: iceFillGradient ?? this.iceFillGradient,
-    iceGlowGradient: iceGlowGradient ?? this.iceGlowGradient,
-    iceCrystalColor: iceCrystalColor ?? this.iceCrystalColor,
-    iceParticleColor1: iceParticleColor1 ?? this.iceParticleColor1,
-    iceParticleColor2: iceParticleColor2 ?? this.iceParticleColor2,
-    steamFillGradient: steamFillGradient ?? this.steamFillGradient,
-    steamGlowGradient: steamGlowGradient ?? this.steamGlowGradient,
-    steamVaporColor: steamVaporColor ?? this.steamVaporColor,
-    steamParticleColor1: steamParticleColor1 ?? this.steamParticleColor1,
-    steamParticleColor2: steamParticleColor2 ?? this.steamParticleColor2,
-  );
+    Color? lightBeamColor,
+    Color? lightParticleColor1,
+    Color? lightParticleColor2,
+    Color? molecularAtomColor,
+    Color? molecularBondColor,
+    Color? molecularParticleColor1,
+    Color? molecularParticleColor2,
+  }) =>
+      AppColor(
+        primary: primary ?? this.primary,
+        secondary: secondary ?? this.secondary,
+        accent: accent ?? this.accent,
+        primaryText: primaryText ?? this.primaryText,
+        background: background ?? this.background,
+        drawerBackground: drawerBackground ?? this.drawerBackground,
+        titleText: titleText ?? this.titleText,
+        green: green ?? this.green,
+        sectionBorder: sectionBorder ?? this.sectionBorder,
+        sectionGradient: sectionGradient ?? this.sectionGradient,
+        cellBodyGradient: cellBodyGradient ?? this.cellBodyGradient,
+        cellTopCapGradient: cellTopCapGradient ?? this.cellTopCapGradient,
+        cellBottomCapGradient: cellBottomCapGradient ?? this.cellBottomCapGradient,
+        cellTopRimGradient: cellTopRimGradient ?? this.cellTopRimGradient,
+        cellBottomRimGradient: cellBottomRimGradient ?? this.cellBottomRimGradient,
+        energyFillGradient: energyFillGradient ?? this.energyFillGradient,
+        energyGlowGradient: energyGlowGradient ?? this.energyGlowGradient,
+        energyLightningColor: energyLightningColor ?? this.energyLightningColor,
+        energyParticleColor1: energyParticleColor1 ?? this.energyParticleColor1,
+        energyParticleColor2: energyParticleColor2 ?? this.energyParticleColor2,
+        heatFillGradient: heatFillGradient ?? this.heatFillGradient,
+        heatGlowGradient: heatGlowGradient ?? this.heatGlowGradient,
+        heatChunkColor: heatChunkColor ?? this.heatChunkColor,
+        heatEmberColor1: heatEmberColor1 ?? this.heatEmberColor1,
+        heatEmberColor2: heatEmberColor2 ?? this.heatEmberColor2,
+        iceFillGradient: iceFillGradient ?? this.iceFillGradient,
+        iceGlowGradient: iceGlowGradient ?? this.iceGlowGradient,
+        iceCrystalColor: iceCrystalColor ?? this.iceCrystalColor,
+        iceParticleColor1: iceParticleColor1 ?? this.iceParticleColor1,
+        iceParticleColor2: iceParticleColor2 ?? this.iceParticleColor2,
+        steamFillGradient: steamFillGradient ?? this.steamFillGradient,
+        steamGlowGradient: steamGlowGradient ?? this.steamGlowGradient,
+        steamVaporColor: steamVaporColor ?? this.steamVaporColor,
+        steamParticleColor1: steamParticleColor1 ?? this.steamParticleColor1,
+        steamParticleColor2: steamParticleColor2 ?? this.steamParticleColor2,
+        lightFillGradient: lightFillGradient ?? this.lightFillGradient,
+        lightGlowGradient: lightGlowGradient ?? this.lightGlowGradient,
+        lightBeamColor: lightBeamColor ?? this.lightBeamColor,
+        lightParticleColor1: lightParticleColor1 ?? this.lightParticleColor1,
+        lightParticleColor2: lightParticleColor2 ?? this.lightParticleColor2,
+        molecularFillGradient: molecularFillGradient ?? this.molecularFillGradient,
+        molecularGlowGradient: molecularGlowGradient ?? this.molecularGlowGradient,
+        molecularAtomColor: molecularAtomColor ?? this.molecularAtomColor,
+        molecularBondColor: molecularBondColor ?? this.molecularBondColor,
+        molecularParticleColor1: molecularParticleColor1 ?? this.molecularParticleColor1,
+        molecularParticleColor2: molecularParticleColor2 ?? this.molecularParticleColor2,
+      );
 
   @override
   AppColor lerp(ThemeExtension<AppColor>? other, double t) {
@@ -189,6 +234,17 @@ class AppColor extends ThemeExtension<AppColor> {
       steamVaporColor: Color.lerp(steamVaporColor, other.steamVaporColor, t)!,
       steamParticleColor1: Color.lerp(steamParticleColor1, other.steamParticleColor1, t)!,
       steamParticleColor2: Color.lerp(steamParticleColor2, other.steamParticleColor2, t)!,
+      lightFillGradient: LinearGradient.lerp(lightFillGradient, other.lightFillGradient, t)!,
+      lightGlowGradient: RadialGradient.lerp(lightGlowGradient, other.lightGlowGradient, t)!,
+      lightBeamColor: Color.lerp(lightBeamColor, other.lightBeamColor, t)!,
+      lightParticleColor1: Color.lerp(lightParticleColor1, other.lightParticleColor1, t)!,
+      lightParticleColor2: Color.lerp(lightParticleColor2, other.lightParticleColor2, t)!,
+      molecularFillGradient: LinearGradient.lerp(molecularFillGradient, other.molecularFillGradient, t)!,
+      molecularGlowGradient: RadialGradient.lerp(molecularGlowGradient, other.molecularGlowGradient, t)!,
+      molecularAtomColor: Color.lerp(molecularAtomColor, other.molecularAtomColor, t)!,
+      molecularBondColor: Color.lerp(molecularBondColor, other.molecularBondColor, t)!,
+      molecularParticleColor1: Color.lerp(molecularParticleColor1, other.molecularParticleColor1, t)!,
+      molecularParticleColor2: Color.lerp(molecularParticleColor2, other.molecularParticleColor2, t)!,
     );
   }
 }
@@ -280,4 +336,27 @@ class DefaultColor {
   static const steamVaporColor = Color.fromARGB(255, 125, 125, 125);
   static const steamParticleColor1 = Color(0xFFFAFAFA);
   static const steamParticleColor2 = Color(0xFFE0E0E0);
+
+  static const lightFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFFFFFFF), Color(0xFFF3E5F5), Color(0xFFE1BEE7)], // Pure White to Pale Violet
+  );
+
+  static const lightGlowGradient = RadialGradient(colors: [Colors.white, Color(0xFFCE93D8), Colors.transparent]);
+  static const lightBeamColor = Colors.white;
+  static const lightParticleColor1 = Colors.white;
+  static const lightParticleColor2 = Color(0xFFB39DDB); // Deep Lavender
+
+  static const molecularFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFE1BEE7), Color(0xFFBA68C8), Color(0xFF8E24AA)],
+  );
+
+  static const molecularGlowGradient = RadialGradient(colors: [Color(0xFFE1BEE7), Color(0xFF8E24AA), Colors.transparent]);
+  static const molecularAtomColor = Color(0xFFB2EBF2);
+  static const molecularBondColor = Color(0xB3FFFFFF);
+  static const molecularParticleColor1 = Color(0xFFCE93D8);
+  static const molecularParticleColor2 = Color(0xFF80CBC4);
 }
