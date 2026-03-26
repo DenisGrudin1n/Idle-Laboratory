@@ -52,7 +52,7 @@ class _CellContainerPainter extends CustomPainter {
       bodyGradient: visualTheme.cellBodyGradient,
     );
 
-    // 2. Draw Energy Content
+    // 2. Draw Energy Content (Effects & Fill)
     _drawEnergyContent(
       canvas: canvas,
       centerX: centerX,
@@ -102,26 +102,44 @@ class _CellContainerPainter extends CustomPainter {
 
     // Effects
     if (fillLevel >= 0.1) {
-      if (visualTheme.effectType == CellEffectType.lightning) {
-        canvas.drawElectricLightning(
-          centerX: centerX,
-          fillTop: fillTop,
-          bottomY: bottomY,
-          width: width,
-          animationValue: animationValue.value,
-          lightningColor: visualTheme.effectPrimaryColor,
-        );
-      } else {
-        canvas.drawLavaChunks(
-          centerX: centerX,
-          fillTop: fillTop,
-          bottomY: bottomY,
-          width: width,
-          animationValue: animationValue.value,
-          chunkColor: visualTheme.effectPrimaryColor,
-          emberColor1: visualTheme.effectSecondaryColor1,
-          emberColor2: visualTheme.effectSecondaryColor2,
-        );
+      switch (visualTheme.effectType) {
+        case CellEffectType.lightning:
+          canvas.drawElectricLightning(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            lightningColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.lavaChunks:
+          canvas.drawLavaChunks(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            chunkColor: visualTheme.effectPrimaryColor,
+            emberColor1: visualTheme.effectSecondaryColor1,
+            emberColor2: visualTheme.effectSecondaryColor2,
+          );
+        case CellEffectType.iceCubes:
+          canvas.drawIceCrystals(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+          );
+        case CellEffectType.risingVapor:
+          canvas.drawRisingVapor(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            vaporColor: visualTheme.effectPrimaryColor,
+          );
       }
     }
 

@@ -27,6 +27,16 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.heatChunkColor,
     required this.heatEmberColor1,
     required this.heatEmberColor2,
+    required this.iceFillGradient,
+    required this.iceGlowGradient,
+    required this.iceCrystalColor,
+    required this.iceParticleColor1,
+    required this.iceParticleColor2,
+    required this.steamFillGradient,
+    required this.steamGlowGradient,
+    required this.steamVaporColor,
+    required this.steamParticleColor1,
+    required this.steamParticleColor2,
   });
 
   final Color primary;
@@ -44,16 +54,26 @@ class AppColor extends ThemeExtension<AppColor> {
   final LinearGradient cellBottomRimGradient;
   final LinearGradient energyFillGradient;
   final LinearGradient heatFillGradient;
+  final LinearGradient iceFillGradient;
+  final LinearGradient steamFillGradient;
   final RadialGradient cellTopCapGradient;
   final RadialGradient cellBottomCapGradient;
   final RadialGradient energyGlowGradient;
   final RadialGradient heatGlowGradient;
+  final RadialGradient iceGlowGradient;
+  final RadialGradient steamGlowGradient;
   final Color energyLightningColor;
   final Color energyParticleColor1;
   final Color energyParticleColor2;
   final Color heatChunkColor;
   final Color heatEmberColor1;
   final Color heatEmberColor2;
+  final Color iceCrystalColor;
+  final Color iceParticleColor1;
+  final Color iceParticleColor2;
+  final Color steamVaporColor;
+  final Color steamParticleColor1;
+  final Color steamParticleColor2;
 
   @override
   AppColor copyWith({
@@ -72,16 +92,26 @@ class AppColor extends ThemeExtension<AppColor> {
     LinearGradient? cellBottomRimGradient,
     LinearGradient? energyFillGradient,
     LinearGradient? heatFillGradient,
+    LinearGradient? iceFillGradient,
+    LinearGradient? steamFillGradient,
     RadialGradient? cellTopCapGradient,
     RadialGradient? cellBottomCapGradient,
     RadialGradient? energyGlowGradient,
     RadialGradient? heatGlowGradient,
+    RadialGradient? iceGlowGradient,
+    RadialGradient? steamGlowGradient,
     Color? energyLightningColor,
     Color? energyParticleColor1,
     Color? energyParticleColor2,
     Color? heatChunkColor,
     Color? heatEmberColor1,
     Color? heatEmberColor2,
+    Color? iceCrystalColor,
+    Color? iceParticleColor1,
+    Color? iceParticleColor2,
+    Color? steamVaporColor,
+    Color? steamParticleColor1,
+    Color? steamParticleColor2,
   }) => AppColor(
     primary: primary ?? this.primary,
     secondary: secondary ?? this.secondary,
@@ -108,6 +138,16 @@ class AppColor extends ThemeExtension<AppColor> {
     heatChunkColor: heatChunkColor ?? this.heatChunkColor,
     heatEmberColor1: heatEmberColor1 ?? this.heatEmberColor1,
     heatEmberColor2: heatEmberColor2 ?? this.heatEmberColor2,
+    iceFillGradient: iceFillGradient ?? this.iceFillGradient,
+    iceGlowGradient: iceGlowGradient ?? this.iceGlowGradient,
+    iceCrystalColor: iceCrystalColor ?? this.iceCrystalColor,
+    iceParticleColor1: iceParticleColor1 ?? this.iceParticleColor1,
+    iceParticleColor2: iceParticleColor2 ?? this.iceParticleColor2,
+    steamFillGradient: steamFillGradient ?? this.steamFillGradient,
+    steamGlowGradient: steamGlowGradient ?? this.steamGlowGradient,
+    steamVaporColor: steamVaporColor ?? this.steamVaporColor,
+    steamParticleColor1: steamParticleColor1 ?? this.steamParticleColor1,
+    steamParticleColor2: steamParticleColor2 ?? this.steamParticleColor2,
   );
 
   @override
@@ -139,6 +179,16 @@ class AppColor extends ThemeExtension<AppColor> {
       heatChunkColor: Color.lerp(heatChunkColor, other.heatChunkColor, t)!,
       heatEmberColor1: Color.lerp(heatEmberColor1, other.heatEmberColor1, t)!,
       heatEmberColor2: Color.lerp(heatEmberColor2, other.heatEmberColor2, t)!,
+      iceFillGradient: LinearGradient.lerp(iceFillGradient, other.iceFillGradient, t)!,
+      iceGlowGradient: RadialGradient.lerp(iceGlowGradient, other.iceGlowGradient, t)!,
+      iceCrystalColor: Color.lerp(iceCrystalColor, other.iceCrystalColor, t)!,
+      iceParticleColor1: Color.lerp(iceParticleColor1, other.iceParticleColor1, t)!,
+      iceParticleColor2: Color.lerp(iceParticleColor2, other.iceParticleColor2, t)!,
+      steamFillGradient: LinearGradient.lerp(steamFillGradient, other.steamFillGradient, t)!,
+      steamGlowGradient: RadialGradient.lerp(steamGlowGradient, other.steamGlowGradient, t)!,
+      steamVaporColor: Color.lerp(steamVaporColor, other.steamVaporColor, t)!,
+      steamParticleColor1: Color.lerp(steamParticleColor1, other.steamParticleColor1, t)!,
+      steamParticleColor2: Color.lerp(steamParticleColor2, other.steamParticleColor2, t)!,
     );
   }
 }
@@ -150,7 +200,7 @@ class DefaultColor {
   static const secondary = Color(0xFF8B7FA1);
   static const accent = Color(0xFFA87489);
   static const primaryText = Color(0xFFB8BAC9);
-  static const background = Color(0xFF4F5263);
+  static const background = Color(0xFF454856);
   static const drawerBackground = Color(0xFF3D4153);
   static const titleText = Color(0xFFE8E9EE);
   static const green = Color(0xFF9DBF99);
@@ -208,4 +258,26 @@ class DefaultColor {
   static const heatChunkColor = Color(0xFF3D2416);
   static const heatEmberColor1 = Color(0xFFFFB84D);
   static const heatEmberColor2 = Color(0xFFFF7A33);
+
+  static const iceFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFE0F7FA), Color(0xFF80DEEA), Color(0xFF00ACC1)],
+  );
+
+  static const iceGlowGradient = RadialGradient(colors: [Color(0xFFB2EBF2), Color(0xFF00ACC1), Colors.transparent]);
+  static const iceCrystalColor = Colors.white;
+  static const iceParticleColor1 = Color(0xFFE0F7FA);
+  static const iceParticleColor2 = Color(0xFF80DEEA);
+
+  static const steamFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFFFFFFF), Color(0xFFE0E0E0), Color(0xFF9E9E9E)],
+  );
+
+  static const steamGlowGradient = RadialGradient(colors: [Color(0xFFF5F5F5), Color(0xFF9E9E9E), Colors.transparent]);
+  static const steamVaporColor = Color.fromARGB(255, 125, 125, 125);
+  static const steamParticleColor1 = Color(0xFFFAFAFA);
+  static const steamParticleColor2 = Color(0xFFE0E0E0);
 }

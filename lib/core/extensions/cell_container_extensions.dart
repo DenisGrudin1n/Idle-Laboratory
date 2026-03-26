@@ -94,10 +94,9 @@ extension CellContainerPainter on Canvas {
       ).createShader(Rect.fromLTWH(left, topY, width * 0.28, height));
 
     drawPath(
-      Path()
-        ..addRRect(
-          RRect.fromRectAndRadius(Rect.fromLTWH(left + 2, topY + 2, width * 0.22, height - 4), Radius.circular(radius)),
-        ),
+      Path()..addRRect(
+        RRect.fromRectAndRadius(Rect.fromLTWH(left + 2, topY + 2, width * 0.22, height - 4), Radius.circular(radius)),
+      ),
       reflectionPaint,
     );
 
@@ -109,13 +108,12 @@ extension CellContainerPainter on Canvas {
       ).createShader(Rect.fromLTWH(left + width * 0.82, topY, width * 0.18, height));
 
     drawPath(
-      Path()
-        ..addRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromLTWH(left + width * 0.82, topY + 2, width * 0.16, height - 4),
-            Radius.circular(radius),
-          ),
+      Path()..addRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(left + width * 0.82, topY + 2, width * 0.16, height - 4),
+          Radius.circular(radius),
         ),
+      ),
       bouncePaint,
     );
 
@@ -144,14 +142,13 @@ extension CellContainerPainter on Canvas {
     required double topY,
     required double bottomY,
     required double width,
-  }) =>
-      Path()
-        ..addRRect(
-          RRect.fromRectAndRadius(
-            Rect.fromLTWH(centerX - width / 2, topY, width, bottomY - topY),
-            Radius.circular(width * 0.08),
-          ),
-        );
+  }) => Path()
+    ..addRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(centerX - width / 2, topY, width, bottomY - topY),
+        Radius.circular(width * 0.08),
+      ),
+    );
 }
 
 extension EnergyEffectsPainter on Canvas {
@@ -161,32 +158,30 @@ extension EnergyEffectsPainter on Canvas {
     required double width,
     required double fillHeight,
     required List<Color> gradientColors,
-  }) =>
-      drawRect(
-        Rect.fromLTWH(centerX - width / 2 + 2, fillTop, width - 4, fillHeight),
-        Paint()
-          ..shader = LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: gradientColors,
-          ).createShader(Rect.fromLTWH(centerX - width / 2, fillTop, width, fillHeight))
-          ..style = PaintingStyle.fill,
-      );
+  }) => drawRect(
+    Rect.fromLTWH(centerX - width / 2 + 2, fillTop, width - 4, fillHeight),
+    Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: gradientColors,
+      ).createShader(Rect.fromLTWH(centerX - width / 2, fillTop, width, fillHeight))
+      ..style = PaintingStyle.fill,
+  );
 
   void drawEnergyGlow({
     required double centerX,
     required double fillTop,
     required double width,
     required List<Color> glowColors,
-  }) =>
-      drawOval(
-        Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width - 4, height: 30),
-        Paint()
-          ..shader = RadialGradient(
-            colors: glowColors,
-          ).createShader(Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width, height: 40))
-          ..style = PaintingStyle.fill,
-      );
+  }) => drawOval(
+    Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width - 4, height: 30),
+    Paint()
+      ..shader = RadialGradient(
+        colors: glowColors,
+      ).createShader(Rect.fromCenter(center: Offset(centerX, fillTop + 10), width: width, height: 40))
+      ..style = PaintingStyle.fill,
+  );
 
   void drawElectricLightning({
     required double centerX,
@@ -238,6 +233,106 @@ extension EnergyEffectsPainter on Canvas {
     }
   }
 
+  Offset getDriftOffset({
+    required double animationValue,
+    required int index,
+    required math.Random random,
+    double maxDrift = 15.0,
+  }) {
+    final driftX = (random.nextDouble() - 0.5) * maxDrift;
+    final driftY = (random.nextDouble() - 0.5) * maxDrift;
+
+    return Offset(
+      math.sin(animationValue * math.pi * 2 + index) * driftX,
+      math.cos(animationValue * math.pi * 2 + index * 0.7) * driftY,
+    );
+  }
+
+  void drawIceCrystals({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    int rows = 4,
+    int cols = 3,
+  }) {
+    final random = math.Random(42);
+    final paint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.4)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+
+    final rowHeight = (bottomY - fillTop) / rows;
+    final colWidth = width / cols;
+
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        final cellIdx = r * cols + c;
+        final drift = getDriftOffset(animationValue: animationValue, index: cellIdx, random: random);
+
+        final x = (centerX - width / 2) + (c * colWidth) + (random.nextDouble() * colWidth) + drift.dx;
+        final y = fillTop + (r * rowHeight) + (random.nextDouble() * rowHeight) + drift.dy;
+
+        final size = 5.0 + random.nextDouble() * 7.0;
+
+        for (var j = 0; j < 6; j++) {
+          final angle = (j * 60) * math.pi / 180;
+          final endX = x + math.cos(angle) * size;
+          final endY = y + math.sin(angle) * size;
+          drawLine(Offset(x, y), Offset(endX, endY), paint);
+        }
+      }
+    }
+  }
+
+  void drawRisingVapor({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color vaporColor,
+    int cloudCount = 8,
+  }) {
+    final random = math.Random(123);
+    final totalHeight = bottomY - fillTop + 100; // Extra space for spawning out of bounds
+
+    for (var i = 0; i < cloudCount; i++) {
+      // 1x Speed: Takes 6 seconds to complete the full cycle
+      final offset = i / cloudCount;
+      final progress = (animationValue + offset) % 1.0;
+
+      final y = (bottomY + 50) - (totalHeight * progress);
+      final opacity = math.sin(progress * math.pi) * 0.45;
+
+      final startXOffset = (random.nextDouble() - 0.5) * width;
+      final driftX = math.sin(progress * math.pi * 2 + i) * 15.0;
+      final x = centerX + startXOffset + driftX;
+
+      final radius = 25.0 + random.nextDouble() * 35.0;
+      final stretch = 1.4 + random.nextDouble() * 1.0;
+      final rect = Rect.fromCenter(center: Offset.zero, width: radius * stretch, height: radius);
+
+      final cloudPaint = Paint()
+        ..shader = RadialGradient(
+          colors: [
+            vaporColor.withValues(alpha: opacity),
+            vaporColor.withValues(alpha: opacity * 0.6),
+            vaporColor.withValues(alpha: opacity * 0.2),
+            Colors.transparent,
+          ],
+          stops: const [0.0, 0.3, 0.7, 1.0],
+        ).createShader(rect)
+        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 10 + random.nextDouble() * 8);
+
+      save();
+      translate(x, y);
+      drawOval(rect, cloudPaint);
+      restore();
+    }
+  }
+
   void drawEnergyParticles({
     required double centerX,
     required double fillTop,
@@ -252,7 +347,8 @@ extension EnergyEffectsPainter on Canvas {
     final paint = Paint()..style = PaintingStyle.fill;
     for (var i = 0; i < particleCount; i++) {
       final x = centerX - width / 2 + (width * random.nextDouble());
-      final y = fillTop + (bottomY - fillTop) * ((animationValue + i * 0.08) % 1.0);
+      // 3x Speed: Particles take 2 seconds to complete the cycle (on a 6s controller)
+      final y = fillTop + (bottomY - fillTop) * ((animationValue * 3.0 + i * 0.08) % 1.0);
       paint.color = Color.lerp(
         particleColor1,
         particleColor2,
@@ -279,8 +375,9 @@ extension EnergyEffectsPainter on Canvas {
 
     for (var i = 0; i < chunkCount; i++) {
       final baseX = centerX - width / 2 + (width * random.nextDouble());
-      final baseY = fillTop + (bottomY - fillTop) * ((animationValue * 0.5 + i * 0.1) % 1.0);
-      final chunkX = baseX + math.sin((animationValue + i) * math.pi * 2) * (width * 0.08);
+      // 2x Speed: Lava chunks take 3 seconds to complete the cycle (on a 6s controller)
+      final baseY = fillTop + (bottomY - fillTop) * ((animationValue * 2.0 + i * 0.1) % 1.0);
+      final chunkX = baseX + math.sin((animationValue * 2.0 + i) * math.pi * 2) * (width * 0.08);
       final chunkSize = 3.0 + random.nextDouble() * 4.5;
 
       chunkPaint.color = chunkColor.withValues(alpha: 0.85 + random.nextDouble() * 0.15);

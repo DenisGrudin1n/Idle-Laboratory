@@ -31,6 +31,16 @@ class AppTheme {
           heatChunkColor: DefaultColor.heatChunkColor,
           heatEmberColor1: DefaultColor.heatEmberColor1,
           heatEmberColor2: DefaultColor.heatEmberColor2,
+          iceFillGradient: DefaultColor.iceFillGradient,
+          iceGlowGradient: DefaultColor.iceGlowGradient,
+          iceCrystalColor: DefaultColor.iceCrystalColor,
+          iceParticleColor1: DefaultColor.iceParticleColor1,
+          iceParticleColor2: DefaultColor.iceParticleColor2,
+          steamFillGradient: DefaultColor.steamFillGradient,
+          steamGlowGradient: DefaultColor.steamGlowGradient,
+          steamVaporColor: DefaultColor.steamVaporColor,
+          steamParticleColor1: DefaultColor.steamParticleColor1,
+          steamParticleColor2: DefaultColor.steamParticleColor2,
         ),
       );
 

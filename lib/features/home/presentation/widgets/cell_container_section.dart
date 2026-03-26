@@ -19,7 +19,7 @@ class _CellContainerSectionState extends State<CellContainerSection> with Single
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2000))..repeat();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 6000))..repeat();
   }
 
   @override

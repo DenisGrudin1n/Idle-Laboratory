@@ -104,13 +104,19 @@ class CellsService {
   void saveCells() => _cellRepository.saveCells(currentCells);
 
   double getFillLevel(String cellId) {
-    // For testing: all new cells (level 1) are always full
     final cell = currentCells.cast<CellModel?>().firstWhere((c) => c?.id == cellId, orElse: () => null);
-    if (cell != null && cell.level == 1 && cell.id != CellId.basicEnergyCell.id && cell.id != CellId.heatCell.id) {
+    if (cell == null) return 0;
+
+    // Rule: Max level cells are always 100% filled
+    if (cell.isMaxLevel) return 1;
+
+    // For testing: remaining new cells (not max level yet) are always full
+    if (cell.level == 1 && cell.id != CellId.basicEnergyCell.id && cell.id != CellId.heatCell.id) {
       return 1;
     }
+
     final cellEnergy = currentCellEnergies[cellId];
-    return cell == null || cellEnergy == null ? 0 : cell.getProgressToNextLevel(cellEnergy);
+    return cellEnergy == null ? 0 : cell.getProgressToNextLevel(cellEnergy);
   }
 
   void start() => _energyService.updateEPS(_calculateTotalEPS(currentCells));
