@@ -95,8 +95,10 @@ class _CellContainerPainter extends CustomPainter {
         fillHeight: fillHeight,
         gradientColors: [
           visualTheme.energyFillGradient.colors[0].withValues(alpha: 0.7),
-          visualTheme.energyFillGradient.colors[1].withValues(alpha: 0.85),
-          visualTheme.energyFillGradient.colors[2],
+          visualTheme.energyFillGradient.colors.length > 2
+              ? visualTheme.energyFillGradient.colors[1].withValues(alpha: 0.85)
+              : visualTheme.energyFillGradient.colors.last.withValues(alpha: 0.85),
+          visualTheme.energyFillGradient.colors.last,
         ],
       );
 
@@ -159,6 +161,60 @@ class _CellContainerPainter extends CustomPainter {
             atomColor: visualTheme.effectPrimaryColor,
             bondColor: visualTheme.effectSecondaryColor1,
           );
+        case CellEffectType.bacterialColony:
+          canvas.drawBacterialColony(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            organismColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.bloodFlow:
+          canvas.drawBloodFlow(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            cellColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.bioOrganic:
+          canvas.drawBioOrganic(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            sporeColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.radiationDecay:
+          canvas.drawRadiationDecay(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            waveColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.plasmaFilament:
+          canvas.drawPlasmaFilament(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            filamentColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.darkMatterSingularity:
+          canvas.drawDarkMatterSingularity(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            singularityColor: visualTheme.effectPrimaryColor,
+          );
       }
     }
 
@@ -180,7 +236,9 @@ class _CellContainerPainter extends CustomPainter {
         width: width,
         glowColors: [
           visualTheme.energyGlowGradient.colors[0].withValues(alpha: 0.8),
-          visualTheme.energyGlowGradient.colors[1].withValues(alpha: 0.5),
+          visualTheme.energyGlowGradient.colors.length > 1
+              ? visualTheme.energyGlowGradient.colors[1].withValues(alpha: 0.5)
+              : visualTheme.energyGlowGradient.colors.last.withValues(alpha: 0.5),
           Colors.transparent,
         ],
       )

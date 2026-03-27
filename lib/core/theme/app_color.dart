@@ -48,6 +48,36 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.molecularBondColor,
     required this.molecularParticleColor1,
     required this.molecularParticleColor2,
+    required this.bacterialFillGradient,
+    required this.bacterialGlowGradient,
+    required this.bacterialOrganismColor,
+    required this.bacterialParticleColor1,
+    required this.bacterialParticleColor2,
+    required this.bloodFillGradient,
+    required this.bloodGlowGradient,
+    required this.bloodCellColor,
+    required this.bloodParticleColor1,
+    required this.bloodParticleColor2,
+    required this.bioFillGradient,
+    required this.bioGlowGradient,
+    required this.bioSporeColor,
+    required this.bioParticleColor1,
+    required this.bioParticleColor2,
+    required this.radiationFillGradient,
+    required this.radiationGlowGradient,
+    required this.radiationWaveColor,
+    required this.radiationParticleColor1,
+    required this.radiationParticleColor2,
+    required this.plasmaFillGradient,
+    required this.plasmaGlowGradient,
+    required this.plasmaFilamentColor,
+    required this.plasmaParticleColor1,
+    required this.plasmaParticleColor2,
+    required this.darkMatterFillGradient,
+    required this.darkMatterGlowGradient,
+    required this.darkMatterSingularityColor,
+    required this.darkMatterParticleColor1,
+    required this.darkMatterParticleColor2,
   });
 
   final Color primary;
@@ -69,6 +99,12 @@ class AppColor extends ThemeExtension<AppColor> {
   final LinearGradient steamFillGradient;
   final LinearGradient lightFillGradient;
   final LinearGradient molecularFillGradient;
+  final LinearGradient bacterialFillGradient;
+  final LinearGradient bloodFillGradient;
+  final LinearGradient bioFillGradient;
+  final LinearGradient radiationFillGradient;
+  final LinearGradient plasmaFillGradient;
+  final LinearGradient darkMatterFillGradient;
   final RadialGradient cellTopCapGradient;
   final RadialGradient cellBottomCapGradient;
   final RadialGradient energyGlowGradient;
@@ -77,6 +113,12 @@ class AppColor extends ThemeExtension<AppColor> {
   final RadialGradient steamGlowGradient;
   final RadialGradient lightGlowGradient;
   final RadialGradient molecularGlowGradient;
+  final RadialGradient bacterialGlowGradient;
+  final RadialGradient bloodGlowGradient;
+  final RadialGradient bioGlowGradient;
+  final RadialGradient radiationGlowGradient;
+  final RadialGradient plasmaGlowGradient;
+  final RadialGradient darkMatterGlowGradient;
   final Color energyLightningColor;
   final Color energyParticleColor1;
   final Color energyParticleColor2;
@@ -96,6 +138,24 @@ class AppColor extends ThemeExtension<AppColor> {
   final Color molecularBondColor;
   final Color molecularParticleColor1;
   final Color molecularParticleColor2;
+  final Color bacterialOrganismColor;
+  final Color bacterialParticleColor1;
+  final Color bacterialParticleColor2;
+  final Color bloodCellColor;
+  final Color bloodParticleColor1;
+  final Color bloodParticleColor2;
+  final Color bioSporeColor;
+  final Color bioParticleColor1;
+  final Color bioParticleColor2;
+  final Color radiationWaveColor;
+  final Color radiationParticleColor1;
+  final Color radiationParticleColor2;
+  final Color plasmaFilamentColor;
+  final Color plasmaParticleColor1;
+  final Color plasmaParticleColor2;
+  final Color darkMatterSingularityColor;
+  final Color darkMatterParticleColor1;
+  final Color darkMatterParticleColor2;
 
   @override
   AppColor copyWith({
@@ -118,6 +178,12 @@ class AppColor extends ThemeExtension<AppColor> {
     LinearGradient? steamFillGradient,
     LinearGradient? lightFillGradient,
     LinearGradient? molecularFillGradient,
+    LinearGradient? bacterialFillGradient,
+    LinearGradient? bloodFillGradient,
+    LinearGradient? bioFillGradient,
+    LinearGradient? radiationFillGradient,
+    LinearGradient? plasmaFillGradient,
+    LinearGradient? darkMatterFillGradient,
     RadialGradient? cellTopCapGradient,
     RadialGradient? cellBottomCapGradient,
     RadialGradient? energyGlowGradient,
@@ -126,6 +192,12 @@ class AppColor extends ThemeExtension<AppColor> {
     RadialGradient? steamGlowGradient,
     RadialGradient? lightGlowGradient,
     RadialGradient? molecularGlowGradient,
+    RadialGradient? bacterialGlowGradient,
+    RadialGradient? bloodGlowGradient,
+    RadialGradient? bioGlowGradient,
+    RadialGradient? radiationGlowGradient,
+    RadialGradient? plasmaGlowGradient,
+    RadialGradient? darkMatterGlowGradient,
     Color? energyLightningColor,
     Color? energyParticleColor1,
     Color? energyParticleColor2,
@@ -145,6 +217,24 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? molecularBondColor,
     Color? molecularParticleColor1,
     Color? molecularParticleColor2,
+    Color? bacterialOrganismColor,
+    Color? bacterialParticleColor1,
+    Color? bacterialParticleColor2,
+    Color? bloodCellColor,
+    Color? bloodParticleColor1,
+    Color? bloodParticleColor2,
+    Color? bioSporeColor,
+    Color? bioParticleColor1,
+    Color? bioParticleColor2,
+    Color? radiationWaveColor,
+    Color? radiationParticleColor1,
+    Color? radiationParticleColor2,
+    Color? plasmaFilamentColor,
+    Color? plasmaParticleColor1,
+    Color? plasmaParticleColor2,
+    Color? darkMatterSingularityColor,
+    Color? darkMatterParticleColor1,
+    Color? darkMatterParticleColor2,
   }) =>
       AppColor(
         primary: primary ?? this.primary,
@@ -193,6 +283,36 @@ class AppColor extends ThemeExtension<AppColor> {
         molecularBondColor: molecularBondColor ?? this.molecularBondColor,
         molecularParticleColor1: molecularParticleColor1 ?? this.molecularParticleColor1,
         molecularParticleColor2: molecularParticleColor2 ?? this.molecularParticleColor2,
+        bacterialFillGradient: bacterialFillGradient ?? this.bacterialFillGradient,
+        bacterialGlowGradient: bacterialGlowGradient ?? this.bacterialGlowGradient,
+        bacterialOrganismColor: bacterialOrganismColor ?? this.bacterialOrganismColor,
+        bacterialParticleColor1: bacterialParticleColor1 ?? this.bacterialParticleColor1,
+        bacterialParticleColor2: bacterialParticleColor2 ?? this.bacterialParticleColor2,
+        bloodFillGradient: bloodFillGradient ?? this.bloodFillGradient,
+        bloodGlowGradient: bloodGlowGradient ?? this.bloodGlowGradient,
+        bloodCellColor: bloodCellColor ?? this.bloodCellColor,
+        bloodParticleColor1: bloodParticleColor1 ?? this.bloodParticleColor1,
+        bloodParticleColor2: bloodParticleColor2 ?? this.bloodParticleColor2,
+        bioFillGradient: bioFillGradient ?? this.bioFillGradient,
+        bioGlowGradient: bioGlowGradient ?? this.bioGlowGradient,
+        bioSporeColor: bioSporeColor ?? this.bioSporeColor,
+        bioParticleColor1: bioParticleColor1 ?? this.bioParticleColor1,
+        bioParticleColor2: bioParticleColor2 ?? this.bioParticleColor2,
+        radiationFillGradient: radiationFillGradient ?? this.radiationFillGradient,
+        radiationGlowGradient: radiationGlowGradient ?? this.radiationGlowGradient,
+        radiationWaveColor: radiationWaveColor ?? this.radiationWaveColor,
+        radiationParticleColor1: radiationParticleColor1 ?? this.radiationParticleColor1,
+        radiationParticleColor2: radiationParticleColor2 ?? this.radiationParticleColor2,
+        plasmaFillGradient: plasmaFillGradient ?? this.plasmaFillGradient,
+        plasmaGlowGradient: plasmaGlowGradient ?? this.plasmaGlowGradient,
+        plasmaFilamentColor: plasmaFilamentColor ?? this.plasmaFilamentColor,
+        plasmaParticleColor1: plasmaParticleColor1 ?? this.plasmaParticleColor1,
+        plasmaParticleColor2: plasmaParticleColor2 ?? this.plasmaParticleColor2,
+        darkMatterFillGradient: darkMatterFillGradient ?? this.darkMatterFillGradient,
+        darkMatterGlowGradient: darkMatterGlowGradient ?? this.darkMatterGlowGradient,
+        darkMatterSingularityColor: darkMatterSingularityColor ?? this.darkMatterSingularityColor,
+        darkMatterParticleColor1: darkMatterParticleColor1 ?? this.darkMatterParticleColor1,
+        darkMatterParticleColor2: darkMatterParticleColor2 ?? this.darkMatterParticleColor2,
       );
 
   @override
@@ -245,6 +365,36 @@ class AppColor extends ThemeExtension<AppColor> {
       molecularBondColor: Color.lerp(molecularBondColor, other.molecularBondColor, t)!,
       molecularParticleColor1: Color.lerp(molecularParticleColor1, other.molecularParticleColor1, t)!,
       molecularParticleColor2: Color.lerp(molecularParticleColor2, other.molecularParticleColor2, t)!,
+      bacterialFillGradient: LinearGradient.lerp(bacterialFillGradient, other.bacterialFillGradient, t)!,
+      bacterialGlowGradient: RadialGradient.lerp(bacterialGlowGradient, other.bacterialGlowGradient, t)!,
+      bacterialOrganismColor: Color.lerp(bacterialOrganismColor, other.bacterialOrganismColor, t)!,
+      bacterialParticleColor1: Color.lerp(bacterialParticleColor1, other.bacterialParticleColor1, t)!,
+      bacterialParticleColor2: Color.lerp(bacterialParticleColor2, other.bacterialParticleColor2, t)!,
+      bloodFillGradient: LinearGradient.lerp(bloodFillGradient, other.bloodFillGradient, t)!,
+      bloodGlowGradient: RadialGradient.lerp(bloodGlowGradient, other.bloodGlowGradient, t)!,
+      bloodCellColor: Color.lerp(bloodCellColor, other.bloodCellColor, t)!,
+      bloodParticleColor1: Color.lerp(bloodParticleColor1, other.bloodParticleColor1, t)!,
+      bloodParticleColor2: Color.lerp(bloodParticleColor2, other.bloodParticleColor2, t)!,
+      bioFillGradient: LinearGradient.lerp(bioFillGradient, other.bioFillGradient, t)!,
+      bioGlowGradient: RadialGradient.lerp(bioGlowGradient, other.bioGlowGradient, t)!,
+      bioSporeColor: Color.lerp(bioSporeColor, other.bioSporeColor, t)!,
+      bioParticleColor1: Color.lerp(bioParticleColor1, other.bioParticleColor1, t)!,
+      bioParticleColor2: Color.lerp(bioParticleColor2, other.bioParticleColor2, t)!,
+      radiationFillGradient: LinearGradient.lerp(radiationFillGradient, other.radiationFillGradient, t)!,
+      radiationGlowGradient: RadialGradient.lerp(radiationGlowGradient, other.radiationGlowGradient, t)!,
+      radiationWaveColor: Color.lerp(radiationWaveColor, other.radiationWaveColor, t)!,
+      radiationParticleColor1: Color.lerp(radiationParticleColor1, other.radiationParticleColor1, t)!,
+      radiationParticleColor2: Color.lerp(radiationParticleColor2, other.radiationParticleColor2, t)!,
+      plasmaFillGradient: LinearGradient.lerp(plasmaFillGradient, other.plasmaFillGradient, t)!,
+      plasmaGlowGradient: RadialGradient.lerp(plasmaGlowGradient, other.plasmaGlowGradient, t)!,
+      plasmaFilamentColor: Color.lerp(plasmaFilamentColor, other.plasmaFilamentColor, t)!,
+      plasmaParticleColor1: Color.lerp(plasmaParticleColor1, other.plasmaParticleColor1, t)!,
+      plasmaParticleColor2: Color.lerp(plasmaParticleColor2, other.plasmaParticleColor2, t)!,
+      darkMatterFillGradient: LinearGradient.lerp(darkMatterFillGradient, other.darkMatterFillGradient, t)!,
+      darkMatterGlowGradient: RadialGradient.lerp(darkMatterGlowGradient, other.darkMatterGlowGradient, t)!,
+      darkMatterSingularityColor: Color.lerp(darkMatterSingularityColor, other.darkMatterSingularityColor, t)!,
+      darkMatterParticleColor1: Color.lerp(darkMatterParticleColor1, other.darkMatterParticleColor1, t)!,
+      darkMatterParticleColor2: Color.lerp(darkMatterParticleColor2, other.darkMatterParticleColor2, t)!,
     );
   }
 }
@@ -340,13 +490,13 @@ class DefaultColor {
   static const lightFillGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFFFFFFFF), Color(0xFFF3E5F5), Color(0xFFE1BEE7)], // Pure White to Pale Violet
+    colors: [Color(0xFFFFFFFF), Color(0xFFF3E5F5), Color(0xFFE1BEE7)],
   );
 
   static const lightGlowGradient = RadialGradient(colors: [Colors.white, Color(0xFFCE93D8), Colors.transparent]);
   static const lightBeamColor = Colors.white;
   static const lightParticleColor1 = Colors.white;
-  static const lightParticleColor2 = Color(0xFFB39DDB); // Deep Lavender
+  static const lightParticleColor2 = Color(0xFFB39DDB);
 
   static const molecularFillGradient = LinearGradient(
     begin: Alignment.topCenter,
@@ -359,4 +509,70 @@ class DefaultColor {
   static const molecularBondColor = Color(0xB3FFFFFF);
   static const molecularParticleColor1 = Color(0xFFCE93D8);
   static const molecularParticleColor2 = Color(0xFF80CBC4);
+
+  static const bacterialFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFDCEDC8), Color(0xFF8BC34A), Color(0xFF558B2F)],
+  );
+
+  static const bacterialGlowGradient = RadialGradient(colors: [Color(0xFFDCEDC8), Color(0xFF558B2F), Colors.transparent]);
+  static const bacterialOrganismColor = Color(0xFFAED581);
+  static const bacterialParticleColor1 = Color(0xFFF1F8E9);
+  static const bacterialParticleColor2 = Color(0xFFC5E1A5);
+
+  static const bloodFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFFFCDD2), Color(0xFFEF5350), Color(0xFFB71C1C)],
+  );
+
+  static const bloodGlowGradient = RadialGradient(colors: [Color(0xFFFFEBEE), Color(0xFFB71C1C), Colors.transparent]);
+  static const bloodCellColor = Color(0xFFD32F2F);
+  static const bloodParticleColor1 = Color(0xFFFFEBEE);
+  static const bloodParticleColor2 = Color(0xFFFFCDD2);
+
+  static const bioFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF2E7D32), Color(0xFF388E3C), Color(0xFF4A148C)],
+  );
+
+  static const bioGlowGradient = RadialGradient(colors: [Color(0xFF18FFFF), Color(0xFF4A148C), Colors.transparent]);
+  static const bioSporeColor = Color(0xFF18FFFF);
+  static const bioParticleColor1 = Color(0xFFC6FF00);
+  static const bioParticleColor2 = Color(0xFF2E7D32);
+
+  static const radiationFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF76FF03), Color(0xFFC0CA33), Color(0xFF1B5E20)],
+  );
+
+  static const radiationGlowGradient = RadialGradient(colors: [Color(0xFFFFFF00), Color(0xFF6200EA), Colors.transparent]);
+  static const radiationWaveColor = Color(0xFFFFFF00);
+  static const radiationParticleColor1 = Color(0xFFFF00FF);
+  static const radiationParticleColor2 = Color(0xFF76FF03);
+
+  static const plasmaFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF00D2FF), Color(0xFF3A7BD5), Color(0xFF2E3192)],
+  );
+
+  static const plasmaGlowGradient = RadialGradient(colors: [Color(0xFF00D2FF), Color(0xFF2E3192), Colors.transparent]);
+  static const plasmaFilamentColor = Color(0xFFFF00CC);
+  static const plasmaParticleColor1 = Color(0xFF00D2FF);
+  static const plasmaParticleColor2 = Color(0xFF3A7BD5);
+
+  static const darkMatterFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF1A1A1A), Color(0xFF0D0D0D), Color(0xFF000000)],
+  );
+
+  static const darkMatterGlowGradient = RadialGradient(colors: [Color(0xFF4A148C), Color(0xFF000000), Colors.transparent]);
+  static const darkMatterSingularityColor = Color(0xFF000000);
+  static const darkMatterParticleColor1 = Color(0xFFE1BEE7);
+  static const darkMatterParticleColor2 = Color(0xFF4A148C);
 }

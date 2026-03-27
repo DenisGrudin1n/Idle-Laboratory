@@ -166,6 +166,156 @@ class CellVisualTheme {
     effectType: CellEffectType.molecularBonds,
   );
 
+  factory CellVisualTheme.bacterial({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient bacterialFillGradient,
+    required RadialGradient bacterialGlowGradient,
+    required Color bacterialOrganismColor,
+    required Color bacterialParticleColor1,
+    required Color bacterialParticleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: bacterialFillGradient,
+    energyGlowGradient: bacterialGlowGradient,
+    effectPrimaryColor: bacterialOrganismColor,
+    effectSecondaryColor1: bacterialParticleColor1,
+    effectSecondaryColor2: bacterialParticleColor2,
+    effectType: CellEffectType.bacterialColony,
+  );
+
+  factory CellVisualTheme.blood({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient bloodFillGradient,
+    required RadialGradient bloodGlowGradient,
+    required Color bloodCellColor,
+    required Color bloodParticleColor1,
+    required Color bloodParticleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: bloodFillGradient,
+    energyGlowGradient: bloodGlowGradient,
+    effectPrimaryColor: bloodCellColor,
+    effectSecondaryColor1: bloodParticleColor1,
+    effectSecondaryColor2: bloodParticleColor2,
+    effectType: CellEffectType.bloodFlow,
+  );
+
+  factory CellVisualTheme.bio({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient bioFillGradient,
+    required RadialGradient bioGlowGradient,
+    required Color bioSporeColor,
+    required Color bioParticleColor1,
+    required Color bioParticleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: bioFillGradient,
+    energyGlowGradient: bioGlowGradient,
+    effectPrimaryColor: bioSporeColor,
+    effectSecondaryColor1: bioParticleColor1,
+    effectSecondaryColor2: bioParticleColor2,
+    effectType: CellEffectType.bioOrganic,
+  );
+
+  factory CellVisualTheme.radiation({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient radiationFillGradient,
+    required RadialGradient radiationGlowGradient,
+    required Color radiationWaveColor,
+    required Color radiationParticleColor1,
+    required Color radiationParticleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: radiationFillGradient,
+    energyGlowGradient: radiationGlowGradient,
+    effectPrimaryColor: radiationWaveColor,
+    effectSecondaryColor1: radiationParticleColor1,
+    effectSecondaryColor2: radiationParticleColor2,
+    effectType: CellEffectType.radiationDecay,
+  );
+
+  factory CellVisualTheme.plasma({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient plasmaFillGradient,
+    required RadialGradient plasmaGlowGradient,
+    required Color filamentColor,
+    required Color particleColor1,
+    required Color particleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: plasmaFillGradient,
+    energyGlowGradient: plasmaGlowGradient,
+    effectPrimaryColor: filamentColor,
+    effectSecondaryColor1: particleColor1,
+    effectSecondaryColor2: particleColor2,
+    effectType: CellEffectType.plasmaFilament,
+  );
+
+  factory CellVisualTheme.darkMatter({
+    required LinearGradient cellBodyGradient,
+    required RadialGradient cellTopCapGradient,
+    required RadialGradient cellBottomCapGradient,
+    required LinearGradient cellTopRimGradient,
+    required LinearGradient cellBottomRimGradient,
+    required LinearGradient darkMatterFillGradient,
+    required RadialGradient darkMatterGlowGradient,
+    required Color singularityColor,
+    required Color particleColor1,
+    required Color particleColor2,
+  }) => CellVisualTheme(
+    cellBodyGradient: cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient,
+    energyFillGradient: darkMatterFillGradient,
+    energyGlowGradient: darkMatterGlowGradient,
+    effectPrimaryColor: singularityColor,
+    effectSecondaryColor1: particleColor1,
+    effectSecondaryColor2: particleColor2,
+    effectType: CellEffectType.darkMatterSingularity,
+  );
+
   final LinearGradient cellBodyGradient;
   final LinearGradient cellTopRimGradient;
   final LinearGradient cellBottomRimGradient;
@@ -179,7 +329,20 @@ class CellVisualTheme {
   final CellEffectType effectType;
 }
 
-enum CellEffectType { lightning, lavaChunks, iceCubes, risingVapor, lightBeams, molecularBonds }
+enum CellEffectType {
+  lightning,
+  lavaChunks,
+  iceCubes,
+  risingVapor,
+  lightBeams,
+  molecularBonds,
+  bacterialColony,
+  bloodFlow,
+  bioOrganic,
+  radiationDecay,
+  plasmaFilament,
+  darkMatterSingularity,
+}
 
 extension CellVisualThemeExtension on CellId {
   CellVisualTheme getVisualTheme({
@@ -189,12 +352,24 @@ extension CellVisualThemeExtension on CellId {
     required CellVisualTheme steamTheme,
     required CellVisualTheme lightTheme,
     required CellVisualTheme molecularTheme,
+    required CellVisualTheme bacterialTheme,
+    required CellVisualTheme bloodTheme,
+    required CellVisualTheme bioTheme,
+    required CellVisualTheme radiationTheme,
+    required CellVisualTheme plasmaTheme,
+    required CellVisualTheme darkMatterTheme,
   }) => switch (this) {
     CellId.heatCell => heatTheme,
     CellId.iceCell => iceTheme,
     CellId.steamCell => steamTheme,
     CellId.lightCell => lightTheme,
     CellId.molecularCell => molecularTheme,
+    CellId.bacterialCell => bacterialTheme,
+    CellId.bloodCell => bloodTheme,
+    CellId.bioCell => bioTheme,
+    CellId.radiationCell => radiationTheme,
+    CellId.plasmaCell => plasmaTheme,
+    CellId.darkMatterCell => darkMatterTheme,
     _ => energyTheme,
   };
 }

@@ -34,10 +34,10 @@ class CellLevelConstants {
     CellId.lightCell: BigNumber(1, 9),
     CellId.molecularCell: BigNumber(1, 11),
     CellId.bacterialCell: BigNumber(1, 13),
-    CellId.bloodCell: BigNumber(1, 15),
-    CellId.bioCell: BigNumber(1, 17),
-    CellId.radiationCell: BigNumber(1, 19),
-    CellId.plasmaCell: BigNumber(1, 21),
-    CellId.darkMatterCell: BigNumber(1, 23),
+    CellId.bloodCell: BigNumber.zero(),
+    CellId.bioCell: BigNumber.zero(),
+    CellId.radiationCell: BigNumber.zero(),
+    CellId.plasmaCell: BigNumber.zero(),
+    CellId.darkMatterCell: BigNumber.zero(),
   };
 }
