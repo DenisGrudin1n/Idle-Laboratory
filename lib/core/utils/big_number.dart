@@ -9,6 +9,16 @@ class BigNumber {
     return BigNumber._internal(normalizedMantissa, normalizedExponent);
   }
 
+  factory BigNumber.pow(double base, double exponent) {
+    if (base <= 0) return BigNumber.zero();
+    // base^exponent = 10^(exponent * log10(base))
+    final log10Base = math.log(base) / math.ln10;
+    final totalLog10 = exponent * log10Base;
+    final newExponent = totalLog10.floor();
+    final newMantissa = math.pow(10, totalLog10 - newExponent).toDouble();
+    return BigNumber(newMantissa, newExponent);
+  }
+
   const BigNumber._internal(this.mantissa, this.exponent);
 
   factory BigNumber.fromDouble(double value) {
@@ -25,15 +35,22 @@ class BigNumber {
 
   static (double, int) _normalize(double mantissa, int exponent) {
     if (mantissa == 0) return (0.0, 0);
+    if (mantissa.isNaN || mantissa.isInfinite) return (mantissa, exponent);
     var m = mantissa;
     var e = exponent;
-    while (m.abs() >= 10) {
+
+    // Safety check to avoid infinite loops if mantissa is weird
+    var iterations = 0;
+    while (m.abs() >= 10 && iterations < 1000) {
       m /= 10;
       e++;
+      iterations++;
     }
-    while (m.abs() < 1 && m != 0) {
+    iterations = 0;
+    while (m.abs() < 1 && m != 0 && iterations < 1000) {
       m *= 10;
       e--;
+      iterations++;
     }
     return (m, e);
   }
@@ -54,16 +71,6 @@ class BigNumber {
   BigNumber operator *(BigNumber other) => BigNumber(mantissa * other.mantissa, exponent + other.exponent);
   BigNumber multiplyByDouble(double scalar) => BigNumber(mantissa * scalar, exponent);
   BigNumber divideByDouble(double scalar) => BigNumber(mantissa / scalar, exponent);
-
-  static BigNumber pow(double base, double exponent) {
-    if (base <= 0) return BigNumber.zero();
-    // base^exponent = 10^(exponent * log10(base))
-    final log10Base = math.log(base) / math.ln10;
-    final totalLog10 = exponent * log10Base;
-    final newExponent = totalLog10.floor();
-    final newMantissa = math.pow(10, totalLog10 - newExponent).toDouble();
-    return BigNumber(newMantissa, newExponent);
-  }
 
   bool operator >(BigNumber other) {
     if (mantissa < 0 != other.mantissa < 0) return mantissa >= 0;
@@ -97,7 +104,13 @@ class BigNumber {
   @override
   int get hashCode => Object.hash(mantissa, exponent);
 
-  double toDouble() => exponent > 308 ? double.infinity : exponent < -308 ? 0 : mantissa * math.pow(10, exponent);
+  double toDouble() => exponent > 308
+      ? double.infinity
+      : exponent < -308
+      ? 0
+      : mantissa * math.pow(10, exponent);
+
+  double log10() => mantissa <= 0 ? double.negativeInfinity : (math.log(mantissa) / math.ln10) + exponent;
 
   double ratio(BigNumber divisor, {double? max}) {
     if (divisor.mantissa == 0) return max ?? double.maxFinite;
@@ -117,7 +130,9 @@ class BigNumber {
     if (groupIndex >= GameConstants.suffixes.length) return '${mantissa.toStringAsFixed(2)}e$exponent';
     final displayValue = mantissa * math.pow(10, exponent % 3);
     final decimals = compact ? 1 : 2;
-    return groupIndex == 0 && displayValue < 1000 ? displayValue.toStringAsFixed(decimals) : '${displayValue.toStringAsFixed(decimals)}${GameConstants.suffixes[groupIndex]}';
+    return groupIndex == 0 && displayValue < 1000
+        ? displayValue.toStringAsFixed(decimals)
+        : '${displayValue.toStringAsFixed(decimals)}${GameConstants.suffixes[groupIndex]}';
   }
 
   @override

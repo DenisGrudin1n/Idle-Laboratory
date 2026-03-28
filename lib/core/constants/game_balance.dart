@@ -70,6 +70,19 @@ class GameBalance {
     return baseEPS * BigNumber.pow(cellEPSMultiplier, level - 1.0);
   }
 
+  static int calculateMaxLevel(int cellIndex, BigNumber currentEnergy) {
+    final baseCost = getBaseLevelUpCost(cellIndex);
+    if (currentEnergy < baseCost) return 1;
+
+    // level <= log(Energy / BaseCost) / log(Multiplier) + 1
+    final logEnergy = currentEnergy.log10();
+    final logBaseCost = baseCost.log10();
+    final logMultiplier = math.log(cellLevelCostMultiplier) / math.ln10;
+
+    final maxLevel = ((logEnergy - logBaseCost) / logMultiplier).floor() + 1;
+    return maxLevel.clamp(1, maxAllowedCellLevel);
+  }
+
   static BigNumber calculatePrestigeMultiplier(BigNumber currentEnergy, BigNumber currentThreshold) {
     if (currentEnergy < initialThreshold || currentEnergy <= currentThreshold) return BigNumber.zero();
     

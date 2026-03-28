@@ -46,11 +46,19 @@ class CellRepositoryImpl implements CellRepository {
 
   @override
   Future<List<CellModel>?> getSavedCells() => guardAsync(() async {
-    final json = _dataSource.getString(StorageKeys.cellsData);
-    if (json == null) return null;
-    final list = jsonDecode(json) as List;
-    return list.map((item) => CellModel.fromJson(item as Map<String, dynamic>)).toList();
-  });
+        final json = _dataSource.getString(StorageKeys.cellsData);
+        if (json == null) return null;
+        final list = jsonDecode(json) as List;
+        final cells = <CellModel>[];
+        for (final item in list) {
+          try {
+            cells.add(CellModel.fromJson(item as Map<String, dynamic>));
+          } catch (e) {
+            // Silently ignore individual cell load failures to allow others to load
+          }
+        }
+        return cells.isEmpty ? null : cells;
+      });
 
   @override
   Future<void> saveCells(List<CellModel> cells) => guardAsync(() async {
