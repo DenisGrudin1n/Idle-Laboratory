@@ -35,8 +35,11 @@ extension CellElementalEffectsExt on Canvas {
       for (var j = 0; j < segments; j++) {
         currentX += (random.nextDouble() - 0.5) * width * 0.6;
         currentY += (random.nextDouble() - 0.3) * 15;
-        currentX = currentX.clamp(centerX - width / 2 + 3, centerX + width / 2 - 3);
-        currentY = currentY.clamp(fillTop + 5, bottomY - 5);
+
+        // Safe clamp bounds
+        final margin = math.min(3, width / 4);
+        currentX = currentX.clamp(centerX - width / 2 + margin, centerX + width / 2 - margin);
+        currentY = currentY.clamp(fillTop + margin, bottomY - margin);
 
         if (j.isEven && j < (segments - 1)) {
           final endX = currentX + (random.nextDouble() - 0.5) * width * 0.4;
@@ -77,11 +80,11 @@ extension CellElementalEffectsExt on Canvas {
     for (var i = 0; i < chunkCount; i++) {
       final baseX = centerX - width / 2 + (width * random.nextDouble());
       final baseY = fillTop + height * ((animationValue * 2.0 + i * 0.1) % 1.0);
-      
+
       // Horizontal sinusoidal wobble
       final chunkX = baseX + math.sin((animationValue * 2.0 + i) * math.pi * 2) * (width * 0.08);
       final chunkSize = 3.0 + random.nextDouble() * 4.5;
-      
+
       chunkPaint.color = chunkColor.withValues(alpha: 0.85 + random.nextDouble() * 0.15);
       save();
       translate(chunkX, baseY);
@@ -97,9 +100,12 @@ extension CellElementalEffectsExt on Canvas {
 
       // Embers around chunk
       for (var j = 0; j < random.nextInt(2) + 1; j++) {
-        emberPaint.color = Color.lerp(emberColor1, emberColor2, random.nextDouble())!
-            .withValues(alpha: 0.7 + random.nextDouble() * 0.3);
-        
+        emberPaint.color = Color.lerp(
+          emberColor1,
+          emberColor2,
+          random.nextDouble(),
+        )!.withValues(alpha: 0.7 + random.nextDouble() * 0.3);
+
         drawCircle(
           Offset(chunkX + (random.nextDouble() - 0.5) * chunkSize, baseY + (random.nextDouble() - 0.5) * chunkSize),
           0.6 + random.nextDouble() * 1.2,
@@ -163,7 +169,7 @@ extension CellElementalEffectsExt on Canvas {
       final progress = (animationValue + i / cloudCount) % 1.0;
       final y = (bottomY + 50) - (height * progress);
       final opacity = math.sin(progress * math.pi) * 0.45;
-      
+
       final driftX = math.sin(progress * math.pi * 2 + i) * 15.0;
       final x = centerX + (random.nextDouble() - 0.5) * width + driftX;
 

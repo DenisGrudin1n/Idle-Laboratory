@@ -378,6 +378,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset progress for permanent EPS multiplier'**
   String get prestigeDescription;
+
+  /// No description provided for @amount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get amount;
+
+  /// No description provided for @productionRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Production Rate'**
+  String get productionRate;
+
+  /// No description provided for @cellsPerSec.
+  ///
+  /// In en, this message translates to:
+  /// **'cells/s'**
+  String get cellsPerSec;
+
+  /// No description provided for @energyPerSec.
+  ///
+  /// In en, this message translates to:
+  /// **'EU/s'**
+  String get energyPerSec;
+
+  /// No description provided for @totalProduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Production'**
+  String get totalProduction;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
