@@ -1,4 +1,5 @@
 import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_level_extensions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
@@ -8,18 +9,21 @@ import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_mode
 extension CellModelExt on CellModel {
   CellId? get cellId => CellId.fromString(id);
 
-  List<CellLevelModel> get levelConfigs {
+  CellLevelModel? get currentLevelConfig {
     final id = cellId;
-    return id == null ? [] : CellLevelConstants.getLevelConfigs(id);
+    return id == null ? null : CellLevelConstants.getLevelConfig(id, level);
   }
 
-  CellLevelModel? get currentLevelConfig => levelConfigs.getConfig(level);
-  CellLevelModel? get nextLevelConfig => levelConfigs.getConfig(level + 1);
-  bool get isMaxLevel => nextLevelConfig == null;
+  CellLevelModel? get nextLevelConfig {
+    final id = cellId;
+    return id == null ? null : CellLevelConstants.getLevelConfig(id, level + 1);
+  }
+
+  bool get isMaxLevel => level >= GameBalance.maxAllowedCellLevel;
 
   BigNumber? get unlockRequirement {
     final id = cellId;
-    return id == null ? null : CellLevelConstants.cellUnlockRequirements[id];
+    return id == null ? null : CellLevelConstants.getUnlockRequirement(id);
   }
 
   BigNumber? get nextLevelEnergyRequired => nextLevelConfig?.energyRequired;

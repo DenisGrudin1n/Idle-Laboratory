@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
@@ -93,7 +92,14 @@ class CellsService {
   List<CellModel> _processLevelUps(List<CellModel> cells) => cells.map((cell) {
     final cellEnergy = currentCellEnergies[cell.id];
     if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
-    return cell.copyWith(level: cell.level + 1, energyPerSecond: cell.nextLevelEPS.format());
+
+    // Calculate how many levels can be gained at once
+    var currentCell = cell;
+    while (currentCell.canLevelUp(cellEnergy) && !currentCell.isMaxLevel) {
+      currentCell = currentCell.copyWith(level: currentCell.level + 1);
+    }
+
+    return currentCell.copyWith(energyPerSecond: currentCell.eps.format());
   }).toList();
 
   BigNumber _calculateTotalEPS(List<CellModel> cells) {
@@ -109,11 +115,6 @@ class CellsService {
 
     // Rule: Max level cells are always 100% filled
     if (cell.isMaxLevel) return 1;
-
-    // For testing: remaining new cells (not max level yet) are always full
-    if (cell.level == 1 && cell.id != CellId.basicEnergyCell.id && cell.id != CellId.heatCell.id) {
-      return 1;
-    }
 
     final cellEnergy = currentCellEnergies[cellId];
     return cellEnergy == null ? 0 : cell.getProgressToNextLevel(cellEnergy);

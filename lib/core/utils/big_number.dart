@@ -53,6 +53,17 @@ class BigNumber {
 
   BigNumber operator *(BigNumber other) => BigNumber(mantissa * other.mantissa, exponent + other.exponent);
   BigNumber multiplyByDouble(double scalar) => BigNumber(mantissa * scalar, exponent);
+  BigNumber divideByDouble(double scalar) => BigNumber(mantissa / scalar, exponent);
+
+  static BigNumber pow(double base, double exponent) {
+    if (base <= 0) return BigNumber.zero();
+    // base^exponent = 10^(exponent * log10(base))
+    final log10Base = math.log(base) / math.ln10;
+    final totalLog10 = exponent * log10Base;
+    final newExponent = totalLog10.floor();
+    final newMantissa = math.pow(10, totalLog10 - newExponent).toDouble();
+    return BigNumber(newMantissa, newExponent);
+  }
 
   bool operator >(BigNumber other) {
     if (mantissa < 0 != other.mantissa < 0) return mantissa >= 0;

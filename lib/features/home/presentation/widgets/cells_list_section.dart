@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
-import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
-import 'package:idle_laboratory/core/extensions/cell_level_extensions.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
@@ -124,17 +121,15 @@ class _CellItem extends StatelessWidget {
                 BlocSelector<SettingsBloc, SettingsState, bool>(
                   selector: (state) => state.isScientificNotation,
                   builder: (context, isScientific) {
-                    final cellId = CellId.fromString(cell.id);
-                    if (cellId == null) return const SizedBox.shrink();
-                    final nextLevelConfig = CellLevelConstants.getLevelConfigs(cellId).getConfig(cell.level + 1);
+                    final nextLevel = cell.nextLevelConfig;
                     return Row(
                       children: [
                         Icon(Icons.battery_charging_full, color: context.color.primaryText, size: 10.sp),
                         SizedBox(width: 4.w),
                         Text(
-                          nextLevelConfig == null
+                          nextLevel == null
                               ? l10n.maxLvl
-                              : '${l10n.nextLvl}: ${nextLevelConfig.energyRequired.format(useScientific: isScientific)}',
+                              : '${l10n.nextLvl}: ${nextLevel.energyRequired.format(useScientific: isScientific)}',
                           style: TextStyle(
                             color: context.color.primaryText,
                             fontSize: 9.sp,
