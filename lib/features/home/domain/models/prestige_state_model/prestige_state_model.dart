@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/core/utils/big_number_converter.dart';
 
@@ -19,7 +20,7 @@ abstract class PrestigeStateModel with _$PrestigeStateModel {
 
   factory PrestigeStateModel.initial() => PrestigeStateModel(
         totalMultiplier: BigNumber(1, 0),
-        currentThreshold: BigNumber(1, 2),
+        currentThreshold: GameBalance.initialThreshold,
         currentMultiplier: BigNumber.zero(),
         isUnlocked: false,
         prestigeCount: 0,

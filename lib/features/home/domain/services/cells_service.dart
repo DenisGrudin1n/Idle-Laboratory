@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
@@ -13,9 +13,8 @@ import 'package:rxdart/rxdart.dart';
 @lazySingleton
 class CellsService {
   CellsService(this._cellRepository, this._energyService, this._prestigeService) {
-    _initializeCells();
-    _setupEnergyReaction();
-    _setupEPSCalculation();
+    _cellsSubject.add(_cellRepository.getDefaultCells());
+    _init();
   }
 
   final CellRepository _cellRepository;
@@ -29,38 +28,77 @@ class CellsService {
 
   StreamSubscription<List<CellModel>>? _progressionSubscription;
   StreamSubscription<BigNumber>? _epsCalculationSubscription;
+  StreamSubscription<int>? _prestigeCountSubscription;
 
   Stream<List<CellModel>> get cells$ => _cellsSubject.stream;
   Stream<Map<String, BigNumber>> get cellEnergies$ => _cellEnergiesSubject.stream;
 
-  List<CellModel> get currentCells => _cellsSubject.value;
+  List<CellModel> get currentCells => _cellsSubject.hasValue ? _cellsSubject.value : _cellRepository.getDefaultCells();
   Map<String, BigNumber> get currentCellEnergies => _cellEnergiesSubject.value;
+
+  Future<void> _init() async {
+    await _initializeCells();
+    _setupEnergyReaction();
+    _setupEPSCalculation();
+    _setupPrestigeListener();
+  }
 
   Future<void> _initializeCells() async {
     final savedCells = await _cellRepository.getSavedCells();
     final defaultCells = _cellRepository.getDefaultCells();
 
-    if (savedCells == null) {
-      _cellsSubject.add(defaultCells);
-      return;
-    }
+    if (savedCells == null || savedCells.isEmpty) return;
 
     final savedCellsMap = {for (final cell in savedCells) cell.id: cell};
 
-    final finalCells = defaultCells.map((defaultCell) => savedCellsMap[defaultCell.id] ?? defaultCell).toList();
+    final finalCells = defaultCells.map((defaultCell) {
+      final saved = savedCellsMap[defaultCell.id];
+      if (saved == null) return defaultCell;
+
+      // Smart merge: keep saved progress (level, lock status) but ensure latest metadata
+      return saved.copyWith(
+        name: defaultCell.name,
+        type: defaultCell.type,
+      );
+    }).toList();
+
     _cellsSubject.add(finalCells);
+    // Immediately sync EPS with EnergyService after loading
+    _energyService.updateEPS(_calculateTotalEPS(finalCells));
   }
 
   void _setupEnergyReaction() =>
       _progressionSubscription = _energyService.energy$.map(_processProgression).listen((updatedCells) {
         if (!listEquals(updatedCells, currentCells)) {
           _cellsSubject.add(updatedCells);
-          _cellRepository.saveCells(updatedCells);
+          _saveCellsThrottled(updatedCells);
         }
       });
 
+  Timer? _saveTimer;
+  List<CellModel>? _pendingCellsToSave;
+
+  void _saveCellsThrottled(List<CellModel> cells) {
+    _pendingCellsToSave = cells;
+    if (_saveTimer != null) return;
+
+    _saveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
+      if (_pendingCellsToSave != null) {
+        _cellRepository.saveCells(_pendingCellsToSave!);
+        _pendingCellsToSave = null;
+      }
+      _saveTimer = null;
+    });
+  }
+
   void _setupEPSCalculation() =>
       _epsCalculationSubscription = cells$.map(_calculateTotalEPS).distinct().listen(_energyService.updateEPS);
+
+  void _setupPrestigeListener() => _prestigeCountSubscription = _prestigeService.prestigeState$
+      .map((s) => s.prestigeCount)
+      .distinct()
+      .skip(1) // Skip initial emission
+      .listen((_) => reset());
 
   List<CellModel> _processProgression(BigNumber totalEnergy) {
     var cells = currentCells;
@@ -93,7 +131,15 @@ class CellsService {
   List<CellModel> _processLevelUps(List<CellModel> cells) => cells.map((cell) {
     final cellEnergy = currentCellEnergies[cell.id];
     if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
-    return cell.copyWith(level: cell.level + 1, energyPerSecond: cell.nextLevelEPS.format());
+
+    final cellId = cell.cellId;
+    if (cellId == null) return cell;
+
+    final newLevel = GameBalance.calculateMaxLevel(cellId.index, cellEnergy);
+    if (newLevel <= cell.level) return cell;
+
+    final updatedCell = cell.copyWith(level: newLevel);
+    return updatedCell.copyWith(energyPerSecond: updatedCell.eps.format());
   }).toList();
 
   BigNumber _calculateTotalEPS(List<CellModel> cells) {
@@ -110,11 +156,6 @@ class CellsService {
     // Rule: Max level cells are always 100% filled
     if (cell.isMaxLevel) return 1;
 
-    // For testing: remaining new cells (not max level yet) are always full
-    if (cell.level == 1 && cell.id != CellId.basicEnergyCell.id && cell.id != CellId.heatCell.id) {
-      return 1;
-    }
-
     final cellEnergy = currentCellEnergies[cellId];
     return cellEnergy == null ? 0 : cell.getProgressToNextLevel(cellEnergy);
   }
@@ -126,12 +167,15 @@ class CellsService {
     _cellsSubject.add(defaultCells);
     _cellEnergiesSubject.add({});
     _cellRepository.saveCells(defaultCells);
+    start();
   }
 
   @disposeMethod
   void dispose() {
     _progressionSubscription?.cancel();
     _epsCalculationSubscription?.cancel();
+    _prestigeCountSubscription?.cancel();
+    _saveTimer?.cancel();
     _cellsSubject.close();
     _cellEnergiesSubject.close();
   }

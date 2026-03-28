@@ -56,6 +56,7 @@ class PrestigeService {
     );
     _prestigeStateSubject.add(newState);
     await saveState(newState);
+    _energyService.reset();
   }
 
   BigNumber getEffectiveMultiplier() => currentState.totalMultiplier;
@@ -91,9 +92,9 @@ class PrestigeService {
 
   Future<void> reset() => guardAsync(() async {
     final initialState = PrestigeStateModel.initial();
-      _prestigeStateSubject.add(initialState);
-      await saveState(initialState);
-    });
+    _prestigeStateSubject.add(initialState);
+    await saveState(initialState);
+  });
 
   @disposeMethod
   void dispose() {

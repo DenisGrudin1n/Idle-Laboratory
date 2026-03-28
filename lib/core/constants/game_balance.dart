@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:idle_laboratory/core/utils/big_number.dart';
 
 class GameBalance {
@@ -13,9 +14,9 @@ class GameBalance {
   static const energyAutoSaveDurationMs = 5000;
 
   static const cellInitialLevel = 1;
-  static const cellDefaultMaxLevel = 100;
-  static const cellLevelCostScaleFactor = 1.15;
-  static const cellEPSScaleFactor = 1.1;
+  static const cellDefaultMaxLevel = 1000;
+  static const cellLevelCostMultiplier = 1.25;
+  static const cellEPSMultiplier = 1.10;
 
   static const maxAllowedCellLevel = 1000;
   static final minEnergyValue = BigNumber.zero();
@@ -34,14 +35,63 @@ class GameBalance {
   static const enablePrestigeDebugLogs = false;
   static const enableCellDebugLogs = false;
 
-  static BigNumber calculateLevelCost(BigNumber baseCost, int level) => level <= 1
-      ? baseCost
-      : BigNumber.fromDouble(baseCost.toDouble() * (cellLevelCostScaleFactor * level));
+  /// Base unlock cost for each cell based on its index
+  static BigNumber getBaseUnlockCost(int cellIndex) {
+    if (cellIndex <= 0) return BigNumber.zero();
+    // 10^(3n + 1) -> 10^4, 10^7, 10^10...
+    return BigNumber.pow(10, 3.0 * cellIndex + 1.0);
+  }
 
-  static BigNumber calculateLevelEPS(BigNumber baseEPS, int level) => level <= 1
-      ? baseEPS
-      : BigNumber.fromDouble(baseEPS.toDouble() * (cellEPSScaleFactor * level));
+  /// Base level up cost (at level 1) for each cell based on its index
+  static BigNumber getBaseLevelUpCost(int cellIndex) {
+    if (cellIndex <= 0) return BigNumber(1, 1); // 10
+    // 10^(3n) -> 1e3, 1e6, 1e9...
+    return BigNumber.pow(10, 3.0 * cellIndex);
+  }
 
-  static BigNumber calculatePrestigeMultiplier(BigNumber energy, BigNumber threshold) =>
-      threshold <= BigNumber.zero() ? BigNumber.zero() : BigNumber.fromDouble(energy.ratio(threshold) * prestigeMultiplierFactor);
+  /// Base energy per second for each cell at level 1
+  static BigNumber getBaseEPS(int cellIndex) {
+    if (cellIndex <= 0) return BigNumber(1, 0); // 1
+    // 10^(3n - 1) -> 10^2, 10^5, 10^8...
+    return BigNumber.pow(10, 3.0 * cellIndex - 1.0);
+  }
+
+  static BigNumber calculateLevelCost(int cellIndex, int level) {
+    if (level < 1) return BigNumber.zero();
+    final baseCost = getBaseLevelUpCost(cellIndex);
+    // Cost(level) = BaseCost * (Multiplier ^ (level - 1))
+    return baseCost * BigNumber.pow(cellLevelCostMultiplier, level - 1.0);
+  }
+
+  static BigNumber calculateLevelEPS(int cellIndex, int level) {
+    if (level < 1) return BigNumber.zero();
+    final baseEPS = getBaseEPS(cellIndex);
+    // EPS(level) = BaseEPS * (Multiplier ^ (level - 1))
+    return baseEPS * BigNumber.pow(cellEPSMultiplier, level - 1.0);
+  }
+
+  static int calculateMaxLevel(int cellIndex, BigNumber currentEnergy) {
+    final baseCost = getBaseLevelUpCost(cellIndex);
+    if (currentEnergy < baseCost) return 1;
+
+    // level <= log(Energy / BaseCost) / log(Multiplier) + 1
+    final logEnergy = currentEnergy.log10();
+    final logBaseCost = baseCost.log10();
+    final logMultiplier = math.log(cellLevelCostMultiplier) / math.ln10;
+
+    final maxLevel = ((logEnergy - logBaseCost) / logMultiplier).floor() + 1;
+    return maxLevel.clamp(1, maxAllowedCellLevel);
+  }
+
+  static BigNumber calculatePrestigeMultiplier(BigNumber currentEnergy, BigNumber currentThreshold) {
+    if (currentEnergy < initialThreshold || currentEnergy <= currentThreshold) return BigNumber.zero();
+    
+    // Formula: (CurrentEnergy / MaxEverEnergy) ^ 0.5
+    final ratio = currentEnergy.ratio(currentThreshold);
+    if (ratio <= 1.0) return BigNumber.zero();
+    
+    return BigNumber.fromDouble(math.sqrt(ratio) * prestigeMultiplierFactor);
+  }
+
+  static final initialThreshold = BigNumber(1, 6); // 1 million energy to start prestiging
 }

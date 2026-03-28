@@ -55,12 +55,19 @@ class EnergyService {
 
   Future<void> saveEnergy() async => _energyRepository.saveTotalEnergy(currentEnergy);
 
-  void updateEPS(BigNumber newEPS) => _epsSubject.value != newEPS ? _epsSubject.add(newEPS) : null;
+  void updateEPS(BigNumber newEPS) {
+    if (_epsSubject.value != newEPS) {
+      _epsSubject.add(newEPS);
+      // Immediately trigger energy generation update to avoid 100ms lag
+      if (_timer == null) start();
+    }
+  }
 
   void reset() {
     _energySubject.add(BigNumber.zero());
     _epsSubject.add(BigNumber.zero());
     saveEnergy();
+    start();
   }
 
   @disposeMethod

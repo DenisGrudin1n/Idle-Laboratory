@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/storage_keys.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/cell_name.dart';
@@ -16,55 +17,54 @@ class CellRepositoryImpl implements CellRepository {
 
   @override
   List<CellModel> getDefaultCells() => [
-        CellModel(
-          id: CellId.basicEnergyCell.id,
-          name: CellName.basicEnergyCell,
-          type: CellType.energy,
-          level: 1,
-          isLocked: false,
-          energyPerSecond: '1.00',
-        ),
-        CellModel(
-          id: CellId.heatCell.id,
-          name: CellName.heatCell,
-          type: CellType.energy,
-          level: 1,
-          isLocked: true,
-          energyPerSecond: '2.50',
-        ),
-        _createLockedCell(CellId.iceCell, CellName.iceCell),
-        _createLockedCell(CellId.steamCell, CellName.steamCell),
-        _createLockedCell(CellId.lightCell, CellName.lightCell),
-        _createLockedCell(CellId.molecularCell, CellName.molecularCell),
-        _createLockedCell(CellId.bacterialCell, CellName.bacterialCell),
-        _createLockedCell(CellId.bloodCell, CellName.bloodCell),
-        _createLockedCell(CellId.bioCell, CellName.bioCell),
-        _createLockedCell(CellId.radiationCell, CellName.radiationCell),
-        _createLockedCell(CellId.plasmaCell, CellName.plasmaCell),
-        _createLockedCell(CellId.darkMatterCell, CellName.darkMatterCell),
-      ];
+    _createCell(CellId.basicEnergyCell, CellName.basicEnergyCell, isLocked: false),
+    _createCell(CellId.heatCell, CellName.heatCell),
+    _createCell(CellId.iceCell, CellName.iceCell),
+    _createCell(CellId.steamCell, CellName.steamCell),
+    _createCell(CellId.lightCell, CellName.lightCell),
+    _createCell(CellId.molecularCell, CellName.molecularCell),
+    _createCell(CellId.bacterialCell, CellName.bacterialCell),
+    _createCell(CellId.bloodCell, CellName.bloodCell),
+    _createCell(CellId.bioCell, CellName.bioCell),
+    _createCell(CellId.radiationCell, CellName.radiationCell),
+    _createCell(CellId.plasmaCell, CellName.plasmaCell),
+    _createCell(CellId.darkMatterCell, CellName.darkMatterCell),
+  ];
 
-  CellModel _createLockedCell(CellId id, CellName name) => CellModel(
-        id: id.id,
-        name: name,
-        type: CellType.energy,
-        level: 1,
-        isLocked: true,
-      );
+  CellModel _createCell(CellId id, CellName name, {bool isLocked = true}) {
+    const initialLevel = 1;
+    final initialEPS = GameBalance.calculateLevelEPS(id.order, initialLevel);
+    return CellModel(
+      id: id.id,
+      name: name,
+      type: CellType.energy,
+      level: initialLevel,
+      isLocked: isLocked,
+      energyPerSecond: initialEPS.format(),
+    );
+  }
 
   @override
   Future<List<CellModel>?> getSavedCells() => guardAsync(() async {
         final json = _dataSource.getString(StorageKeys.cellsData);
         if (json == null) return null;
         final list = jsonDecode(json) as List;
-        return list.map((item) => CellModel.fromJson(item as Map<String, dynamic>)).toList();
+        final cells = <CellModel>[];
+        for (final item in list) {
+          try {
+            cells.add(CellModel.fromJson(item as Map<String, dynamic>));
+          } catch (e) {
+            // Silently ignore individual cell load failures to allow others to load
+          }
+        }
+        return cells.isEmpty ? null : cells;
       });
 
   @override
   Future<void> saveCells(List<CellModel> cells) => guardAsync(() async {
-        final json = jsonEncode(cells.map((cell) => cell.toJson()).toList());
-        await _dataSource.setString(StorageKeys.cellsData, json);
-      });
+    final json = jsonEncode(cells.map((cell) => cell.toJson()).toList());
+    await _dataSource.setString(StorageKeys.cellsData, json);
+  });
 
   @override
   Future<void> clearAll() => guardAsync(() => _dataSource.remove(StorageKeys.cellsData));
