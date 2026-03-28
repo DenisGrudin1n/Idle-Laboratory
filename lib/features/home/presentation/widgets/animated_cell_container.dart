@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:idle_laboratory/core/extensions/cell_container_extensions.dart';
+import 'package:idle_laboratory/core/extensions/cell_effects/cell_container_extensions.dart';
 import 'package:idle_laboratory/core/theme/cell_visual_theme.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/utils/painter_utils.dart';
 
 class AnimatedCellContainer extends StatelessWidget {
   const AnimatedCellContainer({required this.fillLevel, required this.visualTheme, required this.animation, super.key});
@@ -93,13 +94,7 @@ class _CellContainerPainter extends CustomPainter {
         fillTop: fillTop,
         width: width,
         fillHeight: fillHeight,
-        gradientColors: [
-          visualTheme.energyFillGradient.colors[0].withValues(alpha: 0.7),
-          visualTheme.energyFillGradient.colors.length > 2
-              ? visualTheme.energyFillGradient.colors[1].withValues(alpha: 0.85)
-              : visualTheme.energyFillGradient.colors.last.withValues(alpha: 0.85),
-          visualTheme.energyFillGradient.colors.last,
-        ],
+        gradientColors: PainterUtils.getSafeFillColors(visualTheme.energyFillGradient),
       );
 
     // Effects
@@ -234,13 +229,7 @@ class _CellContainerPainter extends CustomPainter {
         centerX: centerX,
         fillTop: fillTop,
         width: width,
-        glowColors: [
-          visualTheme.energyGlowGradient.colors[0].withValues(alpha: 0.8),
-          visualTheme.energyGlowGradient.colors.length > 1
-              ? visualTheme.energyGlowGradient.colors[1].withValues(alpha: 0.5)
-              : visualTheme.energyGlowGradient.colors.last.withValues(alpha: 0.5),
-          Colors.transparent,
-        ],
+        glowColors: PainterUtils.getSafeGlowColors(visualTheme.energyGlowGradient),
       )
       ..restore();
   }
