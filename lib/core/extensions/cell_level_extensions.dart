@@ -31,8 +31,9 @@ class CellEnergyPerSecond {
   static BigNumber getEPS(CellId cellId, int level) => switch (cellId) {
         CellId.basicEnergyCell => basicEnergyCellEPS[level] ?? BigNumber.zero(),
         CellId.heatCell => heatCellEPS[level] ?? BigNumber.zero(),
-        CellId.iceCell || CellId.darkMatterCell => BigNumber.zero(),
+        _ => BigNumber.zero(),
       };
 
-  static String? getNewCellUnlockRequirement(CellId cellId) => CellLevelConstants.cellUnlockRequirements[cellId]?.format();
+  static String? getNewCellUnlockRequirement(CellId cellId) =>
+      CellLevelConstants.cellUnlockRequirements[cellId]?.format();
 }

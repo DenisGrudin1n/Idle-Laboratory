@@ -63,6 +63,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get iceCell => 'Ice Cell';
 
   @override
+  String get steamCell => 'Steam Cell';
+
+  @override
+  String get lightCell => 'Light Cell';
+
+  @override
+  String get molecularCell => 'Molecular Cell';
+
+  @override
+  String get bacterialCell => 'Bacterial Cell';
+
+  @override
+  String get bloodCell => 'Blood Cell';
+
+  @override
+  String get bioCell => 'Bio Cell';
+
+  @override
+  String get radiationCell => 'Radiation Cell';
+
+  @override
+  String get plasmaCell => 'Plasma Cell';
+
+  @override
   String get darkMatterCell => 'Dark Matter Cell';
 
   @override

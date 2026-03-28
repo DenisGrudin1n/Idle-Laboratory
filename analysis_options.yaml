@@ -11,6 +11,7 @@ analyzer:
     only_throw_errors: ignore
     unused_shown_name: ignore
     avoid_positional_boolean_parameters: error
+    prefer_if_elements_to_conditional_expressions: ignore
   exclude:
     - lib/**.g.dart
     - lib/**.freezed.dart

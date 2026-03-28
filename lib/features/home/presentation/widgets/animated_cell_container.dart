@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:idle_laboratory/core/extensions/cell_container_extensions.dart';
+import 'package:idle_laboratory/core/extensions/cell_effects/cell_container_extensions.dart';
 import 'package:idle_laboratory/core/theme/cell_visual_theme.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/utils/painter_utils.dart';
 
 class AnimatedCellContainer extends StatelessWidget {
   const AnimatedCellContainer({required this.fillLevel, required this.visualTheme, required this.animation, super.key});
@@ -52,7 +53,7 @@ class _CellContainerPainter extends CustomPainter {
       bodyGradient: visualTheme.cellBodyGradient,
     );
 
-    // 2. Draw Energy Content
+    // 2. Draw Energy Content (Effects & Fill)
     _drawEnergyContent(
       canvas: canvas,
       centerX: centerX,
@@ -93,35 +94,122 @@ class _CellContainerPainter extends CustomPainter {
         fillTop: fillTop,
         width: width,
         fillHeight: fillHeight,
-        gradientColors: [
-          visualTheme.energyFillGradient.colors[0].withValues(alpha: 0.7),
-          visualTheme.energyFillGradient.colors[1].withValues(alpha: 0.85),
-          visualTheme.energyFillGradient.colors[2],
-        ],
+        gradientColors: PainterUtils.getSafeFillColors(visualTheme.energyFillGradient),
       );
 
     // Effects
     if (fillLevel >= 0.1) {
-      if (visualTheme.effectType == CellEffectType.lightning) {
-        canvas.drawElectricLightning(
-          centerX: centerX,
-          fillTop: fillTop,
-          bottomY: bottomY,
-          width: width,
-          animationValue: animationValue.value,
-          lightningColor: visualTheme.effectPrimaryColor,
-        );
-      } else {
-        canvas.drawLavaChunks(
-          centerX: centerX,
-          fillTop: fillTop,
-          bottomY: bottomY,
-          width: width,
-          animationValue: animationValue.value,
-          chunkColor: visualTheme.effectPrimaryColor,
-          emberColor1: visualTheme.effectSecondaryColor1,
-          emberColor2: visualTheme.effectSecondaryColor2,
-        );
+      switch (visualTheme.effectType) {
+        case CellEffectType.lightning:
+          canvas.drawElectricLightning(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            lightningColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.lavaChunks:
+          canvas.drawLavaChunks(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            chunkColor: visualTheme.effectPrimaryColor,
+            emberColor1: visualTheme.effectSecondaryColor1,
+            emberColor2: visualTheme.effectSecondaryColor2,
+          );
+        case CellEffectType.iceCubes:
+          canvas.drawIceCrystals(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+          );
+        case CellEffectType.risingVapor:
+          canvas.drawRisingVapor(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            vaporColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.lightBeams:
+          canvas.drawLightBeams(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            beamColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.molecularBonds:
+          canvas.drawMolecularBonds(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            atomColor: visualTheme.effectPrimaryColor,
+            bondColor: visualTheme.effectSecondaryColor1,
+          );
+        case CellEffectType.bacterialColony:
+          canvas.drawBacterialColony(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            organismColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.bloodFlow:
+          canvas.drawBloodFlow(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            cellColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.bioOrganic:
+          canvas.drawBioOrganic(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            sporeColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.radiationDecay:
+          canvas.drawRadiationDecay(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            waveColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.plasmaFilament:
+          canvas.drawPlasmaFilament(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            filamentColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.darkMatterSingularity:
+          canvas.drawDarkMatterSingularity(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            singularityColor: visualTheme.effectPrimaryColor,
+          );
       }
     }
 
@@ -141,11 +229,7 @@ class _CellContainerPainter extends CustomPainter {
         centerX: centerX,
         fillTop: fillTop,
         width: width,
-        glowColors: [
-          visualTheme.energyGlowGradient.colors[0].withValues(alpha: 0.8),
-          visualTheme.energyGlowGradient.colors[1].withValues(alpha: 0.5),
-          Colors.transparent,
-        ],
+        glowColors: PainterUtils.getSafeGlowColors(visualTheme.energyGlowGradient),
       )
       ..restore();
   }

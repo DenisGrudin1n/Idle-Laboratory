@@ -50,7 +50,8 @@ extension CellModelExt on CellModel {
   }
 
   double getProgressToNextLevel(BigNumber currentEnergy) {
-    if (isLocked || isMaxLevel) return 0;
+    if (isMaxLevel) return 1;
+    if (isLocked) return 0;
     final currentReq = currentLevelEnergyRequired;
     final nextReq = nextLevelEnergyRequired;
     if (currentReq == null || nextReq == null || currentEnergy < currentReq) return 0;
