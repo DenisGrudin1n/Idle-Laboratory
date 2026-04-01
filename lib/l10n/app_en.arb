@@ -52,5 +52,7 @@
     "productionRate": "Production Rate",
     "cellsPerSec": "cells/s",
     "energyPerSec": "EU/s",
-    "totalProduction": "Total Production"
+    "totalProduction": "Total Production",
+    "productionOverview": "Overview of automated cell generation",
+    "totalContribution": "Total contribution from production: {amount} {unit}"
 }

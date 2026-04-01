@@ -168,4 +168,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get totalProduction => 'Total Production';
+
+  @override
+  String get productionOverview => 'Overview of automated cell generation';
+
+  @override
+  String totalContribution(Object amount, Object unit) {
+    return 'Total contribution from production: $amount $unit';
+  }
 }

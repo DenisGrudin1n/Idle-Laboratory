@@ -51,7 +51,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
                   final unlockedCells = cells.where((c) => !c.isLocked).toList();
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, // Reduced from 6 to increase item size by 1.5x
+                      crossAxisCount: 4,
                       crossAxisSpacing: 16.w,
                       mainAxisSpacing: 16.h,
                     ),
@@ -80,7 +80,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
               style: TextStyle(color: context.color.titleText, fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
             Text(
-              'Overview of automated cell generation',
+              l10n.productionOverview,
               style: TextStyle(color: context.color.primaryText.withValues(alpha: 0.6), fontSize: 10.sp),
             ),
           ],
@@ -103,7 +103,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
           Icon(Icons.bolt, color: context.color.green, size: 14.sp),
           SizedBox(width: 4.w),
           Text(
-            'Total contribution from production: 0.0 EU/s',
+            l10n.totalContribution('0.0', l10n.energyPerSec),
             style: TextStyle(color: context.color.green, fontSize: 11.sp, fontWeight: FontWeight.w500),
           ),
         ],
@@ -123,8 +123,6 @@ class _ProductionItem extends StatelessWidget {
 
     // Placeholder values for now
     final amount = BigNumber(1.25, 3); // 1.25k
-    final productionRate = BigNumber(5.5, 0); // 5.5 /s
-    final epsContribution = BigNumber(2.5, 2); // 250 EU/s
 
     final cellId = cell.cellId;
     if (cellId == null) return const SizedBox.shrink();
@@ -137,50 +135,25 @@ class _ProductionItem extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // 1. Small Animated Cell in the center (scaled proportionally)
-          Center(
-            child: Padding(
-              padding: EdgeInsets.only(top: 6.h, bottom: 18.h),
-              child: AspectRatio(
-                aspectRatio: 0.8,
-                child: AnimatedCellContainer(
-                  fillLevel: 1,
-                  visualTheme: context.getCellTheme(cellId),
-                  animation: animation,
-                ),
-              ),
-            ),
-          ),
-          // 2. Amount (Top-Left)
-          Positioned(
-            top: 6.h,
-            left: 9.w,
-            child: Text(
-              amount.format(compact: true),
-              style: TextStyle(color: color.titleText, fontSize: 12.sp, fontWeight: FontWeight.bold),
-            ),
-          ),
-          // 3. Production Rate (Top-Right)
+          // 1. Amount in Top-Right
           Positioned(
             top: 6.h,
             right: 9.w,
             child: Text(
-              '+${productionRate.format(compact: true)}',
-              style: TextStyle(color: color.green, fontSize: 10.sp, fontWeight: FontWeight.w500),
+              amount.format(compact: true),
+              style: TextStyle(color: color.titleText, fontSize: 10.sp, fontWeight: FontWeight.bold),
             ),
           ),
-          // 4. Energy contribution (Bottom)
-          Positioned(
-            bottom: 6.h,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Text(
-                '${epsContribution.format(compact: true)} EU/s',
-                style: TextStyle(
-                  color: color.green.withValues(alpha: 0.8),
-                  fontSize: 10.sp,
-                  fontWeight: FontWeight.bold,
+          // 2. Small Animated Cell in the center (scaled proportionally)
+          Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: AspectRatio(
+                aspectRatio: 0.6,
+                child: AnimatedCellContainer(
+                  fillLevel: 1,
+                  visualTheme: context.getCellTheme(cellId),
+                  animation: animation,
                 ),
               ),
             ),

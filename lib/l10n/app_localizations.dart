@@ -408,6 +408,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Production'**
   String get totalProduction;
+
+  /// No description provided for @productionOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview of automated cell generation'**
+  String get productionOverview;
+
+  /// No description provided for @totalContribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Total contribution from production: {amount} {unit}'**
+  String totalContribution(Object amount, Object unit);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
