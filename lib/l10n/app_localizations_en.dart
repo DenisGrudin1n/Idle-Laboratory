@@ -176,4 +176,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String totalContribution(Object amount, Object unit) {
     return 'Total contribution from production: $amount $unit';
   }
+
+  @override
+  String get accelerate => 'Accelerate';
+
+  @override
+  String accelerationCost(Object amount) {
+    return 'Cost: $amount';
+  }
+
+  @override
+  String cellProductionRate(Object amount, Object unit) {
+    return '$amount $unit';
+  }
 }

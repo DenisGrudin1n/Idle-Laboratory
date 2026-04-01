@@ -25,7 +25,7 @@ class CellsListSection extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               context.l10n.cells,
-              style: TextStyle(color: context.color.titleText, fontSize: 14.sp, fontWeight: FontWeight.bold),
+              style: context.styles.sectionTitle,
             ),
           ),
           Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2)),
@@ -52,7 +52,7 @@ class CellsListSection extends StatelessWidget {
             padding: EdgeInsets.all(12.w),
             child: Text(
               context.l10n.unlockMoreCells,
-              style: TextStyle(color: context.color.primaryText, fontSize: 10.sp, fontWeight: FontWeight.w400),
+              style: context.styles.helperText,
               textAlign: TextAlign.center,
             ),
           ),
@@ -90,11 +90,7 @@ class _CellItem extends StatelessWidget {
             children: [
               Text(
                 cell.name.localize(l10n),
-                style: TextStyle(
-                  color: cell.isLocked ? context.color.primaryText : context.color.titleText,
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: context.styles.cellName(isLocked: cell.isLocked),
               ),
               if (!cell.isLocked) ...[
                 SizedBox(height: 6.h),
@@ -103,7 +99,7 @@ class _CellItem extends StatelessWidget {
                   children: [
                     Text(
                       '${l10n.level}: ${cell.level}',
-                      style: TextStyle(color: context.color.primaryText, fontSize: 9.sp, fontWeight: FontWeight.w400),
+                      style: context.styles.compactValue,
                     ),
                     Row(
                       children: [
@@ -111,7 +107,7 @@ class _CellItem extends StatelessWidget {
                         SizedBox(width: 2.w),
                         Text(
                           '${cell.energyPerSecond ?? '0.0'} / ${l10n.sec}',
-                          style: TextStyle(color: context.color.green, fontSize: 9.sp, fontWeight: FontWeight.w500),
+                          style: context.styles.compactAccentValue,
                         ),
                       ],
                     ),
@@ -130,11 +126,7 @@ class _CellItem extends StatelessWidget {
                           nextLevel == null
                               ? l10n.maxLvl
                               : '${l10n.nextLvl}: ${nextLevel.energyRequired.format(useScientific: isScientific)}',
-                          style: TextStyle(
-                            color: context.color.primaryText,
-                            fontSize: 9.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: context.styles.compactSupporting,
                         ),
                       ],
                     );

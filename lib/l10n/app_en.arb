@@ -54,5 +54,8 @@
     "energyPerSec": "EU/s",
     "totalProduction": "Total Production",
     "productionOverview": "Overview of automated cell generation",
-    "totalContribution": "Total contribution from production: {amount} {unit}"
+    "totalContribution": "Total contribution from production: {amount} {unit}",
+    "accelerate": "Accelerate",
+    "accelerationCost": "Cost: {amount}",
+    "cellProductionRate": "{amount} {unit}"
 }

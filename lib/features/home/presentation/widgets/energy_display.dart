@@ -23,11 +23,11 @@ class EnergyDisplay extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(currentEnergy.format(useScientific: isScientific),
-                      style: TextStyle(color: context.color.titleText, fontSize: 20.sp, fontWeight: FontWeight.bold),
+                      style: context.styles.energyValue,
                       textAlign: TextAlign.center),
                   SizedBox(height: 2.h),
                   Text('+${energyPerSecond.format(useScientific: isScientific)} ${context.l10n.perSecond}',
-                      style: TextStyle(color: context.color.green, fontSize: 11.sp, fontWeight: FontWeight.w500),
+                      style: context.styles.successText,
                       textAlign: TextAlign.center),
                 ],
               ),

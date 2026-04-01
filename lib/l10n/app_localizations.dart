@@ -420,6 +420,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total contribution from production: {amount} {unit}'**
   String totalContribution(Object amount, Object unit);
+
+  /// No description provided for @accelerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Accelerate'**
+  String get accelerate;
+
+  /// No description provided for @accelerationCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost: {amount}'**
+  String accelerationCost(Object amount);
+
+  /// No description provided for @cellProductionRate.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} {unit}'**
+  String cellProductionRate(Object amount, Object unit);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

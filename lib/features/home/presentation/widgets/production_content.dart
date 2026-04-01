@@ -52,6 +52,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
+                      childAspectRatio: 0.8,
                       crossAxisSpacing: 16.w,
                       mainAxisSpacing: 16.h,
                     ),
@@ -77,11 +78,11 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
           children: [
             Text(
               l10n.totalProduction,
-              style: TextStyle(color: context.color.titleText, fontSize: 16.sp, fontWeight: FontWeight.bold),
+              style: context.styles.sectionHeaderTitle,
             ),
             Text(
               l10n.productionOverview,
-              style: TextStyle(color: context.color.primaryText.withValues(alpha: 0.6), fontSize: 10.sp),
+              style: context.styles.sectionHeaderDescription,
             ),
           ],
         ),
@@ -104,7 +105,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
           SizedBox(width: 4.w),
           Text(
             l10n.totalContribution('0.0', l10n.energyPerSec),
-            style: TextStyle(color: context.color.green, fontSize: 11.sp, fontWeight: FontWeight.w500),
+            style: context.styles.successText,
           ),
         ],
       ),
@@ -120,9 +121,12 @@ class _ProductionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.color;
+    final l10n = context.l10n;
 
     // Placeholder values for now
     final amount = BigNumber(1.25, 3); // 1.25k
+    final accelerationCost = BigNumber(4.5, 4); // 45k
+    final productionRate = BigNumber(5.5, 0); // 5.5 /s
 
     final cellId = cell.cellId;
     if (cellId == null) return const SizedBox.shrink();
@@ -133,32 +137,75 @@ class _ProductionItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: color.primary.withValues(alpha: 0.1), width: 1.w),
       ),
-      child: Stack(
-        children: [
-          // 1. Amount in Top-Right
-          Positioned(
-            top: 6.h,
-            right: 9.w,
-            child: Text(
-              amount.format(compact: true),
-              style: TextStyle(color: color.titleText, fontSize: 10.sp, fontWeight: FontWeight.bold),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(9.w, 6.h, 9.w, 4.h),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  '${productionRate.format(compact: true)}/s',
+                  style: context.styles.productionRate,
+                ),
+                const Spacer(),
+                Text(
+                  amount.format(compact: true),
+                  style: context.styles.productionAmount,
+                ),
+              ],
             ),
-          ),
-          // 2. Small Animated Cell in the center (scaled proportionally)
-          Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              child: AspectRatio(
-                aspectRatio: 0.6,
-                child: AnimatedCellContainer(
-                  fillLevel: 1,
-                  visualTheme: context.getCellTheme(cellId),
-                  animation: animation,
+            SizedBox(
+              height: 42.h,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 0.h),
+                  child: AspectRatio(
+                    aspectRatio: 0.68,
+                    child: AnimatedCellContainer(
+                      fillLevel: 1,
+                      visualTheme: context.getCellTheme(cellId),
+                      animation: animation,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            SizedBox(height: 6.h),
+            Center(
+              child: GestureDetector(
+                onTap: () {},
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: color.background.withValues(alpha: 0.45),
+                    borderRadius: BorderRadius.circular(7.r),
+                    border: Border.all(color: color.primary.withValues(alpha: 0.14), width: 1.w),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          l10n.accelerate,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.styles.productionButtonLabel,
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        accelerationCost.format(compact: true),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.styles.productionButtonCost,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

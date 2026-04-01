@@ -73,16 +73,13 @@ class PrestigeInfoSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('${l10n.prestigeMultiplier}: ${prestigeState.totalMultiplier.format(compact: true)}x',
-                style: TextStyle(color: context.color.primary, fontSize: 10.sp, fontWeight: FontWeight.w500),
+                style: context.styles.prestigeMultiplier,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
             SizedBox(height: 3.h),
             Text('+ ${prestigeState.currentMultiplier.format(compact: true)}x ${l10n.prestigeBonus}',
-                style: TextStyle(
-                    color: prestigeState.isUnlocked ? context.color.green : context.color.primaryText.withValues(alpha: 0.5),
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600),
+                style: context.styles.prestigeBonus(isUnlocked: prestigeState.isUnlocked),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
