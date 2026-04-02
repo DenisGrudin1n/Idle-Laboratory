@@ -99,6 +99,9 @@ class GameBalance {
 
   static const maxAccelerationLevel = 100;
 
+  /// Scales all production-derived EPS (stock contribution) for game feel tuning.
+  static const productionEPSContributionMultiplier = 3.0;
+
   /// Energy/sec from stock: amount * multiplier(order). Basic 0.001, doubles each next cell.
   static double productionStockEnergyMultiplier(int cellOrder) => 0.001 * math.pow(2, cellOrder);
 
@@ -122,7 +125,7 @@ class GameBalance {
   }
 
   static BigNumber productionEnergyPerSecondFromStock(BigNumber amount, int cellOrder) {
-    final mult = productionStockEnergyMultiplier(cellOrder);
+    final mult = productionStockEnergyMultiplier(cellOrder) * productionEPSContributionMultiplier;
     return amount.multiplyByDouble(mult);
   }
 }

@@ -56,7 +56,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
                   return GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
-                      childAspectRatio: 0.8,
+                      childAspectRatio: 0.72,
                       crossAxisSpacing: 16.w,
                       mainAxisSpacing: 16.h,
                     ),
@@ -84,21 +84,13 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.totalProduction,
-                style: context.styles.sectionHeaderTitle,
-              ),
-              Text(
-                l10n.productionOverview,
-                style: context.styles.sectionHeaderDescription,
-              ),
+              Text(l10n.totalProduction, style: context.styles.sectionHeaderTitle),
+              Text(l10n.productionOverview, style: context.styles.sectionHeaderDescription),
             ],
           ),
         ),
         SizedBox(width: 8.w),
-        Flexible(
-          child: _buildSummaryStats(context, l10n),
-        ),
+        Flexible(child: _buildSummaryStats(context, l10n)),
       ],
     );
   }
@@ -158,8 +150,9 @@ class _ProductionItem extends StatelessWidget {
     final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
     final productionRateLabel = BigNumber.fromDouble(pps).format(compact: true);
     final atMaxAcceleration = entry.accelerationLevel >= GameBalance.maxAccelerationLevel;
-    final accelerationCost =
-        atMaxAcceleration ? BigNumber.zero() : GameBalance.calculateAccelerationUpgradeCost(cellId.order, entry.accelerationLevel);
+    final accelerationCost = atMaxAcceleration
+        ? BigNumber.zero()
+        : GameBalance.calculateAccelerationUpgradeCost(cellId.order, entry.accelerationLevel);
     final costLabel = atMaxAcceleration ? '—' : accelerationCost.format(compact: true);
 
     return Container(
@@ -173,50 +166,62 @@ class _ProductionItem extends StatelessWidget {
         child: Column(
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '$productionRateLabel/s',
-                  style: context.styles.productionRate,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('$productionRateLabel/s', style: context.styles.productionRate),
+                    SizedBox(height: 2.h),
+                    Text('${l10n.lvl} ${entry.accelerationLevel}', style: context.styles.productionAccelerationLevel),
+                  ],
                 ),
                 const Spacer(),
-                Text(
-                  entry.amount.format(compact: true),
-                  style: context.styles.productionAmount,
-                ),
+                Text(entry.amount.format(compact: true), style: context.styles.productionAmount),
               ],
             ),
-            SizedBox(
-              height: 42.h,
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0.h),
-                  child: AspectRatio(
-                    aspectRatio: 0.68,
-                    child: AnimatedCellContainer(
-                      fillLevel: 1,
-                      visualTheme: context.getCellTheme(cellId),
-                      animation: animation,
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  const graphicAspectWidthOverHeight = 0.68;
+                  var width = constraints.maxWidth;
+                  var height = width / graphicAspectWidthOverHeight;
+                  if (height > constraints.maxHeight) {
+                    height = constraints.maxHeight;
+                    width = height * graphicAspectWidthOverHeight;
+                  }
+                  return Center(
+                    child: SizedBox(
+                      width: width,
+                      height: height,
+                      child: AnimatedCellContainer(
+                        fillLevel: 1,
+                        visualTheme: context.getCellTheme(cellId),
+                        animation: animation,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
-            SizedBox(height: 6.h),
+            SizedBox(height: 4.h),
             Center(
               child: GestureDetector(
                 onTap: atMaxAcceleration
                     ? null
                     : () => context.read<CellsBloc>().add(CellsEvent.accelerateProduction(cell.id)),
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
                   decoration: BoxDecoration(
                     color: color.background.withValues(alpha: 0.45),
                     borderRadius: BorderRadius.circular(7.r),
                     border: Border.all(color: color.primary.withValues(alpha: 0.14), width: 1.w),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      SizedBox(width: 3.w),
                       Flexible(
                         child: Text(
                           l10n.accelerate,
@@ -232,6 +237,7 @@ class _ProductionItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: context.styles.productionButtonCost,
                       ),
+                      Icon(Icons.bolt, color: color.green, size: 12.sp),
                     ],
                   ),
                 ),

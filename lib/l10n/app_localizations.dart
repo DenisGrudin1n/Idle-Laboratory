@@ -438,6 +438,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{amount} {unit}'**
   String cellProductionRate(Object amount, Object unit);
+
+  /// No description provided for @lvl.
+  ///
+  /// In en, this message translates to:
+  /// **'lvl'**
+  String get lvl;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

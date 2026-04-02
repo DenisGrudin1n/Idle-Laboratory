@@ -57,5 +57,6 @@
     "totalContribution": "Total contribution from production: {amount} {unit}",
     "accelerate": "Accelerate",
     "accelerationCost": "Cost: {amount}",
-    "cellProductionRate": "{amount} {unit}"
+    "cellProductionRate": "{amount} {unit}",
+    "lvl": "lvl"
 }

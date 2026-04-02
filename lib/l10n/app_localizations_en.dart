@@ -189,4 +189,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String cellProductionRate(Object amount, Object unit) {
     return '$amount $unit';
   }
+
+  @override
+  String get lvl => 'lvl';
 }
