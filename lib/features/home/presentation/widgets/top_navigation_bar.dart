@@ -41,7 +41,7 @@ class _TopTab extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(color: isActive ? context.color.primary : Colors.transparent, width: 1.w),
               ),
-              child: Text(label, style: TextStyle(color: context.color.primaryText, fontSize: 12.sp, fontWeight: isActive ? FontWeight.w600 : FontWeight.w400)),
+              child: Text(label, style: context.styles.navigationLabel(isActive: isActive)),
             ),
           ),
         ),

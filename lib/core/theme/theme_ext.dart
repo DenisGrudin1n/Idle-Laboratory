@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/theme/app_color.dart';
+import 'package:idle_laboratory/core/theme/app_textstyles.dart';
 import 'package:idle_laboratory/core/theme/cell_visual_theme.dart';
 
 extension ThemeExt on BuildContext {
   AppColor get color => Theme.of(this).extension<AppColor>()!;
+  AppTextStyles get styles => AppTextStyles(this);
 
   CellVisualTheme getCellTheme(CellId cellId) => cellId.getVisualTheme(
     energyTheme: CellVisualTheme.energy(

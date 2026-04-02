@@ -47,5 +47,15 @@
     "prestigeBonus": "Bonus Multiplier",
     "prestigeButton": "Prestige Now",
     "prestigeLocked": "Reach {requirement} to unlock",
-    "prestigeDescription": "Reset progress for permanent EPS multiplier"
+    "prestigeDescription": "Reset progress for permanent EPS multiplier",
+    "amount": "Amount",
+    "productionRate": "Production Rate",
+    "cellsPerSec": "cells/s",
+    "energyPerSec": "EU/s",
+    "totalProduction": "Total Production",
+    "productionOverview": "Overview of automated cell generation",
+    "totalContribution": "Total contribution from production: {amount} {unit}",
+    "accelerate": "Accelerate",
+    "accelerationCost": "Cost: {amount}",
+    "cellProductionRate": "{amount} {unit}"
 }

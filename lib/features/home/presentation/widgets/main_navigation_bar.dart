@@ -65,11 +65,7 @@ class _DrawerTab extends StatelessWidget {
                 Icon(icon, color: context.color.primaryText, size: 16.sp),
                 SizedBox(width: 8.w),
                 Expanded(
-                    child: Text(label,
-                        style: TextStyle(
-                            color: context.color.primaryText,
-                            fontSize: 12.sp,
-                            fontWeight: isActive ? FontWeight.w600 : FontWeight.w400))),
+                    child: Text(label, style: context.styles.navigationLabel(isActive: isActive))),
               ],
             ),
           ),

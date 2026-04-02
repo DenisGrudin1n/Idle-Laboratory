@@ -19,14 +19,14 @@ class SettingsToggle extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(context.l10n.scientificNotation, style: TextStyle(color: context.color.primaryText, fontSize: 12.sp, fontWeight: FontWeight.w500)),
+              Text(context.l10n.scientificNotation, style: context.styles.bodyLabel),
               InkWell(
                 onTap: () => context.read<SettingsBloc>().add(const SettingsEvent.toggleScientificNotation()),
                 borderRadius: BorderRadius.circular(8.r),
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                   decoration: BoxDecoration(color: isScientific ? context.color.primary : context.color.background, borderRadius: BorderRadius.circular(8.r)),
-                  child: Text(isScientific ? context.l10n.on : context.l10n.off, style: TextStyle(color: context.color.primaryText, fontSize: 12.sp, fontWeight: FontWeight.bold)),
+                  child: Text(isScientific ? context.l10n.on : context.l10n.off, style: context.styles.buttonLabel),
                 ),
               ),
             ],
