@@ -85,11 +85,11 @@ class GameBalance {
 
   static BigNumber calculatePrestigeMultiplier(BigNumber currentEnergy, BigNumber currentThreshold) {
     if (currentEnergy < initialThreshold || currentEnergy <= currentThreshold) return BigNumber.zero();
-    
+
     // Formula: (CurrentEnergy / MaxEverEnergy) ^ 0.5
     final ratio = currentEnergy.ratio(currentThreshold);
     if (ratio <= 1.0) return BigNumber.zero();
-    
+
     return BigNumber.fromDouble(math.sqrt(ratio) * prestigeMultiplierFactor);
   }
 
@@ -99,28 +99,33 @@ class GameBalance {
 
   static const maxAccelerationLevel = 100;
 
-  /// Scales all production-derived EPS (stock contribution) for game feel tuning.
-  static const productionEPSContributionMultiplier = 3.0;
+  /// Scales all production-derived EPS (stock → energy/sec). Independent of acceleration costs.
+  static const productionEPSContributionMultiplier = 100.0;
 
-  /// Energy/sec from stock: amount * multiplier(order). Basic 0.001, doubles each next cell.
-  static double productionStockEnergyMultiplier(int cellOrder) => 0.001 * math.pow(2, cellOrder);
+  /// Per tier: higher order = **more** EU per stock unit, but **slower** stock gain (PPS ∝ this^-order).
+  static const productionTierPowerBase = 8.0;
 
-  /// PPS at acceleration level L (L >= 1): always 1.0 at L=1; growth per level scales down for later cells.
+  /// Energy/sec from stock: amount * 0.001 * [productionTierPowerBase]^order (late tiers punch above their weight).
+  static double productionStockEnergyMultiplier(int cellOrder) => 0.001 * math.pow(productionTierPowerBase, cellOrder);
+
+  /// Stock gain (units/s): higher tiers accrue stock slower; acceleration level curve is shared.
   static const productionPPSPerLevelBase = 1.15;
-  static const productionPPSPerLevelOrderPenalty = 0.01;
 
   static double calculateProductionPPS(int cellOrder, int accelerationLevel) {
     final level = accelerationLevel.clamp(1, maxAccelerationLevel);
-    final perLevelMult = (productionPPSPerLevelBase - productionPPSPerLevelOrderPenalty * cellOrder).clamp(1.02, 1.2);
-    return math.pow(perLevelMult, level - 1).toDouble();
+    final tierMult = math.pow(productionTierPowerBase, -cellOrder);
+    return tierMult * math.pow(productionPPSPerLevelBase, level - 1).toDouble();
   }
 
   static const productionAccelerationCostMultiplier = 1.18;
 
+  /// Exponent step per cell tier on top of 10^2 base; steeper = later cells pay much more per upgrade.
+  static const productionAccelerationCostOrderExponent = 0.72;
+
   /// Cost to buy acceleration level (currentLevel -> currentLevel + 1). currentLevel in 1..max.
   static BigNumber calculateAccelerationUpgradeCost(int cellOrder, int currentAccelerationLevel) {
     if (currentAccelerationLevel >= maxAccelerationLevel) return BigNumber.zero();
-    final base = BigNumber.pow(10, 2.0 + cellOrder * 0.35);
+    final base = BigNumber.pow(10, 2.0 + cellOrder * productionAccelerationCostOrderExponent);
     return base * BigNumber.pow(productionAccelerationCostMultiplier, currentAccelerationLevel - 1.0);
   }
 
