@@ -10,4 +10,5 @@ class StorageKeys {
   static const lastSaveTime = 'last_save_time';
   static const totalEnergy = 'total_energy';
   static const cellsData = 'cells_data';
+  static const productionData = 'production_data';
 }

@@ -5,6 +5,7 @@ import 'package:idle_laboratory/core/extensions/cell_level_extensions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
+import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 
 extension CellModelExt on CellModel {
   CellId? get cellId => CellId.fromString(id);
@@ -64,4 +65,18 @@ extension CellModelExt on CellModel {
   }
 
   String getUnlockRequirementFormatted({bool compact = true}) => unlockRequirement?.format(compact: compact) ?? '???';
+}
+
+extension CellListProductionExt on List<CellModel> {
+  BigNumber totalProductionEPSUnscaled(Map<String, CellProductionEntry> productionByCellId) {
+    var sum = BigNumber.zero();
+    for (final cell in this) {
+      if (cell.isLocked) continue;
+      final id = cell.cellId;
+      if (id == null) continue;
+      final entry = productionByCellId[cell.id] ?? CellProductionEntry.initial(cell.id);
+      sum = sum + GameBalance.productionEnergyPerSecondFromStock(entry.amount, id.order);
+    }
+    return sum;
+  }
 }

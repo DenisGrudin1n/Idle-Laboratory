@@ -94,4 +94,35 @@ class GameBalance {
   }
 
   static final initialThreshold = BigNumber(1, 6); // 1 million energy to start prestiging
+
+  // --- Production (per cell: stock amount + acceleration level) ---
+
+  static const maxAccelerationLevel = 100;
+
+  /// Energy/sec from stock: amount * multiplier(order). Basic 0.001, doubles each next cell.
+  static double productionStockEnergyMultiplier(int cellOrder) => 0.001 * math.pow(2, cellOrder);
+
+  /// PPS at acceleration level L (L >= 1): always 1.0 at L=1; growth per level scales down for later cells.
+  static const productionPPSPerLevelBase = 1.15;
+  static const productionPPSPerLevelOrderPenalty = 0.01;
+
+  static double calculateProductionPPS(int cellOrder, int accelerationLevel) {
+    final level = accelerationLevel.clamp(1, maxAccelerationLevel);
+    final perLevelMult = (productionPPSPerLevelBase - productionPPSPerLevelOrderPenalty * cellOrder).clamp(1.02, 1.2);
+    return math.pow(perLevelMult, level - 1).toDouble();
+  }
+
+  static const productionAccelerationCostMultiplier = 1.18;
+
+  /// Cost to buy acceleration level (currentLevel -> currentLevel + 1). currentLevel in 1..max.
+  static BigNumber calculateAccelerationUpgradeCost(int cellOrder, int currentAccelerationLevel) {
+    if (currentAccelerationLevel >= maxAccelerationLevel) return BigNumber.zero();
+    final base = BigNumber.pow(10, 2.0 + cellOrder * 0.35);
+    return base * BigNumber.pow(productionAccelerationCostMultiplier, currentAccelerationLevel - 1.0);
+  }
+
+  static BigNumber productionEnergyPerSecondFromStock(BigNumber amount, int cellOrder) {
+    final mult = productionStockEnergyMultiplier(cellOrder);
+    return amount.multiplyByDouble(mult);
+  }
 }

@@ -7,5 +7,6 @@ abstract class CellsState with _$CellsState {
     BigNumber? totalEnergy,
     String? selectedCellId,
     @Default(<String, BigNumber>{}) Map<String, BigNumber> cellEnergies,
+    @Default(<String, CellProductionEntry>{}) Map<String, CellProductionEntry> productionByCellId,
   }) = _CellsState;
 }

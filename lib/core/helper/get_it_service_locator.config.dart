@@ -26,6 +26,10 @@ import 'package:idle_laboratory/features/home/data/repositories/prestige_reposit
     as _i495;
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository_impl.dart'
     as _i362;
+import 'package:idle_laboratory/features/home/data/repositories/production_repository.dart'
+    as _i743;
+import 'package:idle_laboratory/features/home/data/repositories/production_repository_impl.dart'
+    as _i963;
 import 'package:idle_laboratory/features/home/data/repositories/settings_repository.dart'
     as _i912;
 import 'package:idle_laboratory/features/home/data/repositories/settings_repository_impl.dart'
@@ -67,6 +71,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),
     );
+    gh.lazySingleton<_i743.ProductionRepository>(
+      () => _i963.ProductionRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    );
     gh.lazySingleton<_i495.PrestigeRepository>(
       () => _i362.PrestigeRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
@@ -99,6 +106,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i643.CellsService>(
       () => _i643.CellsService(
         gh<_i588.CellRepository>(),
+        gh<_i743.ProductionRepository>(),
         gh<_i57.EnergyService>(),
         gh<_i741.PrestigeService>(),
       ),
