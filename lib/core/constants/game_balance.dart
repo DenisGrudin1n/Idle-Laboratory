@@ -85,13 +85,52 @@ class GameBalance {
 
   static BigNumber calculatePrestigeMultiplier(BigNumber currentEnergy, BigNumber currentThreshold) {
     if (currentEnergy < initialThreshold || currentEnergy <= currentThreshold) return BigNumber.zero();
-    
+
     // Formula: (CurrentEnergy / MaxEverEnergy) ^ 0.5
     final ratio = currentEnergy.ratio(currentThreshold);
     if (ratio <= 1.0) return BigNumber.zero();
-    
+
     return BigNumber.fromDouble(math.sqrt(ratio) * prestigeMultiplierFactor);
   }
 
   static final initialThreshold = BigNumber(1, 6); // 1 million energy to start prestiging
+
+  // --- Production (per cell: stock amount + acceleration level) ---
+
+  static const maxAccelerationLevel = 100;
+
+  /// Scales all production-derived EPS (stock → energy/sec). Independent of acceleration costs.
+  static const productionEPSContributionMultiplier = 100.0;
+
+  /// Per tier: higher order = **more** EU per stock unit, but **slower** stock gain (PPS ∝ this^-order).
+  static const productionTierPowerBase = 8.0;
+
+  /// Energy/sec from stock: amount * 0.001 * [productionTierPowerBase]^order (late tiers punch above their weight).
+  static double productionStockEnergyMultiplier(int cellOrder) => 0.001 * math.pow(productionTierPowerBase, cellOrder);
+
+  /// Stock gain (units/s): higher tiers accrue stock slower; acceleration level curve is shared.
+  static const productionPPSPerLevelBase = 1.15;
+
+  static double calculateProductionPPS(int cellOrder, int accelerationLevel) {
+    final level = accelerationLevel.clamp(1, maxAccelerationLevel);
+    final tierMult = math.pow(productionTierPowerBase, -cellOrder);
+    return tierMult * math.pow(productionPPSPerLevelBase, level - 1).toDouble();
+  }
+
+  static const productionAccelerationCostMultiplier = 1.18;
+
+  /// Exponent step per cell tier on top of 10^2 base; steeper = later cells pay much more per upgrade.
+  static const productionAccelerationCostOrderExponent = 0.72;
+
+  /// Cost to buy acceleration level (currentLevel -> currentLevel + 1). currentLevel in 1..max.
+  static BigNumber calculateAccelerationUpgradeCost(int cellOrder, int currentAccelerationLevel) {
+    if (currentAccelerationLevel >= maxAccelerationLevel) return BigNumber.zero();
+    final base = BigNumber.pow(10, 2.0 + cellOrder * productionAccelerationCostOrderExponent);
+    return base * BigNumber.pow(productionAccelerationCostMultiplier, currentAccelerationLevel - 1.0);
+  }
+
+  static BigNumber productionEnergyPerSecondFromStock(BigNumber amount, int cellOrder) {
+    final mult = productionStockEnergyMultiplier(cellOrder) * productionEPSContributionMultiplier;
+    return amount.multiplyByDouble(mult);
+  }
 }

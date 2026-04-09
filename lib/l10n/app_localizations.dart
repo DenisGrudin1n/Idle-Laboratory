@@ -133,11 +133,77 @@ abstract class AppLocalizations {
   /// **'Cells'**
   String get cells;
 
-  /// No description provided for @chemicals.
+  /// No description provided for @crafting.
   ///
   /// In en, this message translates to:
-  /// **'Chemicals'**
-  String get chemicals;
+  /// **'Crafting'**
+  String get crafting;
+
+  /// No description provided for @craftingInterfaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafting interface'**
+  String get craftingInterfaceTitle;
+
+  /// No description provided for @craftingInterfaceOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Combine reagents and a cell to craft new materials.'**
+  String get craftingInterfaceOverview;
+
+  /// No description provided for @craftingReagentSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Reagent {index}'**
+  String craftingReagentSlot(int index);
+
+  /// No description provided for @craftingCellSlotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cell'**
+  String get craftingCellSlotTitle;
+
+  /// No description provided for @craftingMainOutputSlot.
+  ///
+  /// In en, this message translates to:
+  /// **'Main output'**
+  String get craftingMainOutputSlot;
+
+  /// No description provided for @craftingSlotEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty'**
+  String get craftingSlotEmpty;
+
+  /// No description provided for @craftingQuantityMultiplier.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}×'**
+  String craftingQuantityMultiplier(int count);
+
+  /// No description provided for @craftingCostWithAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafting cost: {amount}'**
+  String craftingCostWithAmount(String amount);
+
+  /// No description provided for @craftingTimeWithDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Craft time: {duration}'**
+  String craftingTimeWithDuration(String duration);
+
+  /// No description provided for @craftingStartReaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Start reaction'**
+  String get craftingStartReaction;
+
+  /// No description provided for @craftingClearInputs.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear inputs'**
+  String get craftingClearInputs;
 
   /// No description provided for @settings.
   ///
@@ -174,6 +240,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Storage'**
   String get storage;
+
+  /// No description provided for @research.
+  ///
+  /// In en, this message translates to:
+  /// **'Research'**
+  String get research;
 
   /// No description provided for @overview.
   ///
@@ -438,6 +510,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{amount} {unit}'**
   String cellProductionRate(Object amount, Object unit);
+
+  /// No description provided for @lvl.
+  ///
+  /// In en, this message translates to:
+  /// **'lvl'**
+  String get lvl;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

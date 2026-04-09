@@ -4,4 +4,5 @@ part of 'navigation_bloc.dart';
 class NavigationEvent with _$NavigationEvent {
   const factory NavigationEvent.mainTabChanged(MainNavigationTab mainTab) = _MainTabChanged;
   const factory NavigationEvent.cellsTabChanged(CellsTab cellsTab) = _CellsTabChanged;
+  const factory NavigationEvent.craftingTabChanged(CraftingTab craftingTab) = _CraftingTabChanged;
 }

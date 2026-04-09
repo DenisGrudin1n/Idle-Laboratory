@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/bloc/safe_bloc.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
+import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:injectable/injectable.dart';
@@ -17,8 +18,10 @@ class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
   CellsBloc(this._cellsService, this._energyService) : super(const CellsState()) {
     on<_CellsChanged>(_onCellsChanged);
     on<_CellEnergiesChanged>(_onCellEnergiesChanged);
+    on<_ProductionChanged>(_onProductionChanged);
     on<_TotalEnergyChanged>(_onTotalEnergyChanged);
     on<_SelectCell>(_onSelectCell);
+    on<_AccelerateProduction>(_onAccelerateProduction);
     on<_Start>(_onStart);
     _initialize();
   }
@@ -27,11 +30,14 @@ class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
   final EnergyService _energyService;
   StreamSubscription<List<CellModel>>? _cellsSubscription;
   StreamSubscription<Map<String, BigNumber>>? _cellEnergiesSubscription;
+  StreamSubscription<Map<String, CellProductionEntry>>? _productionSubscription;
   StreamSubscription<BigNumber>? _totalEnergySubscription;
 
   void _initialize() {
     _cellsSubscription = _cellsService.cells$.listen((cells) => add(CellsEvent.cellsChanged(cells)));
     _cellEnergiesSubscription = _cellsService.cellEnergies$.listen((cellEnergies) => add(CellsEvent.cellEnergiesChanged(cellEnergies)));
+    _productionSubscription =
+        _cellsService.production$.listen((production) => add(CellsEvent.productionChanged(production)));
     _totalEnergySubscription = _energyService.energy$.listen((energy) => add(CellsEvent.totalEnergyChanged(energy)));
   }
 
@@ -42,9 +48,15 @@ class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
 
   void _onCellEnergiesChanged(_CellEnergiesChanged event, Emitter<CellsState> emit) => emit(state.copyWith(cellEnergies: event.cellEnergies));
 
+  void _onProductionChanged(_ProductionChanged event, Emitter<CellsState> emit) =>
+      emit(state.copyWith(productionByCellId: event.productionByCellId));
+
   void _onTotalEnergyChanged(_TotalEnergyChanged event, Emitter<CellsState> emit) => emit(state.copyWith(totalEnergy: event.energy));
 
   void _onSelectCell(_SelectCell event, Emitter<CellsState> emit) => emit(state.copyWith(selectedCellId: event.cellId));
+
+  void _onAccelerateProduction(_AccelerateProduction event, Emitter<CellsState> emit) =>
+      _cellsService.accelerateProduction(event.cellId);
 
   void _onStart(_Start event, Emitter<CellsState> emit) => _cellsService.start();
 
@@ -54,6 +66,7 @@ class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
   Future<void> close() async {
     await _cellsSubscription?.cancel();
     await _cellEnergiesSubscription?.cancel();
+    await _productionSubscription?.cancel();
     await _totalEnergySubscription?.cancel();
     return super.close();
   }

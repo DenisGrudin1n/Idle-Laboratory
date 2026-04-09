@@ -55,14 +55,16 @@ extension CellsEventPatterns on CellsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CellsChanged value)?  cellsChanged,TResult Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult Function( _SelectCell value)?  selectCell,TResult Function( _Start value)?  start,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CellsChanged value)?  cellsChanged,TResult Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult Function( _ProductionChanged value)?  productionChanged,TResult Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult Function( _SelectCell value)?  selectCell,TResult Function( _AccelerateProduction value)?  accelerateProduction,TResult Function( _Start value)?  start,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
 return cellsChanged(_that);case _CellEnergiesChanged() when cellEnergiesChanged != null:
-return cellEnergiesChanged(_that);case _TotalEnergyChanged() when totalEnergyChanged != null:
+return cellEnergiesChanged(_that);case _ProductionChanged() when productionChanged != null:
+return productionChanged(_that);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that);case _SelectCell() when selectCell != null:
-return selectCell(_that);case _Start() when start != null:
+return selectCell(_that);case _AccelerateProduction() when accelerateProduction != null:
+return accelerateProduction(_that);case _Start() when start != null:
 return start(_that);case _:
   return orElse();
 
@@ -81,14 +83,16 @@ return start(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CellsChanged value)  cellsChanged,required TResult Function( _CellEnergiesChanged value)  cellEnergiesChanged,required TResult Function( _TotalEnergyChanged value)  totalEnergyChanged,required TResult Function( _SelectCell value)  selectCell,required TResult Function( _Start value)  start,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CellsChanged value)  cellsChanged,required TResult Function( _CellEnergiesChanged value)  cellEnergiesChanged,required TResult Function( _ProductionChanged value)  productionChanged,required TResult Function( _TotalEnergyChanged value)  totalEnergyChanged,required TResult Function( _SelectCell value)  selectCell,required TResult Function( _AccelerateProduction value)  accelerateProduction,required TResult Function( _Start value)  start,}){
 final _that = this;
 switch (_that) {
 case _CellsChanged():
 return cellsChanged(_that);case _CellEnergiesChanged():
-return cellEnergiesChanged(_that);case _TotalEnergyChanged():
+return cellEnergiesChanged(_that);case _ProductionChanged():
+return productionChanged(_that);case _TotalEnergyChanged():
 return totalEnergyChanged(_that);case _SelectCell():
-return selectCell(_that);case _Start():
+return selectCell(_that);case _AccelerateProduction():
+return accelerateProduction(_that);case _Start():
 return start(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -106,14 +110,16 @@ return start(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CellsChanged value)?  cellsChanged,TResult? Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult? Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult? Function( _SelectCell value)?  selectCell,TResult? Function( _Start value)?  start,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CellsChanged value)?  cellsChanged,TResult? Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult? Function( _ProductionChanged value)?  productionChanged,TResult? Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult? Function( _SelectCell value)?  selectCell,TResult? Function( _AccelerateProduction value)?  accelerateProduction,TResult? Function( _Start value)?  start,}){
 final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
 return cellsChanged(_that);case _CellEnergiesChanged() when cellEnergiesChanged != null:
-return cellEnergiesChanged(_that);case _TotalEnergyChanged() when totalEnergyChanged != null:
+return cellEnergiesChanged(_that);case _ProductionChanged() when productionChanged != null:
+return productionChanged(_that);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that);case _SelectCell() when selectCell != null:
-return selectCell(_that);case _Start() when start != null:
+return selectCell(_that);case _AccelerateProduction() when accelerateProduction != null:
+return accelerateProduction(_that);case _Start() when start != null:
 return start(_that);case _:
   return null;
 
@@ -131,13 +137,15 @@ return start(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CellModel> cells)?  cellsChanged,TResult Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult Function( BigNumber energy)?  totalEnergyChanged,TResult Function( String cellId)?  selectCell,TResult Function()?  start,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CellModel> cells)?  cellsChanged,TResult Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult Function( Map<String, CellProductionEntry> productionByCellId)?  productionChanged,TResult Function( BigNumber energy)?  totalEnergyChanged,TResult Function( String cellId)?  selectCell,TResult Function( String cellId)?  accelerateProduction,TResult Function()?  start,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
 return cellsChanged(_that.cells);case _CellEnergiesChanged() when cellEnergiesChanged != null:
-return cellEnergiesChanged(_that.cellEnergies);case _TotalEnergyChanged() when totalEnergyChanged != null:
+return cellEnergiesChanged(_that.cellEnergies);case _ProductionChanged() when productionChanged != null:
+return productionChanged(_that.productionByCellId);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that.energy);case _SelectCell() when selectCell != null:
-return selectCell(_that.cellId);case _Start() when start != null:
+return selectCell(_that.cellId);case _AccelerateProduction() when accelerateProduction != null:
+return accelerateProduction(_that.cellId);case _Start() when start != null:
 return start();case _:
   return orElse();
 
@@ -156,13 +164,15 @@ return start();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CellModel> cells)  cellsChanged,required TResult Function( Map<String, BigNumber> cellEnergies)  cellEnergiesChanged,required TResult Function( BigNumber energy)  totalEnergyChanged,required TResult Function( String cellId)  selectCell,required TResult Function()  start,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CellModel> cells)  cellsChanged,required TResult Function( Map<String, BigNumber> cellEnergies)  cellEnergiesChanged,required TResult Function( Map<String, CellProductionEntry> productionByCellId)  productionChanged,required TResult Function( BigNumber energy)  totalEnergyChanged,required TResult Function( String cellId)  selectCell,required TResult Function( String cellId)  accelerateProduction,required TResult Function()  start,}) {final _that = this;
 switch (_that) {
 case _CellsChanged():
 return cellsChanged(_that.cells);case _CellEnergiesChanged():
-return cellEnergiesChanged(_that.cellEnergies);case _TotalEnergyChanged():
+return cellEnergiesChanged(_that.cellEnergies);case _ProductionChanged():
+return productionChanged(_that.productionByCellId);case _TotalEnergyChanged():
 return totalEnergyChanged(_that.energy);case _SelectCell():
-return selectCell(_that.cellId);case _Start():
+return selectCell(_that.cellId);case _AccelerateProduction():
+return accelerateProduction(_that.cellId);case _Start():
 return start();case _:
   throw StateError('Unexpected subclass');
 
@@ -180,13 +190,15 @@ return start();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CellModel> cells)?  cellsChanged,TResult? Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult? Function( BigNumber energy)?  totalEnergyChanged,TResult? Function( String cellId)?  selectCell,TResult? Function()?  start,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CellModel> cells)?  cellsChanged,TResult? Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult? Function( Map<String, CellProductionEntry> productionByCellId)?  productionChanged,TResult? Function( BigNumber energy)?  totalEnergyChanged,TResult? Function( String cellId)?  selectCell,TResult? Function( String cellId)?  accelerateProduction,TResult? Function()?  start,}) {final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
 return cellsChanged(_that.cells);case _CellEnergiesChanged() when cellEnergiesChanged != null:
-return cellEnergiesChanged(_that.cellEnergies);case _TotalEnergyChanged() when totalEnergyChanged != null:
+return cellEnergiesChanged(_that.cellEnergies);case _ProductionChanged() when productionChanged != null:
+return productionChanged(_that.productionByCellId);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that.energy);case _SelectCell() when selectCell != null:
-return selectCell(_that.cellId);case _Start() when start != null:
+return selectCell(_that.cellId);case _AccelerateProduction() when accelerateProduction != null:
+return accelerateProduction(_that.cellId);case _Start() when start != null:
 return start();case _:
   return null;
 
@@ -342,6 +354,78 @@ as Map<String, BigNumber>,
 /// @nodoc
 
 
+class _ProductionChanged implements CellsEvent {
+  const _ProductionChanged(final  Map<String, CellProductionEntry> productionByCellId): _productionByCellId = productionByCellId;
+  
+
+ final  Map<String, CellProductionEntry> _productionByCellId;
+ Map<String, CellProductionEntry> get productionByCellId {
+  if (_productionByCellId is EqualUnmodifiableMapView) return _productionByCellId;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_productionByCellId);
+}
+
+
+/// Create a copy of CellsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProductionChangedCopyWith<_ProductionChanged> get copyWith => __$ProductionChangedCopyWithImpl<_ProductionChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProductionChanged&&const DeepCollectionEquality().equals(other._productionByCellId, _productionByCellId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_productionByCellId));
+
+@override
+String toString() {
+  return 'CellsEvent.productionChanged(productionByCellId: $productionByCellId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProductionChangedCopyWith<$Res> implements $CellsEventCopyWith<$Res> {
+  factory _$ProductionChangedCopyWith(_ProductionChanged value, $Res Function(_ProductionChanged) _then) = __$ProductionChangedCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, CellProductionEntry> productionByCellId
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProductionChangedCopyWithImpl<$Res>
+    implements _$ProductionChangedCopyWith<$Res> {
+  __$ProductionChangedCopyWithImpl(this._self, this._then);
+
+  final _ProductionChanged _self;
+  final $Res Function(_ProductionChanged) _then;
+
+/// Create a copy of CellsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? productionByCellId = null,}) {
+  return _then(_ProductionChanged(
+null == productionByCellId ? _self._productionByCellId : productionByCellId // ignore: cast_nullable_to_non_nullable
+as Map<String, CellProductionEntry>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class _TotalEnergyChanged implements CellsEvent {
   const _TotalEnergyChanged(this.energy);
   
@@ -474,6 +558,72 @@ as String,
 /// @nodoc
 
 
+class _AccelerateProduction implements CellsEvent {
+  const _AccelerateProduction(this.cellId);
+  
+
+ final  String cellId;
+
+/// Create a copy of CellsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AccelerateProductionCopyWith<_AccelerateProduction> get copyWith => __$AccelerateProductionCopyWithImpl<_AccelerateProduction>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccelerateProduction&&(identical(other.cellId, cellId) || other.cellId == cellId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,cellId);
+
+@override
+String toString() {
+  return 'CellsEvent.accelerateProduction(cellId: $cellId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AccelerateProductionCopyWith<$Res> implements $CellsEventCopyWith<$Res> {
+  factory _$AccelerateProductionCopyWith(_AccelerateProduction value, $Res Function(_AccelerateProduction) _then) = __$AccelerateProductionCopyWithImpl;
+@useResult
+$Res call({
+ String cellId
+});
+
+
+
+
+}
+/// @nodoc
+class __$AccelerateProductionCopyWithImpl<$Res>
+    implements _$AccelerateProductionCopyWith<$Res> {
+  __$AccelerateProductionCopyWithImpl(this._self, this._then);
+
+  final _AccelerateProduction _self;
+  final $Res Function(_AccelerateProduction) _then;
+
+/// Create a copy of CellsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? cellId = null,}) {
+  return _then(_AccelerateProduction(
+null == cellId ? _self.cellId : cellId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
 class _Start implements CellsEvent {
   const _Start();
   
@@ -506,7 +656,7 @@ String toString() {
 /// @nodoc
 mixin _$CellsState {
 
- List<CellModel> get cells; BigNumber? get totalEnergy; String? get selectedCellId; Map<String, BigNumber> get cellEnergies;
+ List<CellModel> get cells; BigNumber? get totalEnergy; String? get selectedCellId; Map<String, BigNumber> get cellEnergies; Map<String, CellProductionEntry> get productionByCellId;
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -517,16 +667,16 @@ $CellsStateCopyWith<CellsState> get copyWith => _$CellsStateCopyWithImpl<CellsSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CellsState&&const DeepCollectionEquality().equals(other.cells, cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&const DeepCollectionEquality().equals(other.cellEnergies, cellEnergies));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CellsState&&const DeepCollectionEquality().equals(other.cells, cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&const DeepCollectionEquality().equals(other.cellEnergies, cellEnergies)&&const DeepCollectionEquality().equals(other.productionByCellId, productionByCellId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(cells),totalEnergy,selectedCellId,const DeepCollectionEquality().hash(cellEnergies));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(cells),totalEnergy,selectedCellId,const DeepCollectionEquality().hash(cellEnergies),const DeepCollectionEquality().hash(productionByCellId));
 
 @override
 String toString() {
-  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId, cellEnergies: $cellEnergies)';
+  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId, cellEnergies: $cellEnergies, productionByCellId: $productionByCellId)';
 }
 
 
@@ -537,7 +687,7 @@ abstract mixin class $CellsStateCopyWith<$Res>  {
   factory $CellsStateCopyWith(CellsState value, $Res Function(CellsState) _then) = _$CellsStateCopyWithImpl;
 @useResult
 $Res call({
- List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId, Map<String, BigNumber> cellEnergies
+ List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId, Map<String, BigNumber> cellEnergies, Map<String, CellProductionEntry> productionByCellId
 });
 
 
@@ -554,13 +704,14 @@ class _$CellsStateCopyWithImpl<$Res>
 
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,Object? cellEnergies = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,Object? cellEnergies = null,Object? productionByCellId = null,}) {
   return _then(_self.copyWith(
 cells: null == cells ? _self.cells : cells // ignore: cast_nullable_to_non_nullable
 as List<CellModel>,totalEnergy: freezed == totalEnergy ? _self.totalEnergy : totalEnergy // ignore: cast_nullable_to_non_nullable
 as BigNumber?,selectedCellId: freezed == selectedCellId ? _self.selectedCellId : selectedCellId // ignore: cast_nullable_to_non_nullable
 as String?,cellEnergies: null == cellEnergies ? _self.cellEnergies : cellEnergies // ignore: cast_nullable_to_non_nullable
-as Map<String, BigNumber>,
+as Map<String, BigNumber>,productionByCellId: null == productionByCellId ? _self.productionByCellId : productionByCellId // ignore: cast_nullable_to_non_nullable
+as Map<String, CellProductionEntry>,
   ));
 }
 
@@ -645,10 +796,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies,  Map<String, CellProductionEntry> productionByCellId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CellsState() when $default != null:
-return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies);case _:
+return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies,_that.productionByCellId);case _:
   return orElse();
 
 }
@@ -666,10 +817,10 @@ return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEne
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies,  Map<String, CellProductionEntry> productionByCellId)  $default,) {final _that = this;
 switch (_that) {
 case _CellsState():
-return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies);case _:
+return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies,_that.productionByCellId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -686,10 +837,10 @@ return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEne
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CellModel> cells,  BigNumber? totalEnergy,  String? selectedCellId,  Map<String, BigNumber> cellEnergies,  Map<String, CellProductionEntry> productionByCellId)?  $default,) {final _that = this;
 switch (_that) {
 case _CellsState() when $default != null:
-return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies);case _:
+return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEnergies,_that.productionByCellId);case _:
   return null;
 
 }
@@ -701,7 +852,7 @@ return $default(_that.cells,_that.totalEnergy,_that.selectedCellId,_that.cellEne
 
 
 class _CellsState implements CellsState {
-  const _CellsState({final  List<CellModel> cells = const <CellModel>[], this.totalEnergy, this.selectedCellId, final  Map<String, BigNumber> cellEnergies = const <String, BigNumber>{}}): _cells = cells,_cellEnergies = cellEnergies;
+  const _CellsState({final  List<CellModel> cells = const <CellModel>[], this.totalEnergy, this.selectedCellId, final  Map<String, BigNumber> cellEnergies = const <String, BigNumber>{}, final  Map<String, CellProductionEntry> productionByCellId = const <String, CellProductionEntry>{}}): _cells = cells,_cellEnergies = cellEnergies,_productionByCellId = productionByCellId;
   
 
  final  List<CellModel> _cells;
@@ -720,6 +871,13 @@ class _CellsState implements CellsState {
   return EqualUnmodifiableMapView(_cellEnergies);
 }
 
+ final  Map<String, CellProductionEntry> _productionByCellId;
+@override@JsonKey() Map<String, CellProductionEntry> get productionByCellId {
+  if (_productionByCellId is EqualUnmodifiableMapView) return _productionByCellId;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_productionByCellId);
+}
+
 
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
@@ -731,16 +889,16 @@ _$CellsStateCopyWith<_CellsState> get copyWith => __$CellsStateCopyWithImpl<_Cel
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CellsState&&const DeepCollectionEquality().equals(other._cells, _cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&const DeepCollectionEquality().equals(other._cellEnergies, _cellEnergies));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CellsState&&const DeepCollectionEquality().equals(other._cells, _cells)&&(identical(other.totalEnergy, totalEnergy) || other.totalEnergy == totalEnergy)&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&const DeepCollectionEquality().equals(other._cellEnergies, _cellEnergies)&&const DeepCollectionEquality().equals(other._productionByCellId, _productionByCellId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cells),totalEnergy,selectedCellId,const DeepCollectionEquality().hash(_cellEnergies));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cells),totalEnergy,selectedCellId,const DeepCollectionEquality().hash(_cellEnergies),const DeepCollectionEquality().hash(_productionByCellId));
 
 @override
 String toString() {
-  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId, cellEnergies: $cellEnergies)';
+  return 'CellsState(cells: $cells, totalEnergy: $totalEnergy, selectedCellId: $selectedCellId, cellEnergies: $cellEnergies, productionByCellId: $productionByCellId)';
 }
 
 
@@ -751,7 +909,7 @@ abstract mixin class _$CellsStateCopyWith<$Res> implements $CellsStateCopyWith<$
   factory _$CellsStateCopyWith(_CellsState value, $Res Function(_CellsState) _then) = __$CellsStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId, Map<String, BigNumber> cellEnergies
+ List<CellModel> cells, BigNumber? totalEnergy, String? selectedCellId, Map<String, BigNumber> cellEnergies, Map<String, CellProductionEntry> productionByCellId
 });
 
 
@@ -768,13 +926,14 @@ class __$CellsStateCopyWithImpl<$Res>
 
 /// Create a copy of CellsState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,Object? cellEnergies = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? cells = null,Object? totalEnergy = freezed,Object? selectedCellId = freezed,Object? cellEnergies = null,Object? productionByCellId = null,}) {
   return _then(_CellsState(
 cells: null == cells ? _self._cells : cells // ignore: cast_nullable_to_non_nullable
 as List<CellModel>,totalEnergy: freezed == totalEnergy ? _self.totalEnergy : totalEnergy // ignore: cast_nullable_to_non_nullable
 as BigNumber?,selectedCellId: freezed == selectedCellId ? _self.selectedCellId : selectedCellId // ignore: cast_nullable_to_non_nullable
 as String?,cellEnergies: null == cellEnergies ? _self._cellEnergies : cellEnergies // ignore: cast_nullable_to_non_nullable
-as Map<String, BigNumber>,
+as Map<String, BigNumber>,productionByCellId: null == productionByCellId ? _self._productionByCellId : productionByCellId // ignore: cast_nullable_to_non_nullable
+as Map<String, CellProductionEntry>,
   ));
 }
 

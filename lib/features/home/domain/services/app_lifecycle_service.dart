@@ -23,7 +23,9 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   void _saveAll() {
     _energyService.saveEnergy();
-    _cellsService.saveCells();
+    _cellsService
+      ..saveCells()
+      ..saveProduction();
     _prestigeService.saveState();
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/cells_tab.dart';
+import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/energy_cells_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/production_content.dart';
@@ -15,9 +16,11 @@ class CellContent extends StatelessWidget {
     selector: (state) => state.cellsTab,
     builder: (context, selectedTab) => Column(
       children: [
-        TopNavigationBar(
+        TopNavigationBar<CellsTab>(
+          tabs: CellsTab.values,
           selectedTab: selectedTab,
           onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.cellsTabChanged(tab)),
+          tabLabel: (context, tab) => tab.localize(context.l10n),
         ),
         SizedBox(height: 12.w),
         Expanded(child: _buildTabContent(selectedTab)),
@@ -28,6 +31,6 @@ class CellContent extends StatelessWidget {
   Widget _buildTabContent(CellsTab tab) => switch (tab) {
     CellsTab.energyCells => const EnergyCellsContent(),
     CellsTab.production => const ProductionContent(),
-    _ => const Center(child: Text('Coming Soon')),
+    CellsTab.overview => const Center(child: Text('Coming Soon')),
   };
 }

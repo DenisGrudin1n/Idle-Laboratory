@@ -63,6 +63,13 @@ class EnergyService {
     }
   }
 
+  /// Returns false if current energy is less than [amount].
+  bool trySpendEnergy(BigNumber amount) {
+    if (_energySubject.value < amount) return false;
+    _energySubject.add(_energySubject.value - amount);
+    return true;
+  }
+
   void reset() {
     _energySubject.add(BigNumber.zero());
     _epsSubject.add(BigNumber.zero());
