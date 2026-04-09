@@ -11,7 +11,7 @@ import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_mode
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/animated_cell_container.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_container.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
 class ProductionContent extends StatefulWidget {

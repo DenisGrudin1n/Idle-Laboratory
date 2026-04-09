@@ -5,7 +5,7 @@ import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/animated_cell_container.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_container.dart';
 
 class CellContainerSection extends StatefulWidget {
   const CellContainerSection({super.key});

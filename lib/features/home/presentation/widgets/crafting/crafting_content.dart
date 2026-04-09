@@ -5,10 +5,10 @@ import 'package:idle_laboratory/core/enums/crafting_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_interface_panel.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_view.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/top_navigation_bar.dart';
 
 class CraftingContent extends StatelessWidget {
   const CraftingContent({super.key});

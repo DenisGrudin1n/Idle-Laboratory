@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/research_tree_geometry.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/gradient_slot_frame.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/research_tree_conduit_painter.dart';
+import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_conduit_painter.dart';
 
 /// Binary research pyramid (16 → … → 1) with shared gradient slots and conduit styling.
 class ResearchTreeView extends StatelessWidget {

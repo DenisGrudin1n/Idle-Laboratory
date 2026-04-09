@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/cells_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/energy_cells_content.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/production_content.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/top_navigation_bar.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/cells/energy_cells_content.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/production/production_content.dart';
 
 class CellContent extends StatelessWidget {
   const CellContent({super.key});

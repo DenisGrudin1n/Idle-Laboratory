@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/extensions/cell_effects/cell_container_extensions.dart';
-import 'package:idle_laboratory/core/theme/cell_visual_theme.dart';
+import 'package:idle_laboratory/core/theme/cell_visual_theme.dart' show CellEffectType, CellVisualTheme;
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/painter_utils.dart';
 

@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_full_row_conduit_painter.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_input_slot.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_output_slot.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/crafting_full_row_conduit_painter.dart';
 
 class CraftingInterfacePanel extends StatelessWidget {
   const CraftingInterfacePanel({super.key});
