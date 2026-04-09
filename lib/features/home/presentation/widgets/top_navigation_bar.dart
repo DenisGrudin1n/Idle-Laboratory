@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:idle_laboratory/core/enums/cells_tab.dart';
-import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 
-class TopNavigationBar extends StatelessWidget {
-  const TopNavigationBar({required this.selectedTab, required this.onTabSelected, super.key});
-  final CellsTab selectedTab;
-  final ValueChanged<CellsTab> onTabSelected;
+class TopNavigationBar<T> extends StatelessWidget {
+  const TopNavigationBar({
+    required this.tabs,
+    required this.selectedTab,
+    required this.onTabSelected,
+    required this.tabLabel,
+    super.key,
+  });
+
+  final List<T> tabs;
+  final T selectedTab;
+  final ValueChanged<T> onTabSelected;
+  final String Function(BuildContext context, T tab) tabLabel;
 
   @override
   Widget build(BuildContext context) => SectionCard(
         child: SizedBox(
           height: 50.h,
           child: Row(
-            children: CellsTab.values.map((tab) => _TopTab(label: tab.localize(context.l10n), isActive: selectedTab == tab, onTap: () => onTabSelected(tab))).toList(),
+            children: tabs
+                .map(
+                  (tab) => _TopTab(
+                    label: tabLabel(context, tab),
+                    isActive: tab == selectedTab,
+                    onTap: () => onTabSelected(tab),
+                  ),
+                )
+                .toList(),
           ),
         ),
       );

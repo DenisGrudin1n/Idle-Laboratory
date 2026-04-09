@@ -30,7 +30,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cells => 'Cells';
 
   @override
-  String get chemicals => 'Chemicals';
+  String get crafting => 'Crafting';
+
+  @override
+  String get craftingInterfaceTitle => 'Crafting interface';
+
+  @override
+  String get craftingInterfaceOverview => 'Combine reagents and a cell to craft new materials.';
+
+  @override
+  String craftingReagentSlot(int index) {
+    return 'Reagent $index';
+  }
+
+  @override
+  String get craftingCellSlotTitle => 'Cell';
+
+  @override
+  String get craftingMainOutputSlot => 'Main output';
+
+  @override
+  String get craftingSlotEmpty => 'Empty';
+
+  @override
+  String craftingQuantityMultiplier(int count) {
+    return '$count×';
+  }
+
+  @override
+  String craftingCostWithAmount(String amount) {
+    return 'Crafting cost: $amount';
+  }
+
+  @override
+  String craftingTimeWithDuration(String duration) {
+    return 'Craft time: $duration';
+  }
+
+  @override
+  String get craftingStartReaction => 'Start reaction';
+
+  @override
+  String get craftingClearInputs => 'Clear inputs';
 
   @override
   String get settings => 'Settings';
@@ -49,6 +90,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storage => 'Storage';
+
+  @override
+  String get research => 'Research';
 
   @override
   String get overview => 'Overview';

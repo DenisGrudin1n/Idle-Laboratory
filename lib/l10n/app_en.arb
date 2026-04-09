@@ -7,13 +7,53 @@
     "on": "ON",
     "off": "OFF",
     "cells": "Cells",
-    "chemicals": "Chemicals",
+    "crafting": "Crafting",
+    "craftingInterfaceTitle": "Crafting interface",
+    "craftingInterfaceOverview": "Combine reagents and a cell to craft new materials.",
+    "craftingReagentSlot": "Reagent {index}",
+    "@craftingReagentSlot": {
+        "placeholders": {
+            "index": {
+                "type": "int"
+            }
+        }
+    },
+    "craftingCellSlotTitle": "Cell",
+    "craftingMainOutputSlot": "Main output",
+    "craftingSlotEmpty": "Empty",
+    "craftingQuantityMultiplier": "{count}×",
+    "@craftingQuantityMultiplier": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "craftingCostWithAmount": "Crafting cost: {amount}",
+    "@craftingCostWithAmount": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "craftingTimeWithDuration": "Craft time: {duration}",
+    "@craftingTimeWithDuration": {
+        "placeholders": {
+            "duration": {
+                "type": "String"
+            }
+        }
+    },
+    "craftingStartReaction": "Start reaction",
+    "craftingClearInputs": "Clear inputs",
     "settings": "Settings",
     "statistics": "Statistics",
     "achievements": "Achievements",
     "energyCells": "Energy Cells",
     "production": "Production",
     "storage": "Storage",
+    "research": "Research",
     "overview": "Overview",
     "basicEnergyCell": "Basic Energy Cell",
     "heatCell": "Heat Cell",

@@ -5,6 +5,7 @@ import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cell_content.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/main_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/settings_toggle.dart';
 
@@ -13,7 +14,7 @@ class CellsScreen extends StatelessWidget {
 
   Widget _buildContent(MainNavigationTab selectedTab) => switch (selectedTab) {
         MainNavigationTab.cells => const CellContent(),
-        MainNavigationTab.chemicals => const SizedBox.shrink(),
+        MainNavigationTab.crafting => const CraftingContent(),
         MainNavigationTab.settings => const SettingsToggle(),
         MainNavigationTab.statistics => const SizedBox.shrink(),
         MainNavigationTab.achievements => const SizedBox.shrink(),

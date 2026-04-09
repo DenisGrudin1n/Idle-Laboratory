@@ -55,12 +55,13 @@ extension NavigationEventPatterns on NavigationEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _MainTabChanged value)?  mainTabChanged,TResult Function( _CellsTabChanged value)?  cellsTabChanged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _MainTabChanged value)?  mainTabChanged,TResult Function( _CellsTabChanged value)?  cellsTabChanged,TResult Function( _CraftingTabChanged value)?  craftingTabChanged,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _MainTabChanged() when mainTabChanged != null:
 return mainTabChanged(_that);case _CellsTabChanged() when cellsTabChanged != null:
-return cellsTabChanged(_that);case _:
+return cellsTabChanged(_that);case _CraftingTabChanged() when craftingTabChanged != null:
+return craftingTabChanged(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return cellsTabChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _MainTabChanged value)  mainTabChanged,required TResult Function( _CellsTabChanged value)  cellsTabChanged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _MainTabChanged value)  mainTabChanged,required TResult Function( _CellsTabChanged value)  cellsTabChanged,required TResult Function( _CraftingTabChanged value)  craftingTabChanged,}){
 final _that = this;
 switch (_that) {
 case _MainTabChanged():
 return mainTabChanged(_that);case _CellsTabChanged():
-return cellsTabChanged(_that);case _:
+return cellsTabChanged(_that);case _CraftingTabChanged():
+return craftingTabChanged(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return cellsTabChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _MainTabChanged value)?  mainTabChanged,TResult? Function( _CellsTabChanged value)?  cellsTabChanged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _MainTabChanged value)?  mainTabChanged,TResult? Function( _CellsTabChanged value)?  cellsTabChanged,TResult? Function( _CraftingTabChanged value)?  craftingTabChanged,}){
 final _that = this;
 switch (_that) {
 case _MainTabChanged() when mainTabChanged != null:
 return mainTabChanged(_that);case _CellsTabChanged() when cellsTabChanged != null:
-return cellsTabChanged(_that);case _:
+return cellsTabChanged(_that);case _CraftingTabChanged() when craftingTabChanged != null:
+return craftingTabChanged(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return cellsTabChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( MainNavigationTab mainTab)?  mainTabChanged,TResult Function( CellsTab cellsTab)?  cellsTabChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( MainNavigationTab mainTab)?  mainTabChanged,TResult Function( CellsTab cellsTab)?  cellsTabChanged,TResult Function( CraftingTab craftingTab)?  craftingTabChanged,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MainTabChanged() when mainTabChanged != null:
 return mainTabChanged(_that.mainTab);case _CellsTabChanged() when cellsTabChanged != null:
-return cellsTabChanged(_that.cellsTab);case _:
+return cellsTabChanged(_that.cellsTab);case _CraftingTabChanged() when craftingTabChanged != null:
+return craftingTabChanged(_that.craftingTab);case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return cellsTabChanged(_that.cellsTab);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( MainNavigationTab mainTab)  mainTabChanged,required TResult Function( CellsTab cellsTab)  cellsTabChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( MainNavigationTab mainTab)  mainTabChanged,required TResult Function( CellsTab cellsTab)  cellsTabChanged,required TResult Function( CraftingTab craftingTab)  craftingTabChanged,}) {final _that = this;
 switch (_that) {
 case _MainTabChanged():
 return mainTabChanged(_that.mainTab);case _CellsTabChanged():
-return cellsTabChanged(_that.cellsTab);case _:
+return cellsTabChanged(_that.cellsTab);case _CraftingTabChanged():
+return craftingTabChanged(_that.craftingTab);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return cellsTabChanged(_that.cellsTab);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( MainNavigationTab mainTab)?  mainTabChanged,TResult? Function( CellsTab cellsTab)?  cellsTabChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( MainNavigationTab mainTab)?  mainTabChanged,TResult? Function( CellsTab cellsTab)?  cellsTabChanged,TResult? Function( CraftingTab craftingTab)?  craftingTabChanged,}) {final _that = this;
 switch (_that) {
 case _MainTabChanged() when mainTabChanged != null:
 return mainTabChanged(_that.mainTab);case _CellsTabChanged() when cellsTabChanged != null:
-return cellsTabChanged(_that.cellsTab);case _:
+return cellsTabChanged(_that.cellsTab);case _CraftingTabChanged() when craftingTabChanged != null:
+return craftingTabChanged(_that.craftingTab);case _:
   return null;
 
 }
@@ -310,9 +316,75 @@ as CellsTab,
 }
 
 /// @nodoc
+
+
+class _CraftingTabChanged implements NavigationEvent {
+  const _CraftingTabChanged(this.craftingTab);
+  
+
+ final  CraftingTab craftingTab;
+
+/// Create a copy of NavigationEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CraftingTabChangedCopyWith<_CraftingTabChanged> get copyWith => __$CraftingTabChangedCopyWithImpl<_CraftingTabChanged>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CraftingTabChanged&&(identical(other.craftingTab, craftingTab) || other.craftingTab == craftingTab));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,craftingTab);
+
+@override
+String toString() {
+  return 'NavigationEvent.craftingTabChanged(craftingTab: $craftingTab)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CraftingTabChangedCopyWith<$Res> implements $NavigationEventCopyWith<$Res> {
+  factory _$CraftingTabChangedCopyWith(_CraftingTabChanged value, $Res Function(_CraftingTabChanged) _then) = __$CraftingTabChangedCopyWithImpl;
+@useResult
+$Res call({
+ CraftingTab craftingTab
+});
+
+
+
+
+}
+/// @nodoc
+class __$CraftingTabChangedCopyWithImpl<$Res>
+    implements _$CraftingTabChangedCopyWith<$Res> {
+  __$CraftingTabChangedCopyWithImpl(this._self, this._then);
+
+  final _CraftingTabChanged _self;
+  final $Res Function(_CraftingTabChanged) _then;
+
+/// Create a copy of NavigationEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? craftingTab = null,}) {
+  return _then(_CraftingTabChanged(
+null == craftingTab ? _self.craftingTab : craftingTab // ignore: cast_nullable_to_non_nullable
+as CraftingTab,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$NavigationState {
 
- MainNavigationTab get mainTab; CellsTab get cellsTab;
+ MainNavigationTab get mainTab; CellsTab get cellsTab; CraftingTab get craftingTab;
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -323,16 +395,16 @@ $NavigationStateCopyWith<NavigationState> get copyWith => _$NavigationStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationState&&(identical(other.mainTab, mainTab) || other.mainTab == mainTab)&&(identical(other.cellsTab, cellsTab) || other.cellsTab == cellsTab));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NavigationState&&(identical(other.mainTab, mainTab) || other.mainTab == mainTab)&&(identical(other.cellsTab, cellsTab) || other.cellsTab == cellsTab)&&(identical(other.craftingTab, craftingTab) || other.craftingTab == craftingTab));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,mainTab,cellsTab);
+int get hashCode => Object.hash(runtimeType,mainTab,cellsTab,craftingTab);
 
 @override
 String toString() {
-  return 'NavigationState(mainTab: $mainTab, cellsTab: $cellsTab)';
+  return 'NavigationState(mainTab: $mainTab, cellsTab: $cellsTab, craftingTab: $craftingTab)';
 }
 
 
@@ -343,7 +415,7 @@ abstract mixin class $NavigationStateCopyWith<$Res>  {
   factory $NavigationStateCopyWith(NavigationState value, $Res Function(NavigationState) _then) = _$NavigationStateCopyWithImpl;
 @useResult
 $Res call({
- MainNavigationTab mainTab, CellsTab cellsTab
+ MainNavigationTab mainTab, CellsTab cellsTab, CraftingTab craftingTab
 });
 
 
@@ -360,11 +432,12 @@ class _$NavigationStateCopyWithImpl<$Res>
 
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? mainTab = null,Object? cellsTab = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mainTab = null,Object? cellsTab = null,Object? craftingTab = null,}) {
   return _then(_self.copyWith(
 mainTab: null == mainTab ? _self.mainTab : mainTab // ignore: cast_nullable_to_non_nullable
 as MainNavigationTab,cellsTab: null == cellsTab ? _self.cellsTab : cellsTab // ignore: cast_nullable_to_non_nullable
-as CellsTab,
+as CellsTab,craftingTab: null == craftingTab ? _self.craftingTab : craftingTab // ignore: cast_nullable_to_non_nullable
+as CraftingTab,
   ));
 }
 
@@ -449,10 +522,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MainNavigationTab mainTab,  CellsTab cellsTab)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MainNavigationTab mainTab,  CellsTab cellsTab,  CraftingTab craftingTab)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NavigationState() when $default != null:
-return $default(_that.mainTab,_that.cellsTab);case _:
+return $default(_that.mainTab,_that.cellsTab,_that.craftingTab);case _:
   return orElse();
 
 }
@@ -470,10 +543,10 @@ return $default(_that.mainTab,_that.cellsTab);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MainNavigationTab mainTab,  CellsTab cellsTab)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MainNavigationTab mainTab,  CellsTab cellsTab,  CraftingTab craftingTab)  $default,) {final _that = this;
 switch (_that) {
 case _NavigationState():
-return $default(_that.mainTab,_that.cellsTab);case _:
+return $default(_that.mainTab,_that.cellsTab,_that.craftingTab);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -490,10 +563,10 @@ return $default(_that.mainTab,_that.cellsTab);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MainNavigationTab mainTab,  CellsTab cellsTab)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MainNavigationTab mainTab,  CellsTab cellsTab,  CraftingTab craftingTab)?  $default,) {final _that = this;
 switch (_that) {
 case _NavigationState() when $default != null:
-return $default(_that.mainTab,_that.cellsTab);case _:
+return $default(_that.mainTab,_that.cellsTab,_that.craftingTab);case _:
   return null;
 
 }
@@ -505,11 +578,12 @@ return $default(_that.mainTab,_that.cellsTab);case _:
 
 
 class _NavigationState implements NavigationState {
-  const _NavigationState({this.mainTab = MainNavigationTab.cells, this.cellsTab = CellsTab.energyCells});
+  const _NavigationState({this.mainTab = MainNavigationTab.cells, this.cellsTab = CellsTab.energyCells, this.craftingTab = CraftingTab.crafting});
   
 
 @override@JsonKey() final  MainNavigationTab mainTab;
 @override@JsonKey() final  CellsTab cellsTab;
+@override@JsonKey() final  CraftingTab craftingTab;
 
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
@@ -521,16 +595,16 @@ _$NavigationStateCopyWith<_NavigationState> get copyWith => __$NavigationStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigationState&&(identical(other.mainTab, mainTab) || other.mainTab == mainTab)&&(identical(other.cellsTab, cellsTab) || other.cellsTab == cellsTab));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigationState&&(identical(other.mainTab, mainTab) || other.mainTab == mainTab)&&(identical(other.cellsTab, cellsTab) || other.cellsTab == cellsTab)&&(identical(other.craftingTab, craftingTab) || other.craftingTab == craftingTab));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,mainTab,cellsTab);
+int get hashCode => Object.hash(runtimeType,mainTab,cellsTab,craftingTab);
 
 @override
 String toString() {
-  return 'NavigationState(mainTab: $mainTab, cellsTab: $cellsTab)';
+  return 'NavigationState(mainTab: $mainTab, cellsTab: $cellsTab, craftingTab: $craftingTab)';
 }
 
 
@@ -541,7 +615,7 @@ abstract mixin class _$NavigationStateCopyWith<$Res> implements $NavigationState
   factory _$NavigationStateCopyWith(_NavigationState value, $Res Function(_NavigationState) _then) = __$NavigationStateCopyWithImpl;
 @override @useResult
 $Res call({
- MainNavigationTab mainTab, CellsTab cellsTab
+ MainNavigationTab mainTab, CellsTab cellsTab, CraftingTab craftingTab
 });
 
 
@@ -558,11 +632,12 @@ class __$NavigationStateCopyWithImpl<$Res>
 
 /// Create a copy of NavigationState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? mainTab = null,Object? cellsTab = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mainTab = null,Object? cellsTab = null,Object? craftingTab = null,}) {
   return _then(_NavigationState(
 mainTab: null == mainTab ? _self.mainTab : mainTab // ignore: cast_nullable_to_non_nullable
 as MainNavigationTab,cellsTab: null == cellsTab ? _self.cellsTab : cellsTab // ignore: cast_nullable_to_non_nullable
-as CellsTab,
+as CellsTab,craftingTab: null == craftingTab ? _self.craftingTab : craftingTab // ignore: cast_nullable_to_non_nullable
+as CraftingTab,
   ));
 }
 
