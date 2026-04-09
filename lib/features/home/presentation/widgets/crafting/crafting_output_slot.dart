@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_slot_frame.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/gradient_slot_frame.dart';
 
 class CraftingOutputSlot extends StatelessWidget {
   const CraftingOutputSlot({super.key});
@@ -14,7 +14,7 @@ class CraftingOutputSlot extends StatelessWidget {
     return SizedBox(
       width: side,
       height: side,
-      child: CraftingSlotFrame(
+      child: GradientSlotFrame(
         emphasized: true,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
-/// Gradient ring + inner fill using theme primary / accent (reference: glowing slot rims).
-class CraftingSlotFrame extends StatelessWidget {
-  const CraftingSlotFrame({
+/// Gradient ring + inner fill (crafting / research slots).
+class GradientSlotFrame extends StatelessWidget {
+  const GradientSlotFrame({
     required this.child,
     this.emphasized = false,
     super.key,
