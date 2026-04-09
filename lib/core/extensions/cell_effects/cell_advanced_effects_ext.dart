@@ -298,4 +298,160 @@ extension CellAdvancedEffectsExt on Canvas {
       drawCircle(Offset(centerX + (random.nextDouble() - 0.5) * width, fillTop + random.nextDouble() * height), 1, Paint()..color = Colors.white.withValues(alpha: 0.6)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 1));
     }
   }
+
+  /// Curved arcs suggesting magnetic field lines, slowly rotating.
+  void drawMagneticFieldLines({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color fieldColor,
+  }) {
+    final height = bottomY - fillTop;
+    final centerY = fillTop + height / 2;
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    for (var ring = 0; ring < 5; ring++) {
+      final w = width * (0.35 + ring * 0.12);
+      final h = height * (0.28 + ring * 0.08);
+      final rect = Rect.fromCenter(center: Offset(centerX, centerY), width: w, height: h);
+      save();
+      translate(centerX, centerY);
+      rotate(animationValue * math.pi * 2 * 0.25 + ring * 0.4);
+      translate(-centerX, -centerY);
+      paint
+        ..strokeWidth = 1.0 + ring * 0.15
+        ..color = fieldColor.withValues(alpha: 0.2 + ring * 0.06);
+      drawArc(rect, -math.pi * 0.85, math.pi * 1.7, false, paint);
+      restore();
+    }
+  }
+
+  /// Faceted diamond shards drifting upward.
+  void drawCrystallineFacets({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color facetColor,
+  }) {
+    final random = PainterUtils.seededRandom(animationValue);
+    final height = bottomY - fillTop;
+    for (var i = 0; i < 14; i++) {
+      final x = centerX - width / 2 + width * random.nextDouble();
+      final y = fillTop + height * ((animationValue * 0.4 + i * 0.07) % 1.0);
+      save();
+      translate(x, y);
+      rotate(animationValue * math.pi * 2 + i * 0.5);
+      final s = 4.0 + random.nextDouble() * 6;
+      final path = Path()
+        ..moveTo(0, -s)
+        ..lineTo(s * 0.65, 0)
+        ..lineTo(0, s)
+        ..lineTo(-s * 0.65, 0)
+        ..close();
+      drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.2
+          ..color = facetColor.withValues(alpha: 0.35 + random.nextDouble() * 0.35),
+      );
+      drawPath(path, Paint()..color = facetColor.withValues(alpha: 0.12));
+      restore();
+    }
+  }
+
+  /// Double helix with ladder rungs.
+  void drawGeneticHelix({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color helixColor,
+  }) {
+    final height = bottomY - fillTop;
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.4
+      ..strokeCap = StrokeCap.round;
+    const segments = 32;
+    final amp = width * 0.18;
+    for (var strand = 0; strand < 2; strand++) {
+      final path = Path();
+      final phase = strand * math.pi + animationValue * math.pi * 2;
+      for (var i = 0; i <= segments; i++) {
+        final t = i / segments;
+        final y = fillTop + height * t;
+        final x = centerX + math.sin(t * math.pi * 4 + phase) * amp;
+        if (i == 0) {
+          path.moveTo(x, y);
+        } else {
+          path.lineTo(x, y);
+        }
+      }
+      paint.color = helixColor.withValues(alpha: 0.45 + strand * 0.15);
+      drawPath(path, paint);
+    }
+    final rungPaint = Paint()
+      ..color = helixColor.withValues(alpha: 0.22)
+      ..strokeWidth = 0.9;
+    for (var i = 0; i < 12; i++) {
+      final t = i / 12;
+      final y = fillTop + height * t;
+      final x1 = centerX + math.sin(t * math.pi * 4 + animationValue * math.pi * 2) * amp;
+      final x2 = centerX + math.sin(t * math.pi * 4 + animationValue * math.pi * 2 + math.pi) * amp;
+      drawLine(Offset(x1, y), Offset(x2, y), rungPaint);
+    }
+  }
+
+  /// Pulsing core with expanding hazard rings.
+  void drawNuclearCorePulse({
+    required double centerX,
+    required double fillTop,
+    required double bottomY,
+    required double width,
+    required double animationValue,
+    required Color coreColor,
+  }) {
+    final height = bottomY - fillTop;
+    final centerY = fillTop + height / 2;
+    final pulse = PainterUtils.pulse(animationValue, frequency: 2);
+    for (var i = 0; i < 3; i++) {
+      final r = width * (0.12 + i * 0.1) + pulse * 6;
+      drawCircle(
+        Offset(centerX, centerY),
+        r,
+        Paint()
+          ..color = coreColor.withValues(alpha: 0.25 - i * 0.06)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
+    }
+    drawCircle(
+      Offset(centerX, centerY),
+      width * 0.1 + pulse * 4,
+      Paint()
+        ..shader = RadialGradient(
+          colors: [Colors.white, coreColor.withValues(alpha: 0.9), coreColor.withValues(alpha: 0.3)],
+        ).createShader(Rect.fromCircle(center: Offset(centerX, centerY), radius: width * 0.15)),
+    );
+    for (var i = 0; i < 4; i++) {
+      final prog = (animationValue * 1.2 + i * 0.25) % 1.0;
+      final ringR = width * (0.15 + prog * 0.55);
+      drawCircle(
+        Offset(centerX, centerY),
+        ringR,
+        Paint()
+          ..color = coreColor.withValues(alpha: (1 - prog) * 0.35)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.5
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3),
+      );
+    }
+  }
 }

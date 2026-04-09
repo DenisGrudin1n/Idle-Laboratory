@@ -277,11 +277,23 @@ abstract class AppLocalizations {
   /// **'Steam Cell'**
   String get steamCell;
 
+  /// No description provided for @magneticCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetic Cell'**
+  String get magneticCell;
+
   /// No description provided for @lightCell.
   ///
   /// In en, this message translates to:
   /// **'Light Cell'**
   String get lightCell;
+
+  /// No description provided for @crystallineCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Crystalline Cell'**
+  String get crystallineCell;
 
   /// No description provided for @molecularCell.
   ///
@@ -294,6 +306,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Bacterial Cell'**
   String get bacterialCell;
+
+  /// No description provided for @geneticCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Genetic Cell'**
+  String get geneticCell;
 
   /// No description provided for @bloodCell.
   ///
@@ -312,6 +330,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Radiation Cell'**
   String get radiationCell;
+
+  /// No description provided for @nuclearCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Nuclear Cell'**
+  String get nuclearCell;
 
   /// No description provided for @plasmaCell.
   ///

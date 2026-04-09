@@ -210,6 +210,42 @@ class _CellContainerPainter extends CustomPainter {
             animationValue: animationValue.value,
             singularityColor: visualTheme.effectPrimaryColor,
           );
+        case CellEffectType.magneticFieldLines:
+          canvas.drawMagneticFieldLines(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            fieldColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.crystallineFacets:
+          canvas.drawCrystallineFacets(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            facetColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.geneticHelix:
+          canvas.drawGeneticHelix(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            helixColor: visualTheme.effectPrimaryColor,
+          );
+        case CellEffectType.nuclearCorePulse:
+          canvas.drawNuclearCorePulse(
+            centerX: centerX,
+            fillTop: fillTop,
+            bottomY: bottomY,
+            width: width,
+            animationValue: animationValue.value,
+            coreColor: visualTheme.effectPrimaryColor,
+          );
       }
     }
 
