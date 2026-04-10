@@ -22,7 +22,7 @@ enum ResearchMaterialId {
   phaseCrystal,
   photonCore,
   structuredMatter,
-  livingTissue,
+  synapticLattice,
   organicCore,
   nuclearMass,
   voidPlasma,
