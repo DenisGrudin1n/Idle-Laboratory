@@ -2,59 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
-/// Gradient ring + inner fill (crafting / research slots).
+/// Rounded slot frame
 class GradientSlotFrame extends StatelessWidget {
   const GradientSlotFrame({
     required this.child,
     this.emphasized = false,
+    this.showBorder = true,
     super.key,
   });
 
   final Widget child;
   final bool emphasized;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    final stroke = emphasized ? 2.4.w : 1.4.w;
     final outerR = 10.r;
-    final innerR = (outerR - stroke).clamp(2.r, outerR);
+    final innerPlate = Color.alphaBlend(color.primary.withValues(alpha: 0.3), color.background);
 
-    final gradient = LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        color.primary.withValues(alpha: emphasized ? 0.95 : 0.72),
-        color.accent.withValues(alpha: emphasized ? 0.88 : 0.55),
-        color.primary.withValues(alpha: emphasized ? 0.55 : 0.35),
-      ],
-      stops: const [0.0, 0.55, 1.0],
-    );
-
-    return DecoratedBox(
+    return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
+        color: innerPlate,
         borderRadius: BorderRadius.circular(outerR),
-        gradient: gradient,
-        boxShadow: [
-          BoxShadow(
-            color: color.primary.withValues(alpha: emphasized ? 0.22 : 0.08),
-            blurRadius: emphasized ? 10.r : 4.r,
-          ),
-        ],
+        border: showBorder ? Border.all(color: color.titleText, width: 1.w) : null,
+        boxShadow: showBorder
+            ? [
+                BoxShadow(
+                  color: color.titleText.withValues(alpha: emphasized ? 0.18 : 0.08),
+                  blurRadius: emphasized ? 8.r : 3.r,
+                ),
+              ]
+            : null,
       ),
-      child: Padding(
-        padding: EdgeInsets.all(stroke),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(innerR),
-            color: color.background.withValues(alpha: emphasized ? 0.82 : 0.68),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(innerR),
-            child: child,
-          ),
-        ),
-      ),
+      child: child,
     );
   }
 }

@@ -8,15 +8,15 @@ import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_conduit_painter.dart';
 
-/// Binary research pyramid (16 → … → 1) with shared gradient slots and conduit styling.
+/// Binary research pyramid (16 → … → 1) with shared slot frames and conduit styling.
 class ResearchTreeView extends StatelessWidget {
   const ResearchTreeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    final tube = color.primary.withValues(alpha: 0.55);
-    final glow = color.primary.withValues(alpha: 0.12);
+    final tube = color.treeConduitTubeColor;
+    final glow = color.treeConduitGlowColor;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -56,6 +56,7 @@ class ResearchTreeView extends StatelessWidget {
                       height: fitted.rows[t][i].height,
                       child: GradientSlotFrame(
                         emphasized: t == 0,
+                        showBorder: false,
                         child: ResearchMaterialSlotIcon(
                           materialId: ResearchMaterialTree.idForSlot(rowFromTop: t, slotIndex: i),
                         ),

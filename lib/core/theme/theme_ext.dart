@@ -203,3 +203,12 @@ extension ThemeExt on BuildContext {
     ),
   );
 }
+
+extension AppColorTreeChrome on AppColor {
+  /// Crafting + research connection lines (accent “reaction” tone).
+  Color get treeConduitTubeColor =>
+      Color.lerp(primary, accent, 0.55)!.withValues(alpha: 0.92);
+
+  Color get treeConduitGlowColor => accent.withValues(alpha: 0.26);
+}
+
