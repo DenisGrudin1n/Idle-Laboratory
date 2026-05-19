@@ -540,6 +540,408 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'lvl'**
   String get lvl;
+
+  /// No description provided for @researchMaterialCraftSection.
+  ///
+  /// In en, this message translates to:
+  /// **'How to craft'**
+  String get researchMaterialCraftSection;
+
+  /// No description provided for @researchMaterialCraftFromCell.
+  ///
+  /// In en, this message translates to:
+  /// **'Place {amount} {cellName} in the bottom crafting slot (Cell). Leave the two upper reagent slots empty.'**
+  String researchMaterialCraftFromCell(String amount, String cellName);
+
+  /// No description provided for @researchMaterialCraftMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Place {leftMaterial} and {rightMaterial} in the two upper reagent slots, then run the reaction.'**
+  String researchMaterialCraftMerge(String leftMaterial, String rightMaterial);
+
+  /// No description provided for @researchMaterialCellCost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cell cost'**
+  String get researchMaterialCellCost;
+
+  /// No description provided for @researchMaterialClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get researchMaterialClose;
+
+  /// No description provided for @researchEnergyCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy Core'**
+  String get researchEnergyCore;
+
+  /// No description provided for @researchEnergyCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Stabilized EU crystallized from a basic energy cell reaction.'**
+  String get researchEnergyCoreDesc;
+
+  /// No description provided for @researchHeatShard.
+  ///
+  /// In en, this message translates to:
+  /// **'Heat Shard'**
+  String get researchHeatShard;
+
+  /// No description provided for @researchHeatShardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Obsidian shard forged from concentrated thermal cell output.'**
+  String get researchHeatShardDesc;
+
+  /// No description provided for @researchFrostCrystal.
+  ///
+  /// In en, this message translates to:
+  /// **'Frost Crystal'**
+  String get researchFrostCrystal;
+
+  /// No description provided for @researchFrostCrystalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Permafrost lattice distilled from ice cell emissions.'**
+  String get researchFrostCrystalDesc;
+
+  /// No description provided for @researchSteamEssence.
+  ///
+  /// In en, this message translates to:
+  /// **'Steam Essence'**
+  String get researchSteamEssence;
+
+  /// No description provided for @researchSteamEssenceDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Condensed vapor orb captured from steam cell exhaust.'**
+  String get researchSteamEssenceDesc;
+
+  /// No description provided for @researchMagneticOre.
+  ///
+  /// In en, this message translates to:
+  /// **'Magnetic Ore'**
+  String get researchMagneticOre;
+
+  /// No description provided for @researchMagneticOreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ferromagnetic chunks aligned by a magnetic cell field.'**
+  String get researchMagneticOreDesc;
+
+  /// No description provided for @researchLightFragment.
+  ///
+  /// In en, this message translates to:
+  /// **'Light Fragment'**
+  String get researchLightFragment;
+
+  /// No description provided for @researchLightFragmentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Prismatic shard refracted from a light cell beam.'**
+  String get researchLightFragmentDesc;
+
+  /// No description provided for @researchCrystalChunk.
+  ///
+  /// In en, this message translates to:
+  /// **'Crystal Chunk'**
+  String get researchCrystalChunk;
+
+  /// No description provided for @researchCrystalChunkDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Violet geometric mass grown inside a crystalline cell.'**
+  String get researchCrystalChunkDesc;
+
+  /// No description provided for @researchMolecularGel.
+  ///
+  /// In en, this message translates to:
+  /// **'Molecular Gel'**
+  String get researchMolecularGel;
+
+  /// No description provided for @researchMolecularGelDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Neon gel lattice synthesized in a molecular cell.'**
+  String get researchMolecularGelDesc;
+
+  /// No description provided for @researchBacterialSample.
+  ///
+  /// In en, this message translates to:
+  /// **'Bacterial Sample'**
+  String get researchBacterialSample;
+
+  /// No description provided for @researchBacterialSampleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Sterile colony disc cultured in a bacterial cell.'**
+  String get researchBacterialSampleDesc;
+
+  /// No description provided for @researchDnaStrand.
+  ///
+  /// In en, this message translates to:
+  /// **'DNA Strand'**
+  String get researchDnaStrand;
+
+  /// No description provided for @researchDnaStrandDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Bioluminescent helix extracted from a genetic cell.'**
+  String get researchDnaStrandDesc;
+
+  /// No description provided for @researchBloodDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood Drop'**
+  String get researchBloodDrop;
+
+  /// No description provided for @researchBloodDropDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Viscous crimson sample drawn from a blood cell core.'**
+  String get researchBloodDropDesc;
+
+  /// No description provided for @researchBioMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio Mass'**
+  String get researchBioMass;
+
+  /// No description provided for @researchBioMassDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic tissue lump harvested from a bio cell chamber.'**
+  String get researchBioMassDesc;
+
+  /// No description provided for @researchRadiationDust.
+  ///
+  /// In en, this message translates to:
+  /// **'Radiation Dust'**
+  String get researchRadiationDust;
+
+  /// No description provided for @researchRadiationDustDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Hazardous powder collected from a radiation cell leak.'**
+  String get researchRadiationDustDesc;
+
+  /// No description provided for @researchUraniumCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Uranium Core'**
+  String get researchUraniumCore;
+
+  /// No description provided for @researchUraniumCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dense radioactive sphere refined in a nuclear cell.'**
+  String get researchUraniumCoreDesc;
+
+  /// No description provided for @researchPlasmaOrb.
+  ///
+  /// In en, this message translates to:
+  /// **'Plasma Orb'**
+  String get researchPlasmaOrb;
+
+  /// No description provided for @researchPlasmaOrbDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Arcing plasma sphere contained by a plasma cell.'**
+  String get researchPlasmaOrbDesc;
+
+  /// No description provided for @researchDarkMatterFragment.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Matter Fragment'**
+  String get researchDarkMatterFragment;
+
+  /// No description provided for @researchDarkMatterFragmentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Light-bending shard isolated in a dark matter cell.'**
+  String get researchDarkMatterFragmentDesc;
+
+  /// No description provided for @researchThermalCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Thermal Core'**
+  String get researchThermalCore;
+
+  /// No description provided for @researchThermalCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Hybrid hot-cold core merged from heat and frost reagents.'**
+  String get researchThermalCoreDesc;
+
+  /// No description provided for @researchPhaseCrystal.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase Crystal'**
+  String get researchPhaseCrystal;
+
+  /// No description provided for @researchPhaseCrystalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Matter that shifts between solid, liquid, and gas states.'**
+  String get researchPhaseCrystalDesc;
+
+  /// No description provided for @researchPhotonCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Photon Core'**
+  String get researchPhotonCore;
+
+  /// No description provided for @researchPhotonCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'White-gold luminous core woven from light and crystal reagents.'**
+  String get researchPhotonCoreDesc;
+
+  /// No description provided for @researchStructuredMatter.
+  ///
+  /// In en, this message translates to:
+  /// **'Structured Matter'**
+  String get researchStructuredMatter;
+
+  /// No description provided for @researchStructuredMatterDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Nanoscale lattice block from molecular and bacterial samples.'**
+  String get researchStructuredMatterDesc;
+
+  /// No description provided for @researchSynapticLattice.
+  ///
+  /// In en, this message translates to:
+  /// **'Synaptic Lattice'**
+  String get researchSynapticLattice;
+
+  /// No description provided for @researchSynapticLatticeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Neural energy mesh grown from genetic and blood reagents.'**
+  String get researchSynapticLatticeDesc;
+
+  /// No description provided for @researchOrganicCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Organic Core'**
+  String get researchOrganicCore;
+
+  /// No description provided for @researchOrganicCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Seed-like organic sphere from bio and radiation materials.'**
+  String get researchOrganicCoreDesc;
+
+  /// No description provided for @researchNuclearMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Nuclear Mass'**
+  String get researchNuclearMass;
+
+  /// No description provided for @researchNuclearMassDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unstable dense mass fused from uranium and plasma cores.'**
+  String get researchNuclearMassDesc;
+
+  /// No description provided for @researchVoidPlasma.
+  ///
+  /// In en, this message translates to:
+  /// **'Void Plasma'**
+  String get researchVoidPlasma;
+
+  /// No description provided for @researchVoidPlasmaDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Void-touched plasma orb from dark matter and thermal reagents.'**
+  String get researchVoidPlasmaDesc;
+
+  /// No description provided for @researchEntropyCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Entropy Core'**
+  String get researchEntropyCore;
+
+  /// No description provided for @researchEntropyCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Crumbling geometric solid decaying through phase and photon matter.'**
+  String get researchEntropyCoreDesc;
+
+  /// No description provided for @researchQuantumMatrix.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantum Matrix'**
+  String get researchQuantumMatrix;
+
+  /// No description provided for @researchQuantumMatrixDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Probability lattice woven from structured and synaptic matter.'**
+  String get researchQuantumMatrixDesc;
+
+  /// No description provided for @researchPrimalOrganism.
+  ///
+  /// In en, this message translates to:
+  /// **'Primal Organism'**
+  String get researchPrimalOrganism;
+
+  /// No description provided for @researchPrimalOrganismDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ancient micro-organism preserved from organic and nuclear mass.'**
+  String get researchPrimalOrganismDesc;
+
+  /// No description provided for @researchAnnihilationCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Annihilation Core'**
+  String get researchAnnihilationCore;
+
+  /// No description provided for @researchAnnihilationCoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Matter-antimatter seam forged from void plasma and entropy.'**
+  String get researchAnnihilationCoreDesc;
+
+  /// No description provided for @researchRealityEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Reality Engine'**
+  String get researchRealityEngine;
+
+  /// No description provided for @researchRealityEngineDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Cosmic mechanism built from quantum and primal reagents.'**
+  String get researchRealityEngineDesc;
+
+  /// No description provided for @researchAbyssalHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Abyssal Heart'**
+  String get researchAbyssalHeart;
+
+  /// No description provided for @researchAbyssalHeartDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark pulsing heart merged from annihilation and reality cores.'**
+  String get researchAbyssalHeartDesc;
+
+  /// No description provided for @researchBloodstoneOfDominion.
+  ///
+  /// In en, this message translates to:
+  /// **'Bloodstone of Dominion'**
+  String get researchBloodstoneOfDominion;
+
+  /// No description provided for @researchBloodstoneOfDominionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Legendary crowned gem at the apex of the research tree.'**
+  String get researchBloodstoneOfDominionDesc;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

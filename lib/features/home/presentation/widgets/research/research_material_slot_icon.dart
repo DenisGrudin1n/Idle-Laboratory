@@ -4,9 +4,14 @@ import 'package:idle_laboratory/core/extensions/research_material_id_ext.dart';
 
 /// Fills the slot’s inner area (inside [GradientSlotFrame]) edge-to-edge.
 class ResearchMaterialSlotIcon extends StatelessWidget {
-  const ResearchMaterialSlotIcon({required this.materialId, super.key});
+  const ResearchMaterialSlotIcon({
+    required this.materialId,
+    this.fit = BoxFit.contain,
+    super.key,
+  });
 
   final ResearchMaterialId materialId;
+  final BoxFit fit;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class ResearchMaterialSlotIcon extends StatelessWidget {
     return SizedBox.expand(
       child: Image.asset(
         path,
-        fit: BoxFit.contain,
+        fit: fit,
         gaplessPlayback: true,
         errorBuilder: (_, __, ___) => const SizedBox.expand(),
       ),
