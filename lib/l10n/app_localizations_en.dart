@@ -248,4 +248,209 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lvl => 'lvl';
+
+  @override
+  String get researchMaterialCraftSection => 'How to craft';
+
+  @override
+  String researchMaterialCraftFromCell(String amount, String cellName) {
+    return 'Place $amount $cellName in the bottom crafting slot (Cell). Leave the two upper reagent slots empty.';
+  }
+
+  @override
+  String researchMaterialCraftMerge(String leftMaterial, String rightMaterial) {
+    return 'Place $leftMaterial and $rightMaterial in the two upper reagent slots, then run the reaction.';
+  }
+
+  @override
+  String get researchMaterialCellCost => 'Cell cost';
+
+  @override
+  String get researchMaterialClose => 'Close';
+
+  @override
+  String get researchEnergyCore => 'Energy Core';
+
+  @override
+  String get researchEnergyCoreDesc => 'Stabilized EU crystallized from a basic energy cell reaction.';
+
+  @override
+  String get researchHeatShard => 'Heat Shard';
+
+  @override
+  String get researchHeatShardDesc => 'Obsidian shard forged from concentrated thermal cell output.';
+
+  @override
+  String get researchFrostCrystal => 'Frost Crystal';
+
+  @override
+  String get researchFrostCrystalDesc => 'Permafrost lattice distilled from ice cell emissions.';
+
+  @override
+  String get researchSteamEssence => 'Steam Essence';
+
+  @override
+  String get researchSteamEssenceDesc => 'Condensed vapor orb captured from steam cell exhaust.';
+
+  @override
+  String get researchMagneticOre => 'Magnetic Ore';
+
+  @override
+  String get researchMagneticOreDesc => 'Ferromagnetic chunks aligned by a magnetic cell field.';
+
+  @override
+  String get researchLightFragment => 'Light Fragment';
+
+  @override
+  String get researchLightFragmentDesc => 'Prismatic shard refracted from a light cell beam.';
+
+  @override
+  String get researchCrystalChunk => 'Crystal Chunk';
+
+  @override
+  String get researchCrystalChunkDesc => 'Violet geometric mass grown inside a crystalline cell.';
+
+  @override
+  String get researchMolecularGel => 'Molecular Gel';
+
+  @override
+  String get researchMolecularGelDesc => 'Neon gel lattice synthesized in a molecular cell.';
+
+  @override
+  String get researchBacterialSample => 'Bacterial Sample';
+
+  @override
+  String get researchBacterialSampleDesc => 'Sterile colony disc cultured in a bacterial cell.';
+
+  @override
+  String get researchDnaStrand => 'DNA Strand';
+
+  @override
+  String get researchDnaStrandDesc => 'Bioluminescent helix extracted from a genetic cell.';
+
+  @override
+  String get researchBloodDrop => 'Blood Drop';
+
+  @override
+  String get researchBloodDropDesc => 'Viscous crimson sample drawn from a blood cell core.';
+
+  @override
+  String get researchBioMass => 'Bio Mass';
+
+  @override
+  String get researchBioMassDesc => 'Organic tissue lump harvested from a bio cell chamber.';
+
+  @override
+  String get researchRadiationDust => 'Radiation Dust';
+
+  @override
+  String get researchRadiationDustDesc => 'Hazardous powder collected from a radiation cell leak.';
+
+  @override
+  String get researchUraniumCore => 'Uranium Core';
+
+  @override
+  String get researchUraniumCoreDesc => 'Dense radioactive sphere refined in a nuclear cell.';
+
+  @override
+  String get researchPlasmaOrb => 'Plasma Orb';
+
+  @override
+  String get researchPlasmaOrbDesc => 'Arcing plasma sphere contained by a plasma cell.';
+
+  @override
+  String get researchDarkMatterFragment => 'Dark Matter Fragment';
+
+  @override
+  String get researchDarkMatterFragmentDesc => 'Light-bending shard isolated in a dark matter cell.';
+
+  @override
+  String get researchThermalCore => 'Thermal Core';
+
+  @override
+  String get researchThermalCoreDesc => 'Hybrid hot-cold core merged from heat and frost reagents.';
+
+  @override
+  String get researchPhaseCrystal => 'Phase Crystal';
+
+  @override
+  String get researchPhaseCrystalDesc => 'Matter that shifts between solid, liquid, and gas states.';
+
+  @override
+  String get researchPhotonCore => 'Photon Core';
+
+  @override
+  String get researchPhotonCoreDesc => 'White-gold luminous core woven from light and crystal reagents.';
+
+  @override
+  String get researchStructuredMatter => 'Structured Matter';
+
+  @override
+  String get researchStructuredMatterDesc => 'Nanoscale lattice block from molecular and bacterial samples.';
+
+  @override
+  String get researchSynapticLattice => 'Synaptic Lattice';
+
+  @override
+  String get researchSynapticLatticeDesc => 'Neural energy mesh grown from genetic and blood reagents.';
+
+  @override
+  String get researchOrganicCore => 'Organic Core';
+
+  @override
+  String get researchOrganicCoreDesc => 'Seed-like organic sphere from bio and radiation materials.';
+
+  @override
+  String get researchNuclearMass => 'Nuclear Mass';
+
+  @override
+  String get researchNuclearMassDesc => 'Unstable dense mass fused from uranium and plasma cores.';
+
+  @override
+  String get researchVoidPlasma => 'Void Plasma';
+
+  @override
+  String get researchVoidPlasmaDesc => 'Void-touched plasma orb from dark matter and thermal reagents.';
+
+  @override
+  String get researchEntropyCore => 'Entropy Core';
+
+  @override
+  String get researchEntropyCoreDesc => 'Crumbling geometric solid decaying through phase and photon matter.';
+
+  @override
+  String get researchQuantumMatrix => 'Quantum Matrix';
+
+  @override
+  String get researchQuantumMatrixDesc => 'Probability lattice woven from structured and synaptic matter.';
+
+  @override
+  String get researchPrimalOrganism => 'Primal Organism';
+
+  @override
+  String get researchPrimalOrganismDesc => 'Ancient micro-organism preserved from organic and nuclear mass.';
+
+  @override
+  String get researchAnnihilationCore => 'Annihilation Core';
+
+  @override
+  String get researchAnnihilationCoreDesc => 'Matter-antimatter seam forged from void plasma and entropy.';
+
+  @override
+  String get researchRealityEngine => 'Reality Engine';
+
+  @override
+  String get researchRealityEngineDesc => 'Cosmic mechanism built from quantum and primal reagents.';
+
+  @override
+  String get researchAbyssalHeart => 'Abyssal Heart';
+
+  @override
+  String get researchAbyssalHeartDesc => 'Dark pulsing heart merged from annihilation and reality cores.';
+
+  @override
+  String get researchBloodstoneOfDominion => 'Bloodstone of Dominion';
+
+  @override
+  String get researchBloodstoneOfDominionDesc => 'Legendary crowned gem at the apex of the research tree.';
 }

@@ -133,4 +133,18 @@ class GameBalance {
     final mult = productionStockEnergyMultiplier(cellOrder) * productionEPSContributionMultiplier;
     return amount.multiplyByDouble(mult);
   }
+
+  // --- Research: base-tier materials (bottom 16) crafted from matching energy cells ---
+
+  /// log10 cell count for tier 0 (Energy Core ← Basic Energy Cell).
+  static const baseTierResearchCraftCostLog10 = 6.0;
+
+  /// Each cell tier reduces cost by this many log10 steps (~48% per tier).
+  static const baseTierResearchCraftCostTierStep = 0.32;
+
+  /// Cell units consumed in the bottom crafting slot for one base-tier material craft.
+  static BigNumber calculateBaseTierResearchCraftCellCost(int cellOrder) {
+    final log10Cost = baseTierResearchCraftCostLog10 - baseTierResearchCraftCostTierStep * cellOrder;
+    return BigNumber.pow(10, log10Cost);
+  }
 }

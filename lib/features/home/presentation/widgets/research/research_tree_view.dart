@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
+import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/core/utils/research_tree_geometry.dart';
 import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_detail_dialog.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_conduit_painter.dart';
 
@@ -54,12 +56,9 @@ class ResearchTreeView extends StatelessWidget {
                       top: fitted.rows[t][i].top,
                       width: fitted.rows[t][i].width,
                       height: fitted.rows[t][i].height,
-                      child: GradientSlotFrame(
+                      child: _ResearchTreeSlot(
+                        materialId: ResearchMaterialTree.idForSlot(rowFromTop: t, slotIndex: i),
                         emphasized: t == 0,
-                        showBorder: false,
-                        child: ResearchMaterialSlotIcon(
-                          materialId: ResearchMaterialTree.idForSlot(rowFromTop: t, slotIndex: i),
-                        ),
                       ),
                     ),
               ],
@@ -69,4 +68,25 @@ class ResearchTreeView extends StatelessWidget {
       },
     );
   }
+}
+
+class _ResearchTreeSlot extends StatelessWidget {
+  const _ResearchTreeSlot({required this.materialId, required this.emphasized});
+
+  final ResearchMaterialId materialId;
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => showResearchMaterialDetailDialog(context, materialId),
+          borderRadius: BorderRadius.circular(10.r),
+          child: GradientSlotFrame(
+            emphasized: emphasized,
+            showBorder: false,
+            child: ResearchMaterialSlotIcon(materialId: materialId),
+          ),
+        ),
+      );
 }

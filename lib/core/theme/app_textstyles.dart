@@ -12,7 +12,7 @@ class AppTextStyles {
   TextStyle get sectionHeaderTitle => TextStyle(color: _color.titleText, fontSize: 16.sp, fontWeight: FontWeight.bold);
 
   TextStyle get sectionHeaderDescription =>
-      TextStyle(color: _color.primaryText.withValues(alpha: 0.6), fontSize: 10.sp);
+      TextStyle(color: _color.primaryText.withValues(alpha: 0.72), fontSize: 10.sp);
 
   TextStyle get sectionTitle => TextStyle(color: _color.titleText, fontSize: 14.sp, fontWeight: FontWeight.bold);
 
