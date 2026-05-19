@@ -78,6 +78,26 @@ class AppColor extends ThemeExtension<AppColor> {
     required this.darkMatterSingularityColor,
     required this.darkMatterParticleColor1,
     required this.darkMatterParticleColor2,
+    required this.magneticFillGradient,
+    required this.magneticGlowGradient,
+    required this.magneticFieldLineColor,
+    required this.magneticParticleColor1,
+    required this.magneticParticleColor2,
+    required this.crystallineFillGradient,
+    required this.crystallineGlowGradient,
+    required this.crystallineFacetColor,
+    required this.crystallineParticleColor1,
+    required this.crystallineParticleColor2,
+    required this.geneticFillGradient,
+    required this.geneticGlowGradient,
+    required this.geneticHelixColor,
+    required this.geneticParticleColor1,
+    required this.geneticParticleColor2,
+    required this.nuclearFillGradient,
+    required this.nuclearGlowGradient,
+    required this.nuclearCoreColor,
+    required this.nuclearParticleColor1,
+    required this.nuclearParticleColor2,
   });
 
   final Color primary;
@@ -105,6 +125,10 @@ class AppColor extends ThemeExtension<AppColor> {
   final LinearGradient radiationFillGradient;
   final LinearGradient plasmaFillGradient;
   final LinearGradient darkMatterFillGradient;
+  final LinearGradient magneticFillGradient;
+  final LinearGradient crystallineFillGradient;
+  final LinearGradient geneticFillGradient;
+  final LinearGradient nuclearFillGradient;
   final RadialGradient cellTopCapGradient;
   final RadialGradient cellBottomCapGradient;
   final RadialGradient energyGlowGradient;
@@ -119,6 +143,10 @@ class AppColor extends ThemeExtension<AppColor> {
   final RadialGradient radiationGlowGradient;
   final RadialGradient plasmaGlowGradient;
   final RadialGradient darkMatterGlowGradient;
+  final RadialGradient magneticGlowGradient;
+  final RadialGradient crystallineGlowGradient;
+  final RadialGradient geneticGlowGradient;
+  final RadialGradient nuclearGlowGradient;
   final Color energyLightningColor;
   final Color energyParticleColor1;
   final Color energyParticleColor2;
@@ -156,6 +184,18 @@ class AppColor extends ThemeExtension<AppColor> {
   final Color darkMatterSingularityColor;
   final Color darkMatterParticleColor1;
   final Color darkMatterParticleColor2;
+  final Color magneticFieldLineColor;
+  final Color magneticParticleColor1;
+  final Color magneticParticleColor2;
+  final Color crystallineFacetColor;
+  final Color crystallineParticleColor1;
+  final Color crystallineParticleColor2;
+  final Color geneticHelixColor;
+  final Color geneticParticleColor1;
+  final Color geneticParticleColor2;
+  final Color nuclearCoreColor;
+  final Color nuclearParticleColor1;
+  final Color nuclearParticleColor2;
 
   @override
   AppColor copyWith({
@@ -184,6 +224,10 @@ class AppColor extends ThemeExtension<AppColor> {
     LinearGradient? radiationFillGradient,
     LinearGradient? plasmaFillGradient,
     LinearGradient? darkMatterFillGradient,
+    LinearGradient? magneticFillGradient,
+    LinearGradient? crystallineFillGradient,
+    LinearGradient? geneticFillGradient,
+    LinearGradient? nuclearFillGradient,
     RadialGradient? cellTopCapGradient,
     RadialGradient? cellBottomCapGradient,
     RadialGradient? energyGlowGradient,
@@ -198,6 +242,10 @@ class AppColor extends ThemeExtension<AppColor> {
     RadialGradient? radiationGlowGradient,
     RadialGradient? plasmaGlowGradient,
     RadialGradient? darkMatterGlowGradient,
+    RadialGradient? magneticGlowGradient,
+    RadialGradient? crystallineGlowGradient,
+    RadialGradient? geneticGlowGradient,
+    RadialGradient? nuclearGlowGradient,
     Color? energyLightningColor,
     Color? energyParticleColor1,
     Color? energyParticleColor2,
@@ -235,6 +283,18 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? darkMatterSingularityColor,
     Color? darkMatterParticleColor1,
     Color? darkMatterParticleColor2,
+    Color? magneticFieldLineColor,
+    Color? magneticParticleColor1,
+    Color? magneticParticleColor2,
+    Color? crystallineFacetColor,
+    Color? crystallineParticleColor1,
+    Color? crystallineParticleColor2,
+    Color? geneticHelixColor,
+    Color? geneticParticleColor1,
+    Color? geneticParticleColor2,
+    Color? nuclearCoreColor,
+    Color? nuclearParticleColor1,
+    Color? nuclearParticleColor2,
   }) =>
       AppColor(
         primary: primary ?? this.primary,
@@ -313,6 +373,26 @@ class AppColor extends ThemeExtension<AppColor> {
         darkMatterSingularityColor: darkMatterSingularityColor ?? this.darkMatterSingularityColor,
         darkMatterParticleColor1: darkMatterParticleColor1 ?? this.darkMatterParticleColor1,
         darkMatterParticleColor2: darkMatterParticleColor2 ?? this.darkMatterParticleColor2,
+        magneticFillGradient: magneticFillGradient ?? this.magneticFillGradient,
+        magneticGlowGradient: magneticGlowGradient ?? this.magneticGlowGradient,
+        crystallineFillGradient: crystallineFillGradient ?? this.crystallineFillGradient,
+        crystallineGlowGradient: crystallineGlowGradient ?? this.crystallineGlowGradient,
+        geneticFillGradient: geneticFillGradient ?? this.geneticFillGradient,
+        geneticGlowGradient: geneticGlowGradient ?? this.geneticGlowGradient,
+        nuclearFillGradient: nuclearFillGradient ?? this.nuclearFillGradient,
+        nuclearGlowGradient: nuclearGlowGradient ?? this.nuclearGlowGradient,
+        magneticFieldLineColor: magneticFieldLineColor ?? this.magneticFieldLineColor,
+        magneticParticleColor1: magneticParticleColor1 ?? this.magneticParticleColor1,
+        magneticParticleColor2: magneticParticleColor2 ?? this.magneticParticleColor2,
+        crystallineFacetColor: crystallineFacetColor ?? this.crystallineFacetColor,
+        crystallineParticleColor1: crystallineParticleColor1 ?? this.crystallineParticleColor1,
+        crystallineParticleColor2: crystallineParticleColor2 ?? this.crystallineParticleColor2,
+        geneticHelixColor: geneticHelixColor ?? this.geneticHelixColor,
+        geneticParticleColor1: geneticParticleColor1 ?? this.geneticParticleColor1,
+        geneticParticleColor2: geneticParticleColor2 ?? this.geneticParticleColor2,
+        nuclearCoreColor: nuclearCoreColor ?? this.nuclearCoreColor,
+        nuclearParticleColor1: nuclearParticleColor1 ?? this.nuclearParticleColor1,
+        nuclearParticleColor2: nuclearParticleColor2 ?? this.nuclearParticleColor2,
       );
 
   @override
@@ -395,6 +475,26 @@ class AppColor extends ThemeExtension<AppColor> {
       darkMatterSingularityColor: Color.lerp(darkMatterSingularityColor, other.darkMatterSingularityColor, t)!,
       darkMatterParticleColor1: Color.lerp(darkMatterParticleColor1, other.darkMatterParticleColor1, t)!,
       darkMatterParticleColor2: Color.lerp(darkMatterParticleColor2, other.darkMatterParticleColor2, t)!,
+      magneticFillGradient: LinearGradient.lerp(magneticFillGradient, other.magneticFillGradient, t)!,
+      magneticGlowGradient: RadialGradient.lerp(magneticGlowGradient, other.magneticGlowGradient, t)!,
+      crystallineFillGradient: LinearGradient.lerp(crystallineFillGradient, other.crystallineFillGradient, t)!,
+      crystallineGlowGradient: RadialGradient.lerp(crystallineGlowGradient, other.crystallineGlowGradient, t)!,
+      geneticFillGradient: LinearGradient.lerp(geneticFillGradient, other.geneticFillGradient, t)!,
+      geneticGlowGradient: RadialGradient.lerp(geneticGlowGradient, other.geneticGlowGradient, t)!,
+      nuclearFillGradient: LinearGradient.lerp(nuclearFillGradient, other.nuclearFillGradient, t)!,
+      nuclearGlowGradient: RadialGradient.lerp(nuclearGlowGradient, other.nuclearGlowGradient, t)!,
+      magneticFieldLineColor: Color.lerp(magneticFieldLineColor, other.magneticFieldLineColor, t)!,
+      magneticParticleColor1: Color.lerp(magneticParticleColor1, other.magneticParticleColor1, t)!,
+      magneticParticleColor2: Color.lerp(magneticParticleColor2, other.magneticParticleColor2, t)!,
+      crystallineFacetColor: Color.lerp(crystallineFacetColor, other.crystallineFacetColor, t)!,
+      crystallineParticleColor1: Color.lerp(crystallineParticleColor1, other.crystallineParticleColor1, t)!,
+      crystallineParticleColor2: Color.lerp(crystallineParticleColor2, other.crystallineParticleColor2, t)!,
+      geneticHelixColor: Color.lerp(geneticHelixColor, other.geneticHelixColor, t)!,
+      geneticParticleColor1: Color.lerp(geneticParticleColor1, other.geneticParticleColor1, t)!,
+      geneticParticleColor2: Color.lerp(geneticParticleColor2, other.geneticParticleColor2, t)!,
+      nuclearCoreColor: Color.lerp(nuclearCoreColor, other.nuclearCoreColor, t)!,
+      nuclearParticleColor1: Color.lerp(nuclearParticleColor1, other.nuclearParticleColor1, t)!,
+      nuclearParticleColor2: Color.lerp(nuclearParticleColor2, other.nuclearParticleColor2, t)!,
     );
   }
 }
@@ -575,4 +675,48 @@ class DefaultColor {
   static const darkMatterSingularityColor = Color(0xFF000000);
   static const darkMatterParticleColor1 = Color(0xFFE1BEE7);
   static const darkMatterParticleColor2 = Color(0xFF4A148C);
+
+  static const magneticFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF1A237E), Color(0xFF3949AB), Color(0xFF0D47A1)],
+  );
+
+  static const magneticGlowGradient = RadialGradient(colors: [Color(0xFF5C6BC0), Color(0xFF1A237E), Colors.transparent]);
+  static const magneticFieldLineColor = Color(0xFF82B1FF);
+  static const magneticParticleColor1 = Color(0xFFB3E5FC);
+  static const magneticParticleColor2 = Color(0xFF448AFF);
+
+  static const crystallineFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFE8EAF6), Color(0xFF7E57C2), Color(0xFF4527A0)],
+  );
+
+  static const crystallineGlowGradient = RadialGradient(colors: [Color(0xFFD1C4E9), Color(0xFF4527A0), Colors.transparent]);
+  static const crystallineFacetColor = Color(0xFFB39DDB);
+  static const crystallineParticleColor1 = Color(0xFFEDE7F6);
+  static const crystallineParticleColor2 = Color(0xFF9575CD);
+
+  static const geneticFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFC8E6C9), Color(0xFF43A047), Color(0xFF1B5E20)],
+  );
+
+  static const geneticGlowGradient = RadialGradient(colors: [Color(0xFFA5D6A7), Color(0xFF1B5E20), Colors.transparent]);
+  static const geneticHelixColor = Color(0xFF69F0AE);
+  static const geneticParticleColor1 = Color(0xFFE8F5E9);
+  static const geneticParticleColor2 = Color(0xFF00C853);
+
+  static const nuclearFillGradient = LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFFFFF59D), Color(0xFFFFA000), Color(0xFFE65100)],
+  );
+
+  static const nuclearGlowGradient = RadialGradient(colors: [Color(0xFFFFE082), Color(0xFFE65100), Colors.transparent]);
+  static const nuclearCoreColor = Color(0xFFFFEB3B);
+  static const nuclearParticleColor1 = Color(0xFFFFF8E1);
+  static const nuclearParticleColor2 = Color(0xFFFF9800);
 }

@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_full_row_conduit_painter.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_input_slot.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_output_slot.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_tubes_layer.dart';
 
 class CraftingInterfacePanel extends StatelessWidget {
   const CraftingInterfacePanel({super.key});
@@ -57,8 +57,8 @@ class CraftingInterfacePanel extends StatelessWidget {
                                             verticalGap: CraftingLayout.inputVerticalGap,
                                             gapBeforeOutput: CraftingLayout.gapBeforeOutputSlot,
                                             outputSide: outputSide,
-                                            tubeColor: color.primary.withValues(alpha: 0.55),
-                                            glowColor: color.primary.withValues(alpha: 0.12),
+                                            tubeColor: color.treeConduitTubeColor,
+                                            glowColor: color.treeConduitGlowColor,
                                           ),
                                         ),
                                       ),

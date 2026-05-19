@@ -110,13 +110,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get steamCell => 'Steam Cell';
 
   @override
+  String get magneticCell => 'Magnetic Cell';
+
+  @override
   String get lightCell => 'Light Cell';
+
+  @override
+  String get crystallineCell => 'Crystalline Cell';
 
   @override
   String get molecularCell => 'Molecular Cell';
 
   @override
   String get bacterialCell => 'Bacterial Cell';
+
+  @override
+  String get geneticCell => 'Genetic Cell';
 
   @override
   String get bloodCell => 'Blood Cell';
@@ -126,6 +135,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get radiationCell => 'Radiation Cell';
+
+  @override
+  String get nuclearCell => 'Nuclear Cell';
 
   @override
   String get plasmaCell => 'Plasma Cell';
