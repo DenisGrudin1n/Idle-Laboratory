@@ -44,6 +44,8 @@ import 'package:idle_laboratory/features/home/domain/services/prestige_service.d
     as _i741;
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart'
     as _i461;
+import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart'
+    as _i965;
 import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_bloc.dart'
     as _i951;
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart'
@@ -67,6 +69,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferencesModule.prefs,
       preResolve: true,
     );
+    gh.factory<_i965.CraftingBloc>(() => _i965.CraftingBloc());
     gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),

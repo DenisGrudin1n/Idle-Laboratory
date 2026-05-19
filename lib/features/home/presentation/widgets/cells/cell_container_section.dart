@@ -2,31 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
-import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_container.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 
-class CellContainerSection extends StatefulWidget {
+class CellContainerSection extends StatelessWidget {
   const CellContainerSection({super.key});
-  @override
-  State<CellContainerSection> createState() => _CellContainerSectionState();
-}
-
-class _CellContainerSectionState extends State<CellContainerSection> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 6000))..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) => SectionCard(
@@ -47,7 +28,7 @@ class _CellContainerSectionState extends State<CellContainerSection> with Single
                     child: SizedBox(
                       width: 120.w,
                       height: 72.h,
-                      child: AnimatedCellContainer(fillLevel: fillLevel, visualTheme: context.getCellTheme(cellId), animation: _controller),
+                      child: AnimatedCellGraphic(cellId: cellId, fillLevel: fillLevel),
                     ),
                   ),
                 );

@@ -11,30 +11,11 @@ import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_mode
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_container.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
-class ProductionContent extends StatefulWidget {
+class ProductionContent extends StatelessWidget {
   const ProductionContent({super.key});
-
-  @override
-  State<ProductionContent> createState() => _ProductionContentState();
-}
-
-class _ProductionContentState extends State<ProductionContent> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 6))..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +45,7 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
                     itemBuilder: (context, index) {
                       final cell = unlockedCells[index];
                       final entry = productionByCellId[cell.id] ?? CellProductionEntry.initial(cell.id);
-                      return _ProductionItem(cell: cell, entry: entry, animation: _controller);
+                      return _ProductionItem(cell: cell, entry: entry);
                     },
                   );
                 },
@@ -134,10 +115,9 @@ class _ProductionContentState extends State<ProductionContent> with SingleTicker
 }
 
 class _ProductionItem extends StatelessWidget {
-  const _ProductionItem({required this.cell, required this.entry, required this.animation});
+  const _ProductionItem({required this.cell, required this.entry});
   final CellModel cell;
   final CellProductionEntry entry;
-  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -194,11 +174,7 @@ class _ProductionItem extends StatelessWidget {
                     child: SizedBox(
                       width: width,
                       height: height,
-                      child: AnimatedCellContainer(
-                        fillLevel: 1,
-                        visualTheme: context.getCellTheme(cellId),
-                        animation: animation,
-                      ),
+                      child: AnimatedCellGraphic(cellId: cellId),
                     ),
                   );
                 },

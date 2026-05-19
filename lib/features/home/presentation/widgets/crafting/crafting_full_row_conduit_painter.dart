@@ -2,40 +2,44 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
-/// Full-width conduits: from the right edge of input slots to the left edge of the output slot.
 class CraftingFullRowConduitPainter extends CustomPainter {
   CraftingFullRowConduitPainter({
     required this.slotSide,
     required this.verticalGap,
-    required this.gapBeforeOutput,
+    required this.inputsTop,
     required this.outputSide,
+    required this.outputCenterY,
+    required this.gapBeforeOutput,
     required this.tubeColor,
     required this.glowColor,
   });
 
   final double slotSide;
   final double verticalGap;
-  final double gapBeforeOutput;
+  final double inputsTop;
   final double outputSide;
+  final double outputCenterY;
+  final double gapBeforeOutput;
   final Color tubeColor;
   final Color glowColor;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final h = size.height;
-    if (size.width <= 0 || h <= 0) return;
+    if (size.width <= 0 || size.height <= 0) return;
 
     final attachX = slotSide;
-    final endX = (size.width - gapBeforeOutput - outputSide).clamp(attachX + 8, size.width);
+    final endX = (size.width - outputSide - gapBeforeOutput).clamp(attachX + 8, size.width);
+    final mergeY = inputsTop + slotSide + verticalGap + slotSide * 0.5;
 
-    final y1 = slotSide * 0.5;
-    final y2 = slotSide + verticalGap + slotSide * 0.5;
-    final y3 = 2 * slotSide + 2 * verticalGap + slotSide * 0.5;
+    final y1 = inputsTop + slotSide * 0.5;
+    final y2 = inputsTop + slotSide + verticalGap + slotSide * 0.5;
+    final y3 = inputsTop + 2 * slotSide + 2 * verticalGap + slotSide * 0.5;
 
     final merge = Offset(
       attachX + (endX - attachX) * 0.52,
-      h * 0.5,
+      mergeY,
     );
+    final outputAttach = Offset(endX, outputCenterY);
 
     final glowPaint = Paint()
       ..color = glowColor
@@ -54,8 +58,8 @@ class CraftingFullRowConduitPainter extends CustomPainter {
       _branch(canvas, tubePaint, Offset(attachX, y), merge);
     }
 
-    _trunk(canvas, glowPaint, merge, Offset(endX, h * 0.5));
-    _trunk(canvas, tubePaint, merge, Offset(endX, h * 0.5));
+    _trunk(canvas, glowPaint, merge, outputAttach);
+    _trunk(canvas, tubePaint, merge, outputAttach);
   }
 
   void _branch(Canvas canvas, Paint paint, Offset a, Offset b) {
@@ -76,8 +80,10 @@ class CraftingFullRowConduitPainter extends CustomPainter {
   bool shouldRepaint(covariant CraftingFullRowConduitPainter oldDelegate) =>
       oldDelegate.slotSide != slotSide ||
       oldDelegate.verticalGap != verticalGap ||
-      oldDelegate.gapBeforeOutput != gapBeforeOutput ||
+      oldDelegate.inputsTop != inputsTop ||
       oldDelegate.outputSide != outputSide ||
+      oldDelegate.outputCenterY != outputCenterY ||
+      oldDelegate.gapBeforeOutput != gapBeforeOutput ||
       oldDelegate.tubeColor != tubeColor ||
       oldDelegate.glowColor != glowColor;
 }

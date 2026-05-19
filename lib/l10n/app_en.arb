@@ -47,6 +47,15 @@
     },
     "craftingStartReaction": "Start reaction",
     "craftingClearInputs": "Clear inputs",
+    "craftingSelectCellTitle": "Select cell",
+    "craftingSelectCellOverview": "Choose a production cell for the bottom crafting slot.",
+    "craftingClearCellSelection": "Clear cell slot",
+    "craftingCellAmount": "{amount}",
+    "@craftingCellAmount": {
+        "placeholders": {
+            "amount": { "type": "String" }
+        }
+    },
     "settings": "Settings",
     "statistics": "Statistics",
     "achievements": "Achievements",
