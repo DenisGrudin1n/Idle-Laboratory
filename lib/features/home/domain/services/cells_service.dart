@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
@@ -262,6 +263,17 @@ class CellsService {
   }
 
   void start() => _energyService.updateEPS(_calculateTotalEPS(currentCells, _productionSubject.value));
+
+  bool trySpendCells(CellId cellId, BigNumber amount) {
+    final map = Map<String, CellProductionEntry>.from(_productionSubject.value);
+    final entry = map[cellId.id];
+    if (entry == null || entry.amount < amount) return false;
+
+    map[cellId.id] = entry.copyWith(amount: entry.amount - amount);
+    _productionSubject.add(map);
+    _saveProductionThrottled(map);
+    return true;
+  }
 
   void reset() {
     final defaultCells = _cellRepository.getDefaultCells();

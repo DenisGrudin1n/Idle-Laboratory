@@ -42,6 +42,8 @@ import 'package:idle_laboratory/features/home/domain/services/energy_service.dar
     as _i57;
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart'
     as _i741;
+import 'package:idle_laboratory/features/home/domain/services/storage_service.dart'
+    as _i540;
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart'
     as _i461;
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart'
@@ -54,6 +56,8 @@ import 'package:idle_laboratory/features/home/presentation/blocs/prestige/presti
     as _i89;
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart'
     as _i754;
+import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage_bloc.dart'
+    as _i926;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
@@ -69,8 +73,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferencesModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i965.CraftingBloc>(() => _i965.CraftingBloc());
     gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
+    gh.lazySingleton<_i540.StorageService>(
+      () => _i540.StorageService(),
+      dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i926.StorageBloc>(
+      () => _i926.StorageBloc(gh<_i540.StorageService>()),
+    );
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -114,6 +124,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i741.PrestigeService>(),
       ),
       dispose: (i) => i.dispose(),
+    );
+    gh.factory<_i965.CraftingBloc>(
+      () => _i965.CraftingBloc(
+        gh<_i643.CellsService>(),
+        gh<_i57.EnergyService>(),
+        gh<_i540.StorageService>(),
+      ),
     );
     gh.factory<_i89.PrestigeBloc>(
       () => _i89.PrestigeBloc(

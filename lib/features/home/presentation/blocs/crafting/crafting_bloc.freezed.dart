@@ -55,12 +55,14 @@ extension CraftingEventPatterns on CraftingEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CellSlotChanged value)?  cellSlotChanged,TResult Function( _InputsCleared value)?  inputsCleared,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CellSlotChanged value)?  cellSlotChanged,TResult Function( _InputsCleared value)?  inputsCleared,TResult Function( _StartReaction value)?  startReaction,TResult Function( _Tick value)?  tick,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _CellSlotChanged() when cellSlotChanged != null:
 return cellSlotChanged(_that);case _InputsCleared() when inputsCleared != null:
-return inputsCleared(_that);case _:
+return inputsCleared(_that);case _StartReaction() when startReaction != null:
+return startReaction(_that);case _Tick() when tick != null:
+return tick(_that);case _:
   return orElse();
 
 }
@@ -78,12 +80,14 @@ return inputsCleared(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CellSlotChanged value)  cellSlotChanged,required TResult Function( _InputsCleared value)  inputsCleared,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CellSlotChanged value)  cellSlotChanged,required TResult Function( _InputsCleared value)  inputsCleared,required TResult Function( _StartReaction value)  startReaction,required TResult Function( _Tick value)  tick,}){
 final _that = this;
 switch (_that) {
 case _CellSlotChanged():
 return cellSlotChanged(_that);case _InputsCleared():
-return inputsCleared(_that);case _:
+return inputsCleared(_that);case _StartReaction():
+return startReaction(_that);case _Tick():
+return tick(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +104,14 @@ return inputsCleared(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CellSlotChanged value)?  cellSlotChanged,TResult? Function( _InputsCleared value)?  inputsCleared,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CellSlotChanged value)?  cellSlotChanged,TResult? Function( _InputsCleared value)?  inputsCleared,TResult? Function( _StartReaction value)?  startReaction,TResult? Function( _Tick value)?  tick,}){
 final _that = this;
 switch (_that) {
 case _CellSlotChanged() when cellSlotChanged != null:
 return cellSlotChanged(_that);case _InputsCleared() when inputsCleared != null:
-return inputsCleared(_that);case _:
+return inputsCleared(_that);case _StartReaction() when startReaction != null:
+return startReaction(_that);case _Tick() when tick != null:
+return tick(_that);case _:
   return null;
 
 }
@@ -122,11 +128,13 @@ return inputsCleared(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CellId? cellId)?  cellSlotChanged,TResult Function()?  inputsCleared,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( CellId? cellId)?  cellSlotChanged,TResult Function()?  inputsCleared,TResult Function()?  startReaction,TResult Function( double dt)?  tick,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CellSlotChanged() when cellSlotChanged != null:
 return cellSlotChanged(_that.cellId);case _InputsCleared() when inputsCleared != null:
-return inputsCleared();case _:
+return inputsCleared();case _StartReaction() when startReaction != null:
+return startReaction();case _Tick() when tick != null:
+return tick(_that.dt);case _:
   return orElse();
 
 }
@@ -144,11 +152,13 @@ return inputsCleared();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CellId? cellId)  cellSlotChanged,required TResult Function()  inputsCleared,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( CellId? cellId)  cellSlotChanged,required TResult Function()  inputsCleared,required TResult Function()  startReaction,required TResult Function( double dt)  tick,}) {final _that = this;
 switch (_that) {
 case _CellSlotChanged():
 return cellSlotChanged(_that.cellId);case _InputsCleared():
-return inputsCleared();case _:
+return inputsCleared();case _StartReaction():
+return startReaction();case _Tick():
+return tick(_that.dt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +175,13 @@ return inputsCleared();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CellId? cellId)?  cellSlotChanged,TResult? Function()?  inputsCleared,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( CellId? cellId)?  cellSlotChanged,TResult? Function()?  inputsCleared,TResult? Function()?  startReaction,TResult? Function( double dt)?  tick,}) {final _that = this;
 switch (_that) {
 case _CellSlotChanged() when cellSlotChanged != null:
 return cellSlotChanged(_that.cellId);case _InputsCleared() when inputsCleared != null:
-return inputsCleared();case _:
+return inputsCleared();case _StartReaction() when startReaction != null:
+return startReaction();case _Tick() when tick != null:
+return tick(_that.dt);case _:
   return null;
 
 }
@@ -276,9 +288,107 @@ String toString() {
 
 
 /// @nodoc
+
+
+class _StartReaction implements CraftingEvent {
+  const _StartReaction();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StartReaction);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CraftingEvent.startReaction()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _Tick implements CraftingEvent {
+  const _Tick(this.dt);
+  
+
+ final  double dt;
+
+/// Create a copy of CraftingEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TickCopyWith<_Tick> get copyWith => __$TickCopyWithImpl<_Tick>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Tick&&(identical(other.dt, dt) || other.dt == dt));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,dt);
+
+@override
+String toString() {
+  return 'CraftingEvent.tick(dt: $dt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TickCopyWith<$Res> implements $CraftingEventCopyWith<$Res> {
+  factory _$TickCopyWith(_Tick value, $Res Function(_Tick) _then) = __$TickCopyWithImpl;
+@useResult
+$Res call({
+ double dt
+});
+
+
+
+
+}
+/// @nodoc
+class __$TickCopyWithImpl<$Res>
+    implements _$TickCopyWith<$Res> {
+  __$TickCopyWithImpl(this._self, this._then);
+
+  final _Tick _self;
+  final $Res Function(_Tick) _then;
+
+/// Create a copy of CraftingEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? dt = null,}) {
+  return _then(_Tick(
+null == dt ? _self.dt : dt // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
+
+/// @nodoc
 mixin _$CraftingState {
 
- CellId? get selectedCellId;
+ CellId? get selectedCellId; bool get isCrafting; double get craftingProgress; ResearchMaterialId? get craftingMaterialId;
 /// Create a copy of CraftingState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -289,16 +399,16 @@ $CraftingStateCopyWith<CraftingState> get copyWith => _$CraftingStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CraftingState&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CraftingState&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&(identical(other.isCrafting, isCrafting) || other.isCrafting == isCrafting)&&(identical(other.craftingProgress, craftingProgress) || other.craftingProgress == craftingProgress)&&(identical(other.craftingMaterialId, craftingMaterialId) || other.craftingMaterialId == craftingMaterialId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedCellId);
+int get hashCode => Object.hash(runtimeType,selectedCellId,isCrafting,craftingProgress,craftingMaterialId);
 
 @override
 String toString() {
-  return 'CraftingState(selectedCellId: $selectedCellId)';
+  return 'CraftingState(selectedCellId: $selectedCellId, isCrafting: $isCrafting, craftingProgress: $craftingProgress, craftingMaterialId: $craftingMaterialId)';
 }
 
 
@@ -309,7 +419,7 @@ abstract mixin class $CraftingStateCopyWith<$Res>  {
   factory $CraftingStateCopyWith(CraftingState value, $Res Function(CraftingState) _then) = _$CraftingStateCopyWithImpl;
 @useResult
 $Res call({
- CellId? selectedCellId
+ CellId? selectedCellId, bool isCrafting, double craftingProgress, ResearchMaterialId? craftingMaterialId
 });
 
 
@@ -326,10 +436,13 @@ class _$CraftingStateCopyWithImpl<$Res>
 
 /// Create a copy of CraftingState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedCellId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectedCellId = freezed,Object? isCrafting = null,Object? craftingProgress = null,Object? craftingMaterialId = freezed,}) {
   return _then(_self.copyWith(
 selectedCellId: freezed == selectedCellId ? _self.selectedCellId : selectedCellId // ignore: cast_nullable_to_non_nullable
-as CellId?,
+as CellId?,isCrafting: null == isCrafting ? _self.isCrafting : isCrafting // ignore: cast_nullable_to_non_nullable
+as bool,craftingProgress: null == craftingProgress ? _self.craftingProgress : craftingProgress // ignore: cast_nullable_to_non_nullable
+as double,craftingMaterialId: freezed == craftingMaterialId ? _self.craftingMaterialId : craftingMaterialId // ignore: cast_nullable_to_non_nullable
+as ResearchMaterialId?,
   ));
 }
 
@@ -414,10 +527,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CellId? selectedCellId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CellId? selectedCellId,  bool isCrafting,  double craftingProgress,  ResearchMaterialId? craftingMaterialId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CraftingState() when $default != null:
-return $default(_that.selectedCellId);case _:
+return $default(_that.selectedCellId,_that.isCrafting,_that.craftingProgress,_that.craftingMaterialId);case _:
   return orElse();
 
 }
@@ -435,10 +548,10 @@ return $default(_that.selectedCellId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CellId? selectedCellId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CellId? selectedCellId,  bool isCrafting,  double craftingProgress,  ResearchMaterialId? craftingMaterialId)  $default,) {final _that = this;
 switch (_that) {
 case _CraftingState():
-return $default(_that.selectedCellId);case _:
+return $default(_that.selectedCellId,_that.isCrafting,_that.craftingProgress,_that.craftingMaterialId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -455,10 +568,10 @@ return $default(_that.selectedCellId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CellId? selectedCellId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CellId? selectedCellId,  bool isCrafting,  double craftingProgress,  ResearchMaterialId? craftingMaterialId)?  $default,) {final _that = this;
 switch (_that) {
 case _CraftingState() when $default != null:
-return $default(_that.selectedCellId);case _:
+return $default(_that.selectedCellId,_that.isCrafting,_that.craftingProgress,_that.craftingMaterialId);case _:
   return null;
 
 }
@@ -470,10 +583,13 @@ return $default(_that.selectedCellId);case _:
 
 
 class _CraftingState implements CraftingState {
-  const _CraftingState({this.selectedCellId});
+  const _CraftingState({this.selectedCellId, this.isCrafting = false, this.craftingProgress = 0.0, this.craftingMaterialId});
   
 
 @override final  CellId? selectedCellId;
+@override@JsonKey() final  bool isCrafting;
+@override@JsonKey() final  double craftingProgress;
+@override final  ResearchMaterialId? craftingMaterialId;
 
 /// Create a copy of CraftingState
 /// with the given fields replaced by the non-null parameter values.
@@ -485,16 +601,16 @@ _$CraftingStateCopyWith<_CraftingState> get copyWith => __$CraftingStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CraftingState&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CraftingState&&(identical(other.selectedCellId, selectedCellId) || other.selectedCellId == selectedCellId)&&(identical(other.isCrafting, isCrafting) || other.isCrafting == isCrafting)&&(identical(other.craftingProgress, craftingProgress) || other.craftingProgress == craftingProgress)&&(identical(other.craftingMaterialId, craftingMaterialId) || other.craftingMaterialId == craftingMaterialId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedCellId);
+int get hashCode => Object.hash(runtimeType,selectedCellId,isCrafting,craftingProgress,craftingMaterialId);
 
 @override
 String toString() {
-  return 'CraftingState(selectedCellId: $selectedCellId)';
+  return 'CraftingState(selectedCellId: $selectedCellId, isCrafting: $isCrafting, craftingProgress: $craftingProgress, craftingMaterialId: $craftingMaterialId)';
 }
 
 
@@ -505,7 +621,7 @@ abstract mixin class _$CraftingStateCopyWith<$Res> implements $CraftingStateCopy
   factory _$CraftingStateCopyWith(_CraftingState value, $Res Function(_CraftingState) _then) = __$CraftingStateCopyWithImpl;
 @override @useResult
 $Res call({
- CellId? selectedCellId
+ CellId? selectedCellId, bool isCrafting, double craftingProgress, ResearchMaterialId? craftingMaterialId
 });
 
 
@@ -522,10 +638,13 @@ class __$CraftingStateCopyWithImpl<$Res>
 
 /// Create a copy of CraftingState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectedCellId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedCellId = freezed,Object? isCrafting = null,Object? craftingProgress = null,Object? craftingMaterialId = freezed,}) {
   return _then(_CraftingState(
 selectedCellId: freezed == selectedCellId ? _self.selectedCellId : selectedCellId // ignore: cast_nullable_to_non_nullable
-as CellId?,
+as CellId?,isCrafting: null == isCrafting ? _self.isCrafting : isCrafting // ignore: cast_nullable_to_non_nullable
+as bool,craftingProgress: null == craftingProgress ? _self.craftingProgress : craftingProgress // ignore: cast_nullable_to_non_nullable
+as double,craftingMaterialId: freezed == craftingMaterialId ? _self.craftingMaterialId : craftingMaterialId // ignore: cast_nullable_to_non_nullable
+as ResearchMaterialId?,
   ));
 }
 

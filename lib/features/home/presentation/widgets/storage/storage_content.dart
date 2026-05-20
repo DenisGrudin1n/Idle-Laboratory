@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_material_tile.dart';
 
-/// Inventory grid for crafted research materials (counts wired when storage bloc exists).
+/// Inventory grid for crafted research materials.
 class StorageContent extends StatelessWidget {
   const StorageContent({super.key});
 
@@ -27,16 +29,25 @@ class StorageContent extends StatelessWidget {
             Text(l10n.storageInventoryOverview, style: context.styles.compactValue),
             SizedBox(height: 16.h),
             Expanded(
-              child: GridView.builder(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                  childAspectRatio: 0.72,
-                  crossAxisSpacing: 10.w,
-                  mainAxisSpacing: 10.h,
+              child: BlocSelector<StorageBloc, StorageState, Map<ResearchMaterialId, int>>(
+                selector: (state) => state.inventory,
+                builder: (context, inventory) => GridView.builder(
+                  padding: EdgeInsets.zero,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 6,
+                    childAspectRatio: 0.72,
+                    crossAxisSpacing: 10.w,
+                    mainAxisSpacing: 10.h,
+                  ),
+                  itemCount: _materials.length,
+                  itemBuilder: (context, index) {
+                    final materialId = _materials[index];
+                    return StorageMaterialTile(
+                      materialId: materialId,
+                      count: inventory[materialId] ?? 0,
+                    );
+                  },
                 ),
-                itemCount: _materials.length,
-                itemBuilder: (context, index) => StorageMaterialTile(materialId: _materials[index]),
               ),
             ),
           ],
