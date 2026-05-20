@@ -8,10 +8,11 @@ import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
 
 class CraftingOutputSlot extends StatelessWidget {
-  const CraftingOutputSlot({this.outputMaterialId, this.slotSide, super.key});
+  const CraftingOutputSlot({this.outputMaterialId, this.slotSide, this.onTap, super.key});
 
   final ResearchMaterialId? outputMaterialId;
   final double? slotSide;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class CraftingOutputSlot extends StatelessWidget {
     final material = outputMaterialId;
     final innerRadius = 9.r;
 
-    return SizedBox(
+    final slot = SizedBox(
       width: side,
       height: side,
       child: GradientSlotFrame(
@@ -58,6 +59,14 @@ class CraftingOutputSlot extends StatelessWidget {
                 ),
               ),
       ),
+    );
+
+    if (onTap == null || material == null) return slot;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: slot,
     );
   }
 }

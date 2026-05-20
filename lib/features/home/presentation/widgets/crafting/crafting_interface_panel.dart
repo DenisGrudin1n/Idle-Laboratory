@@ -15,6 +15,7 @@ import 'package:idle_laboratory/features/home/presentation/widgets/crafting/craf
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_full_row_conduit_painter.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_input_slot.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_output_slot.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_detail_dialog.dart';
 
 class CraftingInterfacePanel extends StatelessWidget {
   const CraftingInterfacePanel({super.key});
@@ -70,8 +71,12 @@ class CraftingInterfacePanel extends StatelessWidget {
           Positioned(
             right: 0,
             top: outputTop,
-            child: IgnorePointer(
-              child: CraftingOutputSlot(outputMaterialId: outputMaterial, slotSide: outputSide),
+            child: CraftingOutputSlot(
+              outputMaterialId: outputMaterial,
+              slotSide: outputSide,
+              onTap: outputMaterial == null
+                  ? null
+                  : () => showResearchMaterialDetailDialog(context, outputMaterial),
             ),
           ),
           Positioned(
