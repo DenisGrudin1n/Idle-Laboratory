@@ -265,6 +265,18 @@ abstract class AppLocalizations {
   /// **'Storage'**
   String get storage;
 
+  /// No description provided for @storageInventoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Material storage'**
+  String get storageInventoryTitle;
+
+  /// No description provided for @storageInventoryOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafted materials are kept here for research merges and future reactions.'**
+  String get storageInventoryOverview;
+
   /// No description provided for @research.
   ///
   /// In en, this message translates to:

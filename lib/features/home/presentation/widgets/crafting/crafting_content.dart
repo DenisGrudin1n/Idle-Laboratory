@@ -9,6 +9,7 @@ import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_interface_panel.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_view.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_content.dart';
 
 class CraftingContent extends StatelessWidget {
   const CraftingContent({super.key});
@@ -48,13 +49,14 @@ class CraftingContent extends StatelessWidget {
             ),
           ),
         ),
+      CraftingTab.storage => const StorageContent(),
       CraftingTab.research => SectionCard(
           child: Padding(
             padding: EdgeInsets.all(12.w),
             child: const ResearchTreeView(),
           ),
         ),
-      _ => const Center(child: Text('Coming Soon')),
+      CraftingTab.overview => const Center(child: Text('Coming Soon')),
     };
   }
 }

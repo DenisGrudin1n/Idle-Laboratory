@@ -106,6 +106,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get storage => 'Storage';
 
   @override
+  String get storageInventoryTitle => 'Material storage';
+
+  @override
+  String get storageInventoryOverview => 'Crafted materials are kept here for research merges and future reactions.';
+
+  @override
   String get research => 'Research';
 
   @override

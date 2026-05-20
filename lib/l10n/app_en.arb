@@ -62,6 +62,8 @@
     "energyCells": "Energy Cells",
     "production": "Production",
     "storage": "Storage",
+    "storageInventoryTitle": "Material storage",
+    "storageInventoryOverview": "Crafted materials are kept here for research merges and future reactions.",
     "research": "Research",
     "overview": "Overview",
     "basicEnergyCell": "Basic Energy Cell",
