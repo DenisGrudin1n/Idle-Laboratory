@@ -295,105 +295,104 @@ class AppColor extends ThemeExtension<AppColor> {
     Color? nuclearCoreColor,
     Color? nuclearParticleColor1,
     Color? nuclearParticleColor2,
-  }) =>
-      AppColor(
-        primary: primary ?? this.primary,
-        secondary: secondary ?? this.secondary,
-        accent: accent ?? this.accent,
-        primaryText: primaryText ?? this.primaryText,
-        background: background ?? this.background,
-        drawerBackground: drawerBackground ?? this.drawerBackground,
-        titleText: titleText ?? this.titleText,
-        green: green ?? this.green,
-        sectionBorder: sectionBorder ?? this.sectionBorder,
-        sectionGradient: sectionGradient ?? this.sectionGradient,
-        cellBodyGradient: cellBodyGradient ?? this.cellBodyGradient,
-        cellTopCapGradient: cellTopCapGradient ?? this.cellTopCapGradient,
-        cellBottomCapGradient: cellBottomCapGradient ?? this.cellBottomCapGradient,
-        cellTopRimGradient: cellTopRimGradient ?? this.cellTopRimGradient,
-        cellBottomRimGradient: cellBottomRimGradient ?? this.cellBottomRimGradient,
-        energyFillGradient: energyFillGradient ?? this.energyFillGradient,
-        energyGlowGradient: energyGlowGradient ?? this.energyGlowGradient,
-        energyLightningColor: energyLightningColor ?? this.energyLightningColor,
-        energyParticleColor1: energyParticleColor1 ?? this.energyParticleColor1,
-        energyParticleColor2: energyParticleColor2 ?? this.energyParticleColor2,
-        heatFillGradient: heatFillGradient ?? this.heatFillGradient,
-        heatGlowGradient: heatGlowGradient ?? this.heatGlowGradient,
-        heatChunkColor: heatChunkColor ?? this.heatChunkColor,
-        heatEmberColor1: heatEmberColor1 ?? this.heatEmberColor1,
-        heatEmberColor2: heatEmberColor2 ?? this.heatEmberColor2,
-        iceFillGradient: iceFillGradient ?? this.iceFillGradient,
-        iceGlowGradient: iceGlowGradient ?? this.iceGlowGradient,
-        iceCrystalColor: iceCrystalColor ?? this.iceCrystalColor,
-        iceParticleColor1: iceParticleColor1 ?? this.iceParticleColor1,
-        iceParticleColor2: iceParticleColor2 ?? this.iceParticleColor2,
-        steamFillGradient: steamFillGradient ?? this.steamFillGradient,
-        steamGlowGradient: steamGlowGradient ?? this.steamGlowGradient,
-        steamVaporColor: steamVaporColor ?? this.steamVaporColor,
-        steamParticleColor1: steamParticleColor1 ?? this.steamParticleColor1,
-        steamParticleColor2: steamParticleColor2 ?? this.steamParticleColor2,
-        lightFillGradient: lightFillGradient ?? this.lightFillGradient,
-        lightGlowGradient: lightGlowGradient ?? this.lightGlowGradient,
-        lightBeamColor: lightBeamColor ?? this.lightBeamColor,
-        lightParticleColor1: lightParticleColor1 ?? this.lightParticleColor1,
-        lightParticleColor2: lightParticleColor2 ?? this.lightParticleColor2,
-        molecularFillGradient: molecularFillGradient ?? this.molecularFillGradient,
-        molecularGlowGradient: molecularGlowGradient ?? this.molecularGlowGradient,
-        molecularAtomColor: molecularAtomColor ?? this.molecularAtomColor,
-        molecularBondColor: molecularBondColor ?? this.molecularBondColor,
-        molecularParticleColor1: molecularParticleColor1 ?? this.molecularParticleColor1,
-        molecularParticleColor2: molecularParticleColor2 ?? this.molecularParticleColor2,
-        bacterialFillGradient: bacterialFillGradient ?? this.bacterialFillGradient,
-        bacterialGlowGradient: bacterialGlowGradient ?? this.bacterialGlowGradient,
-        bacterialOrganismColor: bacterialOrganismColor ?? this.bacterialOrganismColor,
-        bacterialParticleColor1: bacterialParticleColor1 ?? this.bacterialParticleColor1,
-        bacterialParticleColor2: bacterialParticleColor2 ?? this.bacterialParticleColor2,
-        bloodFillGradient: bloodFillGradient ?? this.bloodFillGradient,
-        bloodGlowGradient: bloodGlowGradient ?? this.bloodGlowGradient,
-        bloodCellColor: bloodCellColor ?? this.bloodCellColor,
-        bloodParticleColor1: bloodParticleColor1 ?? this.bloodParticleColor1,
-        bloodParticleColor2: bloodParticleColor2 ?? this.bloodParticleColor2,
-        bioFillGradient: bioFillGradient ?? this.bioFillGradient,
-        bioGlowGradient: bioGlowGradient ?? this.bioGlowGradient,
-        bioSporeColor: bioSporeColor ?? this.bioSporeColor,
-        bioParticleColor1: bioParticleColor1 ?? this.bioParticleColor1,
-        bioParticleColor2: bioParticleColor2 ?? this.bioParticleColor2,
-        radiationFillGradient: radiationFillGradient ?? this.radiationFillGradient,
-        radiationGlowGradient: radiationGlowGradient ?? this.radiationGlowGradient,
-        radiationWaveColor: radiationWaveColor ?? this.radiationWaveColor,
-        radiationParticleColor1: radiationParticleColor1 ?? this.radiationParticleColor1,
-        radiationParticleColor2: radiationParticleColor2 ?? this.radiationParticleColor2,
-        plasmaFillGradient: plasmaFillGradient ?? this.plasmaFillGradient,
-        plasmaGlowGradient: plasmaGlowGradient ?? this.plasmaGlowGradient,
-        plasmaFilamentColor: plasmaFilamentColor ?? this.plasmaFilamentColor,
-        plasmaParticleColor1: plasmaParticleColor1 ?? this.plasmaParticleColor1,
-        plasmaParticleColor2: plasmaParticleColor2 ?? this.plasmaParticleColor2,
-        darkMatterFillGradient: darkMatterFillGradient ?? this.darkMatterFillGradient,
-        darkMatterGlowGradient: darkMatterGlowGradient ?? this.darkMatterGlowGradient,
-        darkMatterSingularityColor: darkMatterSingularityColor ?? this.darkMatterSingularityColor,
-        darkMatterParticleColor1: darkMatterParticleColor1 ?? this.darkMatterParticleColor1,
-        darkMatterParticleColor2: darkMatterParticleColor2 ?? this.darkMatterParticleColor2,
-        magneticFillGradient: magneticFillGradient ?? this.magneticFillGradient,
-        magneticGlowGradient: magneticGlowGradient ?? this.magneticGlowGradient,
-        crystallineFillGradient: crystallineFillGradient ?? this.crystallineFillGradient,
-        crystallineGlowGradient: crystallineGlowGradient ?? this.crystallineGlowGradient,
-        geneticFillGradient: geneticFillGradient ?? this.geneticFillGradient,
-        geneticGlowGradient: geneticGlowGradient ?? this.geneticGlowGradient,
-        nuclearFillGradient: nuclearFillGradient ?? this.nuclearFillGradient,
-        nuclearGlowGradient: nuclearGlowGradient ?? this.nuclearGlowGradient,
-        magneticFieldLineColor: magneticFieldLineColor ?? this.magneticFieldLineColor,
-        magneticParticleColor1: magneticParticleColor1 ?? this.magneticParticleColor1,
-        magneticParticleColor2: magneticParticleColor2 ?? this.magneticParticleColor2,
-        crystallineFacetColor: crystallineFacetColor ?? this.crystallineFacetColor,
-        crystallineParticleColor1: crystallineParticleColor1 ?? this.crystallineParticleColor1,
-        crystallineParticleColor2: crystallineParticleColor2 ?? this.crystallineParticleColor2,
-        geneticHelixColor: geneticHelixColor ?? this.geneticHelixColor,
-        geneticParticleColor1: geneticParticleColor1 ?? this.geneticParticleColor1,
-        geneticParticleColor2: geneticParticleColor2 ?? this.geneticParticleColor2,
-        nuclearCoreColor: nuclearCoreColor ?? this.nuclearCoreColor,
-        nuclearParticleColor1: nuclearParticleColor1 ?? this.nuclearParticleColor1,
-        nuclearParticleColor2: nuclearParticleColor2 ?? this.nuclearParticleColor2,
-      );
+  }) => AppColor(
+    primary: primary ?? this.primary,
+    secondary: secondary ?? this.secondary,
+    accent: accent ?? this.accent,
+    primaryText: primaryText ?? this.primaryText,
+    background: background ?? this.background,
+    drawerBackground: drawerBackground ?? this.drawerBackground,
+    titleText: titleText ?? this.titleText,
+    green: green ?? this.green,
+    sectionBorder: sectionBorder ?? this.sectionBorder,
+    sectionGradient: sectionGradient ?? this.sectionGradient,
+    cellBodyGradient: cellBodyGradient ?? this.cellBodyGradient,
+    cellTopCapGradient: cellTopCapGradient ?? this.cellTopCapGradient,
+    cellBottomCapGradient: cellBottomCapGradient ?? this.cellBottomCapGradient,
+    cellTopRimGradient: cellTopRimGradient ?? this.cellTopRimGradient,
+    cellBottomRimGradient: cellBottomRimGradient ?? this.cellBottomRimGradient,
+    energyFillGradient: energyFillGradient ?? this.energyFillGradient,
+    energyGlowGradient: energyGlowGradient ?? this.energyGlowGradient,
+    energyLightningColor: energyLightningColor ?? this.energyLightningColor,
+    energyParticleColor1: energyParticleColor1 ?? this.energyParticleColor1,
+    energyParticleColor2: energyParticleColor2 ?? this.energyParticleColor2,
+    heatFillGradient: heatFillGradient ?? this.heatFillGradient,
+    heatGlowGradient: heatGlowGradient ?? this.heatGlowGradient,
+    heatChunkColor: heatChunkColor ?? this.heatChunkColor,
+    heatEmberColor1: heatEmberColor1 ?? this.heatEmberColor1,
+    heatEmberColor2: heatEmberColor2 ?? this.heatEmberColor2,
+    iceFillGradient: iceFillGradient ?? this.iceFillGradient,
+    iceGlowGradient: iceGlowGradient ?? this.iceGlowGradient,
+    iceCrystalColor: iceCrystalColor ?? this.iceCrystalColor,
+    iceParticleColor1: iceParticleColor1 ?? this.iceParticleColor1,
+    iceParticleColor2: iceParticleColor2 ?? this.iceParticleColor2,
+    steamFillGradient: steamFillGradient ?? this.steamFillGradient,
+    steamGlowGradient: steamGlowGradient ?? this.steamGlowGradient,
+    steamVaporColor: steamVaporColor ?? this.steamVaporColor,
+    steamParticleColor1: steamParticleColor1 ?? this.steamParticleColor1,
+    steamParticleColor2: steamParticleColor2 ?? this.steamParticleColor2,
+    lightFillGradient: lightFillGradient ?? this.lightFillGradient,
+    lightGlowGradient: lightGlowGradient ?? this.lightGlowGradient,
+    lightBeamColor: lightBeamColor ?? this.lightBeamColor,
+    lightParticleColor1: lightParticleColor1 ?? this.lightParticleColor1,
+    lightParticleColor2: lightParticleColor2 ?? this.lightParticleColor2,
+    molecularFillGradient: molecularFillGradient ?? this.molecularFillGradient,
+    molecularGlowGradient: molecularGlowGradient ?? this.molecularGlowGradient,
+    molecularAtomColor: molecularAtomColor ?? this.molecularAtomColor,
+    molecularBondColor: molecularBondColor ?? this.molecularBondColor,
+    molecularParticleColor1: molecularParticleColor1 ?? this.molecularParticleColor1,
+    molecularParticleColor2: molecularParticleColor2 ?? this.molecularParticleColor2,
+    bacterialFillGradient: bacterialFillGradient ?? this.bacterialFillGradient,
+    bacterialGlowGradient: bacterialGlowGradient ?? this.bacterialGlowGradient,
+    bacterialOrganismColor: bacterialOrganismColor ?? this.bacterialOrganismColor,
+    bacterialParticleColor1: bacterialParticleColor1 ?? this.bacterialParticleColor1,
+    bacterialParticleColor2: bacterialParticleColor2 ?? this.bacterialParticleColor2,
+    bloodFillGradient: bloodFillGradient ?? this.bloodFillGradient,
+    bloodGlowGradient: bloodGlowGradient ?? this.bloodGlowGradient,
+    bloodCellColor: bloodCellColor ?? this.bloodCellColor,
+    bloodParticleColor1: bloodParticleColor1 ?? this.bloodParticleColor1,
+    bloodParticleColor2: bloodParticleColor2 ?? this.bloodParticleColor2,
+    bioFillGradient: bioFillGradient ?? this.bioFillGradient,
+    bioGlowGradient: bioGlowGradient ?? this.bioGlowGradient,
+    bioSporeColor: bioSporeColor ?? this.bioSporeColor,
+    bioParticleColor1: bioParticleColor1 ?? this.bioParticleColor1,
+    bioParticleColor2: bioParticleColor2 ?? this.bioParticleColor2,
+    radiationFillGradient: radiationFillGradient ?? this.radiationFillGradient,
+    radiationGlowGradient: radiationGlowGradient ?? this.radiationGlowGradient,
+    radiationWaveColor: radiationWaveColor ?? this.radiationWaveColor,
+    radiationParticleColor1: radiationParticleColor1 ?? this.radiationParticleColor1,
+    radiationParticleColor2: radiationParticleColor2 ?? this.radiationParticleColor2,
+    plasmaFillGradient: plasmaFillGradient ?? this.plasmaFillGradient,
+    plasmaGlowGradient: plasmaGlowGradient ?? this.plasmaGlowGradient,
+    plasmaFilamentColor: plasmaFilamentColor ?? this.plasmaFilamentColor,
+    plasmaParticleColor1: plasmaParticleColor1 ?? this.plasmaParticleColor1,
+    plasmaParticleColor2: plasmaParticleColor2 ?? this.plasmaParticleColor2,
+    darkMatterFillGradient: darkMatterFillGradient ?? this.darkMatterFillGradient,
+    darkMatterGlowGradient: darkMatterGlowGradient ?? this.darkMatterGlowGradient,
+    darkMatterSingularityColor: darkMatterSingularityColor ?? this.darkMatterSingularityColor,
+    darkMatterParticleColor1: darkMatterParticleColor1 ?? this.darkMatterParticleColor1,
+    darkMatterParticleColor2: darkMatterParticleColor2 ?? this.darkMatterParticleColor2,
+    magneticFillGradient: magneticFillGradient ?? this.magneticFillGradient,
+    magneticGlowGradient: magneticGlowGradient ?? this.magneticGlowGradient,
+    crystallineFillGradient: crystallineFillGradient ?? this.crystallineFillGradient,
+    crystallineGlowGradient: crystallineGlowGradient ?? this.crystallineGlowGradient,
+    geneticFillGradient: geneticFillGradient ?? this.geneticFillGradient,
+    geneticGlowGradient: geneticGlowGradient ?? this.geneticGlowGradient,
+    nuclearFillGradient: nuclearFillGradient ?? this.nuclearFillGradient,
+    nuclearGlowGradient: nuclearGlowGradient ?? this.nuclearGlowGradient,
+    magneticFieldLineColor: magneticFieldLineColor ?? this.magneticFieldLineColor,
+    magneticParticleColor1: magneticParticleColor1 ?? this.magneticParticleColor1,
+    magneticParticleColor2: magneticParticleColor2 ?? this.magneticParticleColor2,
+    crystallineFacetColor: crystallineFacetColor ?? this.crystallineFacetColor,
+    crystallineParticleColor1: crystallineParticleColor1 ?? this.crystallineParticleColor1,
+    crystallineParticleColor2: crystallineParticleColor2 ?? this.crystallineParticleColor2,
+    geneticHelixColor: geneticHelixColor ?? this.geneticHelixColor,
+    geneticParticleColor1: geneticParticleColor1 ?? this.geneticParticleColor1,
+    geneticParticleColor2: geneticParticleColor2 ?? this.geneticParticleColor2,
+    nuclearCoreColor: nuclearCoreColor ?? this.nuclearCoreColor,
+    nuclearParticleColor1: nuclearParticleColor1 ?? this.nuclearParticleColor1,
+    nuclearParticleColor2: nuclearParticleColor2 ?? this.nuclearParticleColor2,
+  );
 
   @override
   AppColor lerp(ThemeExtension<AppColor>? other, double t) {
@@ -604,7 +603,9 @@ class DefaultColor {
     colors: [Color(0xFFE1BEE7), Color(0xFFBA68C8), Color(0xFF8E24AA)],
   );
 
-  static const molecularGlowGradient = RadialGradient(colors: [Color(0xFFE1BEE7), Color(0xFF8E24AA), Colors.transparent]);
+  static const molecularGlowGradient = RadialGradient(
+    colors: [Color(0xFFE1BEE7), Color(0xFF8E24AA), Colors.transparent],
+  );
   static const molecularAtomColor = Color(0xFFB2EBF2);
   static const molecularBondColor = Color(0xB3FFFFFF);
   static const molecularParticleColor1 = Color(0xFFCE93D8);
@@ -616,7 +617,9 @@ class DefaultColor {
     colors: [Color(0xFFDCEDC8), Color(0xFF8BC34A), Color(0xFF558B2F)],
   );
 
-  static const bacterialGlowGradient = RadialGradient(colors: [Color(0xFFDCEDC8), Color(0xFF558B2F), Colors.transparent]);
+  static const bacterialGlowGradient = RadialGradient(
+    colors: [Color(0xFFDCEDC8), Color(0xFF558B2F), Colors.transparent],
+  );
   static const bacterialOrganismColor = Color(0xFFAED581);
   static const bacterialParticleColor1 = Color(0xFFF1F8E9);
   static const bacterialParticleColor2 = Color(0xFFC5E1A5);
@@ -649,7 +652,9 @@ class DefaultColor {
     colors: [Color(0xFF76FF03), Color(0xFFC0CA33), Color(0xFF1B5E20)],
   );
 
-  static const radiationGlowGradient = RadialGradient(colors: [Color(0xFFFFFF00), Color(0xFF6200EA), Colors.transparent]);
+  static const radiationGlowGradient = RadialGradient(
+    colors: [Color(0xFFFFFF00), Color(0xFF6200EA), Colors.transparent],
+  );
   static const radiationWaveColor = Color(0xFFFFFF00);
   static const radiationParticleColor1 = Color(0xFFFF00FF);
   static const radiationParticleColor2 = Color(0xFF76FF03);
@@ -671,7 +676,9 @@ class DefaultColor {
     colors: [Color(0xFF1A1A1A), Color(0xFF0D0D0D), Color(0xFF000000)],
   );
 
-  static const darkMatterGlowGradient = RadialGradient(colors: [Color(0xFF4A148C), Color(0xFF000000), Colors.transparent]);
+  static const darkMatterGlowGradient = RadialGradient(
+    colors: [Color(0xFF4A148C), Color(0xFF000000), Colors.transparent],
+  );
   static const darkMatterSingularityColor = Color(0xFF000000);
   static const darkMatterParticleColor1 = Color(0xFFE1BEE7);
   static const darkMatterParticleColor2 = Color(0xFF4A148C);
@@ -682,7 +689,9 @@ class DefaultColor {
     colors: [Color(0xFF1A237E), Color(0xFF3949AB), Color(0xFF0D47A1)],
   );
 
-  static const magneticGlowGradient = RadialGradient(colors: [Color(0xFF5C6BC0), Color(0xFF1A237E), Colors.transparent]);
+  static const magneticGlowGradient = RadialGradient(
+    colors: [Color(0xFF5C6BC0), Color(0xFF1A237E), Colors.transparent],
+  );
   static const magneticFieldLineColor = Color(0xFF82B1FF);
   static const magneticParticleColor1 = Color(0xFFB3E5FC);
   static const magneticParticleColor2 = Color(0xFF448AFF);
@@ -693,7 +702,9 @@ class DefaultColor {
     colors: [Color(0xFFE8EAF6), Color(0xFF7E57C2), Color(0xFF4527A0)],
   );
 
-  static const crystallineGlowGradient = RadialGradient(colors: [Color(0xFFD1C4E9), Color(0xFF4527A0), Colors.transparent]);
+  static const crystallineGlowGradient = RadialGradient(
+    colors: [Color(0xFFD1C4E9), Color(0xFF4527A0), Colors.transparent],
+  );
   static const crystallineFacetColor = Color(0xFFB39DDB);
   static const crystallineParticleColor1 = Color(0xFFEDE7F6);
   static const crystallineParticleColor2 = Color(0xFF9575CD);

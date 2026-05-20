@@ -6,6 +6,12 @@ import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
+extension CellIdResearchMaterial on CellId {
+  /// Base-tier research material crafted from this cell (bottom tree row).
+  ResearchMaterialId? get baseResearchMaterial =>
+      order < ResearchMaterialIdMeta.baseTierCount ? ResearchMaterialId.values[order] : null;
+}
+
 extension ResearchMaterialIdMeta on ResearchMaterialId {
   static const baseTierCount = 16;
 

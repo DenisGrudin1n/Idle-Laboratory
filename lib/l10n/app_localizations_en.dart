@@ -74,6 +74,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get craftingClearInputs => 'Clear inputs';
 
   @override
+  String get craftingSelectCellTitle => 'Select cell';
+
+  @override
+  String get craftingSelectCellOverview => 'Choose a production cell for the bottom crafting slot.';
+
+  @override
+  String get craftingClearCellSelection => 'Clear cell slot';
+
+  @override
+  String craftingCellAmount(String amount) {
+    return '$amount';
+  }
+
+  @override
   String get settings => 'Settings';
 
   @override

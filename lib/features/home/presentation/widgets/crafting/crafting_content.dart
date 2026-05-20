@@ -41,7 +41,7 @@ class CraftingContent extends StatelessWidget {
               children: [
                 Text(l10n.craftingInterfaceTitle, style: context.styles.sectionHeaderTitle),
                 SizedBox(height: 4.h),
-                Text(l10n.craftingInterfaceOverview, style: context.styles.sectionHeaderDescription),
+                Text(l10n.craftingInterfaceOverview, style: context.styles.compactValue),
                 SizedBox(height: 16.h),
                 const Expanded(child: CraftingInterfacePanel()),
               ],

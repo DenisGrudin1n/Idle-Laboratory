@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/helper/get_it_service_locator.dart';
 import 'package:idle_laboratory/core/router/app_router.dart';
 import 'package:idle_laboratory/core/theme/app_theme.dart';
+import 'package:idle_laboratory/core/widgets/cell_loop_animation_scope.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
@@ -23,8 +25,10 @@ class AppWidget extends StatelessWidget {
       BlocProvider(create: (_) => getIt<PrestigeBloc>()..add(const PrestigeEvent.start())),
       BlocProvider(create: (_) => getIt<SettingsBloc>()),
       BlocProvider(create: (_) => getIt<CellsBloc>()..add(const CellsEvent.start())),
+      BlocProvider(create: (_) => getIt<CraftingBloc>()),
     ],
-    child: ScreenUtilInit(
+    child: CellLoopAnimationScope(
+      child: ScreenUtilInit(
       designSize: Size(390 * (MediaQuery.sizeOf(context).width / 390), 844 * (MediaQuery.sizeOf(context).height / 844)),
       splitScreenMode: true,
       child: MediaQuery(
@@ -42,6 +46,7 @@ class AppWidget extends StatelessWidget {
           debugShowCheckedModeBanner: false,
         ),
       ),
+    ),
     ),
   );
 }

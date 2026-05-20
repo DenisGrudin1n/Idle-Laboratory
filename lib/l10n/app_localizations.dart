@@ -205,6 +205,30 @@ abstract class AppLocalizations {
   /// **'Clear inputs'**
   String get craftingClearInputs;
 
+  /// No description provided for @craftingSelectCellTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Select cell'**
+  String get craftingSelectCellTitle;
+
+  /// No description provided for @craftingSelectCellOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a production cell for the bottom crafting slot.'**
+  String get craftingSelectCellOverview;
+
+  /// No description provided for @craftingClearCellSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cell slot'**
+  String get craftingClearCellSelection;
+
+  /// No description provided for @craftingCellAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount}'**
+  String craftingCellAmount(String amount);
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
