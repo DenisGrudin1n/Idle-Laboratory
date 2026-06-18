@@ -18,6 +18,7 @@ class StorageService {
   final BehaviorSubject<StorageInventoryModel> _inventorySubject =
       BehaviorSubject<StorageInventoryModel>();
 
+  Stream<StorageInventoryModel> get inventoryModel$ => _inventorySubject.stream;
   Stream<Map<ResearchMaterialId, int>> get inventory$ =>
       _inventorySubject.stream.map((model) => model.inventory);
   Map<ResearchMaterialId, int> get currentInventory => _inventorySubject.value.inventory;
@@ -33,8 +34,12 @@ class StorageService {
   void addMaterial(ResearchMaterialId materialId, {int count = 1}) {
     final inventory = Map<ResearchMaterialId, int>.from(currentInventory);
     inventory[materialId] = (inventory[materialId] ?? 0) + count;
-    
-    final updatedModel = _inventorySubject.value.copyWith(inventory: inventory);
+
+    final updatedModel = _inventorySubject.value.copyWith(
+      inventory: inventory,
+      lastAddedMaterial: materialId,
+      lastAddedTimestamp: DateTime.now().millisecondsSinceEpoch,
+    );
     _inventorySubject.add(updatedModel);
     _saveInventoryThrottled(updatedModel);
   }

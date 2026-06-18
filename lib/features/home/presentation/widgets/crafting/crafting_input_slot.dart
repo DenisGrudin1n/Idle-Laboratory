@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
 
 class CraftingInputSlot extends StatelessWidget {
   const CraftingInputSlot({
     required this.slotIndex,
     this.slotSide,
     this.selectedCellId,
+    this.selectedMaterialId,
     this.onTap,
     super.key,
   });
@@ -18,6 +22,7 @@ class CraftingInputSlot extends StatelessWidget {
   final int slotIndex;
   final double? slotSide;
   final CellId? selectedCellId;
+  final ResearchMaterialId? selectedMaterialId;
   final VoidCallback? onTap;
 
   bool get isCellSlot => slotIndex == 2;
@@ -25,31 +30,51 @@ class CraftingInputSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final side = slotSide ?? CraftingLayout.inputSlotSide;
-    final child = isCellSlot && selectedCellId != null
-        ? LayoutBuilder(
-            builder: (context, constraints) {
-              final graphicH = constraints.maxHeight * CraftingLayout.inputCellGraphicScale;
-              final graphicW = graphicH * CraftingLayout.cellGraphicAspectWidthOverHeight;
-              return Center(
-                child: SizedBox(
-                  width: graphicW,
-                  height: graphicH,
-                  child: AnimatedCellGraphic(cellId: selectedCellId!),
-                ),
-              );
-            },
-          )
-        : isCellSlot
-            ? Center(
-                child: Text(
-                  context.l10n.craftingCellSlotTitle,
-                  style: context.styles.compactSupporting.copyWith(
-                    color: context.color.primaryText.withValues(alpha: 0.55),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              )
-            : const SizedBox.expand();
+    
+    Widget? child;
+    if (isCellSlot) {
+      if (selectedCellId != null) {
+        child = LayoutBuilder(
+          builder: (context, constraints) {
+            final graphicH = constraints.maxHeight * CraftingLayout.inputCellGraphicScale;
+            final graphicW = graphicH * CraftingLayout.cellGraphicAspectWidthOverHeight;
+            return Center(
+              child: SizedBox(
+                width: graphicW,
+                height: graphicH,
+                child: AnimatedCellGraphic(cellId: selectedCellId!),
+              ),
+            );
+          },
+        );
+      } else {
+        child = Center(
+          child: Text(
+            context.l10n.craftingCellSlotTitle,
+            style: context.styles.compactSupporting.copyWith(
+              color: context.color.primaryText.withValues(alpha: 0.55),
+              fontSize: 8.sp,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+    } else {
+      if (selectedMaterialId != null) {
+        child = ResearchMaterialSlotIcon(materialId: selectedMaterialId!);
+      } else {
+        child = Center(
+          child: Text(
+            context.l10n.craftingReagentSlot(slotIndex + 1),
+            style: context.styles.compactSupporting.copyWith(
+              color: context.color.primaryText.withValues(alpha: 0.55),
+              fontSize: 8.sp,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        );
+      }
+    }
 
     final slot = SizedBox(
       width: side,

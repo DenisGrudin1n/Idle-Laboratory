@@ -8,6 +8,8 @@ part 'storage_inventory_model.g.dart';
 abstract class StorageInventoryModel with _$StorageInventoryModel {
   const factory StorageInventoryModel({
     @Default({}) Map<ResearchMaterialId, int> inventory,
+    @JsonKey(includeToJson: false, includeFromJson: false) ResearchMaterialId? lastAddedMaterial,
+    @JsonKey(includeToJson: false, includeFromJson: false) @Default(0) int lastAddedTimestamp,
   }) = _StorageInventoryModel;
 
   factory StorageInventoryModel.fromJson(Map<String, dynamic> json) =>

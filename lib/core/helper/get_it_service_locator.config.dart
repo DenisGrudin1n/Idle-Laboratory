@@ -60,6 +60,8 @@ import 'package:idle_laboratory/features/home/presentation/blocs/prestige/presti
     as _i89;
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart'
     as _i754;
+import 'package:idle_laboratory/features/home/presentation/blocs/storage/badge/storage_badge_cubit.dart'
+    as _i394;
 import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage_bloc.dart'
     as _i926;
 import 'package:injectable/injectable.dart' as _i526;
@@ -78,6 +80,7 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
+    gh.factory<_i394.StorageBadgeCubit>(() => _i394.StorageBadgeCubit());
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),
     );

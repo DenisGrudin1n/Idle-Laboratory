@@ -9,6 +9,7 @@ import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_interface_panel.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_view.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_badge.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_content.dart';
 
 class CraftingContent extends StatelessWidget {
@@ -24,6 +25,7 @@ class CraftingContent extends StatelessWidget {
               selectedTab: selectedTab,
               onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.craftingTabChanged(tab)),
               tabLabel: (context, tab) => tab.localize(context.l10n),
+              badgeBuilder: (context, tab) => tab == CraftingTab.storage ? const StorageBadge() : null,
             ),
             SizedBox(height: 12.w),
             Expanded(child: _buildTabContent(context, selectedTab)),

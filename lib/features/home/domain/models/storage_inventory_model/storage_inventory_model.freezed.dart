@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StorageInventoryModel {
 
- Map<ResearchMaterialId, int> get inventory;
+ Map<ResearchMaterialId, int> get inventory;@JsonKey(includeToJson: false, includeFromJson: false) ResearchMaterialId? get lastAddedMaterial;@JsonKey(includeToJson: false, includeFromJson: false) int get lastAddedTimestamp;
 /// Create a copy of StorageInventoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $StorageInventoryModelCopyWith<StorageInventoryModel> get copyWith => _$StorageI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StorageInventoryModel&&const DeepCollectionEquality().equals(other.inventory, inventory));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StorageInventoryModel&&const DeepCollectionEquality().equals(other.inventory, inventory)&&(identical(other.lastAddedMaterial, lastAddedMaterial) || other.lastAddedMaterial == lastAddedMaterial)&&(identical(other.lastAddedTimestamp, lastAddedTimestamp) || other.lastAddedTimestamp == lastAddedTimestamp));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(inventory));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(inventory),lastAddedMaterial,lastAddedTimestamp);
 
 @override
 String toString() {
-  return 'StorageInventoryModel(inventory: $inventory)';
+  return 'StorageInventoryModel(inventory: $inventory, lastAddedMaterial: $lastAddedMaterial, lastAddedTimestamp: $lastAddedTimestamp)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $StorageInventoryModelCopyWith<$Res>  {
   factory $StorageInventoryModelCopyWith(StorageInventoryModel value, $Res Function(StorageInventoryModel) _then) = _$StorageInventoryModelCopyWithImpl;
 @useResult
 $Res call({
- Map<ResearchMaterialId, int> inventory
+ Map<ResearchMaterialId, int> inventory,@JsonKey(includeToJson: false, includeFromJson: false) ResearchMaterialId? lastAddedMaterial,@JsonKey(includeToJson: false, includeFromJson: false) int lastAddedTimestamp
 });
 
 
@@ -65,10 +65,12 @@ class _$StorageInventoryModelCopyWithImpl<$Res>
 
 /// Create a copy of StorageInventoryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? inventory = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? inventory = null,Object? lastAddedMaterial = freezed,Object? lastAddedTimestamp = null,}) {
   return _then(_self.copyWith(
 inventory: null == inventory ? _self.inventory : inventory // ignore: cast_nullable_to_non_nullable
-as Map<ResearchMaterialId, int>,
+as Map<ResearchMaterialId, int>,lastAddedMaterial: freezed == lastAddedMaterial ? _self.lastAddedMaterial : lastAddedMaterial // ignore: cast_nullable_to_non_nullable
+as ResearchMaterialId?,lastAddedTimestamp: null == lastAddedTimestamp ? _self.lastAddedTimestamp : lastAddedTimestamp // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -153,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<ResearchMaterialId, int> inventory)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<ResearchMaterialId, int> inventory, @JsonKey(includeToJson: false, includeFromJson: false)  ResearchMaterialId? lastAddedMaterial, @JsonKey(includeToJson: false, includeFromJson: false)  int lastAddedTimestamp)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StorageInventoryModel() when $default != null:
-return $default(_that.inventory);case _:
+return $default(_that.inventory,_that.lastAddedMaterial,_that.lastAddedTimestamp);case _:
   return orElse();
 
 }
@@ -174,10 +176,10 @@ return $default(_that.inventory);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<ResearchMaterialId, int> inventory)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<ResearchMaterialId, int> inventory, @JsonKey(includeToJson: false, includeFromJson: false)  ResearchMaterialId? lastAddedMaterial, @JsonKey(includeToJson: false, includeFromJson: false)  int lastAddedTimestamp)  $default,) {final _that = this;
 switch (_that) {
 case _StorageInventoryModel():
-return $default(_that.inventory);case _:
+return $default(_that.inventory,_that.lastAddedMaterial,_that.lastAddedTimestamp);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +196,10 @@ return $default(_that.inventory);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<ResearchMaterialId, int> inventory)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<ResearchMaterialId, int> inventory, @JsonKey(includeToJson: false, includeFromJson: false)  ResearchMaterialId? lastAddedMaterial, @JsonKey(includeToJson: false, includeFromJson: false)  int lastAddedTimestamp)?  $default,) {final _that = this;
 switch (_that) {
 case _StorageInventoryModel() when $default != null:
-return $default(_that.inventory);case _:
+return $default(_that.inventory,_that.lastAddedMaterial,_that.lastAddedTimestamp);case _:
   return null;
 
 }
@@ -209,7 +211,7 @@ return $default(_that.inventory);case _:
 @JsonSerializable()
 
 class _StorageInventoryModel implements StorageInventoryModel {
-  const _StorageInventoryModel({final  Map<ResearchMaterialId, int> inventory = const {}}): _inventory = inventory;
+  const _StorageInventoryModel({final  Map<ResearchMaterialId, int> inventory = const {}, @JsonKey(includeToJson: false, includeFromJson: false) this.lastAddedMaterial, @JsonKey(includeToJson: false, includeFromJson: false) this.lastAddedTimestamp = 0}): _inventory = inventory;
   factory _StorageInventoryModel.fromJson(Map<String, dynamic> json) => _$StorageInventoryModelFromJson(json);
 
  final  Map<ResearchMaterialId, int> _inventory;
@@ -219,6 +221,8 @@ class _StorageInventoryModel implements StorageInventoryModel {
   return EqualUnmodifiableMapView(_inventory);
 }
 
+@override@JsonKey(includeToJson: false, includeFromJson: false) final  ResearchMaterialId? lastAddedMaterial;
+@override@JsonKey(includeToJson: false, includeFromJson: false) final  int lastAddedTimestamp;
 
 /// Create a copy of StorageInventoryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StorageInventoryModel&&const DeepCollectionEquality().equals(other._inventory, _inventory));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StorageInventoryModel&&const DeepCollectionEquality().equals(other._inventory, _inventory)&&(identical(other.lastAddedMaterial, lastAddedMaterial) || other.lastAddedMaterial == lastAddedMaterial)&&(identical(other.lastAddedTimestamp, lastAddedTimestamp) || other.lastAddedTimestamp == lastAddedTimestamp));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_inventory));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_inventory),lastAddedMaterial,lastAddedTimestamp);
 
 @override
 String toString() {
-  return 'StorageInventoryModel(inventory: $inventory)';
+  return 'StorageInventoryModel(inventory: $inventory, lastAddedMaterial: $lastAddedMaterial, lastAddedTimestamp: $lastAddedTimestamp)';
 }
 
 
@@ -253,7 +257,7 @@ abstract mixin class _$StorageInventoryModelCopyWith<$Res> implements $StorageIn
   factory _$StorageInventoryModelCopyWith(_StorageInventoryModel value, $Res Function(_StorageInventoryModel) _then) = __$StorageInventoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- Map<ResearchMaterialId, int> inventory
+ Map<ResearchMaterialId, int> inventory,@JsonKey(includeToJson: false, includeFromJson: false) ResearchMaterialId? lastAddedMaterial,@JsonKey(includeToJson: false, includeFromJson: false) int lastAddedTimestamp
 });
 
 
@@ -270,10 +274,12 @@ class __$StorageInventoryModelCopyWithImpl<$Res>
 
 /// Create a copy of StorageInventoryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? inventory = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? inventory = null,Object? lastAddedMaterial = freezed,Object? lastAddedTimestamp = null,}) {
   return _then(_StorageInventoryModel(
 inventory: null == inventory ? _self._inventory : inventory // ignore: cast_nullable_to_non_nullable
-as Map<ResearchMaterialId, int>,
+as Map<ResearchMaterialId, int>,lastAddedMaterial: freezed == lastAddedMaterial ? _self.lastAddedMaterial : lastAddedMaterial // ignore: cast_nullable_to_non_nullable
+as ResearchMaterialId?,lastAddedTimestamp: null == lastAddedTimestamp ? _self.lastAddedTimestamp : lastAddedTimestamp // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

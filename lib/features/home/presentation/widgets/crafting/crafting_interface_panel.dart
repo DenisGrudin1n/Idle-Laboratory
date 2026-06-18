@@ -7,15 +7,14 @@ import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
-import 'package:idle_laboratory/core/extensions/research_material_l10n_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_cell_picker_dialog.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_full_row_conduit_painter.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_input_slot.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_material_picker_dialog.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_output_slot.dart';
-import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_detail_dialog.dart';
 
 class CraftingInterfacePanel extends StatelessWidget {
   const CraftingInterfacePanel({super.key});
@@ -32,13 +31,27 @@ class CraftingInterfacePanel extends StatelessWidget {
     context.read<CraftingBloc>().add(CraftingEvent.cellSlotChanged(picked));
   }
 
+  Future<void> _openMaterialPicker(
+    BuildContext context,
+    int slotIndex,
+    ResearchMaterialId? current,
+    bool isCrafting,
+  ) async {
+    if (isCrafting) return;
+    final picked = await showCraftingMaterialPickerDialog(context, allowClear: current != null);
+    if (!context.mounted) return;
+    if (slotIndex == 0) {
+      context.read<CraftingBloc>().add(CraftingEvent.reagent1Changed(picked));
+    } else {
+      context.read<CraftingBloc>().add(CraftingEvent.reagent2Changed(picked));
+    }
+  }
+
   Widget _buildSlotsRow({
     required BuildContext context,
     required double width,
     required CraftingLayoutMetrics metrics,
-    required CellId? selectedCellId,
-    required ResearchMaterialId? outputMaterial,
-    required bool isCrafting,
+    required CraftingState state,
   }) {
     final color = context.color;
     final verticalGap = metrics.inputVerticalGap;
@@ -48,6 +61,9 @@ class CraftingInterfacePanel extends StatelessWidget {
     final inputsTop = (coreH - inputsH) / 2;
     final outputTop = (coreH - outputSide) / 2;
     final outputCenterY = outputTop + outputSide / 2;
+
+    final outputMaterial = state.craftingMaterialId;
+
     return SizedBox(
       width: width,
       height: coreH,
@@ -76,7 +92,9 @@ class CraftingInterfacePanel extends StatelessWidget {
             child: CraftingOutputSlot(
               outputMaterialId: outputMaterial,
               slotSide: outputSide,
-              onTap: outputMaterial == null ? null : () => showResearchMaterialDetailDialog(context, outputMaterial),
+              onTap: outputMaterial == null || state.isCrafting
+                  ? null
+                  : () => context.read<CraftingBloc>().add(const CraftingEvent.startReaction()),
             ),
           ),
           Positioned(
@@ -85,15 +103,31 @@ class CraftingInterfacePanel extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CraftingInputSlot(slotIndex: 0, slotSide: metrics.inputSlotSide),
+                CraftingInputSlot(
+                  slotIndex: 0,
+                  slotSide: metrics.inputSlotSide,
+                  selectedMaterialId: state.reagent1Id,
+                  onTap: state.isCrafting
+                      ? null
+                      : () => _openMaterialPicker(context, 0, state.reagent1Id, state.isCrafting),
+                ),
                 SizedBox(height: verticalGap),
-                CraftingInputSlot(slotIndex: 1, slotSide: metrics.inputSlotSide),
+                CraftingInputSlot(
+                  slotIndex: 1,
+                  slotSide: metrics.inputSlotSide,
+                  selectedMaterialId: state.reagent2Id,
+                  onTap: state.isCrafting
+                      ? null
+                      : () => _openMaterialPicker(context, 1, state.reagent2Id, state.isCrafting),
+                ),
                 SizedBox(height: verticalGap),
                 CraftingInputSlot(
                   slotIndex: _cellSlotIndex,
                   slotSide: metrics.inputSlotSide,
-                  selectedCellId: selectedCellId,
-                  onTap: isCrafting ? null : () => _openCellPicker(context, selectedCellId, isCrafting),
+                  selectedCellId: state.selectedCellId,
+                  onTap: state.isCrafting
+                      ? null
+                      : () => _openCellPicker(context, state.selectedCellId, state.isCrafting),
                 ),
               ],
             ),
@@ -103,17 +137,18 @@ class CraftingInterfacePanel extends StatelessWidget {
     );
   }
 
-  Widget _buildActionColumn(
-    BuildContext context, {
-    required CellId? selectedCellId,
-    required bool hasCell,
-    required bool isCrafting,
-  }) {
+  Widget _buildActionColumn(BuildContext context, {required CraftingState state}) {
     final l10n = context.l10n;
     final color = context.color;
-    final cellAmount = selectedCellId == null
-        ? null
-        : GameBalance.calculateBaseTierResearchCraftCellCost(selectedCellId.order).format(compact: true);
+
+    String? cellAmount;
+    if (state.selectedCellId != null) {
+      cellAmount = GameBalance.calculateBaseTierResearchCraftCellCost(
+        state.selectedCellId!.order,
+      ).format(compact: true);
+    }
+
+    final canStart = state.craftingMaterialId != null && !state.isCrafting;
 
     return SizedBox(
       width: _actionButtonWidth,
@@ -127,7 +162,7 @@ class CraftingInterfacePanel extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 3,
           ),
-          if (cellAmount != null && selectedCellId != null) ...[
+          if (cellAmount != null && state.selectedCellId != null) ...[
             SizedBox(height: 4.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -146,8 +181,22 @@ class CraftingInterfacePanel extends StatelessWidget {
                 SizedBox(
                   width: CraftingLayout.actionCellIconHeight * CraftingLayout.cellGraphicAspectWidthOverHeight,
                   height: CraftingLayout.actionCellIconHeight,
-                  child: AnimatedCellGraphic(cellId: selectedCellId),
+                  child: AnimatedCellGraphic(cellId: state.selectedCellId!),
                 ),
+              ],
+            ),
+          ],
+          if (state.reagent1Id != null && state.reagent2Id != null) ...[
+            SizedBox(height: 4.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l10n.craftingQuantityMultiplier(1), style: context.styles.compactAccentValue),
+                SizedBox(width: 2.w),
+                Text('+', style: context.styles.compactValue),
+                SizedBox(width: 2.w),
+                Text(l10n.craftingQuantityMultiplier(1), style: context.styles.compactAccentValue),
               ],
             ),
           ],
@@ -162,7 +211,7 @@ class CraftingInterfacePanel extends StatelessWidget {
             height: 26.h,
             child: FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: isCrafting ? color.sectionBorder.withValues(alpha: 0.5) : color.green,
+                backgroundColor: !canStart ? color.sectionBorder.withValues(alpha: 0.5) : color.green,
                 foregroundColor: color.titleText,
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 minimumSize: Size(_actionButtonWidth, 26.h),
@@ -170,13 +219,11 @@ class CraftingInterfacePanel extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.r)),
               ),
-              onPressed: isCrafting || !hasCell
-                  ? null
-                  : () => context.read<CraftingBloc>().add(const CraftingEvent.startReaction()),
+              onPressed: !canStart ? null : () => context.read<CraftingBloc>().add(const CraftingEvent.startReaction()),
               child: Text(
                 l10n.craftingStartReaction,
                 style: context.styles.buttonLabel.copyWith(
-                  color: isCrafting ? color.titleText.withValues(alpha: 0.5) : color.titleText,
+                  color: !canStart ? color.titleText.withValues(alpha: 0.5) : color.titleText,
                   fontSize: 10.sp,
                 ),
                 maxLines: 2,
@@ -185,7 +232,8 @@ class CraftingInterfacePanel extends StatelessWidget {
               ),
             ),
           ),
-          if (hasCell && !isCrafting) ...[
+          if ((state.selectedCellId != null || state.reagent1Id != null || state.reagent2Id != null) &&
+              !state.isCrafting) ...[
             SizedBox(height: 8.h),
             TextButton(
               style: TextButton.styleFrom(
@@ -209,18 +257,15 @@ class CraftingInterfacePanel extends StatelessWidget {
 
     return BlocBuilder<CraftingBloc, CraftingState>(
       builder: (context, state) {
-        final selectedCellId = state.selectedCellId;
-        final outputMaterial = state.isCrafting ? state.craftingMaterialId : selectedCellId?.baseResearchMaterial;
-        final hasCell = selectedCellId != null;
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            //TODO: fix 2 layers of Expanded + LayoutBuilder
+            //TODO: fix 2 layers of LayoutBuilder + Expanded
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   final slotsAreaWidth = constraints.maxWidth - _actionButtonWidth - CraftingLayout.gapAfterOutputSlot;
+
                   return Row(
                     children: [
                       Expanded(
@@ -234,21 +279,14 @@ class CraftingInterfacePanel extends StatelessWidget {
                                 context: context,
                                 width: slotsAreaWidth,
                                 metrics: metrics,
-                                selectedCellId: selectedCellId,
-                                outputMaterial: outputMaterial,
-                                isCrafting: state.isCrafting,
+                                state: state,
                               ),
                             );
                           },
                         ),
                       ),
                       SizedBox(width: CraftingLayout.gapAfterOutputSlot),
-                      _buildActionColumn(
-                        context,
-                        selectedCellId: selectedCellId,
-                        hasCell: hasCell,
-                        isCrafting: state.isCrafting,
-                      ),
+                      _buildActionColumn(context, state: state),
                     ],
                   );
                 },
