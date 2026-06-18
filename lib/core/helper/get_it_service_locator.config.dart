@@ -34,6 +34,10 @@ import 'package:idle_laboratory/features/home/data/repositories/settings_reposit
     as _i912;
 import 'package:idle_laboratory/features/home/data/repositories/settings_repository_impl.dart'
     as _i5;
+import 'package:idle_laboratory/features/home/data/repositories/storage_repository.dart'
+    as _i495;
+import 'package:idle_laboratory/features/home/data/repositories/storage_repository_impl.dart'
+    as _i75;
 import 'package:idle_laboratory/features/home/domain/services/app_lifecycle_service.dart'
     as _i159;
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart'
@@ -74,15 +78,11 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
-    gh.lazySingleton<_i540.StorageService>(
-      () => _i540.StorageService(),
-      dispose: (i) => i.dispose(),
-    );
-    gh.factory<_i926.StorageBloc>(
-      () => _i926.StorageBloc(gh<_i540.StorageService>()),
-    );
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i495.StorageRepository>(
+      () => _i75.StorageRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
     gh.lazySingleton<_i743.ProductionRepository>(
       () => _i963.ProductionRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
@@ -90,11 +90,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i495.PrestigeRepository>(
       () => _i362.PrestigeRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
+    gh.lazySingleton<_i540.StorageService>(
+      () => _i540.StorageService(gh<_i495.StorageRepository>()),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i312.EnergyRepository>(
       () => _i844.EnergyRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
     gh.lazySingleton<_i588.CellRepository>(
       () => _i1003.CellRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    );
+    gh.factory<_i926.StorageBloc>(
+      () => _i926.StorageBloc(gh<_i540.StorageService>()),
     );
     gh.lazySingleton<_i912.SettingsRepository>(
       () => _i5.SettingsRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
