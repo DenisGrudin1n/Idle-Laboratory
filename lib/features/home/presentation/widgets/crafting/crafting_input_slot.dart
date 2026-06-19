@@ -30,7 +30,7 @@ class CraftingInputSlot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final side = slotSide ?? CraftingLayout.inputSlotSide;
-    
+
     Widget? child;
     if (isCellSlot) {
       if (selectedCellId != null) {
@@ -61,7 +61,10 @@ class CraftingInputSlot extends StatelessWidget {
       }
     } else {
       if (selectedMaterialId != null) {
-        child = ResearchMaterialSlotIcon(materialId: selectedMaterialId!);
+        child = ClipRRect(
+          borderRadius: BorderRadius.circular(9.r),
+          child: ResearchMaterialSlotIcon(materialId: selectedMaterialId!, fit: BoxFit.cover),
+        );
       } else {
         child = Center(
           child: Text(
@@ -84,10 +87,6 @@ class CraftingInputSlot extends StatelessWidget {
 
     if (onTap == null) return slot;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: slot,
-    );
+    return GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: slot);
   }
 }

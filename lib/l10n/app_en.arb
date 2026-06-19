@@ -46,7 +46,11 @@
         }
     },
     "craftingStartReaction": "Start reaction",
+    "craftingStopReaction": "Stop reaction",
     "craftingClearInputs": "Clear inputs",
+    "craftingNotEnoughMaterials": "Not enough materials",
+    "craftingNotEnoughEnergy": "Not enough energy",
+    "craftingTargetAmount": "Amount",
     "craftingSelectCellTitle": "Select cell",
     "craftingSelectCellOverview": "Choose a production cell for the bottom crafting slot.",
     "craftingClearCellSelection": "Clear cell slot",

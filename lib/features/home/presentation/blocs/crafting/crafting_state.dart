@@ -9,5 +9,7 @@ abstract class CraftingState with _$CraftingState {
     @Default(false) bool isCrafting,
     @Default(0) double craftingProgress,
     ResearchMaterialId? craftingMaterialId,
+    @Default(1) int targetQuantity,
+    String? error,
   }) = _CraftingState;
 }

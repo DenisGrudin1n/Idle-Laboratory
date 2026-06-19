@@ -4,10 +4,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout_metrics.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/constants/game_errors.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/core/widgets/amount_text_field.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_cell_picker_dialog.dart';
@@ -15,12 +18,33 @@ import 'package:idle_laboratory/features/home/presentation/widgets/crafting/craf
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_input_slot.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_material_picker_dialog.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_output_slot.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
 
-class CraftingInterfacePanel extends StatelessWidget {
+class CraftingInterfacePanel extends StatefulWidget {
   const CraftingInterfacePanel({super.key});
 
+  @override
+  State<CraftingInterfacePanel> createState() => _CraftingInterfacePanelState();
+}
+
+class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
+  late final TextEditingController _quantityController;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialQuantity = context.read<CraftingBloc>().state.targetQuantity;
+    _quantityController = TextEditingController(text: initialQuantity.toString());
+  }
+
+  @override
+  void dispose() {
+    _quantityController.dispose();
+    super.dispose();
+  }
+
   static const _cellSlotIndex = 2;
-  static const _craftingEnergyCost = '5 EU';
+  static const _craftingEnergyCostPerUnit = 5;
   static const _craftingDuration = '00:05';
   static double get _actionButtonWidth => 104.w;
 
@@ -141,14 +165,17 @@ class CraftingInterfacePanel extends StatelessWidget {
     final l10n = context.l10n;
     final color = context.color;
 
+    final totalEnergyCost = _craftingEnergyCostPerUnit * state.targetQuantity;
+
     String? cellAmount;
     if (state.selectedCellId != null) {
-      cellAmount = GameBalance.calculateBaseTierResearchCraftCellCost(
-        state.selectedCellId!.order,
-      ).format(compact: true);
+      cellAmount =
+          (GameBalance.calculateBaseTierResearchCraftCellCost(state.selectedCellId!.order) *
+                  BigNumber(state.targetQuantity.toDouble(), 0))
+              .format(compact: true);
     }
 
-    final canStart = state.craftingMaterialId != null && !state.isCrafting;
+    final canStart = state.craftingMaterialId != null && !state.isCrafting && state.error == null;
 
     return SizedBox(
       width: _actionButtonWidth,
@@ -157,13 +184,13 @@ class CraftingInterfacePanel extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            l10n.craftingCostWithAmount(_craftingEnergyCost),
+            l10n.craftingCostWithAmount('$totalEnergyCost EU'),
             style: context.styles.compactValue,
             textAlign: TextAlign.center,
-            maxLines: 3,
+            maxLines: 2,
           ),
           if (cellAmount != null && state.selectedCellId != null) ...[
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -187,31 +214,45 @@ class CraftingInterfacePanel extends StatelessWidget {
             ),
           ],
           if (state.reagent1Id != null && state.reagent2Id != null) ...[
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(l10n.craftingQuantityMultiplier(1), style: context.styles.compactAccentValue),
+                Text('${state.targetQuantity}×', style: context.styles.compactAccentValue),
                 SizedBox(width: 2.w),
+                SizedBox(
+                  width: 10.w,
+                  height: 10.w,
+                  child: ResearchMaterialSlotIcon(materialId: state.reagent1Id!),
+                ),
+                SizedBox(width: 4.w),
                 Text('+', style: context.styles.compactValue),
+                SizedBox(width: 4.w),
+                Text('${state.targetQuantity}×', style: context.styles.compactAccentValue),
                 SizedBox(width: 2.w),
-                Text(l10n.craftingQuantityMultiplier(1), style: context.styles.compactAccentValue),
+                SizedBox(
+                  width: 10.w,
+                  height: 10.w,
+                  child: ResearchMaterialSlotIcon(materialId: state.reagent2Id!),
+                ),
               ],
             ),
           ],
-          SizedBox(height: 4.h),
+          SizedBox(height: 2.h),
           Text(
             l10n.craftingTimeWithDuration(_craftingDuration),
             style: context.styles.compactValue,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 10.h),
+          SizedBox(height: 6.h),
           SizedBox(
             height: 26.h,
             child: FilledButton(
               style: FilledButton.styleFrom(
-                backgroundColor: !canStart ? color.sectionBorder.withValues(alpha: 0.5) : color.green,
+                backgroundColor: state.isCrafting
+                    ? color.accent.withValues(alpha: 0.8)
+                    : (!canStart ? color.sectionBorder.withValues(alpha: 0.5) : color.green),
                 foregroundColor: color.titleText,
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                 minimumSize: Size(_actionButtonWidth, 26.h),
@@ -219,11 +260,13 @@ class CraftingInterfacePanel extends StatelessWidget {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7.r)),
               ),
-              onPressed: !canStart ? null : () => context.read<CraftingBloc>().add(const CraftingEvent.startReaction()),
+              onPressed: state.isCrafting
+                  ? () => context.read<CraftingBloc>().add(const CraftingEvent.stopReaction())
+                  : (!canStart ? null : () => context.read<CraftingBloc>().add(const CraftingEvent.startReaction())),
               child: Text(
-                l10n.craftingStartReaction,
+                state.isCrafting ? l10n.craftingStopReaction : l10n.craftingStartReaction,
                 style: context.styles.buttonLabel.copyWith(
-                  color: !canStart ? color.titleText.withValues(alpha: 0.5) : color.titleText,
+                  color: (!canStart && !state.isCrafting) ? color.titleText.withValues(alpha: 0.5) : color.titleText,
                   fontSize: 10.sp,
                 ),
                 maxLines: 2,
@@ -232,9 +275,42 @@ class CraftingInterfacePanel extends StatelessWidget {
               ),
             ),
           ),
+          if (state.error != null)
+            Padding(
+              padding: EdgeInsets.only(top: 4.h),
+              child: Text(
+                state.error == GameErrors.craftingNotEnoughMaterials
+                    ? l10n.craftingNotEnoughMaterials
+                    : l10n.craftingNotEnoughEnergy,
+                style: context.styles.compactValue.copyWith(color: color.accent, fontSize: 8.sp),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          SizedBox(height: 4.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 1.h),
+                child: Text(
+                  '${l10n.craftingTargetAmount}:',
+                  style: context.styles.compactSupporting.copyWith(fontSize: 11.sp, fontWeight: FontWeight.w600),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              AmountTextField(
+                controller: _quantityController,
+                readOnly: state.isCrafting,
+                onChanged: (value) {
+                  final q = int.tryParse(value) ?? 1;
+                  context.read<CraftingBloc>().add(CraftingEvent.targetQuantityChanged(q));
+                },
+              ),
+            ],
+          ),
           if ((state.selectedCellId != null || state.reagent1Id != null || state.reagent2Id != null) &&
               !state.isCrafting) ...[
-            SizedBox(height: 8.h),
+            SizedBox(height: 4.h),
             TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: color.primaryText,
@@ -242,8 +318,11 @@ class CraftingInterfacePanel extends StatelessWidget {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
-              onPressed: () => context.read<CraftingBloc>().add(const CraftingEvent.inputsCleared()),
-              child: Text(l10n.craftingClearInputs, style: context.styles.bodyLabel.copyWith(fontSize: 11.sp)),
+              onPressed: () {
+                context.read<CraftingBloc>().add(const CraftingEvent.inputsCleared());
+                _quantityController.text = '1';
+              },
+              child: Text(l10n.craftingClearInputs, style: context.styles.bodyLabel.copyWith(fontSize: 10.sp)),
             ),
           ],
         ],
@@ -255,56 +334,66 @@ class CraftingInterfacePanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.color;
 
-    return BlocBuilder<CraftingBloc, CraftingState>(
-      builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            //TODO: fix 2 layers of LayoutBuilder + Expanded
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final slotsAreaWidth = constraints.maxWidth - _actionButtonWidth - CraftingLayout.gapAfterOutputSlot;
-
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: LayoutBuilder(
-                          builder: (context, area) {
-                            final metrics = CraftingLayoutMetrics.forAvailableHeight(area.maxHeight);
-
-                            return Align(
-                              alignment: Alignment.centerLeft,
-                              child: _buildSlotsRow(
-                                context: context,
-                                width: slotsAreaWidth,
-                                metrics: metrics,
-                                state: state,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(width: CraftingLayout.gapAfterOutputSlot),
-                      _buildActionColumn(context, state: state),
-                    ],
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 6.h),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.r),
-              child: LinearProgressIndicator(
-                value: state.craftingProgress,
-                minHeight: 5.h,
-                backgroundColor: color.sectionBorder.withValues(alpha: 0.25),
-                color: color.green.withValues(alpha: 0.85),
-              ),
-            ),
-          ],
-        );
+    return BlocListener<CraftingBloc, CraftingState>(
+      listenWhen: (prev, curr) => prev.targetQuantity != curr.targetQuantity,
+      listener: (context, state) {
+        final text = state.targetQuantity.toString();
+        if (_quantityController.text != text) {
+          _quantityController.text = text;
+        }
       },
+      child: BlocBuilder<CraftingBloc, CraftingState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              //TODO: refactor 2 layers of Expanede + LayoutBuilder
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final slotsAreaWidth =
+                        constraints.maxWidth - _actionButtonWidth - CraftingLayout.gapAfterOutputSlot;
+
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: LayoutBuilder(
+                            builder: (context, area) {
+                              final metrics = CraftingLayoutMetrics.forAvailableHeight(area.maxHeight);
+
+                              return Align(
+                                alignment: Alignment.centerLeft,
+                                child: _buildSlotsRow(
+                                  context: context,
+                                  width: slotsAreaWidth,
+                                  metrics: metrics,
+                                  state: state,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(width: CraftingLayout.gapAfterOutputSlot),
+                        _buildActionColumn(context, state: state),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 6.h),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.r),
+                child: LinearProgressIndicator(
+                  value: state.craftingProgress,
+                  minHeight: 5.h,
+                  backgroundColor: color.sectionBorder.withValues(alpha: 0.25),
+                  color: color.green.withValues(alpha: 0.85),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
