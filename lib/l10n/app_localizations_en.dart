@@ -71,7 +71,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get craftingStartReaction => 'Start reaction';
 
   @override
+  String get craftingStopReaction => 'Stop reaction';
+
+  @override
   String get craftingClearInputs => 'Clear inputs';
+
+  @override
+  String get craftingNotEnoughMaterials => 'Not enough materials';
+
+  @override
+  String get craftingNotEnoughEnergy => 'Not enough energy';
+
+  @override
+  String get craftingTargetAmount => 'Amount';
 
   @override
   String get craftingSelectCellTitle => 'Select cell';
@@ -104,6 +116,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get storage => 'Storage';
+
+  @override
+  String get storageInventoryTitle => 'Material storage';
+
+  @override
+  String get storageInventoryOverview => 'Crafted materials are kept here for research merges and future reactions.';
 
   @override
   String get research => 'Research';

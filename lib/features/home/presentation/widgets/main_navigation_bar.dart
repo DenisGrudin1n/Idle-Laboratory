@@ -6,6 +6,8 @@ import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/energy_display.dart';
 
+import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_badge.dart';
+
 class MainNavigationBar extends StatelessWidget {
   const MainNavigationBar({required this.selectedTab, required this.onTabSelected, super.key});
   final MainNavigationTab selectedTab;
@@ -13,46 +15,51 @@ class MainNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SectionCard(
-        child: SizedBox(
-          width: 0.2.sw,
-          height: double.infinity,
-          child: ListView.separated(
-            itemCount: MainNavigationTab.values.length + 1,
-            separatorBuilder: (context, index) => index == 0
-                ? Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2))
-                : Divider(
-                    height: 1,
-                    thickness: 1,
-                    indent: 12.w,
-                    endIndent: 12.w,
-                    color: context.color.primaryText.withValues(alpha: 0.1)),
-            itemBuilder: (context, index) {
-              if (index == 0) return const EnergyDisplay();
-              final tab = MainNavigationTab.values[index - 1];
-              return _DrawerTab(
-                  icon: tab.icon,
-                  label: tab.localize(context.l10n),
-                  isActive: selectedTab == tab,
-                  onTap: () => onTabSelected(tab));
-            },
-          ),
-        ),
-      );
+    child: SizedBox(
+      width: 0.2.sw,
+      height: double.infinity,
+      child: ListView.separated(
+        itemCount: MainNavigationTab.values.length + 1,
+        separatorBuilder: (context, index) => index == 0
+            ? Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2))
+            : Divider(
+                height: 1,
+                thickness: 1,
+                indent: 12.w,
+                endIndent: 12.w,
+                color: context.color.primaryText.withValues(alpha: 0.1),
+              ),
+        itemBuilder: (context, index) {
+          if (index == 0) return const EnergyDisplay();
+          final tab = MainNavigationTab.values[index - 1];
+          return _DrawerTab(
+            tab: tab,
+            label: tab.localize(context.l10n),
+            isActive: selectedTab == tab,
+            onTap: () => onTabSelected(tab),
+          );
+        },
+      ),
+    ),
+  );
 }
 
 class _DrawerTab extends StatelessWidget {
-  const _DrawerTab({required this.icon, required this.label, required this.isActive, required this.onTap});
-  final IconData icon;
+  const _DrawerTab({required this.tab, required this.label, required this.isActive, required this.onTap});
+  final MainNavigationTab tab;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
             margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
             decoration: BoxDecoration(
@@ -62,13 +69,22 @@ class _DrawerTab extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(icon, color: context.color.primaryText, size: 16.sp),
+                Icon(tab.icon, color: context.color.primaryText, size: 16.sp),
                 SizedBox(width: 8.w),
                 Expanded(
-                    child: Text(label, style: context.styles.navigationLabel(isActive: isActive))),
+                  child: Text(label, style: context.styles.navigationLabel(isActive: isActive)),
+                ),
               ],
             ),
           ),
-        ),
-      );
+          if (tab == MainNavigationTab.crafting)
+            Positioned(
+              right: 32.w,
+              bottom: 18.h,
+              child: const StorageBadge(forMainTab: MainNavigationTab.crafting),
+            ),
+        ],
+      ),
+    ),
+  );
 }

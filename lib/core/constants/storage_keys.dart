@@ -11,4 +11,5 @@ class StorageKeys {
   static const totalEnergy = 'total_energy';
   static const cellsData = 'cells_data';
   static const productionData = 'production_data';
+  static const storageInventory = 'storage_inventory';
 }

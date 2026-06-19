@@ -199,11 +199,35 @@ abstract class AppLocalizations {
   /// **'Start reaction'**
   String get craftingStartReaction;
 
+  /// No description provided for @craftingStopReaction.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reaction'**
+  String get craftingStopReaction;
+
   /// No description provided for @craftingClearInputs.
   ///
   /// In en, this message translates to:
   /// **'Clear inputs'**
   String get craftingClearInputs;
+
+  /// No description provided for @craftingNotEnoughMaterials.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough materials'**
+  String get craftingNotEnoughMaterials;
+
+  /// No description provided for @craftingNotEnoughEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough energy'**
+  String get craftingNotEnoughEnergy;
+
+  /// No description provided for @craftingTargetAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get craftingTargetAmount;
 
   /// No description provided for @craftingSelectCellTitle.
   ///
@@ -264,6 +288,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Storage'**
   String get storage;
+
+  /// No description provided for @storageInventoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Material storage'**
+  String get storageInventoryTitle;
+
+  /// No description provided for @storageInventoryOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafted materials are kept here for research merges and future reactions.'**
+  String get storageInventoryOverview;
 
   /// No description provided for @research.
   ///
