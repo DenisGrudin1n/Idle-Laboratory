@@ -115,6 +115,7 @@
     "productionOverview": "Overview of automated cell generation",
     "totalContribution": "Total contribution from production: {amount} {unit}",
     "accelerate": "Accelerate",
+    "accelerateMax": "Accelerate max",
     "accelerationCost": "Cost: {amount}",
     "cellProductionRate": "{amount} {unit}",
     "lvl": "lvl",

@@ -47,9 +47,9 @@ class AppTextStyles {
   TextStyle get productionAmount => TextStyle(color: _color.titleText, fontSize: 10.sp, fontWeight: FontWeight.bold);
 
   TextStyle get productionButtonLabel =>
-      TextStyle(color: _color.titleText, fontSize: 9.sp, fontWeight: FontWeight.w700);
+      TextStyle(color: _color.titleText, fontSize: 8.sp, fontWeight: FontWeight.w700);
 
-  TextStyle get productionButtonCost => TextStyle(color: _color.green, fontSize: 9.sp, fontWeight: FontWeight.w600);
+  TextStyle get productionButtonCost => TextStyle(color: _color.green, fontSize: 7.5.sp, fontWeight: FontWeight.w600);
 
   TextStyle get prestigeMultiplier => TextStyle(color: _color.primary, fontSize: 10.sp, fontWeight: FontWeight.w500);
 

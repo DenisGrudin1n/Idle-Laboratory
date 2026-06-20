@@ -55,7 +55,7 @@ extension CellsEventPatterns on CellsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CellsChanged value)?  cellsChanged,TResult Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult Function( _ProductionChanged value)?  productionChanged,TResult Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult Function( _SelectCell value)?  selectCell,TResult Function( _AccelerateProduction value)?  accelerateProduction,TResult Function( _Start value)?  start,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CellsChanged value)?  cellsChanged,TResult Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult Function( _ProductionChanged value)?  productionChanged,TResult Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult Function( _SelectCell value)?  selectCell,TResult Function( _AccelerateProduction value)?  accelerateProduction,TResult Function( _AccelerateProductionMax value)?  accelerateProductionMax,TResult Function( _Start value)?  start,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
@@ -64,7 +64,8 @@ return cellEnergiesChanged(_that);case _ProductionChanged() when productionChang
 return productionChanged(_that);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that);case _SelectCell() when selectCell != null:
 return selectCell(_that);case _AccelerateProduction() when accelerateProduction != null:
-return accelerateProduction(_that);case _Start() when start != null:
+return accelerateProduction(_that);case _AccelerateProductionMax() when accelerateProductionMax != null:
+return accelerateProductionMax(_that);case _Start() when start != null:
 return start(_that);case _:
   return orElse();
 
@@ -83,7 +84,7 @@ return start(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CellsChanged value)  cellsChanged,required TResult Function( _CellEnergiesChanged value)  cellEnergiesChanged,required TResult Function( _ProductionChanged value)  productionChanged,required TResult Function( _TotalEnergyChanged value)  totalEnergyChanged,required TResult Function( _SelectCell value)  selectCell,required TResult Function( _AccelerateProduction value)  accelerateProduction,required TResult Function( _Start value)  start,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CellsChanged value)  cellsChanged,required TResult Function( _CellEnergiesChanged value)  cellEnergiesChanged,required TResult Function( _ProductionChanged value)  productionChanged,required TResult Function( _TotalEnergyChanged value)  totalEnergyChanged,required TResult Function( _SelectCell value)  selectCell,required TResult Function( _AccelerateProduction value)  accelerateProduction,required TResult Function( _AccelerateProductionMax value)  accelerateProductionMax,required TResult Function( _Start value)  start,}){
 final _that = this;
 switch (_that) {
 case _CellsChanged():
@@ -92,7 +93,8 @@ return cellEnergiesChanged(_that);case _ProductionChanged():
 return productionChanged(_that);case _TotalEnergyChanged():
 return totalEnergyChanged(_that);case _SelectCell():
 return selectCell(_that);case _AccelerateProduction():
-return accelerateProduction(_that);case _Start():
+return accelerateProduction(_that);case _AccelerateProductionMax():
+return accelerateProductionMax(_that);case _Start():
 return start(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -110,7 +112,7 @@ return start(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CellsChanged value)?  cellsChanged,TResult? Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult? Function( _ProductionChanged value)?  productionChanged,TResult? Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult? Function( _SelectCell value)?  selectCell,TResult? Function( _AccelerateProduction value)?  accelerateProduction,TResult? Function( _Start value)?  start,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CellsChanged value)?  cellsChanged,TResult? Function( _CellEnergiesChanged value)?  cellEnergiesChanged,TResult? Function( _ProductionChanged value)?  productionChanged,TResult? Function( _TotalEnergyChanged value)?  totalEnergyChanged,TResult? Function( _SelectCell value)?  selectCell,TResult? Function( _AccelerateProduction value)?  accelerateProduction,TResult? Function( _AccelerateProductionMax value)?  accelerateProductionMax,TResult? Function( _Start value)?  start,}){
 final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
@@ -119,7 +121,8 @@ return cellEnergiesChanged(_that);case _ProductionChanged() when productionChang
 return productionChanged(_that);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that);case _SelectCell() when selectCell != null:
 return selectCell(_that);case _AccelerateProduction() when accelerateProduction != null:
-return accelerateProduction(_that);case _Start() when start != null:
+return accelerateProduction(_that);case _AccelerateProductionMax() when accelerateProductionMax != null:
+return accelerateProductionMax(_that);case _Start() when start != null:
 return start(_that);case _:
   return null;
 
@@ -137,7 +140,7 @@ return start(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CellModel> cells)?  cellsChanged,TResult Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult Function( Map<String, CellProductionEntry> productionByCellId)?  productionChanged,TResult Function( BigNumber energy)?  totalEnergyChanged,TResult Function( String cellId)?  selectCell,TResult Function( String cellId)?  accelerateProduction,TResult Function()?  start,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( List<CellModel> cells)?  cellsChanged,TResult Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult Function( Map<String, CellProductionEntry> productionByCellId)?  productionChanged,TResult Function( BigNumber energy)?  totalEnergyChanged,TResult Function( String cellId)?  selectCell,TResult Function( String cellId)?  accelerateProduction,TResult Function( String cellId)?  accelerateProductionMax,TResult Function()?  start,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
 return cellsChanged(_that.cells);case _CellEnergiesChanged() when cellEnergiesChanged != null:
@@ -145,7 +148,8 @@ return cellEnergiesChanged(_that.cellEnergies);case _ProductionChanged() when pr
 return productionChanged(_that.productionByCellId);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that.energy);case _SelectCell() when selectCell != null:
 return selectCell(_that.cellId);case _AccelerateProduction() when accelerateProduction != null:
-return accelerateProduction(_that.cellId);case _Start() when start != null:
+return accelerateProduction(_that.cellId);case _AccelerateProductionMax() when accelerateProductionMax != null:
+return accelerateProductionMax(_that.cellId);case _Start() when start != null:
 return start();case _:
   return orElse();
 
@@ -164,7 +168,7 @@ return start();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CellModel> cells)  cellsChanged,required TResult Function( Map<String, BigNumber> cellEnergies)  cellEnergiesChanged,required TResult Function( Map<String, CellProductionEntry> productionByCellId)  productionChanged,required TResult Function( BigNumber energy)  totalEnergyChanged,required TResult Function( String cellId)  selectCell,required TResult Function( String cellId)  accelerateProduction,required TResult Function()  start,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( List<CellModel> cells)  cellsChanged,required TResult Function( Map<String, BigNumber> cellEnergies)  cellEnergiesChanged,required TResult Function( Map<String, CellProductionEntry> productionByCellId)  productionChanged,required TResult Function( BigNumber energy)  totalEnergyChanged,required TResult Function( String cellId)  selectCell,required TResult Function( String cellId)  accelerateProduction,required TResult Function( String cellId)  accelerateProductionMax,required TResult Function()  start,}) {final _that = this;
 switch (_that) {
 case _CellsChanged():
 return cellsChanged(_that.cells);case _CellEnergiesChanged():
@@ -172,7 +176,8 @@ return cellEnergiesChanged(_that.cellEnergies);case _ProductionChanged():
 return productionChanged(_that.productionByCellId);case _TotalEnergyChanged():
 return totalEnergyChanged(_that.energy);case _SelectCell():
 return selectCell(_that.cellId);case _AccelerateProduction():
-return accelerateProduction(_that.cellId);case _Start():
+return accelerateProduction(_that.cellId);case _AccelerateProductionMax():
+return accelerateProductionMax(_that.cellId);case _Start():
 return start();case _:
   throw StateError('Unexpected subclass');
 
@@ -190,7 +195,7 @@ return start();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CellModel> cells)?  cellsChanged,TResult? Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult? Function( Map<String, CellProductionEntry> productionByCellId)?  productionChanged,TResult? Function( BigNumber energy)?  totalEnergyChanged,TResult? Function( String cellId)?  selectCell,TResult? Function( String cellId)?  accelerateProduction,TResult? Function()?  start,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( List<CellModel> cells)?  cellsChanged,TResult? Function( Map<String, BigNumber> cellEnergies)?  cellEnergiesChanged,TResult? Function( Map<String, CellProductionEntry> productionByCellId)?  productionChanged,TResult? Function( BigNumber energy)?  totalEnergyChanged,TResult? Function( String cellId)?  selectCell,TResult? Function( String cellId)?  accelerateProduction,TResult? Function( String cellId)?  accelerateProductionMax,TResult? Function()?  start,}) {final _that = this;
 switch (_that) {
 case _CellsChanged() when cellsChanged != null:
 return cellsChanged(_that.cells);case _CellEnergiesChanged() when cellEnergiesChanged != null:
@@ -198,7 +203,8 @@ return cellEnergiesChanged(_that.cellEnergies);case _ProductionChanged() when pr
 return productionChanged(_that.productionByCellId);case _TotalEnergyChanged() when totalEnergyChanged != null:
 return totalEnergyChanged(_that.energy);case _SelectCell() when selectCell != null:
 return selectCell(_that.cellId);case _AccelerateProduction() when accelerateProduction != null:
-return accelerateProduction(_that.cellId);case _Start() when start != null:
+return accelerateProduction(_that.cellId);case _AccelerateProductionMax() when accelerateProductionMax != null:
+return accelerateProductionMax(_that.cellId);case _Start() when start != null:
 return start();case _:
   return null;
 
@@ -613,6 +619,72 @@ class __$AccelerateProductionCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? cellId = null,}) {
   return _then(_AccelerateProduction(
+null == cellId ? _self.cellId : cellId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _AccelerateProductionMax implements CellsEvent {
+  const _AccelerateProductionMax(this.cellId);
+  
+
+ final  String cellId;
+
+/// Create a copy of CellsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AccelerateProductionMaxCopyWith<_AccelerateProductionMax> get copyWith => __$AccelerateProductionMaxCopyWithImpl<_AccelerateProductionMax>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccelerateProductionMax&&(identical(other.cellId, cellId) || other.cellId == cellId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,cellId);
+
+@override
+String toString() {
+  return 'CellsEvent.accelerateProductionMax(cellId: $cellId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AccelerateProductionMaxCopyWith<$Res> implements $CellsEventCopyWith<$Res> {
+  factory _$AccelerateProductionMaxCopyWith(_AccelerateProductionMax value, $Res Function(_AccelerateProductionMax) _then) = __$AccelerateProductionMaxCopyWithImpl;
+@useResult
+$Res call({
+ String cellId
+});
+
+
+
+
+}
+/// @nodoc
+class __$AccelerateProductionMaxCopyWithImpl<$Res>
+    implements _$AccelerateProductionMaxCopyWith<$Res> {
+  __$AccelerateProductionMaxCopyWithImpl(this._self, this._then);
+
+  final _AccelerateProductionMax _self;
+  final $Res Function(_AccelerateProductionMax) _then;
+
+/// Create a copy of CellsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? cellId = null,}) {
+  return _then(_AccelerateProductionMax(
 null == cellId ? _self.cellId : cellId // ignore: cast_nullable_to_non_nullable
 as String,
   ));

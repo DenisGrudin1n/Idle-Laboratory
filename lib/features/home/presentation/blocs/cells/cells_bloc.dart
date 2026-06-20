@@ -22,6 +22,7 @@ class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
     on<_TotalEnergyChanged>(_onTotalEnergyChanged);
     on<_SelectCell>(_onSelectCell);
     on<_AccelerateProduction>(_onAccelerateProduction);
+    on<_AccelerateProductionMax>(_onAccelerateProductionMax);
     on<_Start>(_onStart);
     _initialize();
   }
@@ -57,6 +58,9 @@ class CellsBloc extends SafeBloc<CellsEvent, CellsState> {
 
   void _onAccelerateProduction(_AccelerateProduction event, Emitter<CellsState> emit) =>
       _cellsService.accelerateProduction(event.cellId);
+
+  void _onAccelerateProductionMax(_AccelerateProductionMax event, Emitter<CellsState> emit) =>
+      _cellsService.accelerateProductionMax(event.cellId);
 
   void _onStart(_Start event, Emitter<CellsState> emit) => _cellsService.start();
 
