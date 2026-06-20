@@ -1,0 +1,2 @@
+- infinite energy / prestige multiplier 
+(need some strict constrain and validation for this)

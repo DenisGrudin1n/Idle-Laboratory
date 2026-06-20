@@ -87,10 +87,10 @@ class GameBalance {
     if (currentEnergy < initialThreshold || currentEnergy <= currentThreshold) return BigNumber.zero();
 
     // Formula: (CurrentEnergy / MaxEverEnergy) ^ 0.5
-    final ratio = currentEnergy.ratio(currentThreshold);
-    if (ratio <= 1.0) return BigNumber.zero();
+    final ratio = currentEnergy / currentThreshold;
+    if (ratio <= BigNumber(1, 0)) return BigNumber.zero();
 
-    return BigNumber.fromDouble(math.sqrt(ratio) * prestigeMultiplierFactor);
+    return ratio.sqrt().multiplyByDouble(prestigeMultiplierFactor);
   }
 
   static final initialThreshold = BigNumber(1, 6); // 1 million energy to start prestiging
@@ -106,15 +106,18 @@ class GameBalance {
   static const productionTierPowerBase = 8.0;
 
   /// Energy/sec from stock: amount * 0.001 * [productionTierPowerBase]^order (late tiers punch above their weight).
-  static double productionStockEnergyMultiplier(int cellOrder) => 0.001 * math.pow(productionTierPowerBase, cellOrder);
+  static BigNumber productionStockEnergyMultiplier(int cellOrder) {
+    return BigNumber.pow(productionTierPowerBase, cellOrder.toDouble()).multiplyByDouble(0.001);
+  }
 
   /// Stock gain (units/s): higher tiers accrue stock slower; acceleration level curve is shared.
   static const productionPPSPerLevelBase = 1.15;
 
-  static double calculateProductionPPS(int cellOrder, int accelerationLevel) {
+  static BigNumber calculateProductionPPS(int cellOrder, int accelerationLevel) {
     final level = accelerationLevel.clamp(1, maxAccelerationLevel);
-    final tierMult = math.pow(productionTierPowerBase, -cellOrder);
-    return tierMult * math.pow(productionPPSPerLevelBase, level - 1).toDouble();
+    final tierMult = BigNumber.pow(productionTierPowerBase, -cellOrder.toDouble());
+    final levelMult = BigNumber.pow(productionPPSPerLevelBase, level - 1.0);
+    return tierMult * levelMult;
   }
 
   static const productionAccelerationCostMultiplier = 1.18;
@@ -130,14 +133,14 @@ class GameBalance {
   }
 
   static BigNumber productionEnergyPerSecondFromStock(BigNumber amount, int cellOrder) {
-    final mult = productionStockEnergyMultiplier(cellOrder) * productionEPSContributionMultiplier;
-    return amount.multiplyByDouble(mult);
+    final mult = productionStockEnergyMultiplier(cellOrder).multiplyByDouble(productionEPSContributionMultiplier);
+    return amount * mult;
   }
 
   // --- Research: base-tier materials (bottom 16) crafted from matching energy cells ---
 
   /// log10 cell count for tier 0 (Energy Core ← Basic Energy Cell).
-  static const baseTierResearchCraftCostLog10 = 6.0;
+  static const baseTierResearchCraftCostLog10 = 6;
 
   /// Each cell tier reduces cost by this many log10 steps (~48% per tier).
   static const baseTierResearchCraftCostTierStep = 0.32;

@@ -128,7 +128,7 @@ class _ProductionItem extends StatelessWidget {
     if (cellId == null) return const SizedBox.shrink();
 
     final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
-    final productionRateLabel = BigNumber.fromDouble(pps).format(compact: true);
+    final productionRateLabel = pps.format(compact: true);
     final atMaxAcceleration = entry.accelerationLevel >= GameBalance.maxAccelerationLevel;
     final accelerationCost = atMaxAcceleration
         ? BigNumber.zero()

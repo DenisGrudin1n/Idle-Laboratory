@@ -109,7 +109,7 @@ class CellsService {
 
       var entry = map[cell.id] ?? CellProductionEntry.initial(cell.id);
       final pps = GameBalance.calculateProductionPPS(cellEnum.order, entry.accelerationLevel);
-      final delta = BigNumber.fromDouble(pps * dt);
+      final delta = pps.multiplyByDouble(dt);
       entry = entry.copyWith(amount: entry.amount + delta);
       map[cell.id] = entry;
       changed = true;
