@@ -94,3 +94,9 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 ### 8. Monetization & Support
 - [ ] **"Buy Me a Coffee"**: Add a simple, non-intrusive donation button (e.g., in Settings or Overview) for players who want to support the developer.
 - [ ] **Platform Integration**: Use `url_launcher` or similar to redirect to a support page (PayPal, Ko-fi, etc.).
+
+### 9. Offline Progress
+- [ ] **Time Tracking**: Calculate the duration the user was away from the app.
+- [ ] **Reward Calculation**: Grant energy, cells, and production progress based on offline time.
+- [ ] **Constraints**: Implement a cap on offline progress (e.g., maximum 15 minutes) to encourage regular check-ins.
+- [ ] **UI**: Show a summary dialog upon re-entering the app detailing the gains made while away.

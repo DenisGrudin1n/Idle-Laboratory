@@ -33,24 +33,27 @@ class AppWidget extends StatelessWidget {
     ],
     child: CellLoopAnimationScope(
       child: ScreenUtilInit(
-      designSize: Size(390 * (MediaQuery.sizeOf(context).width / 390), 844 * (MediaQuery.sizeOf(context).height / 844)),
-      splitScreenMode: true,
-      child: MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
-        child: MaterialApp.router(
-          routerConfig: AppRouter.router,
-          theme: AppTheme.defaultTheme,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [Locale('en')],
-          debugShowCheckedModeBanner: false,
+        designSize: Size(
+          390 * (MediaQuery.sizeOf(context).width / 390),
+          844 * (MediaQuery.sizeOf(context).height / 844),
+        ),
+        splitScreenMode: true,
+        child: MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+          child: MaterialApp.router(
+            routerConfig: AppRouter.router,
+            theme: AppTheme.defaultTheme,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('en')],
+            debugShowCheckedModeBanner: false,
+          ),
         ),
       ),
-    ),
     ),
   );
 }
