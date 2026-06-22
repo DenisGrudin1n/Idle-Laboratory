@@ -128,7 +128,7 @@ class _ProductionItem extends StatelessWidget {
     if (cellId == null) return const SizedBox.shrink();
 
     final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
-    final productionRateLabel = BigNumber.fromDouble(pps).format(compact: true);
+    final productionRateLabel = pps.format(compact: true);
     final atMaxAcceleration = entry.accelerationLevel >= GameBalance.maxAccelerationLevel;
     final accelerationCost = atMaxAcceleration
         ? BigNumber.zero()
@@ -142,7 +142,7 @@ class _ProductionItem extends StatelessWidget {
         border: Border.all(color: color.primary.withValues(alpha: 0.1), width: 1.w),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(9.w, 6.h, 9.w, 4.h),
+        padding: EdgeInsets.fromLTRB(9.w, 4.h, 9.w, 4.h),
         child: Column(
           children: [
             Row(
@@ -181,44 +181,63 @@ class _ProductionItem extends StatelessWidget {
               ),
             ),
             SizedBox(height: 4.h),
-            Center(
-              child: GestureDetector(
-                onTap: atMaxAcceleration
-                    ? null
-                    : () => context.read<CellsBloc>().add(CellsEvent.accelerateProduction(cell.id)),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
-                  decoration: BoxDecoration(
-                    color: color.background.withValues(alpha: 0.45),
-                    borderRadius: BorderRadius.circular(7.r),
-                    border: Border.all(color: color.primary.withValues(alpha: 0.14), width: 1.w),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(width: 3.w),
-                      Flexible(
-                        child: Text(
-                          l10n.accelerate,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: context.styles.productionButtonLabel,
-                        ),
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(
-                        costLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.styles.productionButtonCost,
-                      ),
-                      Icon(Icons.bolt, color: color.green, size: 12.sp),
-                    ],
-                  ),
-                ),
+            _buildAccelerateButton(
+              context,
+              label: l10n.accelerate,
+              costLabel: costLabel,
+              onTap: atMaxAcceleration
+                  ? null
+                  : () => context.read<CellsBloc>().add(CellsEvent.accelerateProduction(cell.id)),
+            ),
+            SizedBox(height: 2.h),
+            _buildAccelerateButton(
+              context,
+              label: l10n.accelerateMax,
+              costLabel: atMaxAcceleration ? '—' : '',
+              accelerateMax: true,
+              onTap: atMaxAcceleration
+                  ? null
+                  : () => context.read<CellsBloc>().add(CellsEvent.accelerateProductionMax(cell.id)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAccelerateButton(
+    BuildContext context, {
+    required String label,
+    required String costLabel,
+    required VoidCallback? onTap,
+    bool accelerateMax = false,
+  }) {
+    final color = context.color;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+        decoration: BoxDecoration(
+          color: color.background.withValues(alpha: 0.45),
+          borderRadius: BorderRadius.circular(7.r),
+          border: Border.all(color: color.primary.withValues(alpha: 0.14), width: 1.w),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(width: 3.w),
+            Flexible(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.styles.productionButtonLabel,
               ),
             ),
+            if (costLabel == '—' || !accelerateMax) SizedBox(width: 4.w),
+            Text(costLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: context.styles.productionButtonCost),
+            Icon(Icons.bolt, color: color.green, size: 11.sp),
           ],
         ),
       ),

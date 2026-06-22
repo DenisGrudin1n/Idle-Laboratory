@@ -6,17 +6,13 @@ import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/core/widgets/app_dialog.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 
-Future<CellId?> showCraftingCellPickerDialog(
-  BuildContext context, {
-  required bool allowClear,
-}) =>
+Future<CellId?> showCraftingCellPickerDialog(BuildContext context, {required bool allowClear}) =>
     AppDialog.show<CellId?>(
       context,
       maxWidth: 560.w,
@@ -62,9 +58,7 @@ class _CraftingCellPickerBody extends StatelessWidget {
                   itemCount: unlocked.length + (allowClear ? 1 : 0),
                   itemBuilder: (context, index) {
                     if (allowClear && index == 0) {
-                      return _ClearCellTile(
-                        onTap: () => Navigator.of(context).pop(),
-                      );
+                      return _ClearCellTile(onTap: () => Navigator.of(context).pop());
                     }
                     final cellIndex = allowClear ? index - 1 : index;
                     final cell = unlocked[cellIndex];
@@ -128,12 +122,7 @@ class _ClearCellTile extends StatelessWidget {
 }
 
 class _PickerCellTile extends StatelessWidget {
-  const _PickerCellTile({
-    required this.cell,
-    required this.cellId,
-    required this.entry,
-    required this.onSelected,
-  });
+  const _PickerCellTile({required this.cell, required this.cellId, required this.entry, required this.onSelected});
 
   final CellModel cell;
   final CellId cellId;
@@ -145,7 +134,7 @@ class _PickerCellTile extends StatelessWidget {
     final color = context.color;
     final l10n = context.l10n;
     final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
-    final productionRateLabel = BigNumber.fromDouble(pps).format(compact: true);
+    final productionRateLabel = pps.format(compact: true);
 
     return Material(
       color: Colors.transparent,

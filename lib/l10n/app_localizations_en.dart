@@ -269,6 +269,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accelerate => 'Accelerate';
 
   @override
+  String get accelerateMax => 'Accelerate max';
+
+  @override
   String accelerationCost(Object amount) {
     return 'Cost: $amount';
   }

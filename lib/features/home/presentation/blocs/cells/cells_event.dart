@@ -8,5 +8,6 @@ class CellsEvent with _$CellsEvent {
   const factory CellsEvent.totalEnergyChanged(BigNumber energy) = _TotalEnergyChanged;
   const factory CellsEvent.selectCell(String cellId) = _SelectCell;
   const factory CellsEvent.accelerateProduction(String cellId) = _AccelerateProduction;
+  const factory CellsEvent.accelerateProductionMax(String cellId) = _AccelerateProductionMax;
   const factory CellsEvent.start() = _Start;
 }

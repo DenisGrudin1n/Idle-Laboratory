@@ -583,6 +583,12 @@ abstract class AppLocalizations {
   /// **'Accelerate'**
   String get accelerate;
 
+  /// No description provided for @accelerateMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Accelerate max'**
+  String get accelerateMax;
+
   /// No description provided for @accelerationCost.
   ///
   /// In en, this message translates to:

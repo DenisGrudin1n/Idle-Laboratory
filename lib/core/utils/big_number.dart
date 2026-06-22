@@ -11,9 +11,12 @@ class BigNumber {
 
   factory BigNumber.pow(double base, double exponent) {
     if (base <= 0) return BigNumber.zero();
+    if (exponent == 0) return BigNumber(1, 0);
     // base^exponent = 10^(exponent * log10(base))
     final log10Base = math.log(base) / math.ln10;
     final totalLog10 = exponent * log10Base;
+    if (totalLog10.isInfinite) return BigNumber(1, 1000000);
+    if (totalLog10.isNaN) return BigNumber.zero();
     final newExponent = totalLog10.floor();
     final newMantissa = math.pow(10, totalLog10 - newExponent).toDouble();
     return BigNumber(newMantissa, newExponent);
@@ -22,11 +25,14 @@ class BigNumber {
   const BigNumber._internal(this.mantissa, this.exponent);
 
   factory BigNumber.fromDouble(double value) {
-    if (value.isNaN || value.isInfinite) throw ArgumentError('Invalid double: $value');
+    if (value.isNaN) return BigNumber.zero();
+    if (value.isInfinite) return BigNumber(1, 1000000); // Represent "infinity" as very large
     if (value == 0) return BigNumber.zero();
     final exponent = (math.log(value.abs()) / math.ln10).floor();
     return BigNumber(value / math.pow(10, exponent), exponent);
   }
+
+  factory BigNumber.fromInt(int value) => BigNumber.fromDouble(value.toDouble());
 
   factory BigNumber.zero() => const BigNumber._internal(0, 0);
 
@@ -69,8 +75,17 @@ class BigNumber {
   }
 
   BigNumber operator *(BigNumber other) => BigNumber(mantissa * other.mantissa, exponent + other.exponent);
+
+  BigNumber operator /(BigNumber other) {
+    if (other.mantissa == 0) return BigNumber(1, 1000000); // Infinity-ish
+    return BigNumber(mantissa / other.mantissa, exponent - other.exponent);
+  }
+
   BigNumber multiplyByDouble(double scalar) => BigNumber(mantissa * scalar, exponent);
-  BigNumber divideByDouble(double scalar) => BigNumber(mantissa / scalar, exponent);
+  BigNumber divideByDouble(double scalar) {
+    if (scalar == 0) return BigNumber(1, 1000000);
+    return BigNumber(mantissa / scalar, exponent);
+  }
 
   bool operator >(BigNumber other) {
     if (mantissa < 0 != other.mantissa < 0) return mantissa >= 0;
@@ -112,12 +127,18 @@ class BigNumber {
 
   double log10() => mantissa <= 0 ? double.negativeInfinity : (math.log(mantissa) / math.ln10) + exponent;
 
+  BigNumber sqrt() {
+    if (mantissa <= 0) return BigNumber.zero();
+    final log = log10();
+    return BigNumber.pow(10, log / 2);
+  }
+
   double ratio(BigNumber divisor, {double? max}) {
     if (divisor.mantissa == 0) return max ?? double.maxFinite;
     if (mantissa == 0) return 0;
     final exponentDiff = exponent - divisor.exponent;
-    if (exponentDiff > 15) return max ?? double.maxFinite;
-    if (exponentDiff < -15) return 0;
+    if (exponentDiff > 308) return max ?? double.maxFinite;
+    if (exponentDiff < -308) return 0;
     final result = (mantissa / divisor.mantissa) * math.pow(10, exponentDiff);
     return !result.isFinite || result < 0 ? 0 : (max != null ? result.clamp(0.0, max) : result);
   }

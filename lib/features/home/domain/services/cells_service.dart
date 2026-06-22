@@ -109,7 +109,7 @@ class CellsService {
 
       var entry = map[cell.id] ?? CellProductionEntry.initial(cell.id);
       final pps = GameBalance.calculateProductionPPS(cellEnum.order, entry.accelerationLevel);
-      final delta = BigNumber.fromDouble(pps * dt);
+      final delta = pps.multiplyByDouble(dt);
       entry = entry.copyWith(amount: entry.amount + delta);
       map[cell.id] = entry;
       changed = true;
@@ -242,6 +242,40 @@ class CellsService {
     if (!_energyService.trySpendEnergy(cost)) return false;
 
     entry = entry.copyWith(accelerationLevel: entry.accelerationLevel + 1);
+    map[cellId] = entry;
+    _productionSubject.add(map);
+    _saveProductionThrottled(map);
+    return true;
+  }
+
+  bool accelerateProductionMax(String cellId) {
+    final cell = currentCells.cast<CellModel?>().firstWhere((c) => c?.id == cellId, orElse: () => null);
+    if (cell == null || cell.isLocked) return false;
+    final id = cell.cellId;
+    if (id == null) return false;
+
+    final map = Map<String, CellProductionEntry>.from(_productionSubject.value);
+    var entry = map[cellId] ?? CellProductionEntry.initial(cellId);
+    if (entry.accelerationLevel >= GameBalance.maxAccelerationLevel) return false;
+
+    var currentLevel = entry.accelerationLevel;
+    var totalCost = BigNumber.zero();
+    var levelsToGain = 0;
+
+    while (currentLevel < GameBalance.maxAccelerationLevel) {
+      final cost = GameBalance.calculateAccelerationUpgradeCost(id.order, currentLevel);
+      if (_energyService.currentEnergy < totalCost + cost) break;
+
+      totalCost = totalCost + cost;
+      currentLevel++;
+      levelsToGain++;
+    }
+
+    if (levelsToGain == 0) return false;
+
+    if (!_energyService.trySpendEnergy(totalCost)) return false;
+
+    entry = entry.copyWith(accelerationLevel: currentLevel);
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
