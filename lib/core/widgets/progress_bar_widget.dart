@@ -34,31 +34,30 @@ class ProgressBarWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius ?? 6.r),
       child: SizedBox(
         height: h,
+        width: double.infinity,
         child: Stack(
+          alignment: Alignment.center,
           children: [
-            SizedBox(
-              height: h * 1.5,
+            Positioned.fill(
               child: LinearProgressIndicator(
                 value: clampedProgress,
                 backgroundColor: backgroundColor ?? context.color.background,
-                valueColor: AlwaysStoppedAnimation(progressColor ?? (isUnlocked ? context.color.green : context.color.primary)),
+                valueColor: AlwaysStoppedAnimation(
+                  progressColor ?? (isUnlocked ? context.color.green : context.color.primary),
+                ),
               ),
             ),
             if (showPercentage)
-              Positioned.fill(
-                child: Center(
-                  child: Text(
-                    '${(progress * 100).toStringAsFixed(1)}%',
-                    style: TextStyle(
-                      color: context.color.titleText,
-                      fontSize: percentageFontSize ?? 9.sp,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(color: percentageShadowColor ?? context.color.background, blurRadius: 4),
-                        Shadow(color: percentageShadowColor ?? context.color.background, blurRadius: 4),
-                      ],
-                    ),
-                  ),
+              Text(
+                '${(progress * 100).toStringAsFixed(1)}%',
+                style: TextStyle(
+                  color: context.color.titleText,
+                  fontSize: percentageFontSize ?? 9.sp,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(color: percentageShadowColor ?? context.color.background, blurRadius: 4),
+                    Shadow(color: percentageShadowColor ?? context.color.background, blurRadius: 4),
+                  ],
                 ),
               ),
           ],

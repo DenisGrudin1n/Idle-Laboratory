@@ -10,27 +10,30 @@ class SettingsToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BlocSelector<SettingsBloc, SettingsState, bool>(
-        selector: (state) => state.isScientificNotation,
-        builder: (context, isScientific) => Container(
-          margin: EdgeInsets.all(16.w),
-          height: 40.h,
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-          decoration: BoxDecoration(color: context.color.drawerBackground, borderRadius: BorderRadius.circular(8.r)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(context.l10n.scientificNotation, style: context.styles.bodyLabel),
-              InkWell(
-                onTap: () => context.read<SettingsBloc>().add(const SettingsEvent.toggleScientificNotation()),
+    selector: (state) => state.isScientificNotation,
+    builder: (context, isScientific) => Container(
+      margin: EdgeInsets.all(16.w),
+      height: 40.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      decoration: BoxDecoration(color: context.color.drawerBackground, borderRadius: BorderRadius.circular(8.r)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(context.l10n.scientificNotation, style: context.styles.bodyLabel),
+          InkWell(
+            onTap: () => context.read<SettingsBloc>().add(const SettingsEvent.toggleScientificNotation()),
+            borderRadius: BorderRadius.circular(8.r),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: isScientific ? context.color.primary : context.color.background,
                 borderRadius: BorderRadius.circular(8.r),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
-                  decoration: BoxDecoration(color: isScientific ? context.color.primary : context.color.background, borderRadius: BorderRadius.circular(8.r)),
-                  child: Text(isScientific ? context.l10n.on : context.l10n.off, style: context.styles.buttonLabel),
-                ),
               ),
-            ],
+              child: Text(isScientific ? context.l10n.on : context.l10n.off, style: context.styles.buttonLabel),
+            ),
           ),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 }

@@ -107,4 +107,7 @@ class GameConstants {
     'Nong',
     'Ce',
   ];
+
+  static const minWidthThresholdDesk = 1024.0;
+  static const minWidthThresholdTablet = 600.0;
 }

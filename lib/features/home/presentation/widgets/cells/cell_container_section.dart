@@ -11,30 +11,41 @@ class CellContainerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SectionCard(
-        child: SizedBox(
-          width: 0.2.sw,
-          height: double.infinity,
-          child: Center(
-            child: BlocSelector<CellsBloc, CellsState, String?>(
-              selector: (state) => state.selectedCellId,
-              builder: (context, selectedCellId) {
-                if (selectedCellId == null) return SizedBox(width: 120.w, height: 72.h);
-                final cellId = CellId.fromString(selectedCellId);
-                if (cellId == null) return SizedBox(width: 120.w, height: 72.h);
+    child: SizedBox(
+      width: 0.2.sw,
+      height: double.infinity,
+      child: Center(
+        child: BlocSelector<CellsBloc, CellsState, String?>(
+          selector: (state) => state.selectedCellId,
+          builder: (context, selectedCellId) {
+            if (selectedCellId == null) return SizedBox(width: 120.w, height: 72.h);
+            final cellId = CellId.fromString(selectedCellId);
+            if (cellId == null) return SizedBox(width: 120.w, height: 72.h);
 
-                return BlocSelector<CellsBloc, CellsState, double>(
-                  selector: (state) => context.read<CellsBloc>().getFillLevel(selectedCellId),
-                  builder: (context, fillLevel) => RepaintBoundary(
-                    child: SizedBox(
-                      width: 120.w,
-                      height: 72.h,
-                      child: AnimatedCellGraphic(cellId: cellId, fillLevel: fillLevel),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+            return BlocSelector<CellsBloc, CellsState, double>(
+              selector: (state) => context.read<CellsBloc>().getFillLevel(selectedCellId),
+              builder: (context, fillLevel) => RepaintBoundary(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final size = (constraints.maxWidth < constraints.maxHeight
+                            ? constraints.maxWidth
+                            : constraints.maxHeight) *
+                        0.85;
+
+                    return Center(
+                      child: SizedBox(
+                        width: size,
+                        height: size,
+                        child: AnimatedCellGraphic(cellId: cellId, fillLevel: fillLevel),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
         ),
-      );
+      ),
+    ),
+  );
 }

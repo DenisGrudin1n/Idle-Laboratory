@@ -22,40 +22,61 @@ class ResearchTreeView extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
+        final baseRowGap = 14.h;
+        final baseMarginV = 10.h;
+        
+        // 1. Find the slot size that fits the width and a *minimum* height
         final fitted = ResearchTreeGeometry.layoutFitted(
           maxWidth: constraints.maxWidth,
           maxHeight: constraints.maxHeight,
           initialSlotSide: CraftingLayout.inputSlotSide,
-          rowGap: 14.h,
+          rowGap: baseRowGap,
           marginH: 8.w,
-          marginV: 10.h,
+          marginV: baseMarginV,
         );
 
-        return FittedBox(
+        // 2. If we have extra height, stretch the gaps instead of the slots
+        var finalRowGap = baseRowGap;
+        var finalMarginV = baseMarginV;
+        final targetHeight = constraints.maxHeight * 0.95;
+        
+        if (targetHeight > fitted.height) {
+          final extraHeight = targetHeight - fitted.height;
+          // Distribute extra height: 70% to gaps, 30% to margins
+          finalRowGap = baseRowGap + (extraHeight * 0.7) / 4;
+          finalMarginV = baseMarginV + (extraHeight * 0.3) / 2;
+        }
+
+        // 3. Final layout with stretched gaps
+        final finalGeo = ResearchTreeGeometry.layout(
+          maxWidth: constraints.maxWidth,
+          slotSide: fitted.slotSide,
+          rowGap: finalRowGap,
+          marginH: 8.w,
+          marginV: finalMarginV,
+        );
+
+        return Center(
           child: SizedBox(
-            width: fitted.width,
-            height: fitted.height,
+            width: finalGeo.width,
+            height: finalGeo.height,
             child: Stack(
               clipBehavior: Clip.none,
               children: [
                 Positioned.fill(
                   child: IgnorePointer(
                     child: CustomPaint(
-                      painter: ResearchTreeConduitPainter(
-                        slotRows: fitted.rows,
-                        tubeColor: tube,
-                        glowColor: glow,
-                      ),
+                      painter: ResearchTreeConduitPainter(slotRows: finalGeo.rows, tubeColor: tube, glowColor: glow),
                     ),
                   ),
                 ),
-                for (var t = 0; t < fitted.rows.length; t++)
-                  for (var i = 0; i < fitted.rows[t].length; i++)
+                for (var t = 0; t < finalGeo.rows.length; t++)
+                  for (var i = 0; i < finalGeo.rows[t].length; i++)
                     Positioned(
-                      left: fitted.rows[t][i].left,
-                      top: fitted.rows[t][i].top,
-                      width: fitted.rows[t][i].width,
-                      height: fitted.rows[t][i].height,
+                      left: finalGeo.rows[t][i].left,
+                      top: finalGeo.rows[t][i].top,
+                      width: finalGeo.rows[t][i].width,
+                      height: finalGeo.rows[t][i].height,
                       child: _ResearchTreeSlot(
                         materialId: ResearchMaterialTree.idForSlot(rowFromTop: t, slotIndex: i),
                         emphasized: t == 0,
@@ -78,15 +99,15 @@ class _ResearchTreeSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => showResearchMaterialDetailDialog(context, materialId),
-          borderRadius: BorderRadius.circular(10.r),
-          child: GradientSlotFrame(
-            emphasized: emphasized,
-            showBorder: false,
-            child: ResearchMaterialSlotIcon(materialId: materialId),
-          ),
-        ),
-      );
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: () => showResearchMaterialDetailDialog(context, materialId),
+      borderRadius: BorderRadius.circular(10.r),
+      child: GradientSlotFrame(
+        emphasized: emphasized,
+        showBorder: false,
+        child: ResearchMaterialSlotIcon(materialId: materialId),
+      ),
+    ),
+  );
 }

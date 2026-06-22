@@ -23,10 +23,7 @@ class CellsListSection extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(12.w),
             alignment: Alignment.center,
-            child: Text(
-              context.l10n.cells,
-              style: context.styles.sectionTitle,
-            ),
+            child: Text(context.l10n.cells, style: context.styles.sectionTitle),
           ),
           Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2)),
           Expanded(
@@ -50,11 +47,7 @@ class CellsListSection extends StatelessWidget {
           ),
           Container(
             padding: EdgeInsets.all(12.w),
-            child: Text(
-              context.l10n.unlockMoreCells,
-              style: context.styles.helperText,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(context.l10n.unlockMoreCells, style: context.styles.helperText, textAlign: TextAlign.center),
           ),
         ],
       ),
@@ -88,19 +81,13 @@ class _CellItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                cell.name.localize(l10n),
-                style: context.styles.cellName(isLocked: cell.isLocked),
-              ),
+              Text(cell.name.localize(l10n), style: context.styles.cellName(isLocked: cell.isLocked)),
               if (!cell.isLocked) ...[
                 SizedBox(height: 6.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${l10n.level}: ${cell.level}',
-                      style: context.styles.compactValue,
-                    ),
+                    Text('${l10n.level}: ${cell.level}', style: context.styles.compactValue),
                     Row(
                       children: [
                         Icon(Icons.arrow_upward, color: context.color.green, size: 10.sp),
