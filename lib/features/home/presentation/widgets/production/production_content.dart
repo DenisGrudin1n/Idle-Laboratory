@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
@@ -22,12 +21,12 @@ class ProductionContent extends StatelessWidget {
     final l10n = context.l10n;
     return SectionCard(
       child: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _buildHeader(context, l10n),
-            SizedBox(height: 16.h),
+            const SizedBox(height: 16),
             Expanded(
               child: BlocSelector<CellsBloc, CellsState, (List<CellModel>, Map<String, CellProductionEntry>)>(
                 selector: (state) => (state.cells, state.productionByCellId),
@@ -35,11 +34,11 @@ class ProductionContent extends StatelessWidget {
                   final (cells, productionByCellId) = data;
                   final unlockedCells = cells.where((c) => !c.isLocked).toList();
                   return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
                       childAspectRatio: 0.72,
-                      crossAxisSpacing: 16.w,
-                      mainAxisSpacing: 16.h,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
                     ),
                     itemCount: unlockedCells.length,
                     itemBuilder: (context, index) {
@@ -70,7 +69,7 @@ class ProductionContent extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(width: 8.w),
+        const SizedBox(width: 8),
         Flexible(child: _buildSummaryStats(context, l10n)),
       ],
     );
@@ -86,16 +85,16 @@ class ProductionContent extends StatelessWidget {
           builder: (context, prestigeMult) {
             final contribution = cells.totalProductionEPSUnscaled(productionByCellId) * prestigeMult;
             return Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: context.color.background.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: context.color.primary.withValues(alpha: 0.1)),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.bolt, color: context.color.green, size: 14.sp),
-                  SizedBox(width: 4.w),
+                  Icon(Icons.bolt, color: context.color.green, size: 14),
+                  const SizedBox(width: 4),
                   Flexible(
                     child: Text(
                       l10n.totalContribution(contribution.format(compact: true), l10n.energyPerSec),
@@ -138,11 +137,11 @@ class _ProductionItem extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: color.background.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: color.primary.withValues(alpha: 0.1), width: 1.w),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.primary.withValues(alpha: 0.1)),
       ),
       child: Padding(
-        padding: EdgeInsets.fromLTRB(9.w, 4.h, 9.w, 4.h),
+        padding: const EdgeInsets.fromLTRB(9, 4, 9, 4),
         child: Column(
           children: [
             Row(
@@ -152,7 +151,7 @@ class _ProductionItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('$productionRateLabel/s', style: context.styles.productionRate),
-                    SizedBox(height: 2.h),
+                    const SizedBox(height: 2),
                     Text('${l10n.lvl} ${entry.accelerationLevel}', style: context.styles.productionAccelerationLevel),
                   ],
                 ),
@@ -180,7 +179,7 @@ class _ProductionItem extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: 4.h),
+            const SizedBox(height: 4),
             _buildAccelerateButton(
               context,
               label: l10n.accelerate,
@@ -189,7 +188,7 @@ class _ProductionItem extends StatelessWidget {
                   ? null
                   : () => context.read<CellsBloc>().add(CellsEvent.accelerateProduction(cell.id)),
             ),
-            SizedBox(height: 2.h),
+            const SizedBox(height: 2),
             _buildAccelerateButton(
               context,
               label: l10n.accelerateMax,
@@ -217,16 +216,16 @@ class _ProductionItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
         decoration: BoxDecoration(
           color: color.background.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(7.r),
-          border: Border.all(color: color.primary.withValues(alpha: 0.14), width: 1.w),
+          borderRadius: BorderRadius.circular(7),
+          border: Border.all(color: color.primary.withValues(alpha: 0.14)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(width: 3.w),
+            const SizedBox(width: 3),
             Flexible(
               child: Text(
                 label,
@@ -235,9 +234,9 @@ class _ProductionItem extends StatelessWidget {
                 style: context.styles.productionButtonLabel,
               ),
             ),
-            if (costLabel == '—' || !accelerateMax) SizedBox(width: 4.w),
+            if (costLabel == '—' || !accelerateMax) const SizedBox(width: 4),
             Text(costLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: context.styles.productionButtonCost),
-            Icon(Icons.bolt, color: color.green, size: 11.sp),
+            Icon(Icons.bolt, color: color.green, size: 11),
           ],
         ),
       ),

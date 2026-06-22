@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
 class ActionButton extends StatelessWidget {
@@ -45,7 +44,7 @@ class ActionButton extends StatelessWidget {
     final foregroundColor = isEnabled
         ? (enabledTextColor ?? Colors.white)
         : (disabledTextColor ?? context.color.primaryText.withValues(alpha: 0.5));
-    final radius = borderRadius ?? 8.r;
+    final radius = borderRadius ?? 8.0;
 
     return Material(
       color: Colors.transparent,
@@ -53,27 +52,26 @@ class ActionButton extends StatelessWidget {
         onTap: isEnabled ? onTap : null,
         borderRadius: BorderRadius.circular(radius),
         child: Container(
-          padding: padding ?? EdgeInsets.all(4.w),
+          padding: padding ?? const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(radius),
             border: Border.all(
               color: backgroundColor,
-              width: borderWidth ?? 1.5.w,
+              width: borderWidth ?? 1.5,
             ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: mainAxisSize,
             children: [
-              Icon(icon, color: foregroundColor, size: iconSize ?? 14.sp),
-              SizedBox(width: 6.w),
+              Icon(icon, color: foregroundColor, size: iconSize ?? 14),
+              const SizedBox(width: 6),
               Flexible(
                 child: Text(
                   !isEnabled && badgeText != null ? badgeText! : label,
                   style: TextStyle(
                     color: foregroundColor,
-                    fontSize: fontSize ?? 10.sp,
+                    fontSize: fontSize ?? 10,
                     fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis,

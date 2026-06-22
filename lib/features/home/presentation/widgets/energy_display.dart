@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
@@ -18,24 +17,28 @@ class EnergyDisplay extends StatelessWidget {
           builder: (context, data) {
             final (currentEnergy, energyPerSecond) = data;
             return Container(
-              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        currentEnergy.format(useScientific: isScientific),
-                        style: context.styles.energyValue,
-                        textAlign: TextAlign.center,
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            currentEnergy.format(useScientific: isScientific),
+                            style: context.styles.energyValue,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ),
-                      SizedBox(width: 6.w),
-                      Icon(Icons.bolt, color: context.color.green, size: 20.sp),
+                      const SizedBox(width: 6),
+                      Icon(Icons.bolt, color: context.color.green, size: 20),
                     ],
                   ),
-                  SizedBox(height: 2.h),
+                  const SizedBox(height: 2),
                   Text('+${energyPerSecond.format(useScientific: isScientific)} ${context.l10n.perSecond}',
                       style: context.styles.successText,
                       textAlign: TextAlign.center),

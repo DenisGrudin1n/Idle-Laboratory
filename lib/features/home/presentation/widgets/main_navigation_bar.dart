@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
@@ -14,34 +13,39 @@ class MainNavigationBar extends StatelessWidget {
   final ValueChanged<MainNavigationTab> onTabSelected;
 
   @override
-  Widget build(BuildContext context) => SectionCard(
-    child: SizedBox(
-      width: 0.2.sw,
-      height: double.infinity,
-      child: ListView.separated(
-        itemCount: MainNavigationTab.values.length + 1,
-        separatorBuilder: (context, index) => index == 0
-            ? Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2))
-            : Divider(
-                height: 1,
-                thickness: 1,
-                indent: 12.w,
-                endIndent: 12.w,
-                color: context.color.primaryText.withValues(alpha: 0.1),
-              ),
-        itemBuilder: (context, index) {
-          if (index == 0) return const EnergyDisplay();
-          final tab = MainNavigationTab.values[index - 1];
-          return _DrawerTab(
-            tab: tab,
-            label: tab.localize(context.l10n),
-            isActive: selectedTab == tab,
-            onTap: () => onTabSelected(tab),
-          );
-        },
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final sidebarWidth = (width * 0.22).clamp(130.0, 240.0);
+
+    return SectionCard(
+      child: SizedBox(
+        width: sidebarWidth,
+        height: double.infinity,
+        child: ListView.separated(
+          itemCount: MainNavigationTab.values.length + 1,
+          separatorBuilder: (context, index) => index == 0
+              ? Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2))
+              : Divider(
+                  height: 1,
+                  thickness: 1,
+                  indent: 12,
+                  endIndent: 12,
+                  color: context.color.primaryText.withValues(alpha: 0.1),
+                ),
+          itemBuilder: (context, index) {
+            if (index == 0) return const EnergyDisplay();
+            final tab = MainNavigationTab.values[index - 1];
+            return _DrawerTab(
+              tab: tab,
+              label: tab.localize(context.l10n),
+              isActive: selectedTab == tab,
+              onTap: () => onTabSelected(tab),
+            );
+          },
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _DrawerTab extends StatelessWidget {
@@ -60,17 +64,17 @@ class _DrawerTab extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isActive ? context.color.primary.withValues(alpha: 0.3) : Colors.transparent,
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: isActive ? context.color.primary : Colors.transparent, width: 1.w),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: isActive ? context.color.primary : Colors.transparent),
             ),
             child: Row(
               children: [
-                Icon(tab.icon, color: context.color.primaryText, size: 16.sp),
-                SizedBox(width: 8.w),
+                Icon(tab.icon, color: context.color.primaryText, size: 16),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(label, style: context.styles.navigationLabel(isActive: isActive)),
                 ),
@@ -78,10 +82,10 @@ class _DrawerTab extends StatelessWidget {
             ),
           ),
           if (tab == MainNavigationTab.crafting)
-            Positioned(
-              right: 32.w,
-              bottom: 18.h,
-              child: const StorageBadge(forMainTab: MainNavigationTab.crafting),
+            const Positioned(
+              right: 32,
+              bottom: 18,
+              child: StorageBadge(forMainTab: MainNavigationTab.crafting),
             ),
         ],
       ),

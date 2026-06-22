@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
@@ -19,7 +18,7 @@ class CraftingOutputSlot extends StatelessWidget {
     final l10n = context.l10n;
     final side = slotSide ?? CraftingLayout.outputSlotSide;
     final material = outputMaterialId;
-    final innerRadius = 9.r;
+    const innerRadius = 9.0;
 
     final slot = SizedBox(
       width: side,
@@ -29,7 +28,7 @@ class CraftingOutputSlot extends StatelessWidget {
         child: material == null
             ? Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -39,7 +38,7 @@ class CraftingOutputSlot extends StatelessWidget {
                         textAlign: TextAlign.center,
                         maxLines: 2,
                       ),
-                      SizedBox(height: 4.h),
+                      const SizedBox(height: 4),
                       Text(
                         l10n.craftingSlotEmpty,
                         style: context.styles.compactValue.copyWith(

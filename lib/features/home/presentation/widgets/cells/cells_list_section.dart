@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
@@ -16,12 +15,12 @@ class CellsListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SectionCard(
     child: SizedBox(
-      width: 0.2.sw,
+      width: MediaQuery.sizeOf(context).width * 0.2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: EdgeInsets.all(12.w),
+            padding: const EdgeInsets.all(12),
             alignment: Alignment.center,
             child: Text(context.l10n.cells, style: context.styles.sectionTitle),
           ),
@@ -33,9 +32,9 @@ class CellsListSection extends StatelessWidget {
                 final (cells, selectedCellId) = data;
                 final selectedId = cells.any((cell) => cell.id == selectedCellId) ? selectedCellId : null;
                 return ListView.separated(
-                  padding: EdgeInsets.all(8.w),
+                  padding: const EdgeInsets.all(8),
                   itemCount: cells.length,
-                  separatorBuilder: (context, index) => SizedBox(height: 8.h),
+                  separatorBuilder: (context, index) => const SizedBox(height: 8),
                   itemBuilder: (context, index) => _CellItem(
                     cell: cells[index],
                     isSelected: selectedId == cells[index].id,
@@ -46,7 +45,7 @@ class CellsListSection extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.all(12.w),
+            padding: const EdgeInsets.all(12),
             child: Text(context.l10n.unlockMoreCells, style: context.styles.helperText, textAlign: TextAlign.center),
           ),
         ],
@@ -68,30 +67,30 @@ class _CellItem extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: cell.isLocked ? null : onTap,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
-          padding: EdgeInsets.all(10.w),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: isSelected
                 ? context.color.primary.withValues(alpha: 0.25)
                 : context.color.background.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: isSelected ? context.color.primary : Colors.transparent, width: 1.w),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: isSelected ? context.color.primary : Colors.transparent),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(cell.name.localize(l10n), style: context.styles.cellName(isLocked: cell.isLocked)),
               if (!cell.isLocked) ...[
-                SizedBox(height: 6.h),
+                const SizedBox(height: 6),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('${l10n.level}: ${cell.level}', style: context.styles.compactValue),
                     Row(
                       children: [
-                        Icon(Icons.arrow_upward, color: context.color.green, size: 10.sp),
-                        SizedBox(width: 2.w),
+                        Icon(Icons.arrow_upward, color: context.color.green, size: 10),
+                        const SizedBox(width: 2),
                         Text(
                           '${cell.energyPerSecond ?? '0.0'} / ${l10n.sec}',
                           style: context.styles.compactAccentValue,
@@ -100,15 +99,15 @@ class _CellItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 4.h),
+                const SizedBox(height: 4),
                 BlocSelector<SettingsBloc, SettingsState, bool>(
                   selector: (state) => state.isScientificNotation,
                   builder: (context, isScientific) {
                     final nextLevel = cell.nextLevelConfig;
                     return Row(
                       children: [
-                        Icon(Icons.battery_charging_full, color: context.color.primaryText, size: 10.sp),
-                        SizedBox(width: 4.w),
+                        Icon(Icons.battery_charging_full, color: context.color.primaryText, size: 10),
+                        const SizedBox(width: 4),
                         Text(
                           nextLevel == null
                               ? l10n.maxLvl
@@ -121,7 +120,7 @@ class _CellItem extends StatelessWidget {
                 ),
               ],
               if (cell.isLocked) ...[
-                SizedBox(height: 6.h),
+                const SizedBox(height: 6),
                 StatusBadge(text: '${l10n.unlockAt}: ${cell.getUnlockRequirementFormatted()}'),
               ],
             ],

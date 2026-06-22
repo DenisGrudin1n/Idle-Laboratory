@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
@@ -37,7 +36,7 @@ class CellsScreen extends StatelessWidget {
                 selectedTab: selectedTab,
                 onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
               ),
-              SizedBox(width: 12.w),
+              const SizedBox(width: 12),
               Expanded(child: _buildContent(selectedTab)),
             ],
           ),

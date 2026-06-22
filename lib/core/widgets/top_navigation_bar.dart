@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 
@@ -22,7 +21,7 @@ class TopNavigationBar<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SectionCard(
     child: SizedBox(
-      height: 50.h,
+      height: 50,
       child: Row(
         children: tabs
             .map(
@@ -55,18 +54,18 @@ class _TopTab extends StatelessWidget {
         onTap: onTap,
         child: Container(
           alignment: Alignment.center,
-          margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
+          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           decoration: BoxDecoration(
             color: isActive ? context.color.primary.withValues(alpha: 0.3) : Colors.transparent,
-            borderRadius: BorderRadius.circular(8.r),
-            border: Border.all(color: isActive ? context.color.primary : Colors.transparent, width: 1.w),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: isActive ? context.color.primary : Colors.transparent),
           ),
           child: Stack(
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
               Text(label, style: context.styles.navigationLabel(isActive: isActive)),
-              if (badge != null) Positioned(left: 32.w, bottom: 10.h, child: badge!),
+              if (badge != null) Positioned(left: 32, bottom: 10, child: badge!),
             ],
           ),
         ),

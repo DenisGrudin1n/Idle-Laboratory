@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
 class InfoRow extends StatelessWidget {
@@ -31,13 +30,13 @@ class InfoRow extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(color: labelColor ?? context.color.primaryText, fontSize: labelFontSize ?? 10.sp),
+          style: TextStyle(color: labelColor ?? context.color.primaryText, fontSize: labelFontSize ?? 10),
         ),
         Text(
           value,
           style: TextStyle(
             color: valueColor ?? context.color.primaryText,
-            fontSize: valueFontSize ?? 11.sp,
+            fontSize: valueFontSize ?? 11,
             fontWeight: valueFontWeight ?? FontWeight.w600,
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
@@ -22,8 +21,8 @@ class ResearchTreeView extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final baseRowGap = 14.h;
-        final baseMarginV = 10.h;
+        const baseRowGap = 14.0;
+        const baseMarginV = 10.0;
         
         // 1. Find the slot size that fits the width and a *minimum* height
         final fitted = ResearchTreeGeometry.layoutFitted(
@@ -31,7 +30,7 @@ class ResearchTreeView extends StatelessWidget {
           maxHeight: constraints.maxHeight,
           initialSlotSide: CraftingLayout.inputSlotSide,
           rowGap: baseRowGap,
-          marginH: 8.w,
+          marginH: 8,
           marginV: baseMarginV,
         );
 
@@ -52,7 +51,7 @@ class ResearchTreeView extends StatelessWidget {
           maxWidth: constraints.maxWidth,
           slotSide: fitted.slotSide,
           rowGap: finalRowGap,
-          marginH: 8.w,
+          marginH: 8,
           marginV: finalMarginV,
         );
 
@@ -102,7 +101,7 @@ class _ResearchTreeSlot extends StatelessWidget {
     color: Colors.transparent,
     child: InkWell(
       onTap: () => showResearchMaterialDetailDialog(context, materialId),
-      borderRadius: BorderRadius.circular(10.r),
+      borderRadius: BorderRadius.circular(10),
       child: GradientSlotFrame(
         emphasized: emphasized,
         showBorder: false,

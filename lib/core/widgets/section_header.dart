@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
 class SectionHeader extends StatelessWidget {
@@ -34,20 +33,20 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveSpacing = spacing ?? 8.w;
+    final effectiveSpacing = spacing ?? 8.0;
     return Row(
       children: [
         if (icon != null) ...[
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: iconBackgroundColor ?? context.color.primary.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               icon,
               color: iconColor ?? context.color.primary,
-              size: iconSize ?? 16.sp,
+              size: iconSize ?? 16,
             ),
           ),
           SizedBox(width: effectiveSpacing),
@@ -60,18 +59,18 @@ class SectionHeader extends StatelessWidget {
                 title,
                 style: TextStyle(
                   color: titleColor ?? context.color.titleText,
-                  fontSize: titleFontSize ?? 14.sp,
+                  fontSize: titleFontSize ?? 14,
                   fontWeight: FontWeight.bold,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
               if (description != null) ...[
-                SizedBox(height: 1.h),
+                const SizedBox(height: 1),
                 Text(
                   description!,
                   style: TextStyle(
                     color: descriptionColor ?? context.color.primaryText.withValues(alpha: 0.7),
-                    fontSize: descriptionFontSize ?? 9.sp,
+                    fontSize: descriptionFontSize ?? 9,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

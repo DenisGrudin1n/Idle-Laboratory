@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/crafting_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
@@ -27,7 +26,7 @@ class CraftingContent extends StatelessWidget {
               tabLabel: (context, tab) => tab.localize(context.l10n),
               badgeBuilder: (context, tab) => tab == CraftingTab.storage ? const StorageBadge() : null,
             ),
-            SizedBox(height: 12.w),
+            const SizedBox(height: 12),
             Expanded(child: _buildTabContent(context, selectedTab)),
           ],
         ),
@@ -38,24 +37,24 @@ class CraftingContent extends StatelessWidget {
     return switch (tab) {
       CraftingTab.crafting => SectionCard(
           child: Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(l10n.craftingInterfaceTitle, style: context.styles.sectionHeaderTitle),
-                SizedBox(height: 4.h),
+                const SizedBox(height: 4),
                 Text(l10n.craftingInterfaceOverview, style: context.styles.compactValue),
-                SizedBox(height: 16.h),
+                const SizedBox(height: 16),
                 const Expanded(child: CraftingInterfacePanel()),
               ],
             ),
           ),
         ),
       CraftingTab.storage => const StorageContent(),
-      CraftingTab.research => SectionCard(
+      CraftingTab.research => const SectionCard(
           child: Padding(
-            padding: EdgeInsets.all(12.w),
-            child: const ResearchTreeView(),
+            padding: EdgeInsets.all(12),
+            child: ResearchTreeView(),
           ),
         ),
       CraftingTab.overview => const Center(child: Text('Coming Soon')),

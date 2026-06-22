@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/helper/get_it_service_locator.dart';
 import 'package:idle_laboratory/core/router/app_router.dart';
@@ -35,35 +34,31 @@ class AppWidget extends StatelessWidget {
       BlocProvider(create: (_) => getIt<AppLayoutBloc>()),
     ],
     child: CellLoopAnimationScope(
-      child: ScreenUtilInit(
-        designSize: Size(
-          390 * (MediaQuery.sizeOf(context).width / 390),
-          844 * (MediaQuery.sizeOf(context).height / 844),
-        ),
-        splitScreenMode: true,
-        child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
-          selector: (state) => state.appVersion,
-          builder: (context, appVersion) {
-            final isMobile = appVersion == AppVersionEnum.mobile;
-            final textScale = isMobile ? 1.0 : (appVersion == AppVersionEnum.tablet ? 1.0 : 1.25);
+      child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+        selector: (state) => state.appVersion,
+        builder: (context, appVersion) {
+          final textScale = switch (appVersion) {
+            AppVersionEnum.mobile => 1.0,
+            AppVersionEnum.tablet => 1.0,
+            AppVersionEnum.desk => 1.25,
+          };
 
-            return MediaQuery(
-              data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
-              child: MaterialApp.router(
-                routerConfig: AppRouter.router,
-                theme: AppTheme.defaultTheme,
-                localizationsDelegates: const [
-                  AppLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: const [Locale('en')],
-                debugShowCheckedModeBanner: false,
-              ),
-            );
-          },
-        ),
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+            child: MaterialApp.router(
+              routerConfig: AppRouter.router,
+              theme: AppTheme.defaultTheme,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [Locale('en')],
+              debugShowCheckedModeBanner: false,
+            ),
+          );
+        },
       ),
     ),
   );

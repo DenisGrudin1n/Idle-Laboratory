@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
@@ -26,27 +25,27 @@ class PrestigeInfoSection extends StatelessWidget {
       final l10n = context.l10n;
       return SectionCard(
         child: SizedBox(
-          width: 0.2.sw,
+          width: MediaQuery.sizeOf(context).width * 0.2,
           child: Padding(
-            padding: EdgeInsets.all(12.w),
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 SectionHeader(icon: Icons.auto_awesome, title: l10n.prestige, description: l10n.prestigeDescription),
-                SizedBox(height: 8.h),
+                const SizedBox(height: 8),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildMultiplierDisplay(context, l10n, prestigeState),
-                      SizedBox(height: 8.h),
+                      const SizedBox(height: 8),
                       _buildProgressSection(context, l10n, prestigeState),
-                      SizedBox(height: 12.h),
+                      const SizedBox(height: 12),
                       if (kDebugMode)
                         Row(
                           children: [
                             Expanded(child: _buildPrestigeButton(context, l10n, prestigeState)),
-                            SizedBox(width: 8.w),
+                            const SizedBox(width: 8),
                             _buildResetButton(context),
                           ],
                         )
@@ -65,10 +64,10 @@ class PrestigeInfoSection extends StatelessWidget {
 
   Widget _buildMultiplierDisplay(BuildContext context, AppLocalizations l10n, PrestigeStateModel prestigeState) =>
       Container(
-        padding: EdgeInsets.all(12.w),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: context.color.background.withValues(alpha: 0.3),
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: context.color.primary.withValues(alpha: 0.3)),
         ),
         child: Column(
@@ -81,7 +80,7 @@ class PrestigeInfoSection extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 3.h),
+            const SizedBox(height: 3),
             Text(
               '+ ${prestigeState.currentMultiplier.format(compact: true)}x ${l10n.prestigeBonus}',
               style: context.styles.prestigeBonus(isUnlocked: prestigeState.isUnlocked),
@@ -102,13 +101,13 @@ class PrestigeInfoSection extends StatelessWidget {
           return Column(
             children: [
               InfoRow(label: l10n.totalEnergy, value: currentEnergyText, valueColor: context.color.titleText),
-              SizedBox(height: 3.h),
+              const SizedBox(height: 3),
               InfoRow(
                 label: l10n.prestigeRequirement,
                 value: prestigeState.currentThreshold.format(compact: true),
                 valueColor: context.color.primaryText,
               ),
-              SizedBox(height: 6.h),
+              const SizedBox(height: 6),
               ProgressBarWidget(progress: progress),
             ],
           );
@@ -144,15 +143,15 @@ class PrestigeInfoSection extends StatelessWidget {
           context.read<PrestigeBloc>().add(const PrestigeEvent.resetPrestige());
         }
       },
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: EdgeInsets.all(4.w),
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: Colors.red.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: Colors.red.withValues(alpha: 0.5), width: 1.5.w),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.red.withValues(alpha: 0.5), width: 1.5),
         ),
-        child: Icon(Icons.refresh, color: Colors.red, size: 14.sp),
+        child: const Icon(Icons.refresh, color: Colors.red, size: 14),
       ),
     ),
   );
