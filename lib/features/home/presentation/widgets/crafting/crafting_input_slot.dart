@@ -4,6 +4,7 @@ import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
@@ -81,7 +82,13 @@ class CraftingInputSlot extends StatelessWidget {
     final slot = SizedBox(
       width: side,
       height: side,
-      child: GradientSlotFrame(child: child),
+      child: AppBorderContainer(
+        isActive: true,
+        activeBorderColor: context.color.titleText,
+        borderRadius: 10,
+        borderWidth: 1,
+        child: GradientSlotFrame(showBorder: false, child: child),
+      ),
     );
 
     if (onTap == null) return slot;

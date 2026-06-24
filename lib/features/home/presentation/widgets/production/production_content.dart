@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/core/widgets/energy_icon.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
@@ -93,7 +96,7 @@ class ProductionContent extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(Icons.bolt, color: context.color.green, size: 14),
+                  const EnergyIcon(sizeMultiplier: 1.3),
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(
@@ -134,73 +137,89 @@ class _ProductionItem extends StatelessWidget {
         : GameBalance.calculateAccelerationUpgradeCost(cellId.order, entry.accelerationLevel);
     final costLabel = atMaxAcceleration ? '—' : accelerationCost.format(compact: true);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: color.background.withValues(alpha: 0.2),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.primary.withValues(alpha: 0.1)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(9, 4, 9, 4),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+      selector: (state) => state.appVersion,
+      builder: (context, appVersion) {
+        final isDesk = appVersion == AppVersionEnum.desk;
+        final isTablet = appVersion == AppVersionEnum.tablet;
+        return Container(
+          decoration: BoxDecoration(
+            color: color.background.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.primary.withValues(alpha: 0.1)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(9, 4, 9, 4),
+            child: Column(
               children: [
-                Column(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('$productionRateLabel/s', style: context.styles.productionRate),
-                    const SizedBox(height: 2),
-                    Text('${l10n.lvl} ${entry.accelerationLevel}', style: context.styles.productionAccelerationLevel),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('$productionRateLabel/s', style: context.styles.productionRate),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${l10n.lvl} ${entry.accelerationLevel}',
+                          style: context.styles.productionAccelerationLevel,
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Text(entry.amount.format(compact: true), style: context.styles.productionAmount),
                   ],
                 ),
-                const Spacer(),
-                Text(entry.amount.format(compact: true), style: context.styles.productionAmount),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      const graphicAspectWidthOverHeight = 0.68;
+                      var width = constraints.maxWidth;
+                      var height = width / graphicAspectWidthOverHeight;
+                      if (height > constraints.maxHeight) {
+                        height = constraints.maxHeight;
+                        width = height * graphicAspectWidthOverHeight;
+                      }
+                      return Center(
+                        child: SizedBox(
+                          width: width,
+                          height: height,
+                          child: AnimatedCellGraphic(cellId: cellId),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 4),
+                _buildAccelerateButton(
+                  context,
+                  label: l10n.accelerate,
+                  costLabel: costLabel,
+                  onTap: atMaxAcceleration
+                      ? null
+                      : () => context.read<CellsBloc>().add(CellsEvent.accelerateProduction(cell.id)),
+                ),
+                SizedBox(
+                  height: isDesk
+                      ? 4
+                      : isTablet
+                      ? 3
+                      : 2,
+                ),
+                _buildAccelerateButton(
+                  context,
+                  label: l10n.accelerateMax,
+                  costLabel: atMaxAcceleration ? '—' : '',
+                  accelerateMax: true,
+                  onTap: atMaxAcceleration
+                      ? null
+                      : () => context.read<CellsBloc>().add(CellsEvent.accelerateProductionMax(cell.id)),
+                ),
               ],
             ),
-            Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  const graphicAspectWidthOverHeight = 0.68;
-                  var width = constraints.maxWidth;
-                  var height = width / graphicAspectWidthOverHeight;
-                  if (height > constraints.maxHeight) {
-                    height = constraints.maxHeight;
-                    width = height * graphicAspectWidthOverHeight;
-                  }
-                  return Center(
-                    child: SizedBox(
-                      width: width,
-                      height: height,
-                      child: AnimatedCellGraphic(cellId: cellId),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 4),
-            _buildAccelerateButton(
-              context,
-              label: l10n.accelerate,
-              costLabel: costLabel,
-              onTap: atMaxAcceleration
-                  ? null
-                  : () => context.read<CellsBloc>().add(CellsEvent.accelerateProduction(cell.id)),
-            ),
-            const SizedBox(height: 2),
-            _buildAccelerateButton(
-              context,
-              label: l10n.accelerateMax,
-              costLabel: atMaxAcceleration ? '—' : '',
-              accelerateMax: true,
-              onTap: atMaxAcceleration
-                  ? null
-                  : () => context.read<CellsBloc>().add(CellsEvent.accelerateProductionMax(cell.id)),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -212,34 +231,53 @@ class _ProductionItem extends StatelessWidget {
     bool accelerateMax = false,
   }) {
     final color = context.color;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-        decoration: BoxDecoration(
-          color: color.background.withValues(alpha: 0.45),
-          borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: color.primary.withValues(alpha: 0.14)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: 3),
-            Flexible(
-              child: Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: context.styles.productionButtonLabel,
-              ),
+    return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+      selector: (state) => state.appVersion,
+      builder: (context, appVersion) {
+        final isDesk = appVersion == AppVersionEnum.desk;
+        final isTablet = appVersion == AppVersionEnum.tablet;
+        final verticalPadding = isDesk ? 8.0 : 2.0;
+        final borderRadius = isDesk
+            ? 8.0
+            : isTablet
+            ? 6.0
+            : 4.0;
+
+        return GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: 4),
+            decoration: BoxDecoration(
+              color: color.background.withValues(alpha: 0.45),
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: Border.all(color: color.primary.withValues(alpha: 0.14)),
             ),
-            if (costLabel == '—' || !accelerateMax) const SizedBox(width: 4),
-            Text(costLabel, maxLines: 1, overflow: TextOverflow.ellipsis, style: context.styles.productionButtonCost),
-            Icon(Icons.bolt, color: color.green, size: 11),
-          ],
-        ),
-      ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 3),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.styles.productionButtonLabel,
+                  ),
+                ),
+                if (costLabel == '—' || !accelerateMax) const SizedBox(width: 4),
+                Text(
+                  costLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.styles.productionButtonCost,
+                ),
+                const EnergyIcon(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

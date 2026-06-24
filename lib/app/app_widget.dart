@@ -39,8 +39,8 @@ class AppWidget extends StatelessWidget {
         builder: (context, appVersion) {
           final textScale = switch (appVersion) {
             AppVersionEnum.mobile => 1.0,
-            AppVersionEnum.tablet => 1.0,
-            AppVersionEnum.desk => 1.25,
+            AppVersionEnum.tablet => 1.25,
+            AppVersionEnum.desk => 1.5,
           };
 
           return MediaQuery(

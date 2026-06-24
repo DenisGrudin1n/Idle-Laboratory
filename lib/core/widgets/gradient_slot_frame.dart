@@ -7,17 +7,19 @@ class GradientSlotFrame extends StatelessWidget {
     required this.child,
     this.emphasized = false,
     this.showBorder = true,
+    this.borderRadius,
     super.key,
   });
 
   final Widget child;
   final bool emphasized;
   final bool showBorder;
+  final double? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    const outerR = 10.0;
+    final outerR = borderRadius ?? 10.0;
     final innerPlate = Color.alphaBlend(color.primary.withValues(alpha: 0.3), color.background);
 
     return Container(

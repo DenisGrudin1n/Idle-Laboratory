@@ -21,6 +21,10 @@ class AmountTextField extends StatelessWidget {
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
         final isMobile = appVersion == AppVersionEnum.mobile;
+        final isDesk = appVersion == AppVersionEnum.desk;
+
+        final verticalPadding = isDesk ? 7.0 : 4.0;
+        final horizontalPadding = !isMobile ? 10.0 : 7.0;
 
         return IntrinsicWidth(
           child: TapRegion(
@@ -39,7 +43,7 @@ class AmountTextField extends StatelessWidget {
               textAlign: TextAlign.center,
               decoration: InputDecoration(
                 constraints: const BoxConstraints(minWidth: 30),
-                contentPadding: EdgeInsets.symmetric(horizontal: 7, vertical: isMobile ? 2 : 6),
+                contentPadding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
                 isDense: true,
                 filled: true,
                 fillColor: color.background.withValues(alpha: 0.3),

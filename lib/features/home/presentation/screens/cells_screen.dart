@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/cell_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_content.dart';
@@ -12,12 +14,12 @@ class CellsScreen extends StatelessWidget {
   const CellsScreen({super.key});
 
   Widget _buildContent(MainNavigationTab selectedTab) => switch (selectedTab) {
-        MainNavigationTab.cells => const CellContent(),
-        MainNavigationTab.crafting => const CraftingContent(),
-        MainNavigationTab.settings => const SettingsToggle(),
-        MainNavigationTab.statistics => const SizedBox.shrink(),
-        MainNavigationTab.achievements => const SizedBox.shrink(),
-      };
+    MainNavigationTab.cells => const CellContent(),
+    MainNavigationTab.crafting => const CraftingContent(),
+    MainNavigationTab.settings => const SettingsToggle(),
+    MainNavigationTab.statistics => const SizedBox.shrink(),
+    MainNavigationTab.achievements => const SizedBox.shrink(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +29,32 @@ class CellsScreen extends StatelessWidget {
       builder: (context, selectedTab) => Scaffold(
         backgroundColor: color.background,
         body: SafeArea(
-          top: false,
-          bottom: false,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MainNavigationBar(
-                selectedTab: selectedTab,
-                onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
-              ),
-              const SizedBox(width: 12),
-              Expanded(child: _buildContent(selectedTab)),
-            ],
+          child: BlocBuilder<AppLayoutBloc, AppLayoutState>(
+            builder: (context, state) {
+              final isMobile = state.appVersion == AppVersionEnum.mobile;
+              final mainNavigationBarPadding = isMobile
+                  ? const EdgeInsets.only(top: 12)
+                  : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
+              final contentPadding = isMobile
+                  ? const EdgeInsets.only(top: 12)
+                  : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: mainNavigationBarPadding,
+                    child: MainNavigationBar(
+                      selectedTab: selectedTab,
+                      onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),

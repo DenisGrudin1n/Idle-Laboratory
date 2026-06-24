@@ -67,10 +67,12 @@ extension _SizeExtension on Size {
   AppVersionEnum get appVersionEnum {
     if (width > GameConstants.minWidthThresholdDesk) {
       return AppVersionEnum.desk;
-    } else if (width > GameConstants.minWidthThresholdTablet) {
-      return AppVersionEnum.tablet;
-    } else {
-      return AppVersionEnum.mobile;
     }
+
+    if (shortestSide >= GameConstants.minWidthThresholdTablet) {
+      return AppVersionEnum.tablet;
+    }
+
+    return AppVersionEnum.mobile;
   }
 }

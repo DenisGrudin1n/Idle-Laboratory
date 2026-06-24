@@ -7,7 +7,7 @@ abstract final class CraftingLayout {
 
   static double get inputSlotSide => _baselineInputSlotSide * inputSlotSizeFactor;
 
-  static double get inputVerticalGap => 14;
+  static double get inputVerticalGap => 28;
 
   static double get gapAfterOutputSlot => 24;
 

@@ -35,7 +35,7 @@ class ProgressBarWidget extends StatelessWidget {
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
         final isMobile = appVersion == AppVersionEnum.mobile;
-        final h = height ?? (isMobile ? 12.0 : 16.0);
+        final h = height ?? (isMobile ? 12.0 : 20.0);
 
         return ClipRRect(
           borderRadius: BorderRadius.circular(borderRadius ?? 6.0),
