@@ -63,7 +63,7 @@ abstract final class ResearchTreeGeometry {
     return (width: maxWidth, height: height, rows: rows);
   }
 
-  /// Shrinks [slotSide] until the tree fits [maxHeight] (if possible).
+  /// Shrinks [slotSide] until the tree fits both [maxWidth] and [maxHeight].
   static ({double width, double height, List<List<Rect>> rows, double slotSide}) layoutFitted({
     required double maxWidth,
     required double maxHeight,
@@ -73,9 +73,15 @@ abstract final class ResearchTreeGeometry {
     required double marginV,
   }) {
     var slot = initialSlotSide;
-    const minSlot = 18.0;
+    const minSlot = 12.0;
+    const nBottom = 16;
     late ({double width, double height, List<List<Rect>> rows}) geo;
-    for (var k = 0; k < 24; k++) {
+
+    for (var k = 0; k < 32; k++) {
+      // Check if it fits horizontally first
+      final requiredWidth = nBottom * slot + (nBottom - 1) * _minBottomGap + 2 * marginH;
+      final fitsHorizontally = requiredWidth <= maxWidth;
+
       geo = layout(
         maxWidth: maxWidth,
         slotSide: slot,
@@ -83,10 +89,11 @@ abstract final class ResearchTreeGeometry {
         marginH: marginH,
         marginV: marginV,
       );
-      if (geo.height <= maxHeight || slot <= minSlot) {
+
+      if ((geo.height <= maxHeight && fitsHorizontally) || slot <= minSlot) {
         return (width: geo.width, height: geo.height, rows: geo.rows, slotSide: slot);
       }
-      slot *= 0.92;
+      slot *= 0.94;
     }
     return (width: geo.width, height: geo.height, rows: geo.rows, slotSide: slot);
   }

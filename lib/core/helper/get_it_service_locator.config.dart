@@ -12,6 +12,10 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:idle_laboratory/core/helper/shared_preferences_module.dart'
     as _i62;
+import 'package:idle_laboratory/core/interfaces/i_app_layout_repository.dart'
+    as _i962;
+import 'package:idle_laboratory/core/repositories/app_layout_repository.dart'
+    as _i210;
 import 'package:idle_laboratory/features/home/data/data_sources/local_storage_data_source.dart'
     as _i241;
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart'
@@ -48,6 +52,8 @@ import 'package:idle_laboratory/features/home/domain/services/prestige_service.d
     as _i741;
 import 'package:idle_laboratory/features/home/domain/services/storage_service.dart'
     as _i540;
+import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart'
+    as _i915;
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart'
     as _i461;
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart'
@@ -81,6 +87,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
     gh.factory<_i394.StorageBadgeCubit>(() => _i394.StorageBadgeCubit());
+    gh.singleton<_i962.IAppLayoutRepository>(() => _i210.AppLayoutRepository());
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),
     );
@@ -89,6 +96,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i743.ProductionRepository>(
       () => _i963.ProductionRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    );
+    gh.singleton<_i915.AppLayoutBloc>(
+      () => _i915.AppLayoutBloc(
+        appLayoutRepository: gh<_i962.IAppLayoutRepository>(),
+      ),
     );
     gh.lazySingleton<_i495.PrestigeRepository>(
       () => _i362.PrestigeRepositoryImpl(gh<_i241.LocalStorageDataSource>()),

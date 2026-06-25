@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
@@ -15,9 +14,9 @@ import 'package:idle_laboratory/features/home/presentation/widgets/cells/animate
 Future<CellId?> showCraftingCellPickerDialog(BuildContext context, {required bool allowClear}) =>
     AppDialog.show<CellId?>(
       context,
-      maxWidth: 560.w,
-      padding: EdgeInsets.all(14.w),
-      insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+      maxWidth: 560,
+      padding: const EdgeInsets.all(14),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: _CraftingCellPickerBody(allowClear: allowClear),
     );
 
@@ -30,14 +29,14 @@ class _CraftingCellPickerBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     return SizedBox(
-      height: 0.62.sh,
+      height: MediaQuery.sizeOf(context).height * 0.62,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(l10n.craftingSelectCellTitle, style: context.styles.sectionHeaderTitle),
-          SizedBox(height: 4.h),
+          const SizedBox(height: 4),
           Text(l10n.craftingSelectCellOverview, style: context.styles.sectionHeaderDescription),
-          SizedBox(height: 12.h),
+          const SizedBox(height: 12),
           Expanded(
             child: BlocSelector<CellsBloc, CellsState, (List<CellModel>, Map<String, CellProductionEntry>)>(
               selector: (state) => (state.cells, state.productionByCellId),
@@ -49,11 +48,11 @@ class _CraftingCellPickerBody extends StatelessWidget {
                   );
                 }
                 return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     childAspectRatio: 0.72,
-                    crossAxisSpacing: 12.w,
-                    mainAxisSpacing: 12.h,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
                   ),
                   itemCount: unlocked.length + (allowClear ? 1 : 0),
                   itemBuilder: (context, index) {
@@ -95,18 +94,18 @@ class _ClearCellTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
         child: Ink(
           decoration: BoxDecoration(
             color: color.background.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: color.titleText.withValues(alpha: 0.35), width: 1.w),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.titleText.withValues(alpha: 0.35)),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.close_rounded, color: color.primaryText, size: 28.sp),
-              SizedBox(height: 8.h),
+              Icon(Icons.close_rounded, color: color.primaryText, size: 28),
+              const SizedBox(height: 8),
               Text(
                 l10n.craftingClearCellSelection,
                 style: context.styles.compactSupporting,
@@ -140,15 +139,15 @@ class _PickerCellTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onSelected,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(12),
         child: Ink(
           decoration: BoxDecoration(
             color: color.background.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: color.primary.withValues(alpha: 0.1), width: 1.w),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.primary.withValues(alpha: 0.1)),
           ),
           child: Padding(
-            padding: EdgeInsets.fromLTRB(8.w, 6.h, 8.w, 6.h),
+            padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
             child: Column(
               children: [
                 Row(
@@ -159,7 +158,7 @@ class _PickerCellTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('$productionRateLabel/s', style: context.styles.productionRate, maxLines: 1),
-                          SizedBox(height: 2.h),
+                          const SizedBox(height: 2),
                           Text(
                             '${l10n.lvl} ${entry.accelerationLevel}',
                             style: context.styles.productionAccelerationLevel,
@@ -191,7 +190,7 @@ class _PickerCellTile extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(height: 4.h),
+                const SizedBox(height: 4),
                 Text(
                   cell.name.localize(l10n),
                   style: context.styles.compactSupporting,

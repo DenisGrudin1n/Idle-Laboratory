@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/research_material_l10n_ext.dart';
@@ -31,7 +30,7 @@ class StorageMaterialTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () => showResearchMaterialDetailDialog(context, materialId),
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(10),
         child: Column(
           children: [
             Expanded(
@@ -49,22 +48,21 @@ class StorageMaterialTile extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      right: -2.w,
-                      top: -2.h,
+                      right: -2,
+                      top: -2,
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                         decoration: BoxDecoration(
                           color: color.background.withValues(alpha: 0.92),
-                          borderRadius: BorderRadius.circular(6.r),
+                          borderRadius: BorderRadius.circular(6),
                           border: Border.all(
                             color: _hasStock ? color.green.withValues(alpha: 0.5) : color.primary.withValues(alpha: 0.2),
-                            width: 1.w,
                           ),
                         ),
                         child: Text(
                           countLabel,
                           style: (_hasStock ? context.styles.successText : context.styles.compactValue).copyWith(
-                            fontSize: 8.sp,
+                            fontSize: 8,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -74,7 +72,7 @@ class StorageMaterialTile extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 4.h),
+            const SizedBox(height: 4),
             Text(
               materialId.displayName(l10n),
               maxLines: 1,
@@ -82,7 +80,7 @@ class StorageMaterialTile extends StatelessWidget {
               textAlign: TextAlign.center,
               style: context.styles.compactValue.copyWith(
                 color: _hasStock ? color.titleText : color.primaryText.withValues(alpha: 0.65),
-                fontSize: 8.sp,
+                fontSize: 8,
               ),
             ),
           ],

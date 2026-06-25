@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/cells_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
@@ -22,7 +21,7 @@ class CellContent extends StatelessWidget {
           onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.cellsTabChanged(tab)),
           tabLabel: (context, tab) => tab.localize(context.l10n),
         ),
-        SizedBox(height: 12.w),
+        const SizedBox(height: 12),
         Expanded(child: _buildTabContent(selectedTab)),
       ],
     ),

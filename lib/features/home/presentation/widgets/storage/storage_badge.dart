@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
@@ -96,14 +95,14 @@ class _StorageBadgeState extends State<StorageBadge> with SingleTickerProviderSt
                             '+1',
                             style: context.styles.compactAccentValue.copyWith(
                               color: context.color.green,
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(width: 3.w),
+                          const SizedBox(width: 3),
                           SizedBox(
-                            width: 20.w,
-                            height: 20.w,
+                            width: 20,
+                            height: 20,
                             child: ResearchMaterialSlotIcon(materialId: materialId),
                           ),
                         ],

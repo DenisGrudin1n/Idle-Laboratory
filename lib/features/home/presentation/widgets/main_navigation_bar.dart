@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/core/widgets/section_card.dart';
+import 'package:idle_laboratory/core/widgets/app_border_container.dart';
+import 'package:idle_laboratory/core/widgets/app_divider.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/energy_display.dart';
-
 import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_badge.dart';
 
 class MainNavigationBar extends StatelessWidget {
@@ -14,42 +16,65 @@ class MainNavigationBar extends StatelessWidget {
   final ValueChanged<MainNavigationTab> onTabSelected;
 
   @override
-  Widget build(BuildContext context) => SectionCard(
-    child: SizedBox(
-      width: 0.2.sw,
-      height: double.infinity,
-      child: ListView.separated(
-        itemCount: MainNavigationTab.values.length + 1,
-        separatorBuilder: (context, index) => index == 0
-            ? Divider(height: 1, thickness: 1, color: context.color.primaryText.withValues(alpha: 0.2))
-            : Divider(
-                height: 1,
-                thickness: 1,
-                indent: 12.w,
-                endIndent: 12.w,
-                color: context.color.primaryText.withValues(alpha: 0.1),
-              ),
-        itemBuilder: (context, index) {
-          if (index == 0) return const EnergyDisplay();
-          final tab = MainNavigationTab.values[index - 1];
-          return _DrawerTab(
-            tab: tab,
-            label: tab.localize(context.l10n),
-            isActive: selectedTab == tab,
-            onTap: () => onTabSelected(tab),
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final sidebarWidth = (width * 0.22).clamp(130.0, 240.0);
+
+    return Container(
+      width: sidebarWidth,
+      height: MediaQuery.sizeOf(context).height,
+      decoration: BoxDecoration(
+        border: Border(right: BorderSide(color: context.color.sectionBorder, width: 3)),
+        borderRadius: BorderRadius.circular(12),
+        gradient: context.color.sectionGradient,
+      ),
+      child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+        selector: (state) => state.appVersion,
+        builder: (context, appVersion) {
+          final isMobile = appVersion == AppVersionEnum.mobile;
+          final verticalPadding = isMobile ? 6.0 : 12.0;
+
+          return ListView.separated(
+            padding: EdgeInsets.symmetric(vertical: verticalPadding),
+            itemCount: MainNavigationTab.values.length + 1,
+          separatorBuilder: (context, index) => index == 0
+              ? AppDivider(color: context.color.primaryText.withValues(alpha: 0.2))
+              : AppDivider(
+                  indent: 12,
+                  endIndent: 12,
+                  color: context.color.primaryText.withValues(alpha: 0.1),
+                ),
+            itemBuilder: (context, index) {
+              if (index == 0) return const EnergyDisplay();
+              final tab = MainNavigationTab.values[index - 1];
+              return _DrawerTab(
+                tab: tab,
+                label: tab.localize(context.l10n),
+                isActive: selectedTab == tab,
+                onTap: () => onTabSelected(tab),
+                verticalPadding: verticalPadding,
+              );
+            },
           );
         },
       ),
-    ),
-  );
+    );
+  }
 }
 
 class _DrawerTab extends StatelessWidget {
-  const _DrawerTab({required this.tab, required this.label, required this.isActive, required this.onTap});
+  const _DrawerTab({
+    required this.tab,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+    this.verticalPadding = 4.0,
+  });
   final MainNavigationTab tab;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
+  final double verticalPadding;
 
   @override
   Widget build(BuildContext context) => Material(
@@ -59,18 +84,14 @@ class _DrawerTab extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              color: isActive ? context.color.primary.withValues(alpha: 0.3) : Colors.transparent,
-              borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: isActive ? context.color.primary : Colors.transparent, width: 1.w),
-            ),
+          AppBorderContainer(
+            isActive: isActive,
+            margin: EdgeInsets.symmetric(horizontal: 8, vertical: verticalPadding),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: verticalPadding),
             child: Row(
               children: [
-                Icon(tab.icon, color: context.color.primaryText, size: 16.sp),
-                SizedBox(width: 8.w),
+                Icon(tab.icon, color: context.color.primaryText, size: 16),
+                const SizedBox(width: 8),
                 Expanded(
                   child: Text(label, style: context.styles.navigationLabel(isActive: isActive)),
                 ),
@@ -78,11 +99,7 @@ class _DrawerTab extends StatelessWidget {
             ),
           ),
           if (tab == MainNavigationTab.crafting)
-            Positioned(
-              right: 32.w,
-              bottom: 18.h,
-              child: const StorageBadge(forMainTab: MainNavigationTab.crafting),
-            ),
+            const Positioned(right: 32, bottom: 18, child: StorageBadge(forMainTab: MainNavigationTab.crafting)),
         ],
       ),
     ),

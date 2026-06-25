@@ -49,7 +49,12 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 
 ## 🚀 Future Roadmap (TODOs)
 
-### 1. Onboarding & Tutorial System
+### 1. Tablet/Desktop Layout
+- [ ] **Remove ScreenUtil**: Transition away from `flutter_screenutil` to a more manual, BLoC-driven layout system.
+- [ ] **Responsive Adjustments**: Use `AppLayoutBloc` to fine-tune UI elements for mobile, tablet, and desktop.
+- [ ] **Adaptive Components**: Ensure all widgets (buttons, text fields, modals) look natural across all screen sizes.
+
+### 2. Onboarding & Tutorial System
 - [ ] **Tutorial Overlay**: Implement a "spotlight" effect where the screen darkens, leaving only specific features bright and interactive.
 - [ ] **Lore Integration**: Introduce the "Evil Mage" character as the central figure of the tutorial.
 - [ ] **Trigger Logic**: 

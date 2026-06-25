@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 
 class SectionCard extends StatelessWidget {
@@ -11,14 +10,14 @@ class SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = borderRadius ?? BorderRadius.circular(10.r);
+    final radius = borderRadius ?? BorderRadius.circular(10);
     return ClipRRect(
       borderRadius: radius,
       child: Container(
         padding: padding,
         decoration: BoxDecoration(
           borderRadius: radius,
-          border: Border.all(color: context.color.sectionBorder, width: 3.r),
+          border: Border.all(color: context.color.sectionBorder, width: 3),
           gradient: context.color.sectionGradient,
         ),
         child: child,

@@ -3,12 +3,7 @@ import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 class CraftingLayoutMetrics {
   const CraftingLayoutMetrics(this.scale);
 
-  final double scale;
-
-  static const _minScale = 0.85;
-  static const _maxScale = 2.4;
-
-  static CraftingLayoutMetrics forAvailableHeight(double height) {
+  factory CraftingLayoutMetrics.forAvailableHeight(double height) {
     final available = height;
     final reference = CraftingLayout.slotsRowHeight;
     if (reference <= 0 || available <= 0) {
@@ -16,6 +11,11 @@ class CraftingLayoutMetrics {
     }
     return CraftingLayoutMetrics((available / reference).clamp(_minScale, _maxScale));
   }
+
+  final double scale;
+
+  static const _minScale = 0.85;
+  static const _maxScale = 2.4;
 
   double get inputSlotSide => CraftingLayout.inputSlotSide * scale;
 

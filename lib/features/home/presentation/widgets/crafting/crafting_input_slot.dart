@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
@@ -53,7 +53,7 @@ class CraftingInputSlot extends StatelessWidget {
             context.l10n.craftingCellSlotTitle,
             style: context.styles.compactSupporting.copyWith(
               color: context.color.primaryText.withValues(alpha: 0.55),
-              fontSize: 8.sp,
+              fontSize: 8,
             ),
             textAlign: TextAlign.center,
           ),
@@ -62,7 +62,7 @@ class CraftingInputSlot extends StatelessWidget {
     } else {
       if (selectedMaterialId != null) {
         child = ClipRRect(
-          borderRadius: BorderRadius.circular(9.r),
+          borderRadius: BorderRadius.circular(9),
           child: ResearchMaterialSlotIcon(materialId: selectedMaterialId!, fit: BoxFit.cover),
         );
       } else {
@@ -71,7 +71,7 @@ class CraftingInputSlot extends StatelessWidget {
             context.l10n.craftingReagentSlot(slotIndex + 1),
             style: context.styles.compactSupporting.copyWith(
               color: context.color.primaryText.withValues(alpha: 0.55),
-              fontSize: 8.sp,
+              fontSize: 8,
             ),
             textAlign: TextAlign.center,
           ),
@@ -82,7 +82,13 @@ class CraftingInputSlot extends StatelessWidget {
     final slot = SizedBox(
       width: side,
       height: side,
-      child: GradientSlotFrame(child: child),
+      child: AppBorderContainer(
+        isActive: true,
+        activeBorderColor: context.color.titleText,
+        borderRadius: 10,
+        borderWidth: 1,
+        child: GradientSlotFrame(showBorder: false, child: child),
+      ),
     );
 
     if (onTap == null) return slot;
