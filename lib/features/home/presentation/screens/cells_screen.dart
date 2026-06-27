@@ -5,13 +5,27 @@ import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/cell_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/main_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/settings_toggle.dart';
 
-class CellsScreen extends StatelessWidget {
+class CellsScreen extends StatefulWidget {
   const CellsScreen({super.key});
+
+  @override
+  State<CellsScreen> createState() => _CellsScreenState();
+}
+
+class _CellsScreenState extends State<CellsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      TutorialController.showTutorial(context);
+    });
+  }
 
   Widget _buildContent(MainNavigationTab selectedTab) => switch (selectedTab) {
     MainNavigationTab.cells => const CellContent(),
@@ -29,9 +43,10 @@ class CellsScreen extends StatelessWidget {
       builder: (context, selectedTab) => Scaffold(
         backgroundColor: color.background,
         body: SafeArea(
-          child: BlocBuilder<AppLayoutBloc, AppLayoutState>(
-            builder: (context, state) {
-              final isMobile = state.appVersion == AppVersionEnum.mobile;
+          child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+            selector: (state) => state.appVersion,
+            builder: (context, appVersion) {
+              final isMobile = appVersion == AppVersionEnum.mobile;
               final mainNavigationBarPadding = isMobile
                   ? const EdgeInsets.only(top: 12)
                   : const EdgeInsets.only(top: 24, left: 24, bottom: 24);

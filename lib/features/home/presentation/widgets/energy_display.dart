@@ -7,6 +7,8 @@ import 'package:idle_laboratory/core/widgets/energy_icon.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
+
 class EnergyDisplay extends StatelessWidget {
   const EnergyDisplay({super.key});
 
@@ -18,6 +20,7 @@ class EnergyDisplay extends StatelessWidget {
       builder: (context, data) {
         final (currentEnergy, energyPerSecond) = data;
         return Container(
+          key: TutorialController.energyKey,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Column(
             mainAxisSize: MainAxisSize.min,

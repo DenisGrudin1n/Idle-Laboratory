@@ -14,6 +14,7 @@ import 'package:idle_laboratory/features/home/domain/models/prestige_state_model
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
 class PrestigeInfoSection extends StatelessWidget {
@@ -30,6 +31,7 @@ class PrestigeInfoSection extends StatelessWidget {
           if (prestigeState == null) return const SizedBox.shrink();
           final l10n = context.l10n;
           return SectionCard(
+            key: TutorialController.prestigeKey,
             child: SizedBox(
               width: MediaQuery.sizeOf(context).width * 0.2,
               child: Padding(

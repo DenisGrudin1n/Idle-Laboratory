@@ -243,6 +243,54 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prestigeDescription => 'Reset progress for permanent EPS multiplier';
 
   @override
+  String get tutorialWelcomeTitle => 'Welcome to Idle Laboratory!';
+
+  @override
+  String get tutorialWelcomeDesc =>
+      'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.';
+
+  @override
+  String get tutorialEnergyTitle => 'Energy & EPS';
+
+  @override
+  String get tutorialEnergyDesc =>
+      'This section shows your total Energy Units (EU) and your current Energy Per Second (EPS). Energy is the lifeblood of your laboratory.';
+
+  @override
+  String get tutorialMainNavTitle => 'Main Navigation';
+
+  @override
+  String get tutorialMainNavDesc =>
+      'Use this sidebar to switch between different areas of your laboratory: Cells, Crafting, Storage, and more.';
+
+  @override
+  String get tutorialSubTabsTitle => 'Sub-Tabs';
+
+  @override
+  String get tutorialSubTabsDesc =>
+      'Each main section has sub-tabs. For example, in the Cells section, you can switch between Energy Cells, Production, and Overview.';
+
+  @override
+  String get tutorialCellsListTitle => 'Energy Cells';
+
+  @override
+  String get tutorialCellsListDesc =>
+      'Here you can see your energy cells. Level them up to increase your EPS. Each cell type has unique properties.';
+
+  @override
+  String get tutorialPrestigeTitle => 'Prestige';
+
+  @override
+  String get tutorialPrestigeDesc =>
+      'When you reach enough energy, you can Prestige. This resets your progress but gives you a permanent multiplier to your EPS.';
+
+  @override
+  String get tutorialNext => 'NEXT';
+
+  @override
+  String get tutorialSkip => 'SKIP';
+
+  @override
   String get amount => 'Amount';
 
   @override
