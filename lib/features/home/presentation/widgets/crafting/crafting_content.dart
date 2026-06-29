@@ -6,6 +6,7 @@ import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_interface_panel.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_view.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_badge.dart';
@@ -15,48 +16,54 @@ class CraftingContent extends StatelessWidget {
   const CraftingContent({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocSelector<NavigationBloc, NavigationState, CraftingTab>(
-        selector: (state) => state.craftingTab,
-        builder: (context, selectedTab) => Column(
-          children: [
-            TopNavigationBar<CraftingTab>(
-              tabs: CraftingTab.values,
-              selectedTab: selectedTab,
-              onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.craftingTabChanged(tab)),
-              tabLabel: (context, tab) => tab.localize(context.l10n),
-              badgeBuilder: (context, tab) => tab == CraftingTab.storage ? const StorageBadge() : null,
-            ),
-            const SizedBox(height: 12),
-            Expanded(child: _buildTabContent(context, selectedTab)),
-          ],
-        ),
-      );
+  Widget build(BuildContext context) => BlocListener<NavigationBloc, NavigationState>(
+    listenWhen: (prev, curr) => prev.craftingTab != curr.craftingTab,
+    listener: (context, state) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        TutorialController.showTabTutorial(context, craftingTab: state.craftingTab);
+      });
+    },
+    child: BlocSelector<NavigationBloc, NavigationState, CraftingTab>(
+      selector: (state) => state.craftingTab,
+      builder: (context, selectedTab) => Column(
+        children: [
+          TopNavigationBar<CraftingTab>(
+            tabs: CraftingTab.values,
+            selectedTab: selectedTab,
+            onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.craftingTabChanged(tab)),
+            tabLabel: (context, tab) => tab.localize(context.l10n),
+            badgeBuilder: (context, tab) => tab == CraftingTab.storage ? const StorageBadge() : null,
+          ),
+          const SizedBox(height: 12),
+          Expanded(child: _buildTabContent(context, selectedTab)),
+        ],
+      ),
+    ),
+  );
 
   Widget _buildTabContent(BuildContext context, CraftingTab tab) {
     final l10n = context.l10n;
     return switch (tab) {
       CraftingTab.crafting => SectionCard(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(l10n.craftingInterfaceTitle, style: context.styles.sectionHeaderTitle),
-                const SizedBox(height: 4),
-                Text(l10n.craftingInterfaceOverview, style: context.styles.compactValue),
-                const SizedBox(height: 16),
-                const Expanded(child: CraftingInterfacePanel()),
-              ],
-            ),
+        key: TutorialController.craftingContainerKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(l10n.craftingInterfaceTitle, style: context.styles.sectionHeaderTitle),
+              const SizedBox(height: 4),
+              Text(l10n.craftingInterfaceOverview, style: context.styles.compactValue),
+              const SizedBox(height: 16),
+              const Expanded(child: CraftingInterfacePanel()),
+            ],
           ),
         ),
+      ),
       CraftingTab.storage => const StorageContent(),
       CraftingTab.research => const SectionCard(
-          child: Padding(
-            padding: EdgeInsets.all(12),
-            child: ResearchTreeView(),
-          ),
-        ),
+        child: Padding(padding: EdgeInsets.all(12), child: ResearchTreeView()),
+      ),
       CraftingTab.overview => const Center(child: Text('Coming Soon')),
     };
   }

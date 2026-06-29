@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
+import 'package:idle_laboratory/core/enums/cells_tab.dart';
+import 'package:idle_laboratory/core/enums/crafting_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/app_color.dart';
 import 'package:idle_laboratory/core/theme/app_textstyles.dart';
@@ -16,9 +18,40 @@ class TutorialController {
   static final GlobalKey topNavKey = GlobalKey();
   static final GlobalKey cellsListKey = GlobalKey();
   static final GlobalKey prestigeKey = GlobalKey();
+  static final GlobalKey productionCellKey = GlobalKey();
+  static final GlobalKey craftingContainerKey = GlobalKey();
+  static final GlobalKey craftingCellSlotKey = GlobalKey();
+  static final GlobalKey craftingMaterialSlotsKey = GlobalKey();
+  static final GlobalKey craftingOutputSlotKey = GlobalKey();
+  static final GlobalKey craftingInfoRowKey = GlobalKey();
+  static final GlobalKey storageContainerKey = GlobalKey();
+  static final GlobalKey researchTreeKey = GlobalKey();
+  static final GlobalKey researchGoalKey = GlobalKey();
 
   static void showTutorial(BuildContext context) {
     final targets = _createTargets(context);
+    _showTargets(context, targets);
+  }
+
+  static void showTabTutorial(BuildContext context, {CellsTab? cellsTab, CraftingTab? craftingTab}) {
+    final targets = <TargetFocus>[];
+
+    if (cellsTab == CellsTab.production) {
+      targets.addAll(_createProductionTargets(context));
+    } else if (craftingTab == CraftingTab.crafting) {
+      targets.addAll(_createCraftingTargets(context));
+    } else if (craftingTab == CraftingTab.storage) {
+      targets.addAll(_createStorageTargets(context));
+    } else if (craftingTab == CraftingTab.research) {
+      targets.addAll(_createResearchTargets(context));
+    }
+
+    if (targets.isNotEmpty) {
+      _showTargets(context, targets);
+    }
+  }
+
+  static void _showTargets(BuildContext context, List<TargetFocus> targets, {VoidCallback? onFinish}) {
     final styles = context.styles;
     final l10n = context.l10n;
     final appVersion = context.read<AppLayoutBloc>().state.appVersion;
@@ -36,14 +69,15 @@ class TutorialController {
           style: styles.compactAccentValue.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
       ),
-      onFinish: () {
-        debugPrint('Tutorial finished');
-      },
+      onFinish: onFinish,
       onClickTarget: (target) {
-        // We handle navigation via the NEXT button
+        // Disable auto-next on tap
+      },
+      onClickOverlay: (target) {
+        // Disable auto-next on tap
       },
       onSkip: () {
-        debugPrint('Tutorial skipped');
+        onFinish?.call();
         return true;
       },
     ).show(context: context);
@@ -75,6 +109,7 @@ class TutorialController {
       ..add(
         TargetFocus(
           identify: 'welcome',
+          enableTargetTab: false,
           targetPosition: TargetPosition(const Size(1, 1), Offset(size.width / 2, size.height / 2)),
           contents: [
             TargetContent(
@@ -103,6 +138,7 @@ class TutorialController {
         TargetFocus(
           identify: 'energy',
           keyTarget: energyKey,
+          enableTargetTab: false,
           shape: ShapeLightFocus.RRect,
           radius: 12,
           contents: [
@@ -133,6 +169,7 @@ class TutorialController {
         TargetFocus(
           identify: 'mainNav',
           keyTarget: mainNavKey,
+          enableTargetTab: false,
           shape: ShapeLightFocus.RRect,
           radius: 12,
           contents: [
@@ -162,6 +199,7 @@ class TutorialController {
         TargetFocus(
           identify: 'topNav',
           keyTarget: topNavKey,
+          enableTargetTab: false,
           shape: ShapeLightFocus.RRect,
           radius: 12,
           contents: [
@@ -196,6 +234,7 @@ class TutorialController {
         TargetFocus(
           identify: 'cellsList',
           keyTarget: cellsListKey,
+          enableTargetTab: false,
           shape: ShapeLightFocus.RRect,
           radius: 12,
           contents: [
@@ -225,6 +264,7 @@ class TutorialController {
         TargetFocus(
           identify: 'prestige',
           keyTarget: prestigeKey,
+          enableTargetTab: false,
           shape: ShapeLightFocus.RRect,
           radius: 12,
           contents: [
@@ -251,6 +291,314 @@ class TutorialController {
       );
 
     return targets;
+  }
+
+  static List<TargetFocus> _createProductionTargets(BuildContext context) {
+    final color = context.color;
+    final styles = context.styles;
+    final l10n = context.l10n;
+    final appVersion = context.read<AppLayoutBloc>().state.appVersion;
+
+    return [
+      TargetFocus(
+        identify: 'productionCell',
+        keyTarget: productionCellKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.right,
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24),
+                  child: _buildTooltip(
+                    title: l10n.tutorialProductionTitle,
+                    description: l10n.tutorialProductionDesc,
+                    color: color,
+                    styles: styles,
+                    onNext: controller.next,
+                    appVersion: appVersion,
+                    l10nNext: l10n.tutorialNext,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  static List<TargetFocus> _createCraftingTargets(BuildContext context) {
+    final color = context.color;
+    final styles = context.styles;
+    final l10n = context.l10n;
+    final size = MediaQuery.sizeOf(context);
+    final appVersion = context.read<AppLayoutBloc>().state.appVersion;
+    final isDesk = appVersion == AppVersionEnum.desk;
+    final isTablet = appVersion == AppVersionEnum.tablet;
+    final isMobile = appVersion == AppVersionEnum.mobile;
+    final horizontalPadding = isDesk ? 32.0 : (isTablet ? 24.0 : 16.0);
+    final sidebarWidth = size.width * (isMobile ? 0.27 : 0.24);
+
+    return [
+      TargetFocus(
+        identify: 'craftingContainer',
+        keyTarget: craftingContainerKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(left: horizontalPadding, top: size.height * 0.35),
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: _buildTooltip(
+                  title: l10n.tutorialCraftingTitle,
+                  description: l10n.tutorialCraftingDesc,
+                  color: color,
+                  styles: styles,
+                  onNext: controller.next,
+                  appVersion: appVersion,
+                  l10nNext: l10n.tutorialNext,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'craftingCellSlot',
+        keyTarget: craftingCellSlotKey,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        enableTargetTab: false,
+        contents: [
+          TargetContent(
+            align: ContentAlign.top,
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: sidebarWidth + 48, bottom: 24),
+                  child: _buildTooltip(
+                    title: l10n.tutorialCraftingCellSlotTitle,
+                    description: l10n.tutorialCraftingCellSlotDesc,
+                    color: color,
+                    styles: styles,
+                    onNext: controller.next,
+                    appVersion: appVersion,
+                    l10nNext: l10n.tutorialNext,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'craftingMaterialSlots',
+        keyTarget: craftingMaterialSlotsKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.right,
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 24),
+                  child: _buildTooltip(
+                    title: l10n.tutorialCraftingMaterialSlotsTitle,
+                    description: l10n.tutorialCraftingMaterialSlotsDesc,
+                    color: color,
+                    styles: styles,
+                    onNext: controller.next,
+                    appVersion: appVersion,
+                    l10nNext: l10n.tutorialNext,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'craftingOutputSlot',
+        keyTarget: craftingOutputSlotKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.left,
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 24),
+                  child: _buildTooltip(
+                    title: l10n.tutorialCraftingOutputSlotTitle,
+                    description: l10n.tutorialCraftingOutputSlotDesc,
+                    color: color,
+                    styles: styles,
+                    onNext: controller.next,
+                    appVersion: appVersion,
+                    l10nNext: l10n.tutorialNext,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'craftingInfoRow',
+        keyTarget: craftingInfoRowKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.left,
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 24),
+                  child: _buildTooltip(
+                    title: l10n.tutorialCraftingInfoTitle,
+                    description: l10n.tutorialCraftingInfoDesc,
+                    color: color,
+                    styles: styles,
+                    onNext: controller.next,
+                    appVersion: appVersion,
+                    l10nNext: l10n.tutorialNext,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  static List<TargetFocus> _createStorageTargets(BuildContext context) {
+    final color = context.color;
+    final styles = context.styles;
+    final l10n = context.l10n;
+    final size = MediaQuery.sizeOf(context);
+    final appVersion = context.read<AppLayoutBloc>().state.appVersion;
+    final isDesk = appVersion == AppVersionEnum.desk;
+    final isTablet = appVersion == AppVersionEnum.tablet;
+    final horizontalPadding = isDesk ? 32.0 : (isTablet ? 24.0 : 16.0);
+
+    return [
+      TargetFocus(
+        identify: 'storageContainer',
+        keyTarget: storageContainerKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(left: horizontalPadding, top: size.height * 0.35),
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: _buildTooltip(
+                  title: l10n.tutorialStorageTitle,
+                  description: l10n.tutorialStorageDesc,
+                  color: color,
+                  styles: styles,
+                  onNext: controller.next,
+                  appVersion: appVersion,
+                  l10nNext: l10n.tutorialNext,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  static List<TargetFocus> _createResearchTargets(BuildContext context) {
+    final color = context.color;
+    final styles = context.styles;
+    final l10n = context.l10n;
+    final size = MediaQuery.sizeOf(context);
+    final appVersion = context.read<AppLayoutBloc>().state.appVersion;
+    final isDesk = appVersion == AppVersionEnum.desk;
+    final isTablet = appVersion == AppVersionEnum.tablet;
+    final horizontalPadding = isDesk ? 32.0 : (isTablet ? 24.0 : 16.0);
+
+    return [
+      TargetFocus(
+        identify: 'researchTree',
+        keyTarget: researchTreeKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            align: ContentAlign.custom,
+            customPosition: CustomTargetContentPosition(left: horizontalPadding, top: size.height * 0.35),
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.centerLeft,
+                child: _buildTooltip(
+                  title: l10n.tutorialResearchTitle,
+                  description: l10n.tutorialResearchDesc,
+                  color: color,
+                  styles: styles,
+                  onNext: controller.next,
+                  appVersion: appVersion,
+                  l10nNext: l10n.tutorialNext,
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      TargetFocus(
+        identify: 'researchGoal',
+        keyTarget: researchGoalKey,
+        enableTargetTab: false,
+        shape: ShapeLightFocus.RRect,
+        radius: 12,
+        contents: [
+          TargetContent(
+            builder: (context, controller) {
+              return Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 24),
+                  child: _buildTooltip(
+                    title: l10n.tutorialResearchGoalTitle,
+                    description: l10n.tutorialResearchGoalDesc,
+                    color: color,
+                    styles: styles,
+                    onNext: controller.next,
+                    appVersion: appVersion,
+                    l10nNext: l10n.tutorialNext,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ];
   }
 
   static Widget _buildTooltip({

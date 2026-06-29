@@ -291,6 +291,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorialSkip => 'SKIP';
 
   @override
+  String get tutorialProductionTitle => 'Production';
+
+  @override
+  String get tutorialProductionDesc =>
+      'In this tab, your cells automatically generate more of themselves over time. You can accelerate this process by spending energy to upgrade each cell\'s level.';
+
+  @override
+  String get tutorialCraftingTitle => 'Crafting Interface';
+
+  @override
+  String get tutorialCraftingDesc =>
+      'This is where you combine your resources to create advanced materials. You can use cells and other materials as reagents to run powerful reactions.';
+
+  @override
+  String get tutorialCraftingCellSlotTitle => 'Cell Slot';
+
+  @override
+  String get tutorialCraftingCellSlotDesc =>
+      'The bottom slot is specifically for energy cells. Some recipes require a certain amount of a specific cell type to proceed.';
+
+  @override
+  String get tutorialCraftingMaterialSlotsTitle => 'Material Slots';
+
+  @override
+  String get tutorialCraftingMaterialSlotsDesc =>
+      'The two upper slots are for research materials. Combine different materials here to discover higher-tier resources.';
+
+  @override
+  String get tutorialCraftingOutputSlotTitle => 'Output Slot';
+
+  @override
+  String get tutorialCraftingOutputSlotDesc =>
+      'The result of your crafting reaction will appear here. Tap it to start the reaction once all reagents are placed.';
+
+  @override
+  String get tutorialCraftingInfoTitle => 'Reaction Info';
+
+  @override
+  String get tutorialCraftingInfoDesc =>
+      'Here you can see the energy cost, time required, and the target amount for your reaction. Use the \'Start reaction\' button to begin.';
+
+  @override
+  String get tutorialStorageTitle => 'Material Storage';
+
+  @override
+  String get tutorialStorageDesc =>
+      'All your crafted materials are stored here. You can see your current inventory and use these materials for further research and crafting.';
+
+  @override
+  String get tutorialResearchTitle => 'Research Tree';
+
+  @override
+  String get tutorialResearchDesc =>
+      'The Research Tree shows the path to the ultimate alchemical goals. Discover new materials by merging lower-tier ones in the crafting interface.';
+
+  @override
+  String get tutorialResearchGoalTitle => 'The Ultimate Goal';
+
+  @override
+  String get tutorialResearchGoalDesc =>
+      'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.';
+
+  @override
   String get amount => 'Amount';
 
   @override

@@ -38,38 +38,50 @@ class _CellsScreenState extends State<CellsScreen> {
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    return BlocSelector<NavigationBloc, NavigationState, MainNavigationTab>(
-      selector: (state) => state.mainTab,
-      builder: (context, selectedTab) => Scaffold(
-        backgroundColor: color.background,
-        body: SafeArea(
-          child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
-            selector: (state) => state.appVersion,
-            builder: (context, appVersion) {
-              final isMobile = appVersion == AppVersionEnum.mobile;
-              final mainNavigationBarPadding = isMobile
-                  ? const EdgeInsets.only(top: 12)
-                  : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
-              final contentPadding = isMobile
-                  ? const EdgeInsets.only(top: 12)
-                  : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: mainNavigationBarPadding,
-                    child: MainNavigationBar(
-                      selectedTab: selectedTab,
-                      onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+    return BlocListener<NavigationBloc, NavigationState>(
+      listenWhen: (prev, curr) => prev.mainTab != curr.mainTab,
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (state.mainTab == MainNavigationTab.cells) {
+            TutorialController.showTabTutorial(context, cellsTab: state.cellsTab);
+          } else if (state.mainTab == MainNavigationTab.crafting) {
+            TutorialController.showTabTutorial(context, craftingTab: state.craftingTab);
+          }
+        });
+      },
+      child: BlocSelector<NavigationBloc, NavigationState, MainNavigationTab>(
+        selector: (state) => state.mainTab,
+        builder: (context, selectedTab) => Scaffold(
+          backgroundColor: color.background,
+          body: SafeArea(
+            child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+              selector: (state) => state.appVersion,
+              builder: (context, appVersion) {
+                final isMobile = appVersion == AppVersionEnum.mobile;
+                final mainNavigationBarPadding = isMobile
+                    ? const EdgeInsets.only(top: 12)
+                    : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
+                final contentPadding = isMobile
+                    ? const EdgeInsets.only(top: 12)
+                    : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: mainNavigationBarPadding,
+                      child: MainNavigationBar(
+                        selectedTab: selectedTab,
+                        onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
-                  ),
-                ],
-              );
-            },
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

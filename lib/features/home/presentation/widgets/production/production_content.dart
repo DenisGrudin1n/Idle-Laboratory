@@ -13,6 +13,7 @@ import 'package:idle_laboratory/features/home/domain/models/cell_production_entr
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
@@ -47,7 +48,11 @@ class ProductionContent extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final cell = unlockedCells[index];
                       final entry = productionByCellId[cell.id] ?? CellProductionEntry.initial(cell.id);
-                      return _ProductionItem(cell: cell, entry: entry);
+                      return _ProductionItem(
+                        key: index == 0 ? TutorialController.productionCellKey : null,
+                        cell: cell,
+                        entry: entry,
+                      );
                     },
                   );
                 },
@@ -117,7 +122,7 @@ class ProductionContent extends StatelessWidget {
 }
 
 class _ProductionItem extends StatelessWidget {
-  const _ProductionItem({required this.cell, required this.entry});
+  const _ProductionItem({required this.cell, required this.entry, super.key});
   final CellModel cell;
   final CellProductionEntry entry;
 

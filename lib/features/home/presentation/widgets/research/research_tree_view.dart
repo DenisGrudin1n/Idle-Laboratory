@@ -5,6 +5,7 @@ import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/core/utils/research_tree_geometry.dart';
 import 'package:idle_laboratory/core/widgets/gradient_slot_frame.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_detail_dialog.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_material_slot_icon.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/research/research_tree_conduit_painter.dart';
@@ -23,7 +24,7 @@ class ResearchTreeView extends StatelessWidget {
       builder: (context, constraints) {
         const baseRowGap = 14.0;
         const baseMarginV = 10.0;
-        
+
         // 1. Find the slot size that fits the width and a *minimum* height
         final fitted = ResearchTreeGeometry.layoutFitted(
           maxWidth: constraints.maxWidth,
@@ -38,7 +39,7 @@ class ResearchTreeView extends StatelessWidget {
         var finalRowGap = baseRowGap;
         var finalMarginV = baseMarginV;
         final targetHeight = constraints.maxHeight * 0.95;
-        
+
         if (targetHeight > fitted.height) {
           final extraHeight = targetHeight - fitted.height;
           // Distribute extra height: 70% to gaps, 30% to margins
@@ -57,6 +58,7 @@ class ResearchTreeView extends StatelessWidget {
 
         return Center(
           child: SizedBox(
+            key: TutorialController.researchTreeKey,
             width: finalGeo.width,
             height: finalGeo.height,
             child: Stack(
@@ -77,6 +79,7 @@ class ResearchTreeView extends StatelessWidget {
                       width: finalGeo.rows[t][i].width,
                       height: finalGeo.rows[t][i].height,
                       child: _ResearchTreeSlot(
+                        key: (t == 0 && i == 0) ? TutorialController.researchGoalKey : null,
                         materialId: ResearchMaterialTree.idForSlot(rowFromTop: t, slotIndex: i),
                         emphasized: t == 0,
                       ),
@@ -91,7 +94,7 @@ class ResearchTreeView extends StatelessWidget {
 }
 
 class _ResearchTreeSlot extends StatelessWidget {
-  const _ResearchTreeSlot({required this.materialId, required this.emphasized});
+  const _ResearchTreeSlot({required this.materialId, required this.emphasized, super.key});
 
   final ResearchMaterialId materialId;
   final bool emphasized;
