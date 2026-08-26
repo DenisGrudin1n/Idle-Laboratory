@@ -17,11 +17,20 @@ class $AssetsImagesGen {
   /// File path: assets/images/bg_dark.png
   AssetGenImage get bgDark => const AssetGenImage('assets/images/bg_dark.png');
 
+  /// File path: assets/images/magician_evil.png
+  AssetGenImage get magicianEvil => const AssetGenImage('assets/images/magician_evil.png');
+
+  /// File path: assets/images/magician_greedy.png
+  AssetGenImage get magicianGreedy => const AssetGenImage('assets/images/magician_greedy.png');
+
+  /// File path: assets/images/magician_kind.png
+  AssetGenImage get magicianKind => const AssetGenImage('assets/images/magician_kind.png');
+
   /// Directory path: assets/images/materials
   $AssetsImagesMaterialsGen get materials => const $AssetsImagesMaterialsGen();
 
   /// List of all assets
-  List<AssetGenImage> get values => [bgDark];
+  List<AssetGenImage> get values => [bgDark, magicianEvil, magicianGreedy, magicianKind];
 }
 
 class $AssetsImagesMaterialsGen {

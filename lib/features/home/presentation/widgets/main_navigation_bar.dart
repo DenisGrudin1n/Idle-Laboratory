@@ -40,26 +40,28 @@ class MainNavigationBar extends StatelessWidget {
               const EnergyDisplay(),
               AppDivider(color: context.color.primaryText.withValues(alpha: 0.2)),
               Expanded(
-                child: Container(
-                  key: TutorialController.mainNavKey,
-                  child: ListView.separated(
-                    padding: EdgeInsets.symmetric(vertical: verticalPadding),
-                    itemCount: MainNavigationTab.values.length,
-                    separatorBuilder: (context, index) => AppDivider(
-                      indent: 12,
-                      endIndent: 12,
-                      color: context.color.primaryText.withValues(alpha: 0.1),
+                child: RepaintBoundary(
+                  child: Container(
+                    key: TutorialController.mainNavKey,
+                    child: ListView.separated(
+                      padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                      itemCount: MainNavigationTab.values.length,
+                      separatorBuilder: (context, index) => AppDivider(
+                        indent: 12,
+                        endIndent: 12,
+                        color: context.color.primaryText.withValues(alpha: 0.1),
+                      ),
+                      itemBuilder: (context, index) {
+                        final tab = MainNavigationTab.values[index];
+                        return _DrawerTab(
+                          tab: tab,
+                          label: tab.localize(context.l10n),
+                          isActive: selectedTab == tab,
+                          onTap: () => onTabSelected(tab),
+                          verticalPadding: verticalPadding,
+                        );
+                      },
                     ),
-                    itemBuilder: (context, index) {
-                      final tab = MainNavigationTab.values[index];
-                      return _DrawerTab(
-                        tab: tab,
-                        label: tab.localize(context.l10n),
-                        isActive: selectedTab == tab,
-                        onTap: () => onTabSelected(tab),
-                        verticalPadding: verticalPadding,
-                      );
-                    },
                   ),
                 ),
               ),

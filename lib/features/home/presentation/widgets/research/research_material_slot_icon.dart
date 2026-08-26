@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/research_material_id_ext.dart';
+import 'package:idle_laboratory/core/widgets/cached_asset_image.dart';
 
 /// Fills the slot’s inner area (inside [GradientSlotFrame]) edge-to-edge.
 class ResearchMaterialSlotIcon extends StatelessWidget {
@@ -19,10 +20,9 @@ class ResearchMaterialSlotIcon extends StatelessWidget {
     if (path == null) return const SizedBox.expand();
 
     return SizedBox.expand(
-      child: Image.asset(
-        path,
+      child: CachedAssetImage(
+        asset: path,
         fit: fit,
-        gaplessPlayback: true,
         errorBuilder: (_, __, ___) => const SizedBox.expand(),
       ),
     );

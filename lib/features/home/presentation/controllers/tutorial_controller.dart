@@ -37,17 +37,13 @@ class TutorialController {
   }
 
   static void showTabTutorial(BuildContext context, {CellsTab? cellsTab, CraftingTab? craftingTab}) {
-    final targets = <TargetFocus>[];
-
-    if (cellsTab == CellsTab.production) {
-      targets.addAll(_createProductionTargets(context));
-    } else if (craftingTab == CraftingTab.crafting) {
-      targets.addAll(_createCraftingTargets(context));
-    } else if (craftingTab == CraftingTab.storage) {
-      targets.addAll(_createStorageTargets(context));
-    } else if (craftingTab == CraftingTab.research) {
-      targets.addAll(_createResearchTargets(context));
-    }
+    final targets = switch ((cellsTab, craftingTab)) {
+      (CellsTab.production, _) => _createProductionTargets(context),
+      (_, CraftingTab.crafting) => _createCraftingTargets(context),
+      (_, CraftingTab.storage) => _createStorageTargets(context),
+      (_, CraftingTab.research) => _createResearchTargets(context),
+      _ => <TargetFocus>[],
+    };
 
     if (targets.isNotEmpty) {
       _showTargets(context, targets);
@@ -664,8 +660,8 @@ class TutorialController {
               : const EdgeInsets.symmetric(horizontal: 24, vertical: 12));
 
     // Simple scaling logic based on screen width
-    double currentSpriteSize = spriteSize;
-    bool actualShowMagician = showMagician;
+    var currentSpriteSize = spriteSize;
+    var actualShowMagician = showMagician;
 
     final availableWidth = screenSize.width - 48; // Basic margin
     if (actualShowMagician) {
@@ -746,11 +742,7 @@ class TutorialController {
         : const SizedBox.shrink();
 
     if (magicianOnTop && actualShowMagician) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [sprite, const SizedBox(height: 4), tooltipContent],
-      );
+      return Column(mainAxisSize: MainAxisSize.min, children: [sprite, const SizedBox(height: 4), tooltipContent]);
     }
 
     return Row(

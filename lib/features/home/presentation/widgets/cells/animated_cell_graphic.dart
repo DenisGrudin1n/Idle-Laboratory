@@ -12,9 +12,11 @@ class AnimatedCellGraphic extends StatelessWidget {
   final double fillLevel;
 
   @override
-  Widget build(BuildContext context) => AnimatedCellContainer(
-        fillLevel: fillLevel,
-        visualTheme: context.getCellTheme(cellId),
-        animation: CellLoopAnimationScope.of(context),
-      );
+  Widget build(BuildContext context) => RepaintBoundary(
+    child: AnimatedCellContainer(
+      fillLevel: fillLevel,
+      visualTheme: context.getCellTheme(cellId),
+      animation: CellLoopAnimationScope.of(context),
+    ),
+  );
 }

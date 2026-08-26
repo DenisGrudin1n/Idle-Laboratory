@@ -10,11 +10,11 @@ class EnergyCellsContent extends StatelessWidget {
   Widget build(BuildContext context) => const Row(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
-      CellsListSection(),
+      RepaintBoundary(child: CellsListSection()),
       SizedBox(width: 12),
-      Expanded(child: CellContainerSection()),
+      Expanded(child: RepaintBoundary(child: CellContainerSection())),
       SizedBox(width: 12),
-      PrestigeInfoSection(),
+      RepaintBoundary(child: PrestigeInfoSection()),
     ],
   );
 }

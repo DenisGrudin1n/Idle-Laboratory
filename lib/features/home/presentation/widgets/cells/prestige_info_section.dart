@@ -10,12 +10,10 @@ import 'package:idle_laboratory/core/widgets/info_row.dart';
 import 'package:idle_laboratory/core/widgets/progress_bar_widget.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/core/widgets/section_header.dart';
-import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
-import 'package:idle_laboratory/l10n/app_localizations.dart';
 
 class PrestigeInfoSection extends StatelessWidget {
   const PrestigeInfoSection({super.key});
@@ -25,141 +23,190 @@ class PrestigeInfoSection extends StatelessWidget {
     selector: (state) => state.appVersion,
     builder: (context, appVersion) {
       final isMobile = appVersion == AppVersionEnum.mobile;
-      return BlocSelector<PrestigeBloc, PrestigeState, PrestigeStateModel?>(
-        selector: (state) => state.prestigeState,
-        builder: (context, prestigeState) {
-          if (prestigeState == null) return const SizedBox.shrink();
-          final l10n = context.l10n;
-          return SectionCard(
-            key: TutorialController.prestigeKey,
-            child: SizedBox(
-              width: MediaQuery.sizeOf(context).width * 0.2,
-              child: Padding(
-                padding: EdgeInsets.all(isMobile ? 12 : 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    SectionHeader(
-                      icon: Icons.auto_awesome,
-                      title: l10n.prestige,
-                      description: l10n.prestigeDescription,
-                      iconSize: isMobile ? 16 : 26,
-                      titleFontSize: isMobile ? 14 : 19,
-                      descriptionFontSize: isMobile ? 9 : 13,
-                      padding: isMobile ? const EdgeInsets.all(8) : const EdgeInsets.all(14),
-                      borderRadius: isMobile ? 8 : 12,
-                    ),
-                    SizedBox(height: isMobile ? 8 : 24),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildMultiplierDisplay(context, l10n, prestigeState, isMobile),
-                          SizedBox(height: isMobile ? 8 : 24),
-                          _buildProgressSection(context, l10n, prestigeState, isMobile),
-                          SizedBox(height: isMobile ? 12 : 36),
-                          if (kDebugMode)
-                            Row(
-                              children: [
-                                Expanded(child: _buildPrestigeButton(context, l10n, prestigeState, isMobile)),
-                                SizedBox(width: isMobile ? 8 : 12),
-                                _buildResetButton(context, isMobile),
-                              ],
-                            )
-                          else
-                            _buildPrestigeButton(context, l10n, prestigeState, isMobile),
-                        ],
-                      ),
-                    ),
-                  ],
+      final l10n = context.l10n;
+      return SectionCard(
+        key: TutorialController.prestigeKey,
+        child: SizedBox(
+          width: MediaQuery.sizeOf(context).width * 0.2,
+          child: Padding(
+            padding: EdgeInsets.all(isMobile ? 12 : 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SectionHeader(
+                  icon: Icons.auto_awesome,
+                  title: l10n.prestige,
+                  description: l10n.prestigeDescription,
+                  iconSize: isMobile ? 16 : 26,
+                  titleFontSize: isMobile ? 14 : 19,
+                  descriptionFontSize: isMobile ? 9 : 13,
+                  padding: isMobile ? const EdgeInsets.all(8) : const EdgeInsets.all(14),
+                  borderRadius: isMobile ? 8 : 12,
                 ),
-              ),
+                SizedBox(height: isMobile ? 8 : 24),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _PrestigeMultiplierSection(isMobile: isMobile),
+                      SizedBox(height: isMobile ? 8 : 24),
+                      _PrestigeProgressSection(isMobile: isMobile),
+                      SizedBox(height: isMobile ? 12 : 36),
+                      _PrestigeActionsSection(isMobile: isMobile),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+class _PrestigeMultiplierSection extends StatelessWidget {
+  const _PrestigeMultiplierSection({required this.isMobile});
+
+  final bool isMobile;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return RepaintBoundary(
+      child: BlocSelector<PrestigeBloc, PrestigeState, ({BigNumber total, BigNumber current, bool isUnlocked})?>(
+        selector: (state) {
+          final prestigeState = state.prestigeState;
+          if (prestigeState == null) return null;
+          return (
+            total: prestigeState.totalMultiplier,
+            current: prestigeState.currentMultiplier,
+            isUnlocked: prestigeState.isUnlocked,
+          );
+        },
+        builder: (context, data) {
+          if (data == null) return const SizedBox.shrink();
+          return Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: context.color.background.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: context.color.primary.withValues(alpha: 0.3)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${l10n.prestigeMultiplier}: ${data.total.format(compact: true)}x',
+                  style: context.styles.prestigeMultiplier,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: isMobile ? 3 : 9),
+                Text(
+                  '+ ${data.current.format(compact: true)}x ${l10n.prestigeBonus}',
+                  style: context.styles.prestigeBonus(isUnlocked: data.isUnlocked),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           );
         },
-      );
-    },
-  );
+      ),
+    );
+  }
+}
 
-  Widget _buildMultiplierDisplay(
-    BuildContext context,
-    AppLocalizations l10n,
-    PrestigeStateModel prestigeState,
-    bool isMobile,
-  ) => Container(
-    padding: const EdgeInsets.all(12),
-    decoration: BoxDecoration(
-      color: context.color.background.withValues(alpha: 0.3),
-      borderRadius: BorderRadius.circular(12),
-      border: Border.all(color: context.color.primary.withValues(alpha: 0.3)),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          '${l10n.prestigeMultiplier}: ${prestigeState.totalMultiplier.format(compact: true)}x',
-          style: context.styles.prestigeMultiplier,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        SizedBox(height: isMobile ? 3 : 9),
-        Text(
-          '+ ${prestigeState.currentMultiplier.format(compact: true)}x ${l10n.prestigeBonus}',
-          style: context.styles.prestigeBonus(isUnlocked: prestigeState.isUnlocked),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    ),
-  );
+class _PrestigeProgressSection extends StatelessWidget {
+  const _PrestigeProgressSection({required this.isMobile});
 
-  Widget _buildProgressSection(
-    BuildContext context,
-    AppLocalizations l10n,
-    PrestigeStateModel prestigeState,
-    bool isMobile,
-  ) => BlocSelector<CellsBloc, CellsState, BigNumber?>(
-    selector: (state) => state.totalEnergy,
-    builder: (context, totalEnergy) {
-      final currentEnergyText = totalEnergy?.format(compact: true) ?? '0.0';
-      final progress = totalEnergy != null ? totalEnergy.ratio(prestigeState.currentThreshold, max: 1) : 0.0;
-      return Column(
-        children: [
-          InfoRow(label: l10n.totalEnergy, value: currentEnergyText, valueColor: context.color.titleText),
-          SizedBox(height: isMobile ? 3 : 9),
-          InfoRow(
-            label: l10n.prestigeRequirement,
-            value: prestigeState.currentThreshold.format(compact: true),
-            valueColor: context.color.primaryText,
-          ),
-          SizedBox(height: isMobile ? 6 : 18),
-          ProgressBarWidget(progress: progress),
-        ],
-      );
-    },
-  );
+  final bool isMobile;
 
-  Widget _buildPrestigeButton(
-    BuildContext context,
-    AppLocalizations l10n,
-    PrestigeStateModel prestigeState,
-    bool isMobile,
-  ) => ActionButton(
-    icon: Icons.auto_awesome,
-    label: prestigeState.isUnlocked
-        ? l10n.prestigeButton
-        : l10n.prestigeLocked(prestigeState.currentThreshold.format(compact: true)),
-    onTap: () => context.read<PrestigeBloc>().add(const PrestigeEvent.prestige()),
-    isEnabled: prestigeState.isUnlocked,
-    padding: isMobile ? const EdgeInsets.all(4) : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-    fontSize: isMobile ? 10 : 13,
-    iconSize: isMobile ? 14 : 20,
-    borderRadius: isMobile ? 8 : 12,
-  );
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return RepaintBoundary(
+      child: BlocSelector<PrestigeBloc, PrestigeState, BigNumber?>(
+        selector: (state) => state.prestigeState?.currentThreshold,
+        builder: (context, threshold) {
+          if (threshold == null) return const SizedBox.shrink();
+          return BlocSelector<CellsBloc, CellsState, BigNumber?>(
+            selector: (state) => state.totalEnergy,
+            builder: (context, totalEnergy) {
+              final currentEnergyText = totalEnergy?.format(compact: true) ?? '0.0';
+              final progress = totalEnergy != null ? totalEnergy.ratio(threshold, max: 1) : 0.0;
+              return Column(
+                children: [
+                  InfoRow(label: l10n.totalEnergy, value: currentEnergyText, valueColor: context.color.titleText),
+                  SizedBox(height: isMobile ? 3 : 9),
+                  InfoRow(
+                    label: l10n.prestigeRequirement,
+                    value: threshold.format(compact: true),
+                    valueColor: context.color.primaryText,
+                  ),
+                  SizedBox(height: isMobile ? 6 : 18),
+                  ProgressBarWidget(progress: progress),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
 
-  Widget _buildResetButton(BuildContext context, bool isMobile) => Material(
+class _PrestigeActionsSection extends StatelessWidget {
+  const _PrestigeActionsSection({required this.isMobile});
+
+  final bool isMobile;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return BlocSelector<PrestigeBloc, PrestigeState, ({bool isUnlocked, BigNumber threshold})?>(
+      selector: (state) {
+        final prestigeState = state.prestigeState;
+        if (prestigeState == null) return null;
+        return (isUnlocked: prestigeState.isUnlocked, threshold: prestigeState.currentThreshold);
+      },
+      builder: (context, data) {
+        if (data == null) return const SizedBox.shrink();
+        final button = ActionButton(
+          icon: Icons.auto_awesome,
+          label: data.isUnlocked ? l10n.prestigeButton : l10n.prestigeLocked(data.threshold.format(compact: true)),
+          onTap: () => context.read<PrestigeBloc>().add(const PrestigeEvent.prestige()),
+          isEnabled: data.isUnlocked,
+          padding: isMobile ? const EdgeInsets.all(4) : const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          fontSize: isMobile ? 10 : 13,
+          iconSize: isMobile ? 14 : 20,
+          borderRadius: isMobile ? 8 : 12,
+        );
+
+        if (!kDebugMode) return button;
+
+        return Row(
+          children: [
+            Expanded(child: button),
+            SizedBox(width: isMobile ? 8 : 12),
+            _PrestigeResetButton(isMobile: isMobile),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _PrestigeResetButton extends StatelessWidget {
+  const _PrestigeResetButton({required this.isMobile});
+
+  final bool isMobile;
+
+  @override
+  Widget build(BuildContext context) => Material(
     color: Colors.transparent,
     child: InkWell(
       onTap: () async {

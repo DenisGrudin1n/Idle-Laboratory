@@ -55,36 +55,41 @@ class _CellsScreenState extends State<CellsScreen> {
           backgroundColor: color.background,
           body: SafeArea(
             child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
-              selector: (state) => state.appVersion,
-              builder: (context, appVersion) {
-                final isMobile = appVersion == AppVersionEnum.mobile;
-                final mainNavigationBarPadding = isMobile
-                    ? const EdgeInsets.only(top: 12)
-                    : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
-                final contentPadding = isMobile
-                    ? const EdgeInsets.only(top: 12)
-                    : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: mainNavigationBarPadding,
-                      child: MainNavigationBar(
-                        selectedTab: selectedTab,
-                        onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+                selector: (state) => state.appVersion,
+                builder: (context, appVersion) {
+                  final isMobile = appVersion == AppVersionEnum.mobile;
+                  final mainNavigationBarPadding = isMobile
+                      ? const EdgeInsets.only(top: 12)
+                      : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
+                  final contentPadding = isMobile
+                      ? const EdgeInsets.only(top: 12)
+                      : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      RepaintBoundary(
+                        child: Padding(
+                          padding: mainNavigationBarPadding,
+                          child: MainNavigationBar(
+                            selectedTab: selectedTab,
+                            onTabSelected: (tab) =>
+                                context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
-                    ),
-                  ],
-                );
-              },
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: RepaintBoundary(
+                          child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
-      ),
     );
   }
 }
