@@ -535,6 +535,198 @@ abstract class AppLocalizations {
   /// **'Reset progress for permanent EPS multiplier'**
   String get prestigeDescription;
 
+  /// No description provided for @tutorialWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Idle Laboratory!'**
+  String get tutorialWelcomeTitle;
+
+  /// No description provided for @tutorialWelcomeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.'**
+  String get tutorialWelcomeDesc;
+
+  /// No description provided for @tutorialEnergyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy & EPS'**
+  String get tutorialEnergyTitle;
+
+  /// No description provided for @tutorialEnergyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This section shows your total Energy Units (EU) and your current Energy Per Second (EPS). Energy is the lifeblood of your laboratory.'**
+  String get tutorialEnergyDesc;
+
+  /// No description provided for @tutorialMainNavTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Navigation'**
+  String get tutorialMainNavTitle;
+
+  /// No description provided for @tutorialMainNavDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this sidebar to switch between different areas of your laboratory: Cells, Crafting, Storage, and more.'**
+  String get tutorialMainNavDesc;
+
+  /// No description provided for @tutorialSubTabsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sub-Tabs'**
+  String get tutorialSubTabsTitle;
+
+  /// No description provided for @tutorialSubTabsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Each main section has sub-tabs. For example, in the Cells section, you can switch between Energy Cells, Production, and Overview.'**
+  String get tutorialSubTabsDesc;
+
+  /// No description provided for @tutorialCellsListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy Cells'**
+  String get tutorialCellsListTitle;
+
+  /// No description provided for @tutorialCellsListDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can see your energy cells. Level them up to increase your EPS. Each cell type has unique properties.'**
+  String get tutorialCellsListDesc;
+
+  /// No description provided for @tutorialPrestigeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prestige'**
+  String get tutorialPrestigeTitle;
+
+  /// No description provided for @tutorialPrestigeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'When you reach enough energy, you can Prestige. This resets your progress but gives you a permanent multiplier to your EPS.'**
+  String get tutorialPrestigeDesc;
+
+  /// No description provided for @tutorialNext.
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT'**
+  String get tutorialNext;
+
+  /// No description provided for @tutorialSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'SKIP'**
+  String get tutorialSkip;
+
+  /// No description provided for @tutorialProductionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Production'**
+  String get tutorialProductionTitle;
+
+  /// No description provided for @tutorialProductionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'In this tab, your cells automatically generate more of themselves over time. You can accelerate this process by spending energy to upgrade each cell\'s level.'**
+  String get tutorialProductionDesc;
+
+  /// No description provided for @tutorialCraftingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafting Interface'**
+  String get tutorialCraftingTitle;
+
+  /// No description provided for @tutorialCraftingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This is where you combine your resources to create advanced materials. You can use cells and other materials as reagents to run powerful reactions.'**
+  String get tutorialCraftingDesc;
+
+  /// No description provided for @tutorialCraftingCellSlotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cell Slot'**
+  String get tutorialCraftingCellSlotTitle;
+
+  /// No description provided for @tutorialCraftingCellSlotDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The bottom slot is specifically for energy cells. Some recipes require a certain amount of a specific cell type to proceed.'**
+  String get tutorialCraftingCellSlotDesc;
+
+  /// No description provided for @tutorialCraftingMaterialSlotsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Material Slots'**
+  String get tutorialCraftingMaterialSlotsTitle;
+
+  /// No description provided for @tutorialCraftingMaterialSlotsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The two upper slots are for research materials. Combine different materials here to discover higher-tier resources.'**
+  String get tutorialCraftingMaterialSlotsDesc;
+
+  /// No description provided for @tutorialCraftingOutputSlotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Output Slot'**
+  String get tutorialCraftingOutputSlotTitle;
+
+  /// No description provided for @tutorialCraftingOutputSlotDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The result of your crafting reaction will appear here. Tap it to start the reaction once all reagents are placed.'**
+  String get tutorialCraftingOutputSlotDesc;
+
+  /// No description provided for @tutorialCraftingInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reaction Info'**
+  String get tutorialCraftingInfoTitle;
+
+  /// No description provided for @tutorialCraftingInfoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can see the energy cost, time required, and the target amount for your reaction. Use the \'Start reaction\' button to begin.'**
+  String get tutorialCraftingInfoDesc;
+
+  /// No description provided for @tutorialStorageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Material Storage'**
+  String get tutorialStorageTitle;
+
+  /// No description provided for @tutorialStorageDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'All your crafted materials are stored here. You can see your current inventory and use these materials for further research and crafting.'**
+  String get tutorialStorageDesc;
+
+  /// No description provided for @tutorialResearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Research Tree'**
+  String get tutorialResearchTitle;
+
+  /// No description provided for @tutorialResearchDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The Research Tree shows the path to the ultimate alchemical goals. Discover new materials by merging lower-tier ones in the crafting interface.'**
+  String get tutorialResearchDesc;
+
+  /// No description provided for @tutorialResearchGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The Ultimate Goal'**
+  String get tutorialResearchGoalTitle;
+
+  /// No description provided for @tutorialResearchGoalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.'**
+  String get tutorialResearchGoalDesc;
+
   /// No description provided for @amount.
   ///
   /// In en, this message translates to:

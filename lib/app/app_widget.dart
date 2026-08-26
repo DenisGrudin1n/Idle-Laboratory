@@ -35,29 +35,29 @@ class AppWidget extends StatelessWidget {
     ],
     child: CellLoopAnimationScope(
       child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
-        selector: (state) => state.appVersion,
-        builder: (context, appVersion) {
-          final textScale = switch (appVersion) {
-            AppVersionEnum.mobile => 1.0,
-            AppVersionEnum.tablet => 1.25,
-            AppVersionEnum.desk => 1.5,
-          };
+      selector: (state) => state.appVersion,
+      builder: (context, appVersion) {
+        final textScale = switch (appVersion) {
+          AppVersionEnum.mobile => 1.0,
+          AppVersionEnum.tablet => 1.25,
+          AppVersionEnum.desk => 1.5,
+        };
 
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
-            child: MaterialApp.router(
-              routerConfig: AppRouter.router,
-              theme: AppTheme.defaultTheme,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: const [Locale('en')],
-              debugShowCheckedModeBanner: false,
-            ),
-          );
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+          child: MaterialApp.router(
+            routerConfig: AppRouter.router,
+            theme: AppTheme.defaultTheme,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('en')],
+            debugShowCheckedModeBanner: false,
+          ),
+        );
         },
       ),
     ),

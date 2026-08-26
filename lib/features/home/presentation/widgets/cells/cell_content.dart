@@ -4,6 +4,7 @@ import 'package:idle_laboratory/core/enums/cells_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/energy_cells_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/production/production_content.dart';
 
@@ -11,19 +12,27 @@ class CellContent extends StatelessWidget {
   const CellContent({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocSelector<NavigationBloc, NavigationState, CellsTab>(
-    selector: (state) => state.cellsTab,
-    builder: (context, selectedTab) => Column(
-      children: [
-        TopNavigationBar<CellsTab>(
-          tabs: CellsTab.values,
-          selectedTab: selectedTab,
-          onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.cellsTabChanged(tab)),
-          tabLabel: (context, tab) => tab.localize(context.l10n),
-        ),
-        const SizedBox(height: 12),
-        Expanded(child: _buildTabContent(selectedTab)),
-      ],
+  Widget build(BuildContext context) => BlocListener<NavigationBloc, NavigationState>(
+    listenWhen: (prev, curr) => prev.cellsTab != curr.cellsTab,
+    listener: (context, state) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        TutorialController.showTabTutorial(context, cellsTab: state.cellsTab);
+      });
+    },
+    child: BlocSelector<NavigationBloc, NavigationState, CellsTab>(
+      selector: (state) => state.cellsTab,
+      builder: (context, selectedTab) => Column(
+        children: [
+          TopNavigationBar<CellsTab>(
+            tabs: CellsTab.values,
+            selectedTab: selectedTab,
+            onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.cellsTabChanged(tab)),
+            tabLabel: (context, tab) => tab.localize(context.l10n),
+          ),
+          const SizedBox(height: 12),
+          Expanded(child: _buildTabContent(selectedTab)),
+        ],
+      ),
     ),
   );
 

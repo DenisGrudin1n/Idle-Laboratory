@@ -1,0 +1,5 @@
+1. Crafting timer works but doesn't update timer string widget
+2. Need to improve game balance - the production cells per second should be increased 
+on prestige, or even better prestige like now works for energy cell level 
+and energy cell level and it's energy per second (eps) 
+scales the production per second (pps)

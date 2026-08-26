@@ -7,6 +7,7 @@ import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/app_divider.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/energy_display.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_badge.dart';
 
@@ -34,27 +35,37 @@ class MainNavigationBar extends StatelessWidget {
           final isMobile = appVersion == AppVersionEnum.mobile;
           final verticalPadding = isMobile ? 6.0 : 12.0;
 
-          return ListView.separated(
-            padding: EdgeInsets.symmetric(vertical: verticalPadding),
-            itemCount: MainNavigationTab.values.length + 1,
-          separatorBuilder: (context, index) => index == 0
-              ? AppDivider(color: context.color.primaryText.withValues(alpha: 0.2))
-              : AppDivider(
-                  indent: 12,
-                  endIndent: 12,
-                  color: context.color.primaryText.withValues(alpha: 0.1),
+          return Column(
+            children: [
+              const EnergyDisplay(),
+              AppDivider(color: context.color.primaryText.withValues(alpha: 0.2)),
+              Expanded(
+                child: RepaintBoundary(
+                  child: Container(
+                    key: TutorialController.mainNavKey,
+                    child: ListView.separated(
+                      padding: EdgeInsets.symmetric(vertical: verticalPadding),
+                      itemCount: MainNavigationTab.values.length,
+                      separatorBuilder: (context, index) => AppDivider(
+                        indent: 12,
+                        endIndent: 12,
+                        color: context.color.primaryText.withValues(alpha: 0.1),
+                      ),
+                      itemBuilder: (context, index) {
+                        final tab = MainNavigationTab.values[index];
+                        return _DrawerTab(
+                          tab: tab,
+                          label: tab.localize(context.l10n),
+                          isActive: selectedTab == tab,
+                          onTap: () => onTabSelected(tab),
+                          verticalPadding: verticalPadding,
+                        );
+                      },
+                    ),
+                  ),
                 ),
-            itemBuilder: (context, index) {
-              if (index == 0) return const EnergyDisplay();
-              final tab = MainNavigationTab.values[index - 1];
-              return _DrawerTab(
-                tab: tab,
-                label: tab.localize(context.l10n),
-                isActive: selectedTab == tab,
-                onTap: () => onTabSelected(tab),
-                verticalPadding: verticalPadding,
-              );
-            },
+              ),
+            ],
           );
         },
       ),

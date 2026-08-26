@@ -6,6 +6,8 @@ import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
+
 class TopNavigationBar<T> extends StatelessWidget {
   const TopNavigationBar({
     required this.tabs,
@@ -24,6 +26,7 @@ class TopNavigationBar<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SectionCard(
+    key: TutorialController.topNavKey,
     child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {

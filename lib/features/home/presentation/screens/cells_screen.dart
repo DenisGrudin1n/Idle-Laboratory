@@ -5,13 +5,27 @@ import 'package:idle_laboratory/core/enums/main_navigation_tab.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/cell_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/main_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/settings_toggle.dart';
 
-class CellsScreen extends StatelessWidget {
+class CellsScreen extends StatefulWidget {
   const CellsScreen({super.key});
+
+  @override
+  State<CellsScreen> createState() => _CellsScreenState();
+}
+
+class _CellsScreenState extends State<CellsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      TutorialController.showTutorial(context);
+    });
+  }
 
   Widget _buildContent(MainNavigationTab selectedTab) => switch (selectedTab) {
     MainNavigationTab.cells => const CellContent(),
@@ -24,40 +38,58 @@ class CellsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = context.color;
-    return BlocSelector<NavigationBloc, NavigationState, MainNavigationTab>(
-      selector: (state) => state.mainTab,
-      builder: (context, selectedTab) => Scaffold(
-        backgroundColor: color.background,
-        body: SafeArea(
-          child: BlocBuilder<AppLayoutBloc, AppLayoutState>(
-            builder: (context, state) {
-              final isMobile = state.appVersion == AppVersionEnum.mobile;
-              final mainNavigationBarPadding = isMobile
-                  ? const EdgeInsets.only(top: 12)
-                  : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
-              final contentPadding = isMobile
-                  ? const EdgeInsets.only(top: 12)
-                  : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: mainNavigationBarPadding,
-                    child: MainNavigationBar(
-                      selectedTab: selectedTab,
-                      onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
-                  ),
-                ],
-              );
-            },
+    return BlocListener<NavigationBloc, NavigationState>(
+      listenWhen: (prev, curr) => prev.mainTab != curr.mainTab,
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (state.mainTab == MainNavigationTab.cells) {
+            TutorialController.showTabTutorial(context, cellsTab: state.cellsTab);
+          } else if (state.mainTab == MainNavigationTab.crafting) {
+            TutorialController.showTabTutorial(context, craftingTab: state.craftingTab);
+          }
+        });
+      },
+      child: BlocSelector<NavigationBloc, NavigationState, MainNavigationTab>(
+        selector: (state) => state.mainTab,
+        builder: (context, selectedTab) => Scaffold(
+          backgroundColor: color.background,
+          body: SafeArea(
+            child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+                selector: (state) => state.appVersion,
+                builder: (context, appVersion) {
+                  final isMobile = appVersion == AppVersionEnum.mobile;
+                  final mainNavigationBarPadding = isMobile
+                      ? const EdgeInsets.only(top: 12)
+                      : const EdgeInsets.only(top: 24, left: 24, bottom: 24);
+                  final contentPadding = isMobile
+                      ? const EdgeInsets.only(top: 12)
+                      : const EdgeInsets.only(top: 24, right: 24, bottom: 24);
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      RepaintBoundary(
+                        child: Padding(
+                          padding: mainNavigationBarPadding,
+                          child: MainNavigationBar(
+                            selectedTab: selectedTab,
+                            onTabSelected: (tab) =>
+                                context.read<NavigationBloc>().add(NavigationEvent.mainTabChanged(tab)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: RepaintBoundary(
+                          child: Padding(padding: contentPadding, child: _buildContent(selectedTab)),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
           ),
         ),
-      ),
     );
   }
 }

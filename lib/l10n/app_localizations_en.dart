@@ -243,6 +243,117 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prestigeDescription => 'Reset progress for permanent EPS multiplier';
 
   @override
+  String get tutorialWelcomeTitle => 'Welcome to Idle Laboratory!';
+
+  @override
+  String get tutorialWelcomeDesc =>
+      'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.';
+
+  @override
+  String get tutorialEnergyTitle => 'Energy & EPS';
+
+  @override
+  String get tutorialEnergyDesc =>
+      'This section shows your total Energy Units (EU) and your current Energy Per Second (EPS). Energy is the lifeblood of your laboratory.';
+
+  @override
+  String get tutorialMainNavTitle => 'Main Navigation';
+
+  @override
+  String get tutorialMainNavDesc =>
+      'Use this sidebar to switch between different areas of your laboratory: Cells, Crafting, Storage, and more.';
+
+  @override
+  String get tutorialSubTabsTitle => 'Sub-Tabs';
+
+  @override
+  String get tutorialSubTabsDesc =>
+      'Each main section has sub-tabs. For example, in the Cells section, you can switch between Energy Cells, Production, and Overview.';
+
+  @override
+  String get tutorialCellsListTitle => 'Energy Cells';
+
+  @override
+  String get tutorialCellsListDesc =>
+      'Here you can see your energy cells. Level them up to increase your EPS. Each cell type has unique properties.';
+
+  @override
+  String get tutorialPrestigeTitle => 'Prestige';
+
+  @override
+  String get tutorialPrestigeDesc =>
+      'When you reach enough energy, you can Prestige. This resets your progress but gives you a permanent multiplier to your EPS.';
+
+  @override
+  String get tutorialNext => 'NEXT';
+
+  @override
+  String get tutorialSkip => 'SKIP';
+
+  @override
+  String get tutorialProductionTitle => 'Production';
+
+  @override
+  String get tutorialProductionDesc =>
+      'In this tab, your cells automatically generate more of themselves over time. You can accelerate this process by spending energy to upgrade each cell\'s level.';
+
+  @override
+  String get tutorialCraftingTitle => 'Crafting Interface';
+
+  @override
+  String get tutorialCraftingDesc =>
+      'This is where you combine your resources to create advanced materials. You can use cells and other materials as reagents to run powerful reactions.';
+
+  @override
+  String get tutorialCraftingCellSlotTitle => 'Cell Slot';
+
+  @override
+  String get tutorialCraftingCellSlotDesc =>
+      'The bottom slot is specifically for energy cells. Some recipes require a certain amount of a specific cell type to proceed.';
+
+  @override
+  String get tutorialCraftingMaterialSlotsTitle => 'Material Slots';
+
+  @override
+  String get tutorialCraftingMaterialSlotsDesc =>
+      'The two upper slots are for research materials. Combine different materials here to discover higher-tier resources.';
+
+  @override
+  String get tutorialCraftingOutputSlotTitle => 'Output Slot';
+
+  @override
+  String get tutorialCraftingOutputSlotDesc =>
+      'The result of your crafting reaction will appear here. Tap it to start the reaction once all reagents are placed.';
+
+  @override
+  String get tutorialCraftingInfoTitle => 'Reaction Info';
+
+  @override
+  String get tutorialCraftingInfoDesc =>
+      'Here you can see the energy cost, time required, and the target amount for your reaction. Use the \'Start reaction\' button to begin.';
+
+  @override
+  String get tutorialStorageTitle => 'Material Storage';
+
+  @override
+  String get tutorialStorageDesc =>
+      'All your crafted materials are stored here. You can see your current inventory and use these materials for further research and crafting.';
+
+  @override
+  String get tutorialResearchTitle => 'Research Tree';
+
+  @override
+  String get tutorialResearchDesc =>
+      'The Research Tree shows the path to the ultimate alchemical goals. Discover new materials by merging lower-tier ones in the crafting interface.';
+
+  @override
+  String get tutorialResearchGoalTitle => 'The Ultimate Goal';
+
+  @override
+  String get tutorialResearchGoalDesc =>
+      'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.';
+
+  @override
   String get amount => 'Amount';
 
   @override

@@ -5,6 +5,7 @@ import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/storage/storage_material_tile.dart';
 
 /// Inventory grid for crafted research materials.
@@ -18,6 +19,7 @@ class StorageContent extends StatelessWidget {
     final l10n = context.l10n;
 
     return SectionCard(
+      key: TutorialController.storageContainerKey,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

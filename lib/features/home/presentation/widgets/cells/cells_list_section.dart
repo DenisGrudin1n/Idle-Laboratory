@@ -13,11 +13,14 @@ import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
+
 class CellsListSection extends StatelessWidget {
   const CellsListSection({super.key});
 
   @override
   Widget build(BuildContext context) => SectionCard(
+    key: TutorialController.cellsListKey,
     child: SizedBox(
       width: MediaQuery.sizeOf(context).width * 0.2,
       child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(

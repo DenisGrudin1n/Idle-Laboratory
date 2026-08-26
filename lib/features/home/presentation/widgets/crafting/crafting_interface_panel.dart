@@ -13,6 +13,7 @@ import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/core/widgets/amount_text_field.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_cell_picker_dialog.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_full_row_conduit_painter.dart';
@@ -114,6 +115,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
             right: 0,
             top: outputTop,
             child: CraftingOutputSlot(
+              key: TutorialController.craftingOutputSlotKey,
               outputMaterialId: outputMaterial,
               slotSide: outputSide,
               onTap: outputMaterial == null || state.isCrafting
@@ -127,25 +129,34 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CraftingInputSlot(
-                  slotIndex: 0,
-                  slotSide: metrics.inputSlotSide,
-                  selectedMaterialId: state.reagent1Id,
-                  onTap: state.isCrafting
-                      ? null
-                      : () => _openMaterialPicker(context, 0, state.reagent1Id, state.isCrafting),
+                Container(
+                  key: TutorialController.craftingMaterialSlotsKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CraftingInputSlot(
+                        slotIndex: 0,
+                        slotSide: metrics.inputSlotSide,
+                        selectedMaterialId: state.reagent1Id,
+                        onTap: state.isCrafting
+                            ? null
+                            : () => _openMaterialPicker(context, 0, state.reagent1Id, state.isCrafting),
+                      ),
+                      SizedBox(height: verticalGap),
+                      CraftingInputSlot(
+                        slotIndex: 1,
+                        slotSide: metrics.inputSlotSide,
+                        selectedMaterialId: state.reagent2Id,
+                        onTap: state.isCrafting
+                            ? null
+                            : () => _openMaterialPicker(context, 1, state.reagent2Id, state.isCrafting),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: verticalGap),
                 CraftingInputSlot(
-                  slotIndex: 1,
-                  slotSide: metrics.inputSlotSide,
-                  selectedMaterialId: state.reagent2Id,
-                  onTap: state.isCrafting
-                      ? null
-                      : () => _openMaterialPicker(context, 1, state.reagent2Id, state.isCrafting),
-                ),
-                SizedBox(height: verticalGap),
-                CraftingInputSlot(
+                  key: TutorialController.craftingCellSlotKey,
                   slotIndex: _cellSlotIndex,
                   slotSide: metrics.inputSlotSide,
                   selectedCellId: state.selectedCellId,
@@ -191,6 +202,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
         final cellIconHeight = isMobile ? 9.0 : 14.0;
 
         return SizedBox(
+          key: TutorialController.craftingInfoRowKey,
           width: actionButtonWidth,
           child: Column(
             mainAxisSize: MainAxisSize.min,
