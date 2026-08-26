@@ -12,4 +12,5 @@ class StorageKeys {
   static const cellsData = 'cells_data';
   static const productionData = 'production_data';
   static const storageInventory = 'storage_inventory';
+  static const endingCutsceneSeen = 'ending_cutscene_seen';
 }

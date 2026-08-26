@@ -51,23 +51,21 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - **Adaptive Components**: Ensured all widgets (buttons, text fields, modals) look natural across all screen sizes.
 - **Unified Border System**: Created `AppBorderContainer` and `AppDivider` for consistent responsive styling.
 
+### 9. Onboarding & Tutorial System
+- **Tutorial Overlay**: Spotlight via `tutorial_coach_mark`.
+- **Lore Integration**: Magician character guides the player through tabs (kind / greedy sprites).
+- **Trigger Logic**: Auto-start on first app entry; tab tutorials on navigation.
+- **Manual restart**: Still planned in Overview (see Future §1).
+
 ---
 
 ## 🚀 Future Roadmap (TODOs)
 
-### 1. Onboarding & Tutorial System
-- [ ] **Tutorial Overlay**: Implement a "spotlight" effect where the screen darkens, leaving only specific features bright and interactive.
-- [ ] **Lore Integration**: Introduce the "Evil Mage" character as the central figure of the tutorial.
-- [ ] **Trigger Logic**: 
-    - Auto-start on first app entry.
-    - Manual restart button in the **Overview** section.
-- [ ] **Potential Solutions**: Research packages like `tutorial_coach_mark` or `showcaseview` for smooth animations and spotlighting.
-
-### 2. Overview Section Enhancements
+### 1. Overview Section Enhancements
 - [ ] **Game Lore**: Add a short, engaging explanation of the game's world and the player's role.
 - [ ] **Tutorial Access**: Add a prominent "Replay Tutorial" button.
 
-### 3. Statistics Tab
+### 2. Statistics Tab
 - [ ] **Data Tracking**: Implement tracking for:
     - Total play time.
     - Lifetime energy farmed.
@@ -75,10 +73,10 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
     - Lifetime count of each material type crafted.
 - [ ] **UI**: Create a clean, scrollable list of these stats.
 
-### 4. Settings Tab
+### 3. Settings Tab
 - [ ] **Configuration**: Placeholder for future settings (Audio, Notifications, Account management, etc.).
 
-### 5. Achievements System
+### 4. Achievements System
 - [ ] **Platform Integration**: Research and plan for Google Play Games Services and Apple Game Center integration.
 - [ ] **Achievement List**:
     - Reach `n` total energy.
@@ -88,20 +86,23 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
     - Complete tutorial.
     - Watch final lore cutscene.
 
-### 6. Endgame & Final Lore
-- [ ] **Victory Condition**: Trigger final lore/cutscene when the absolute top-tier material is crafted.
-- [ ] **Cutscene System**: Implement a way to display narrative-heavy endgame content.
+### 5. Endgame & Final Lore (in progress)
+- [x] **Victory Condition**: Trigger ending when Bloodstone of Dominion is crafted.
+- [x] **Evil reveal**: Magician (`magician_evil`) confesses true intent after the craft.
+- [x] **Epilogue**: "To Be Continued" screen after the reveal.
+- [ ] **Opening / mid-game story beats** (next step after endgame polish).
+- [ ] Overview lore blurb tying into the ending.
 
-### 7. Game Balance & Polish
+### 6. Game Balance & Polish
 - [ ] **Material-Specific Metrics**: Move away from test values (5s/5EU) to unique craft timers and costs for each material.
 - [ ] **Button States**: Refine visual feedback for all button states (hover, pressed, disabled).
 - [ ] **General UI/UX**: Continuous improvements to the "gaming" aesthetic across all tabs.
 
-### 8. Monetization & Support
+### 7. Monetization & Support
 - [ ] **"Buy Me a Coffee"**: Add a simple, non-intrusive donation button (e.g., in Settings or Overview) for players who want to support the developer.
 - [ ] **Platform Integration**: Use `url_launcher` or similar to redirect to a support page (PayPal, Ko-fi, etc.).
 
-### 9. Offline Progress
+### 8. Offline Progress
 - [ ] **Time Tracking**: Calculate the duration the user was away from the app.
 - [ ] **Reward Calculation**: Grant energy, cells, and production progress based on offline time.
 - [ ] **Constraints**: Implement a cap on offline progress (e.g., maximum 15 minutes) to encourage regular check-ins.

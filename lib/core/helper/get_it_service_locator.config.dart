@@ -52,6 +52,8 @@ import 'package:idle_laboratory/features/home/domain/services/prestige_service.d
     as _i741;
 import 'package:idle_laboratory/features/home/domain/services/storage_service.dart'
     as _i540;
+import 'package:idle_laboratory/features/home/domain/services/story_ending_service.dart'
+    as _i515;
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart'
     as _i915;
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart'
@@ -70,6 +72,8 @@ import 'package:idle_laboratory/features/home/presentation/blocs/storage/badge/s
     as _i394;
 import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage_bloc.dart'
     as _i926;
+import 'package:idle_laboratory/features/home/presentation/blocs/story_ending/story_ending_bloc.dart'
+    as _i1007;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
@@ -105,6 +109,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i495.PrestigeRepository>(
       () => _i362.PrestigeRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
     );
+    gh.lazySingleton<_i515.StoryEndingService>(
+      () => _i515.StoryEndingService(gh<_i241.LocalStorageDataSource>()),
+    );
     gh.lazySingleton<_i540.StorageService>(
       () => _i540.StorageService(gh<_i495.StorageRepository>()),
       dispose: (i) => i.dispose(),
@@ -120,6 +127,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i912.SettingsRepository>(
       () => _i5.SettingsRepositoryImpl(gh<_i241.LocalStorageDataSource>()),
+    );
+    gh.factory<_i1007.StoryEndingBloc>(
+      () => _i1007.StoryEndingBloc(
+        gh<_i515.StoryEndingService>(),
+        gh<_i540.StorageService>(),
+      ),
     );
     gh.lazySingleton<_i57.EnergyService>(
       () => _i57.EnergyService(gh<_i312.EnergyRepository>()),

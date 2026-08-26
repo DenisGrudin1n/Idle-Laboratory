@@ -40,7 +40,7 @@ void main() {
 
   testWidgets('renders production grid for unlocked cells', (tester) async {
     harness.init(
-      cellsState: testCellsState(cells: defaultTestCells(unlockedCount: 4)),
+      cellsState: testCellsState(cells: defaultTestCells()),
       prestigeState: testPrestigeState(),
     );
 

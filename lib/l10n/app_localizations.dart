@@ -724,8 +724,50 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialResearchGoalDesc.
   ///
   /// In en, this message translates to:
-  /// **'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.'**
+  /// **'At the peak of the Research Tree waits the Bloodstone of Dominion. With it, the magician believes we can reshape the world — heal what is broken, open paths once closed, and finally achieve what ordinary power never could. Your journey leads here.'**
   String get tutorialResearchGoalDesc;
+
+  /// No description provided for @endingRevealTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The Mask Falls'**
+  String get endingRevealTitle;
+
+  /// No description provided for @endingRevealDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ah… at last. You have done it. The Bloodstone of Dominion is mine!\n\nDid you truly think I sought this gem to mend the world? How charming. While you farmed, merged, and trusted me, I only needed a willing pair of hands.\n\nNow the stone answers to me — and with it, I shall bend kingdoms, silence rivals, and claim dominion over all. Your laboratory was never a sanctuary.\n\nIt was my forge.'**
+  String get endingRevealDesc;
+
+  /// No description provided for @endingRevealContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'CONTINUE'**
+  String get endingRevealContinue;
+
+  /// No description provided for @endingToBeContinuedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To Be Continued'**
+  String get endingToBeContinuedTitle;
+
+  /// No description provided for @endingToBeContinuedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The Bloodstone has awakened a darker chapter… but that tale belongs to another time.\n\nThank you for playing Idle Laboratory.'**
+  String get endingToBeContinuedDesc;
+
+  /// No description provided for @endingToBeContinuedClose.
+  ///
+  /// In en, this message translates to:
+  /// **'CLOSE'**
+  String get endingToBeContinuedClose;
+
+  /// No description provided for @debugCraftBloodstone.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Craft Bloodstone'**
+  String get debugCraftBloodstone;
 
   /// No description provided for @amount.
   ///
@@ -1198,7 +1240,7 @@ abstract class AppLocalizations {
   /// No description provided for @researchBloodstoneOfDominionDesc.
   ///
   /// In en, this message translates to:
-  /// **'Legendary crowned gem at the apex of the research tree.'**
+  /// **'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.'**
   String get researchBloodstoneOfDominionDesc;
 }
 

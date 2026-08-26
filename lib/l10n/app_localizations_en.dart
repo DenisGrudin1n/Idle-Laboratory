@@ -351,7 +351,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialResearchGoalDesc =>
-      'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.';
+      'At the peak of the Research Tree waits the Bloodstone of Dominion. With it, the magician believes we can reshape the world — heal what is broken, open paths once closed, and finally achieve what ordinary power never could. Your journey leads here.';
+
+  @override
+  String get endingRevealTitle => 'The Mask Falls';
+
+  @override
+  String get endingRevealDesc =>
+      'Ah… at last. You have done it. The Bloodstone of Dominion is mine!\n\nDid you truly think I sought this gem to mend the world? How charming. While you farmed, merged, and trusted me, I only needed a willing pair of hands.\n\nNow the stone answers to me — and with it, I shall bend kingdoms, silence rivals, and claim dominion over all. Your laboratory was never a sanctuary.\n\nIt was my forge.';
+
+  @override
+  String get endingRevealContinue => 'CONTINUE';
+
+  @override
+  String get endingToBeContinuedTitle => 'To Be Continued';
+
+  @override
+  String get endingToBeContinuedDesc =>
+      'The Bloodstone has awakened a darker chapter… but that tale belongs to another time.\n\nThank you for playing Idle Laboratory.';
+
+  @override
+  String get endingToBeContinuedClose => 'CLOSE';
+
+  @override
+  String get debugCraftBloodstone => 'Debug: Craft Bloodstone';
 
   @override
   String get amount => 'Amount';
@@ -598,5 +621,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get researchBloodstoneOfDominion => 'Bloodstone of Dominion';
 
   @override
-  String get researchBloodstoneOfDominionDesc => 'Legendary crowned gem at the apex of the research tree.';
+  String get researchBloodstoneOfDominionDesc =>
+      'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.';
 }
