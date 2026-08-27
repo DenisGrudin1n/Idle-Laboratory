@@ -55,6 +55,7 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - **Tutorial Overlay**: Spotlight via `tutorial_coach_mark`.
 - **Lore Integration**: Magician character guides the player through tabs (kind / greedy sprites).
 - **Trigger Logic**: Auto-start on first app entry; tab tutorials on navigation.
+- **Prologue**: Kind-magician intro (2 pages) before coach marks; Bloodstone framed as hope. Currently replays every launch for testing.
 - **Manual restart**: Still planned in Overview (see Future §1).
 
 ---
@@ -90,8 +91,18 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - [x] **Victory Condition**: Trigger ending when Bloodstone of Dominion is crafted.
 - [x] **Evil reveal**: Magician (`magician_evil`) confesses true intent after the craft.
 - [x] **Epilogue**: "To Be Continued" screen after the reveal.
-- [ ] **Opening / mid-game story beats** (next step after endgame polish).
-- [ ] Overview lore blurb tying into the ending.
+- [x] **Prologue**: Kind-magician welcome + Bloodstone-as-hope pitch (before tutorial).
+- [ ] **Persist prologue/tutorial seen flags** (stop replaying every launch once polish is done).
+- [ ] **Opening / mid-game story beats** (see ideas below).
+- [ ] Overview lore blurb + persistent “ultimate goal” reminder.
+
+#### Mid-game story beat ideas (next)
+1. **First craft success** — short kind-magician toast/dialog: praise + soft Bloodstone reminder (“another step toward the summit”).
+2. **First prestige** — greedy edge slips in: “Sacrifice what you built… for a greater good.” Foreshadows the twist without spoiling.
+3. **Research tree mid-tier** (e.g. first Tier-3 / half pyramid) — brief cut-in: magician grows impatient / hungry for the stone “so the world can heal sooner.”
+4. **Parents of Bloodstone unlocked** — last calm kind beat, then colder greed: “We are so close. Do not falter.”
+5. **Persistent goal UI** — Overview (and/or Research header): “Quest: Craft the Bloodstone of Dominion” with one-line lore, so players never lose the north star between sessions.
+6. **Optional idle return** — rare offline dialog: magician “checking on progress” (kind early, greedier late-game).
 
 ### 6. Game Balance & Polish
 - [ ] **Material-Specific Metrics**: Move away from test values (5s/5EU) to unique craft timers and costs for each material.

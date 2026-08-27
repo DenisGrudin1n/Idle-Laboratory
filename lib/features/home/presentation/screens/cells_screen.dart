@@ -14,6 +14,7 @@ import 'package:idle_laboratory/features/home/presentation/widgets/crafting/craf
 import 'package:idle_laboratory/features/home/presentation/widgets/main_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/settings_toggle.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/story/story_ending_flow.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/story/story_prologue_flow.dart';
 
 class CellsScreen extends StatefulWidget {
   const CellsScreen({super.key});
@@ -27,7 +28,8 @@ class _CellsScreenState extends State<CellsScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      TutorialController.showTutorial(context);
+      // Prologue + tutorial every launch while story polish is in progress.
+      playPrologueThenTutorial(context);
     });
   }
 

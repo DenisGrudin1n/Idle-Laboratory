@@ -544,8 +544,44 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialWelcomeDesc.
   ///
   /// In en, this message translates to:
-  /// **'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.'**
+  /// **'You are an apprentice alchemist in this laboratory. Produce energy, craft materials, and follow the magician\'s guidance — every spark matters.'**
   String get tutorialWelcomeDesc;
+
+  /// No description provided for @prologueStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'A New Laboratory'**
+  String get prologueStep1Title;
+
+  /// No description provided for @prologueStep1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, apprentice. I am the keeper of this place — titles matter less than the work ahead.\n\nI have searched long for someone with steady hands and a curious mind. Beyond these walls the world grows thin and brittle: storms of energy crack where they should not, and light fades from places that once thrived.\n\nTogether, I believe we can mend it.'**
+  String get prologueStep1Desc;
+
+  /// No description provided for @prologueStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Shared Purpose'**
+  String get prologueStep2Title;
+
+  /// No description provided for @prologueStep2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you will grow energy cells, craft reagents, and climb the Research Tree — one careful reaction at a time.\n\nAt its summit sleeps a relic of immense promise: the Bloodstone of Dominion. Legends say it can restore balance — seal wounds in the land, quiet chaos, and open a kinder age.\n\nI will guide you. Trust the process. Every spark you farm, every merge you complete, brings that stone — and hope — closer.'**
+  String get prologueStep2Desc;
+
+  /// No description provided for @prologueNext.
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT'**
+  String get prologueNext;
+
+  /// No description provided for @prologueBegin.
+  ///
+  /// In en, this message translates to:
+  /// **'BEGIN'**
+  String get prologueBegin;
 
   /// No description provided for @tutorialEnergyTitle.
   ///

@@ -74,6 +74,8 @@ import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage
     as _i926;
 import 'package:idle_laboratory/features/home/presentation/blocs/story_ending/story_ending_bloc.dart'
     as _i1007;
+import 'package:idle_laboratory/features/home/presentation/blocs/story_prologue/prologue_dialog_cubit.dart'
+    as _i881;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
@@ -91,6 +93,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i249.NavigationBloc>(() => _i249.NavigationBloc());
     gh.factory<_i394.StorageBadgeCubit>(() => _i394.StorageBadgeCubit());
+    gh.factory<_i881.PrologueDialogCubit>(() => _i881.PrologueDialogCubit());
     gh.singleton<_i962.IAppLayoutRepository>(() => _i210.AppLayoutRepository());
     gh.lazySingleton<_i241.LocalStorageDataSource>(
       () => _i241.LocalStorageDataSource(gh<_i460.SharedPreferences>()),

@@ -247,7 +247,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialWelcomeDesc =>
-      'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.';
+      'You are an apprentice alchemist in this laboratory. Produce energy, craft materials, and follow the magician\'s guidance — every spark matters.';
+
+  @override
+  String get prologueStep1Title => 'A New Laboratory';
+
+  @override
+  String get prologueStep1Desc =>
+      'Welcome, apprentice. I am the keeper of this place — titles matter less than the work ahead.\n\nI have searched long for someone with steady hands and a curious mind. Beyond these walls the world grows thin and brittle: storms of energy crack where they should not, and light fades from places that once thrived.\n\nTogether, I believe we can mend it.';
+
+  @override
+  String get prologueStep2Title => 'Our Shared Purpose';
+
+  @override
+  String get prologueStep2Desc =>
+      'Here you will grow energy cells, craft reagents, and climb the Research Tree — one careful reaction at a time.\n\nAt its summit sleeps a relic of immense promise: the Bloodstone of Dominion. Legends say it can restore balance — seal wounds in the land, quiet chaos, and open a kinder age.\n\nI will guide you. Trust the process. Every spark you farm, every merge you complete, brings that stone — and hope — closer.';
+
+  @override
+  String get prologueNext => 'NEXT';
+
+  @override
+  String get prologueBegin => 'BEGIN';
 
   @override
   String get tutorialEnergyTitle => 'Energy & EPS';

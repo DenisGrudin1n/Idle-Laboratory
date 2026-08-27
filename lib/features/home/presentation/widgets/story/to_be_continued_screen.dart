@@ -24,9 +24,9 @@ class ToBeContinuedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final color = context.color;
-    final media = MediaQuery.of(context);
-    final isLandscape = media.size.width > media.size.height;
-    final stoneSize = media.size.shortestSide * (isLandscape ? 0.28 : 0.26);
+    final size = MediaQuery.sizeOf(context);
+    final isLandscape = size.width > size.height;
+    final stoneSize = size.shortestSide * (isLandscape ? 0.28 : 0.26);
     final backdrop = color.darkMatterFillGradient.colors.first;
     final deep = color.darkMatterFillGradient.colors[1];
     final bloodTint = Color.lerp(

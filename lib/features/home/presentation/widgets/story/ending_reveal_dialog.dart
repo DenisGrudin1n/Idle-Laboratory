@@ -7,6 +7,8 @@ import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/magician_sprite.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/story/scaled_lore_text.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/story/story_dialog_layout.dart';
 
 /// Evil-magician reveal shown after the apocalypse beat.
 ///
@@ -38,62 +40,62 @@ class EndingRevealDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final color = context.color;
-    final media = MediaQuery.of(context);
+    final size = MediaQuery.sizeOf(context);
 
     return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
         final isMobile = appVersion == AppVersionEnum.mobile;
-        final isLandscape = media.size.width > media.size.height;
-        final maxHeight = media.size.height * (isLandscape ? 0.9 : 0.82);
-        final maxWidth = isLandscape ? (isMobile ? media.size.width * 0.94 : 680.0) : (isMobile ? 320.0 : 440.0);
+        final isLandscape = size.width > size.height;
+        final dialogConstraints = StoryDialogLayout.constraints(
+          size: size,
+          appVersion: appVersion,
+        );
 
         return SafeArea(
           child: Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: maxWidth,
-                maxHeight: maxHeight,
-                // Force the card to use height so lore can expand into free space.
-                minHeight: maxHeight * (isLandscape ? 0.72 : 0.55),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: SectionCard(
-                  borderRadius: BorderRadius.circular(14),
-                  padding: EdgeInsets.all(isMobile ? 12 : 16),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: isLandscape
-                            ? _LandscapeRevealBody(isMobile: isMobile)
-                            : _PortraitRevealBody(isMobile: isMobile),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Material(
-                          color: color.titleText,
-                          borderRadius: BorderRadius.circular(10),
-                          child: InkWell(
-                            onTap: () => Navigator.of(context).pop(),
+              constraints: dialogConstraints,
+              child: SizedBox(
+                width: dialogConstraints.maxWidth,
+                child: Material(
+                  color: Colors.transparent,
+                  child: SectionCard(
+                    borderRadius: BorderRadius.circular(14),
+                    padding: EdgeInsets.all(isMobile ? 12 : 16),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: isLandscape
+                              ? _LandscapeRevealBody(isMobile: isMobile)
+                              : _PortraitRevealBody(isMobile: isMobile),
+                        ),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: Material(
+                            color: color.titleText,
                             borderRadius: BorderRadius.circular(10),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: isMobile ? 12 : 14),
-                              child: Text(
-                                l10n.endingRevealContinue,
-                                textAlign: TextAlign.center,
-                                style: context.styles.buttonLabel.copyWith(
-                                  color: color.background,
-                                  fontSize: isMobile ? 13 : 15,
-                                  letterSpacing: 1.1,
+                            child: InkWell(
+                              onTap: () => Navigator.of(context).pop(),
+                              borderRadius: BorderRadius.circular(10),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: isMobile ? 12 : 14),
+                                child: Text(
+                                  l10n.endingRevealContinue,
+                                  textAlign: TextAlign.center,
+                                  style: context.styles.buttonLabel.copyWith(
+                                    color: color.background,
+                                    fontSize: isMobile ? 13 : 15,
+                                    letterSpacing: 1.1,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -125,7 +127,7 @@ class _PortraitRevealBody extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
-        Expanded(child: _ScaledLoreText(text: l10n.endingRevealDesc, centered: true)),
+        Expanded(child: ScaledLoreText(text: l10n.endingRevealDesc, centered: true)),
       ],
     );
   }
@@ -144,69 +146,27 @@ class _LandscapeRevealBody extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Center(
-          child: MagicianSprite(emotion: MagicianEmotion.evil, size: spriteSize),
-        ),
-        SizedBox(width: isMobile ? 12 : 16),
+        Center(child: MagicianSprite(emotion: MagicianEmotion.evil, size: spriteSize)),
+        SizedBox(width: isMobile ? 12 : 20),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(l10n.endingRevealTitle, style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 17 : 20)),
+              Text(
+                l10n.endingRevealTitle,
+                style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 17 : 22),
+              ),
               const SizedBox(height: 8),
-              Expanded(child: _ScaledLoreText(text: l10n.endingRevealDesc)),
+              Expanded(
+                child: ScaledLoreText(
+                  text: l10n.endingRevealDesc,
+                  maxSize: isMobile ? 15.5 : 17,
+                ),
+              ),
             ],
           ),
         ),
       ],
-    );
-  }
-}
-
-/// Picks the largest lore font size that still fits the available box.
-class _ScaledLoreText extends StatelessWidget {
-  const _ScaledLoreText({required this.text, this.centered = false});
-
-  final String text;
-  final bool centered;
-
-  @override
-  Widget build(BuildContext context) {
-    final baseColor = context.color.primaryText.withValues(alpha: 0.92);
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const minSize = 11.0;
-        const maxSize = 15.5;
-        var fontSize = minSize;
-
-        for (var size = maxSize; size >= minSize; size -= 0.5) {
-          final painter = TextPainter(
-            text: TextSpan(
-              text: text,
-              style: TextStyle(fontSize: size, height: 1.45, color: baseColor),
-            ),
-            textAlign: centered ? TextAlign.center : TextAlign.start,
-            textDirection: TextDirection.ltr,
-          )..layout(maxWidth: constraints.maxWidth);
-
-          if (painter.height <= constraints.maxHeight) {
-            fontSize = size;
-            break;
-          }
-        }
-
-        return Align(
-          alignment: centered ? Alignment.center : Alignment.centerLeft,
-          child: SingleChildScrollView(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: fontSize, height: 1.45, color: baseColor),
-              textAlign: centered ? TextAlign.center : TextAlign.start,
-            ),
-          ),
-        );
-      },
     );
   }
 }

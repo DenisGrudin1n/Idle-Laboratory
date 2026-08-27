@@ -62,7 +62,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(find.text('CONTINUE'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    expect(find.textContaining('Bloodstone of Dominion is mine'), findsOneWidget);
   });
 
   testWidgets('EndingRevealDialog CONTINUE pops the route', (tester) async {
