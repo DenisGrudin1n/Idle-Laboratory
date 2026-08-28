@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/constants/overlay_constants.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/cells_tab.dart';
 import 'package:idle_laboratory/core/enums/crafting_tab.dart';
@@ -60,7 +61,7 @@ class TutorialController {
 
     TutorialCoachMark(
       targets: targets,
-      opacityShadow: 0.9,
+      opacityShadow: OverlayConstants.dimOpacity,
       skipWidget: Padding(
         padding: EdgeInsets.only(right: skipGap, bottom: skipGap),
         child: Text(

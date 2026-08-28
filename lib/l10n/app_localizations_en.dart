@@ -394,7 +394,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endingToBeContinuedClose => 'CLOSE';
 
   @override
+  String get storyBeatDarkMatterUnlockTitle => 'An Unusual Curiosity';
+
+  @override
+  String get storyBeatDarkMatterUnlockDesc =>
+      'Dark matter… remarkable. You have opened the final frontier of the cell lattice — and I confess, this energy intrigues me personally.\n\nNot merely as your guide, but as one who has studied the hidden currents of the world. Press on. I wish to see what this curious power reveals.';
+
+  @override
+  String get storyBeatDarkMatterProductionMaxTitle => 'Pushed to the Limit';
+
+  @override
+  String get storyBeatDarkMatterProductionMaxDesc =>
+      'Maximum acceleration on the dark matter line — excellent. The throughput you have coaxed from it is… satisfying.\n\nDo not mistake my enthusiasm for mere mentorship. There is a hunger in this work that suits us both. More. Always more.';
+
+  @override
+  String get storyBeatBloodDropTitle => 'Crimson Reagent';
+
+  @override
+  String get storyBeatBloodDropDesc =>
+      'Blood drop… life distilled into reagent. You have crossed a threshold few laboratories ever reach.\n\nI feel it — a thread of vital force, answerable to the right will. Continue your craft. We are gathering something far greater than raw materials.';
+
+  @override
+  String get storyBeatAbyssalHeartTitle => 'The Depths Answer';
+
+  @override
+  String get storyBeatAbyssalHeartDesc =>
+      'The Abyssal Heart… at last it beats in your vault. Can you sense it? Power no longer distant — close enough to taste.\n\nI am… pleased. More than pleased. Stay the course, partner. What we are building will soon be within my — our grasp.';
+
+  @override
+  String get storyLoreContinue => 'CONTINUE';
+
+  @override
   String get debugCraftBloodstone => 'Debug: Craft Bloodstone';
+
+  @override
+  String get debugStoryBeatDarkMatterUnlock => 'Debug: Lore — Dark Matter Unlock';
+
+  @override
+  String get debugStoryBeatDarkMatterProductionMax => 'Debug: Lore — Dark Matter Prod Max';
+
+  @override
+  String get debugStoryBeatBloodDrop => 'Debug: Lore — First Blood Drop';
+
+  @override
+  String get debugStoryBeatAbyssalHeart => 'Debug: Lore — Abyssal Heart';
 
   @override
   String get amount => 'Amount';

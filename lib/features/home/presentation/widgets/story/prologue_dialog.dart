@@ -3,16 +3,16 @@ import 'dart:math' as math;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/constants/story_constants.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/magician_emotion.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
-import 'package:idle_laboratory/core/helper/get_it_service_locator.dart';
 import 'package:idle_laboratory/core/theme/app_color.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/magician_sprite.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
-import 'package:idle_laboratory/features/home/presentation/blocs/story_prologue/prologue_dialog_cubit.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/story_lore/story_lore_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/story/scaled_lore_text.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/story/story_dialog_layout.dart';
 
@@ -22,7 +22,7 @@ import 'package:idle_laboratory/features/home/presentation/widgets/story/story_d
 class PrologueDialog extends StatefulWidget {
   const PrologueDialog({super.key});
 
-  static Future<void> show(BuildContext context, {PrologueDialogCubit? cubit}) {
+  static Future<void> show(BuildContext context) {
     return Navigator.of(context, rootNavigator: true).push<void>(
       PageRouteBuilder<void>(
         opaque: false,
@@ -31,7 +31,7 @@ class PrologueDialog extends StatefulWidget {
         transitionDuration: const Duration(milliseconds: 3800),
         reverseTransitionDuration: Duration.zero,
         pageBuilder: (context, animation, secondaryAnimation) {
-          return BlocProvider(create: (_) => cubit ?? getIt<PrologueDialogCubit>(), child: const PrologueDialog());
+          return const PrologueDialog();
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return _PrologueEntrance(animation: animation, child: child);
@@ -59,8 +59,9 @@ class _PrologueDialogState extends State<PrologueDialog> {
     super.dispose();
   }
 
-  Future<void> _onPrimary(PrologueDialogCubit cubit) async {
-    if (!cubit.isLastPage) {
+  Future<void> _onPrimary(bool isLastPage) async {
+    if (!isLastPage) {
+      context.read<StoryLoreBloc>().add(const StoryLoreEvent.prologueNextPage());
       await _pageController.nextPage(duration: const Duration(milliseconds: 320), curve: Curves.easeOutCubic);
       return;
     }
@@ -87,7 +88,7 @@ class _PrologueDialogState extends State<PrologueDialog> {
               child: SizedBox(
                 width: dialogConstraints.maxWidth,
                 child: Material(
-                  color: Colors.transparent,
+                  color: DefaultColor.clear,
                   child: SectionCard(
                     borderRadius: BorderRadius.circular(14),
                     padding: EdgeInsets.all(isMobile ? 12 : 16),
@@ -98,7 +99,9 @@ class _PrologueDialogState extends State<PrologueDialog> {
                             behavior: const _MouseDragScrollBehavior(),
                             child: PageView(
                               controller: _pageController,
-                              onPageChanged: context.read<PrologueDialogCubit>().setPage,
+                              onPageChanged: (page) => context.read<StoryLoreBloc>().add(
+                                    StoryLoreEvent.prologuePageChanged(page),
+                                  ),
                               children: [
                                 _ProloguePage(
                                   isMobile: isMobile,
@@ -111,23 +114,24 @@ class _PrologueDialogState extends State<PrologueDialog> {
                                   isLandscape: isLandscape,
                                   title: l10n.prologueStep2Title,
                                   body: l10n.prologueStep2Desc,
+                                  spriteOnRight: true,
+                                  flipSprite: true,
                                 ),
                               ],
                             ),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        BlocSelector<PrologueDialogCubit, PrologueDialogState, int>(
-                          selector: (state) => state.pageIndex,
+                        BlocSelector<StoryLoreBloc, StoryLoreState, int>(
+                          selector: (state) => state.prologuePageIndex,
                           builder: (context, pageIndex) {
-                            return _StepDots(step: pageIndex, total: PrologueDialogCubit.pageCount);
+                            return _StepDots(step: pageIndex, total: StoryConstants.prologuePageCount);
                           },
                         ),
                         const SizedBox(height: 12),
-                        BlocSelector<PrologueDialogCubit, PrologueDialogState, bool>(
-                          selector: (state) => state.pageIndex >= PrologueDialogCubit.pageCount - 1,
+                        BlocSelector<StoryLoreBloc, StoryLoreState, bool>(
+                          selector: (state) => state.isPrologueLastPage,
                           builder: (context, isLastPage) {
-                            final cubit = context.read<PrologueDialogCubit>();
                             final cta = isLastPage ? l10n.prologueBegin : l10n.prologueNext;
                             return SizedBox(
                               width: double.infinity,
@@ -135,7 +139,7 @@ class _PrologueDialogState extends State<PrologueDialog> {
                                 color: color.titleText,
                                 borderRadius: BorderRadius.circular(10),
                                 child: InkWell(
-                                  onTap: () => _onPrimary(cubit),
+                                  onTap: () => _onPrimary(isLastPage),
                                   borderRadius: BorderRadius.circular(10),
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: isMobile ? 12 : 14),
@@ -182,44 +186,72 @@ class _MouseDragScrollBehavior extends MaterialScrollBehavior {
 }
 
 class _ProloguePage extends StatelessWidget {
-  const _ProloguePage({required this.isMobile, required this.isLandscape, required this.title, required this.body});
+  const _ProloguePage({
+    required this.isMobile,
+    required this.isLandscape,
+    required this.title,
+    required this.body,
+    this.spriteOnRight = false,
+    this.flipSprite = false,
+  });
 
   final bool isMobile;
   final bool isLandscape;
   final String title;
   final String body;
+  final bool spriteOnRight;
+  final bool flipSprite;
 
   @override
   Widget build(BuildContext context) {
     if (isLandscape) {
       final spriteSize = isMobile ? 190.0 : 250.0;
+      final sprite = MagicianSprite(
+        emotion: MagicianEmotion.kind,
+        size: spriteSize,
+        flipped: flipSprite,
+      );
+      final textAlign = spriteOnRight ? TextAlign.end : TextAlign.start;
+      final textColumn = Expanded(
+        child: Column(
+          crossAxisAlignment: spriteOnRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 17 : 22),
+              textAlign: textAlign,
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ScaledLoreText(
+                text: body,
+                maxSize: isMobile ? 15.5 : 17,
+              ),
+            ),
+          ],
+        ),
+      );
+
       return Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: MagicianSprite(emotion: MagicianEmotion.kind, size: spriteSize),
-          ),
-          SizedBox(width: isMobile ? 12 : 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 17 : 22)),
-                const SizedBox(height: 8),
-                Expanded(
-                  child: ScaledLoreText(text: body, maxSize: isMobile ? 15.5 : 17),
-                ),
+        children: spriteOnRight
+            ? [
+                textColumn,
+                SizedBox(width: isMobile ? 12 : 20),
+                Center(child: sprite),
+              ]
+            : [
+                Center(child: sprite),
+                SizedBox(width: isMobile ? 12 : 20),
+                textColumn,
               ],
-            ),
-          ),
-        ],
       );
     }
 
     final spriteSize = isMobile ? 140.0 : 200.0;
     return Column(
       children: [
-        MagicianSprite(emotion: MagicianEmotion.kind, size: spriteSize),
+        MagicianSprite(emotion: MagicianEmotion.kind, size: spriteSize, flipped: flipSprite),
         const SizedBox(height: 8),
         Text(
           title,

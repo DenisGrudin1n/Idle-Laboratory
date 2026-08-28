@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/magician_emotion.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/theme/app_color.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/magician_sprite.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
@@ -59,7 +60,7 @@ class EndingRevealDialog extends StatelessWidget {
               child: SizedBox(
                 width: dialogConstraints.maxWidth,
                 child: Material(
-                  color: Colors.transparent,
+                  color: DefaultColor.clear,
                   child: SectionCard(
                     borderRadius: BorderRadius.circular(14),
                     padding: EdgeInsets.all(isMobile ? 12 : 16),

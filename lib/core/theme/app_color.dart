@@ -730,4 +730,7 @@ class DefaultColor {
   static const nuclearCoreColor = Color(0xFFFFEB3B);
   static const nuclearParticleColor1 = Color(0xFFFFF8E1);
   static const nuclearParticleColor2 = Color(0xFFFF9800);
+
+  /// Fully transparent — overlays/dialog shells that should not tint the scene.
+  static const clear = Color(0x00000000);
 }

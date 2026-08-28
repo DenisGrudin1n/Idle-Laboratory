@@ -799,11 +799,89 @@ abstract class AppLocalizations {
   /// **'CLOSE'**
   String get endingToBeContinuedClose;
 
+  /// No description provided for @storyBeatDarkMatterUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An Unusual Curiosity'**
+  String get storyBeatDarkMatterUnlockTitle;
+
+  /// No description provided for @storyBeatDarkMatterUnlockDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark matter… remarkable. You have opened the final frontier of the cell lattice — and I confess, this energy intrigues me personally.\n\nNot merely as your guide, but as one who has studied the hidden currents of the world. Press on. I wish to see what this curious power reveals.'**
+  String get storyBeatDarkMatterUnlockDesc;
+
+  /// No description provided for @storyBeatDarkMatterProductionMaxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pushed to the Limit'**
+  String get storyBeatDarkMatterProductionMaxTitle;
+
+  /// No description provided for @storyBeatDarkMatterProductionMaxDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum acceleration on the dark matter line — excellent. The throughput you have coaxed from it is… satisfying.\n\nDo not mistake my enthusiasm for mere mentorship. There is a hunger in this work that suits us both. More. Always more.'**
+  String get storyBeatDarkMatterProductionMaxDesc;
+
+  /// No description provided for @storyBeatBloodDropTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crimson Reagent'**
+  String get storyBeatBloodDropTitle;
+
+  /// No description provided for @storyBeatBloodDropDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood drop… life distilled into reagent. You have crossed a threshold few laboratories ever reach.\n\nI feel it — a thread of vital force, answerable to the right will. Continue your craft. We are gathering something far greater than raw materials.'**
+  String get storyBeatBloodDropDesc;
+
+  /// No description provided for @storyBeatAbyssalHeartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The Depths Answer'**
+  String get storyBeatAbyssalHeartTitle;
+
+  /// No description provided for @storyBeatAbyssalHeartDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The Abyssal Heart… at last it beats in your vault. Can you sense it? Power no longer distant — close enough to taste.\n\nI am… pleased. More than pleased. Stay the course, partner. What we are building will soon be within my — our grasp.'**
+  String get storyBeatAbyssalHeartDesc;
+
+  /// No description provided for @storyLoreContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'CONTINUE'**
+  String get storyLoreContinue;
+
   /// No description provided for @debugCraftBloodstone.
   ///
   /// In en, this message translates to:
   /// **'Debug: Craft Bloodstone'**
   String get debugCraftBloodstone;
+
+  /// No description provided for @debugStoryBeatDarkMatterUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — Dark Matter Unlock'**
+  String get debugStoryBeatDarkMatterUnlock;
+
+  /// No description provided for @debugStoryBeatDarkMatterProductionMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — Dark Matter Prod Max'**
+  String get debugStoryBeatDarkMatterProductionMax;
+
+  /// No description provided for @debugStoryBeatBloodDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — First Blood Drop'**
+  String get debugStoryBeatBloodDrop;
+
+  /// No description provided for @debugStoryBeatAbyssalHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — Abyssal Heart'**
+  String get debugStoryBeatAbyssalHeart;
 
   /// No description provided for @amount.
   ///

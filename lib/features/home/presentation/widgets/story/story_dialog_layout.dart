@@ -21,4 +21,19 @@ abstract final class StoryDialogLayout {
 
     return BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight, minHeight: maxHeight * (isLandscape ? 0.7 : 0.52));
   }
+
+  /// Tighter card for single-beat mid-game lore — narrower width so text wraps with more vertical room.
+  static BoxConstraints loreBeatConstraints({required Size size, required AppVersionEnum appVersion}) {
+    final isLandscape = size.width > size.height;
+    final maxWidth = switch ((isLandscape, appVersion)) {
+      (true, AppVersionEnum.mobile) => size.width * 0.66,
+      (true, AppVersionEnum.tablet) => math.min(size.width * 0.52, 480).toDouble(),
+      (true, AppVersionEnum.desk) => math.min(size.width * 0.42, 520).toDouble(),
+      (false, AppVersionEnum.mobile) => size.width * 0.66,
+      (false, AppVersionEnum.tablet) => math.min(size.width * 0.52, 400).toDouble(),
+      (false, AppVersionEnum.desk) => math.min(size.width * 0.36, 380).toDouble(),
+    };
+
+    return BoxConstraints(maxWidth: maxWidth);
+  }
 }
