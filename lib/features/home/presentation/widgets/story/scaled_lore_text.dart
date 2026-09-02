@@ -1,65 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/utils/app_scroll_behavior.dart';
 
-/// Picks the largest lore font that fits; scrolls only when still too tall.
-class ScaledLoreText extends StatelessWidget {
-  const ScaledLoreText({
+/// Lore description — fixed size, scrolls when it does not fit.
+class LoreBodyText extends StatefulWidget {
+  const LoreBodyText({
     required this.text,
+    this.fontSize = 14,
     this.centered = false,
-    this.minSize = 11,
-    this.maxSize = 16.5,
+    this.scrollbarOnRight = true,
     super.key,
   });
 
   final String text;
+  final double fontSize;
   final bool centered;
-  final double minSize;
-  final double maxSize;
+  final bool scrollbarOnRight;
+
+  @override
+  State<LoreBodyText> createState() => _LoreBodyTextState();
+}
+
+class _LoreBodyTextState extends State<LoreBodyText> {
+  final _controller = ScrollController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = context.color.primaryText.withValues(alpha: 0.92);
+    final color = context.color.primaryText.withValues(alpha: 0.92);
+    final sidePad = EdgeInsets.only(left: widget.scrollbarOnRight ? 0 : 14, right: widget.scrollbarOnRight ? 14 : 0);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        var fontSize = minSize;
-        var textHeight = double.infinity;
-
-        for (var size = maxSize; size >= minSize; size -= 0.5) {
-          final painter = TextPainter(
-            text: TextSpan(
-              text: text,
-              style: TextStyle(fontSize: size, height: 1.45, color: baseColor),
+    return ScrollConfiguration(
+      behavior: const AppLoreScrollBehavior(),
+      child: Scrollbar(
+        controller: _controller,
+        interactive: true,
+        thumbVisibility: true,
+        scrollbarOrientation: widget.scrollbarOnRight ? ScrollbarOrientation.right : ScrollbarOrientation.left,
+        child: Padding(
+          padding: sidePad,
+          child: SingleChildScrollView(
+            controller: _controller,
+            child: Text(
+              widget.text,
+              style: TextStyle(fontSize: widget.fontSize, height: 1.45, color: color),
+              textAlign: widget.centered ? TextAlign.center : TextAlign.start,
             ),
-            textAlign: centered ? TextAlign.center : TextAlign.start,
-            textDirection: TextDirection.ltr,
-          )..layout(maxWidth: constraints.maxWidth);
-
-          if (painter.height <= constraints.maxHeight) {
-            fontSize = size;
-            textHeight = painter.height;
-            break;
-          }
-
-          if (size == minSize) {
-            fontSize = minSize;
-            textHeight = painter.height;
-          }
-        }
-
-        final child = Text(
-          text,
-          style: TextStyle(fontSize: fontSize, height: 1.45, color: baseColor),
-          textAlign: centered ? TextAlign.center : TextAlign.start,
-        );
-
-        final needsScroll = textHeight > constraints.maxHeight + 0.5;
-
-        return Align(
-          alignment: centered ? Alignment.center : Alignment.centerLeft,
-          child: needsScroll ? SingleChildScrollView(child: child) : child,
-        );
-      },
+          ),
+        ),
+      ),
     );
   }
 }

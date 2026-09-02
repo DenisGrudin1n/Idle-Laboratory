@@ -44,9 +44,7 @@ void main() {
   });
 
   testWidgets('StoryLoreDialog shows greedy magician and beat copy', (tester) async {
-    await tester.pumpWidget(
-      _wrap(const StoryLoreDialog(beat: StoryBeatId.darkMatterUnlocked), layoutBloc),
-    );
+    await tester.pumpWidget(_wrap(const StoryLoreDialog(beat: StoryBeatId.darkMatterUnlocked), layoutBloc));
     await tester.pump();
 
     expect(find.text('An Unusual Curiosity'), findsOneWidget);
@@ -59,11 +57,7 @@ void main() {
 
   testWidgets('StoryLoreDialog fits landscape without overflow', (tester) async {
     await tester.pumpWidget(
-      _wrap(
-        const StoryLoreDialog(beat: StoryBeatId.abyssalHeartCrafted),
-        layoutBloc,
-        size: const Size(852, 393),
-      ),
+      _wrap(const StoryLoreDialog(beat: StoryBeatId.abyssalHeartCrafted), layoutBloc, size: const Size(852, 393)),
     );
     await tester.pump();
 
@@ -89,10 +83,7 @@ void main() {
             builder: (context) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () => StoryLoreDialog.show(
-                    context,
-                    beat: StoryBeatId.firstBloodDrop,
-                  ),
+                  onPressed: () => StoryLoreDialog.show(context, beat: StoryBeatId.firstBloodDrop),
                   child: const Text('Open'),
                 ),
               ),

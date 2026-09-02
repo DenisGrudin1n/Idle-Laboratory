@@ -3,37 +3,83 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 
-/// Shared sizing for story modals (prologue reveal / ending reveal).
-///
-/// Wide enough for readable lore, but capped on very large desk screens.
-abstract final class StoryDialogLayout {
-  static BoxConstraints constraints({required Size size, required AppVersionEnum appVersion}) {
-    final isLandscape = size.width > size.height;
-    final maxHeight = size.height * (isLandscape ? 0.92 : 0.86);
-    final maxWidth = switch ((isLandscape, appVersion)) {
-      (true, AppVersionEnum.mobile) => size.width * 0.96,
-      (true, AppVersionEnum.tablet) => math.min(size.width * 0.8, 920).toDouble(),
-      (true, AppVersionEnum.desk) => math.min(size.width * 0.68, 1040).toDouble(),
-      (false, AppVersionEnum.mobile) => size.width * 0.94,
-      (false, AppVersionEnum.tablet) => size.width * 0.84,
-      (false, AppVersionEnum.desk) => math.min(size.width * 0.62, 880).toDouble(),
-    };
+/// Responsive spacing for story modals — mobile / tablet / desk tiers.
+class StoryDialogMetrics {
+  const StoryDialogMetrics({
+    required this.borderRadius,
+    required this.cardPadding,
+    required this.titleBodyGap,
+    required this.buttonTopGap,
+    required this.contentDotsGap,
+  });
 
-    return BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight, minHeight: maxHeight * (isLandscape ? 0.7 : 0.52));
+  final double borderRadius;
+  final double cardPadding;
+  final double titleBodyGap;
+  final double buttonTopGap;
+  final double contentDotsGap;
+
+  factory StoryDialogMetrics.forVersion(AppVersionEnum appVersion) {
+    return switch (appVersion) {
+      AppVersionEnum.mobile => const StoryDialogMetrics(
+        borderRadius: 12,
+        cardPadding: 12,
+        titleBodyGap: 10,
+        buttonTopGap: 20,
+        contentDotsGap: 8,
+      ),
+      AppVersionEnum.tablet => const StoryDialogMetrics(
+        borderRadius: 16,
+        cardPadding: 16,
+        titleBodyGap: 12,
+        buttonTopGap: 24,
+        contentDotsGap: 10,
+      ),
+      AppVersionEnum.desk => const StoryDialogMetrics(
+        borderRadius: 24,
+        cardPadding: 20,
+        titleBodyGap: 14,
+        buttonTopGap: 28,
+        contentDotsGap: 12,
+      ),
+    };
   }
+}
 
-  /// Tighter card for single-beat mid-game lore — narrower width so text wraps with more vertical room.
-  static BoxConstraints loreBeatConstraints({required Size size, required AppVersionEnum appVersion}) {
-    final isLandscape = size.width > size.height;
-    final maxWidth = switch ((isLandscape, appVersion)) {
-      (true, AppVersionEnum.mobile) => size.width * 0.66,
-      (true, AppVersionEnum.tablet) => math.min(size.width * 0.52, 480).toDouble(),
-      (true, AppVersionEnum.desk) => math.min(size.width * 0.42, 520).toDouble(),
-      (false, AppVersionEnum.mobile) => size.width * 0.66,
-      (false, AppVersionEnum.tablet) => math.min(size.width * 0.52, 400).toDouble(),
-      (false, AppVersionEnum.desk) => math.min(size.width * 0.36, 380).toDouble(),
+/// Story modal sizing — always wider than tall, ~half the viewport on small screens.
+abstract final class StoryDialogLayout {
+  static const _maxWidthToHeightRatio = 2.3;
+  static const _sizeBoost = 1.05;
+
+  static BoxConstraints constraints({
+    required Size size,
+    required AppVersionEnum appVersion,
+    bool compact = false,
+  }) {
+    final (widthScale, heightScale) = switch ((appVersion, compact)) {
+      (AppVersionEnum.mobile, _) => (0.72, 0.58),
+      (AppVersionEnum.tablet, true) => (0.58, 0.46),
+      (AppVersionEnum.tablet, false) => (0.76, 0.58),
+      (AppVersionEnum.desk, true) => (0.52, 0.46),
+      (AppVersionEnum.desk, false) => (0.68, 0.58),
     };
-
-    return BoxConstraints(maxWidth: maxWidth);
+    final widthCap = switch ((appVersion, compact)) {
+      (AppVersionEnum.desk, true) => 720.0,
+      (AppVersionEnum.desk, false) => 960.0,
+      (AppVersionEnum.tablet, true) => 560.0,
+      (AppVersionEnum.tablet, false) => 720.0,
+      _ => double.infinity,
+    };
+    var maxWidth = math.min(size.width * widthScale, widthCap);
+    final maxHeight = math.min(maxWidth * 0.82, size.height * heightScale);
+    if (appVersion == AppVersionEnum.mobile &&
+        size.width > size.height &&
+        maxWidth > maxHeight * _maxWidthToHeightRatio) {
+      maxWidth = maxHeight * _maxWidthToHeightRatio;
+    }
+    return BoxConstraints(
+      maxWidth: maxWidth * _sizeBoost,
+      maxHeight: maxHeight * _sizeBoost,
+    );
   }
 }

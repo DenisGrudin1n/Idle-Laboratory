@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/constants/story_constants.dart';
@@ -9,6 +8,7 @@ import 'package:idle_laboratory/core/enums/magician_emotion.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/theme/app_color.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
+import 'package:idle_laboratory/core/utils/app_scroll_behavior.dart';
 import 'package:idle_laboratory/core/widgets/magician_sprite.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
@@ -78,7 +78,7 @@ class _PrologueDialogState extends State<PrologueDialog> {
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
         final isMobile = appVersion == AppVersionEnum.mobile;
-        final isLandscape = size.width > size.height;
+        final metrics = StoryDialogMetrics.forVersion(appVersion);
         final dialogConstraints = StoryDialogLayout.constraints(size: size, appVersion: appVersion);
 
         return SafeArea(
@@ -87,31 +87,31 @@ class _PrologueDialogState extends State<PrologueDialog> {
               constraints: dialogConstraints,
               child: SizedBox(
                 width: dialogConstraints.maxWidth,
+                height: dialogConstraints.maxHeight,
                 child: Material(
                   color: DefaultColor.clear,
                   child: SectionCard(
-                    borderRadius: BorderRadius.circular(14),
-                    padding: EdgeInsets.all(isMobile ? 12 : 16),
+                    borderRadius: BorderRadius.circular(metrics.borderRadius),
+                    padding: EdgeInsets.all(metrics.cardPadding),
                     child: Column(
                       children: [
                         Expanded(
                           child: ScrollConfiguration(
-                            behavior: const _MouseDragScrollBehavior(),
+                            behavior: const AppMouseDragScrollBehavior(),
                             child: PageView(
                               controller: _pageController,
-                              onPageChanged: (page) => context.read<StoryLoreBloc>().add(
-                                    StoryLoreEvent.prologuePageChanged(page),
-                                  ),
+                              onPageChanged: (page) =>
+                                  context.read<StoryLoreBloc>().add(StoryLoreEvent.prologuePageChanged(page)),
                               children: [
                                 _ProloguePage(
                                   isMobile: isMobile,
-                                  isLandscape: isLandscape,
+                                  titleBodyGap: metrics.titleBodyGap,
                                   title: l10n.prologueStep1Title,
                                   body: l10n.prologueStep1Desc,
                                 ),
                                 _ProloguePage(
                                   isMobile: isMobile,
-                                  isLandscape: isLandscape,
+                                  titleBodyGap: metrics.titleBodyGap,
                                   title: l10n.prologueStep2Title,
                                   body: l10n.prologueStep2Desc,
                                   spriteOnRight: true,
@@ -121,14 +121,14 @@ class _PrologueDialogState extends State<PrologueDialog> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: metrics.contentDotsGap),
                         BlocSelector<StoryLoreBloc, StoryLoreState, int>(
                           selector: (state) => state.prologuePageIndex,
                           builder: (context, pageIndex) {
                             return _StepDots(step: pageIndex, total: StoryConstants.prologuePageCount);
                           },
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: metrics.buttonTopGap),
                         BlocSelector<StoryLoreBloc, StoryLoreState, bool>(
                           selector: (state) => state.isPrologueLastPage,
                           builder: (context, isLastPage) {
@@ -171,24 +171,10 @@ class _PrologueDialogState extends State<PrologueDialog> {
   }
 }
 
-/// Enables click-drag (mouse / trackpad) paging on desktop, same as touch swipe.
-class _MouseDragScrollBehavior extends MaterialScrollBehavior {
-  const _MouseDragScrollBehavior();
-
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-    PointerDeviceKind.touch,
-    PointerDeviceKind.stylus,
-    PointerDeviceKind.invertedStylus,
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.trackpad,
-  };
-}
-
 class _ProloguePage extends StatelessWidget {
   const _ProloguePage({
     required this.isMobile,
-    required this.isLandscape,
+    required this.titleBodyGap,
     required this.title,
     required this.body,
     this.spriteOnRight = false,
@@ -196,7 +182,7 @@ class _ProloguePage extends StatelessWidget {
   });
 
   final bool isMobile;
-  final bool isLandscape;
+  final double titleBodyGap;
   final String title;
   final String body;
   final bool spriteOnRight;
@@ -204,63 +190,30 @@ class _ProloguePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isLandscape) {
-      final spriteSize = isMobile ? 190.0 : 250.0;
-      final sprite = MagicianSprite(
-        emotion: MagicianEmotion.kind,
-        size: spriteSize,
-        flipped: flipSprite,
-      );
-      final textAlign = spriteOnRight ? TextAlign.end : TextAlign.start;
-      final textColumn = Expanded(
-        child: Column(
-          crossAxisAlignment: spriteOnRight ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 17 : 22),
-              textAlign: textAlign,
-            ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: ScaledLoreText(
-                text: body,
-                maxSize: isMobile ? 15.5 : 17,
-              ),
-            ),
-          ],
-        ),
-      );
-
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: spriteOnRight
-            ? [
-                textColumn,
-                SizedBox(width: isMobile ? 12 : 20),
-                Center(child: sprite),
-              ]
-            : [
-                Center(child: sprite),
-                SizedBox(width: isMobile ? 12 : 20),
-                textColumn,
-              ],
-      );
-    }
-
     final spriteSize = isMobile ? 140.0 : 200.0;
-    return Column(
-      children: [
-        MagicianSprite(emotion: MagicianEmotion.kind, size: spriteSize, flipped: flipSprite),
-        const SizedBox(height: 8),
-        Text(
-          title,
-          style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 16 : 20),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Expanded(child: ScaledLoreText(text: body, centered: true)),
-      ],
+    final sprite = MagicianSprite(emotion: MagicianEmotion.kind, size: spriteSize, flipped: flipSprite);
+    final textColumn = Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 16 : 20),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: titleBodyGap),
+          Expanded(
+            child: LoreBodyText(text: body, fontSize: isMobile ? 14 : 16, scrollbarOnRight: !spriteOnRight),
+          ),
+        ],
+      ),
+    );
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: spriteOnRight
+          ? [textColumn, SizedBox(width: isMobile ? 12 : 20), Center(child: sprite)]
+          : [Center(child: sprite), SizedBox(width: isMobile ? 12 : 20), textColumn],
     );
   }
 }

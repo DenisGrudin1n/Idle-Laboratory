@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/constants/story_constants.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/magician_emotion.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
@@ -12,9 +13,6 @@ import 'package:idle_laboratory/features/home/presentation/widgets/story/scaled_
 import 'package:idle_laboratory/features/home/presentation/widgets/story/story_dialog_layout.dart';
 
 /// Evil-magician reveal shown after the apocalypse beat.
-///
-/// Landscape-friendly: sprite beside lore that scales to fill space;
-/// CONTINUE pinned at bottom with high-contrast label.
 class EndingRevealDialog extends StatelessWidget {
   const EndingRevealDialog({super.key});
 
@@ -24,9 +22,7 @@ class EndingRevealDialog extends StatelessWidget {
       barrierLabel: 'EndingReveal',
       barrierColor: context.color.darkMatterSingularityColor.withValues(alpha: 0.72),
       transitionDuration: const Duration(milliseconds: 550),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return const EndingRevealDialog();
-      },
+      pageBuilder: (context, animation, secondaryAnimation) => const EndingRevealDialog(),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
         return FadeTransition(
@@ -47,33 +43,53 @@ class EndingRevealDialog extends StatelessWidget {
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
         final isMobile = appVersion == AppVersionEnum.mobile;
-        final isLandscape = size.width > size.height;
-        final dialogConstraints = StoryDialogLayout.constraints(
-          size: size,
-          appVersion: appVersion,
-        );
+        final metrics = StoryDialogMetrics.forVersion(appVersion);
+        final dialog = StoryDialogLayout.constraints(size: size, appVersion: appVersion);
+        final spriteSize = isMobile ? 150.0 : 210.0;
 
         return SafeArea(
           child: Center(
-            child: ConstrainedBox(
-              constraints: dialogConstraints,
-              child: SizedBox(
-                width: dialogConstraints.maxWidth,
-                child: Material(
-                  color: DefaultColor.clear,
-                  child: SectionCard(
-                    borderRadius: BorderRadius.circular(14),
-                    padding: EdgeInsets.all(isMobile ? 12 : 16),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: isLandscape
-                              ? _LandscapeRevealBody(isMobile: isMobile)
-                              : _PortraitRevealBody(isMobile: isMobile),
+            child: SizedBox(
+              width: dialog.maxWidth,
+              height: dialog.maxHeight,
+              child: Material(
+                color: DefaultColor.clear,
+                child: SectionCard(
+                  borderRadius: BorderRadius.circular(metrics.borderRadius),
+                  padding: EdgeInsets.all(metrics.cardPadding),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Center(
+                              child: MagicianSprite(emotion: MagicianEmotion.evil, size: spriteSize),
+                            ),
+                            SizedBox(width: isMobile ? 12 : 20),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    l10n.endingRevealTitle,
+                                    style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 16 : 20),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  SizedBox(height: metrics.titleBodyGap),
+                                  Expanded(
+                                    child: LoreBodyText(text: l10n.endingRevealDesc, fontSize: isMobile ? 14 : 16),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
+                      ),
+                      SizedBox(height: metrics.buttonTopGap),
+                      Align(
+                        child: SizedBox(
+                          width: dialog.maxWidth * StoryConstants.loreContinueButtonWidthFactor,
                           child: Material(
                             color: color.titleText,
                             borderRadius: BorderRadius.circular(10),
@@ -95,8 +111,8 @@ class EndingRevealDialog extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -104,70 +120,6 @@ class EndingRevealDialog extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _PortraitRevealBody extends StatelessWidget {
-  const _PortraitRevealBody({required this.isMobile});
-
-  final bool isMobile;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final spriteSize = isMobile ? 150.0 : 210.0;
-
-    return Column(
-      children: [
-        MagicianSprite(emotion: MagicianEmotion.evil, size: spriteSize),
-        const SizedBox(height: 8),
-        Text(
-          l10n.endingRevealTitle,
-          style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 16 : 20),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        Expanded(child: ScaledLoreText(text: l10n.endingRevealDesc, centered: true)),
-      ],
-    );
-  }
-}
-
-class _LandscapeRevealBody extends StatelessWidget {
-  const _LandscapeRevealBody({required this.isMobile});
-
-  final bool isMobile;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final spriteSize = isMobile ? 200.0 : 260.0;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Center(child: MagicianSprite(emotion: MagicianEmotion.evil, size: spriteSize)),
-        SizedBox(width: isMobile ? 12 : 20),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.endingRevealTitle,
-                style: context.styles.sectionTitle.copyWith(fontSize: isMobile ? 17 : 22),
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                child: ScaledLoreText(
-                  text: l10n.endingRevealDesc,
-                  maxSize: isMobile ? 15.5 : 17,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }
