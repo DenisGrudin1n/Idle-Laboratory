@@ -12,4 +12,10 @@ class StorageKeys {
   static const cellsData = 'cells_data';
   static const productionData = 'production_data';
   static const storageInventory = 'storage_inventory';
+  static const endingCutsceneSeen = 'ending_cutscene_seen';
+
+  static const storyBeatDarkMatterUnlocked = 'story_beat_dark_matter_unlocked';
+  static const storyBeatDarkMatterProductionMax = 'story_beat_dark_matter_production_max';
+  static const storyBeatFirstBloodDrop = 'story_beat_first_blood_drop';
+  static const storyBeatAbyssalHeart = 'story_beat_abyssal_heart';
 }

@@ -247,7 +247,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialWelcomeDesc =>
-      'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.';
+      'You are an apprentice alchemist in this laboratory. Produce energy, craft materials, and follow the magician\'s guidance — every spark matters.';
+
+  @override
+  String get prologueStep1Title => 'A New Laboratory';
+
+  @override
+  String get prologueStep1Desc =>
+      'Welcome, apprentice. I am the keeper of this place — titles matter less than the work ahead.\n\nI have searched long for someone with steady hands and a curious mind. Beyond these walls the world grows thin and brittle: storms of energy crack where they should not, and light fades from places that once thrived.\n\nTogether, I believe we can mend it.';
+
+  @override
+  String get prologueStep2Title => 'Our Shared Purpose';
+
+  @override
+  String get prologueStep2Desc =>
+      'Here you will grow energy cells, craft reagents, and climb the Research Tree — one careful reaction at a time.\n\nAt its summit sleeps a relic of immense promise: the Bloodstone of Dominion. Legends say it can restore balance — seal wounds in the land, quiet chaos, and open a kinder age.\n\nI will guide you. Trust the process. Every spark you farm, every merge you complete, brings that stone — and hope — closer.';
+
+  @override
+  String get prologueNext => 'NEXT';
+
+  @override
+  String get prologueBegin => 'BEGIN';
 
   @override
   String get tutorialEnergyTitle => 'Energy & EPS';
@@ -351,7 +371,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tutorialResearchGoalDesc =>
-      'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.';
+      'At the peak of the Research Tree waits the Bloodstone of Dominion. With it, the magician believes we can reshape the world — heal what is broken, open paths once closed, and finally achieve what ordinary power never could. Your journey leads here.';
+
+  @override
+  String get endingRevealTitle => 'The Mask Falls';
+
+  @override
+  String get endingRevealDesc =>
+      'Ah… at last. You have done it. The Bloodstone of Dominion is mine!\n\nDid you truly think I sought this gem to mend the world? How charming. While you farmed, merged, and trusted me, I only needed a willing pair of hands.\n\nNow the stone answers to me — and with it, I shall bend kingdoms, silence rivals, and claim dominion over all. Your laboratory was never a sanctuary.\n\nIt was my forge.';
+
+  @override
+  String get endingRevealContinue => 'CONTINUE';
+
+  @override
+  String get endingToBeContinuedTitle => 'To Be Continued';
+
+  @override
+  String get endingToBeContinuedDesc =>
+      'The Bloodstone has awakened a darker chapter… but that tale belongs to another time.\n\nThank you for playing Idle Laboratory.';
+
+  @override
+  String get endingToBeContinuedClose => 'CLOSE';
+
+  @override
+  String get storyBeatDarkMatterUnlockTitle => 'An Unusual Curiosity';
+
+  @override
+  String get storyBeatDarkMatterUnlockDesc =>
+      'Dark matter… remarkable. You have opened the final frontier of the cell lattice — and I confess, this energy intrigues me personally.\n\nNot merely as your guide, but as one who has studied the hidden currents of the world. Press on. I wish to see what this curious power reveals.';
+
+  @override
+  String get storyBeatDarkMatterProductionMaxTitle => 'Pushed to the Limit';
+
+  @override
+  String get storyBeatDarkMatterProductionMaxDesc =>
+      'Maximum acceleration on the dark matter line — excellent. The throughput you have coaxed from it is… satisfying.\n\nDo not mistake my enthusiasm for mere mentorship. There is a hunger in this work that suits us both. More. Always more.';
+
+  @override
+  String get storyBeatBloodDropTitle => 'Crimson Reagent';
+
+  @override
+  String get storyBeatBloodDropDesc =>
+      'Blood drop… life distilled into reagent. You have crossed a threshold few laboratories ever reach.\n\nI feel it — a thread of vital force, answerable to the right will. Continue your craft. We are gathering something far greater than raw materials.';
+
+  @override
+  String get storyBeatAbyssalHeartTitle => 'The Depths Answer';
+
+  @override
+  String get storyBeatAbyssalHeartDesc =>
+      'The Abyssal Heart… at last it beats in your vault. Can you sense it? Power no longer distant — close enough to taste.\n\nI am… pleased. More than pleased. Stay the course, partner. What we are building will soon be within my — our grasp.';
+
+  @override
+  String get storyLoreContinue => 'CONTINUE';
+
+  @override
+  String get debugCraftBloodstone => 'Debug: Craft Bloodstone';
+
+  @override
+  String get debugStoryBeatDarkMatterUnlock => 'Debug: Lore — Dark Matter Unlock';
+
+  @override
+  String get debugStoryBeatDarkMatterProductionMax => 'Debug: Lore — Dark Matter Prod Max';
+
+  @override
+  String get debugStoryBeatBloodDrop => 'Debug: Lore — First Blood Drop';
+
+  @override
+  String get debugStoryBeatAbyssalHeart => 'Debug: Lore — Abyssal Heart';
 
   @override
   String get amount => 'Amount';
@@ -598,5 +684,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get researchBloodstoneOfDominion => 'Bloodstone of Dominion';
 
   @override
-  String get researchBloodstoneOfDominionDesc => 'Legendary crowned gem at the apex of the research tree.';
+  String get researchBloodstoneOfDominionDesc =>
+      'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.';
 }

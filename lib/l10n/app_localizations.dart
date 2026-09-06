@@ -544,8 +544,44 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialWelcomeDesc.
   ///
   /// In en, this message translates to:
-  /// **'In this game, you are an alchemist working for an Evil Mage. Your goal is to produce energy and craft powerful materials.'**
+  /// **'You are an apprentice alchemist in this laboratory. Produce energy, craft materials, and follow the magician\'s guidance — every spark matters.'**
   String get tutorialWelcomeDesc;
+
+  /// No description provided for @prologueStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'A New Laboratory'**
+  String get prologueStep1Title;
+
+  /// No description provided for @prologueStep1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, apprentice. I am the keeper of this place — titles matter less than the work ahead.\n\nI have searched long for someone with steady hands and a curious mind. Beyond these walls the world grows thin and brittle: storms of energy crack where they should not, and light fades from places that once thrived.\n\nTogether, I believe we can mend it.'**
+  String get prologueStep1Desc;
+
+  /// No description provided for @prologueStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Shared Purpose'**
+  String get prologueStep2Title;
+
+  /// No description provided for @prologueStep2Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you will grow energy cells, craft reagents, and climb the Research Tree — one careful reaction at a time.\n\nAt its summit sleeps a relic of immense promise: the Bloodstone of Dominion. Legends say it can restore balance — seal wounds in the land, quiet chaos, and open a kinder age.\n\nI will guide you. Trust the process. Every spark you farm, every merge you complete, brings that stone — and hope — closer.'**
+  String get prologueStep2Desc;
+
+  /// No description provided for @prologueNext.
+  ///
+  /// In en, this message translates to:
+  /// **'NEXT'**
+  String get prologueNext;
+
+  /// No description provided for @prologueBegin.
+  ///
+  /// In en, this message translates to:
+  /// **'BEGIN'**
+  String get prologueBegin;
 
   /// No description provided for @tutorialEnergyTitle.
   ///
@@ -724,8 +760,128 @@ abstract class AppLocalizations {
   /// No description provided for @tutorialResearchGoalDesc.
   ///
   /// In en, this message translates to:
-  /// **'This is the Bloodstone of Dominion, the magician\'s end goal. It is said to grant the power to rule the world. Your journey leads here.'**
+  /// **'At the peak of the Research Tree waits the Bloodstone of Dominion. With it, the magician believes we can reshape the world — heal what is broken, open paths once closed, and finally achieve what ordinary power never could. Your journey leads here.'**
   String get tutorialResearchGoalDesc;
+
+  /// No description provided for @endingRevealTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The Mask Falls'**
+  String get endingRevealTitle;
+
+  /// No description provided for @endingRevealDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Ah… at last. You have done it. The Bloodstone of Dominion is mine!\n\nDid you truly think I sought this gem to mend the world? How charming. While you farmed, merged, and trusted me, I only needed a willing pair of hands.\n\nNow the stone answers to me — and with it, I shall bend kingdoms, silence rivals, and claim dominion over all. Your laboratory was never a sanctuary.\n\nIt was my forge.'**
+  String get endingRevealDesc;
+
+  /// No description provided for @endingRevealContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'CONTINUE'**
+  String get endingRevealContinue;
+
+  /// No description provided for @endingToBeContinuedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'To Be Continued'**
+  String get endingToBeContinuedTitle;
+
+  /// No description provided for @endingToBeContinuedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The Bloodstone has awakened a darker chapter… but that tale belongs to another time.\n\nThank you for playing Idle Laboratory.'**
+  String get endingToBeContinuedDesc;
+
+  /// No description provided for @endingToBeContinuedClose.
+  ///
+  /// In en, this message translates to:
+  /// **'CLOSE'**
+  String get endingToBeContinuedClose;
+
+  /// No description provided for @storyBeatDarkMatterUnlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'An Unusual Curiosity'**
+  String get storyBeatDarkMatterUnlockTitle;
+
+  /// No description provided for @storyBeatDarkMatterUnlockDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark matter… remarkable. You have opened the final frontier of the cell lattice — and I confess, this energy intrigues me personally.\n\nNot merely as your guide, but as one who has studied the hidden currents of the world. Press on. I wish to see what this curious power reveals.'**
+  String get storyBeatDarkMatterUnlockDesc;
+
+  /// No description provided for @storyBeatDarkMatterProductionMaxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pushed to the Limit'**
+  String get storyBeatDarkMatterProductionMaxTitle;
+
+  /// No description provided for @storyBeatDarkMatterProductionMaxDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum acceleration on the dark matter line — excellent. The throughput you have coaxed from it is… satisfying.\n\nDo not mistake my enthusiasm for mere mentorship. There is a hunger in this work that suits us both. More. Always more.'**
+  String get storyBeatDarkMatterProductionMaxDesc;
+
+  /// No description provided for @storyBeatBloodDropTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crimson Reagent'**
+  String get storyBeatBloodDropTitle;
+
+  /// No description provided for @storyBeatBloodDropDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Blood drop… life distilled into reagent. You have crossed a threshold few laboratories ever reach.\n\nI feel it — a thread of vital force, answerable to the right will. Continue your craft. We are gathering something far greater than raw materials.'**
+  String get storyBeatBloodDropDesc;
+
+  /// No description provided for @storyBeatAbyssalHeartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The Depths Answer'**
+  String get storyBeatAbyssalHeartTitle;
+
+  /// No description provided for @storyBeatAbyssalHeartDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The Abyssal Heart… at last it beats in your vault. Can you sense it? Power no longer distant — close enough to taste.\n\nI am… pleased. More than pleased. Stay the course, partner. What we are building will soon be within my — our grasp.'**
+  String get storyBeatAbyssalHeartDesc;
+
+  /// No description provided for @storyLoreContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'CONTINUE'**
+  String get storyLoreContinue;
+
+  /// No description provided for @debugCraftBloodstone.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Craft Bloodstone'**
+  String get debugCraftBloodstone;
+
+  /// No description provided for @debugStoryBeatDarkMatterUnlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — Dark Matter Unlock'**
+  String get debugStoryBeatDarkMatterUnlock;
+
+  /// No description provided for @debugStoryBeatDarkMatterProductionMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — Dark Matter Prod Max'**
+  String get debugStoryBeatDarkMatterProductionMax;
+
+  /// No description provided for @debugStoryBeatBloodDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — First Blood Drop'**
+  String get debugStoryBeatBloodDrop;
+
+  /// No description provided for @debugStoryBeatAbyssalHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug: Lore — Abyssal Heart'**
+  String get debugStoryBeatAbyssalHeart;
 
   /// No description provided for @amount.
   ///
@@ -1198,7 +1354,7 @@ abstract class AppLocalizations {
   /// No description provided for @researchBloodstoneOfDominionDesc.
   ///
   /// In en, this message translates to:
-  /// **'Legendary crowned gem at the apex of the research tree.'**
+  /// **'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.'**
   String get researchBloodstoneOfDominionDesc;
 }
 

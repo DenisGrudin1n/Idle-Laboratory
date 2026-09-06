@@ -51,34 +51,57 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - **Adaptive Components**: Ensured all widgets (buttons, text fields, modals) look natural across all screen sizes.
 - **Unified Border System**: Created `AppBorderContainer` and `AppDivider` for consistent responsive styling.
 
+### 9. Onboarding & Tutorial System
+- **Tutorial Overlay**: Spotlight via `tutorial_coach_mark`.
+- **Lore Integration**: Magician character guides the player through tabs (kind / greedy sprites).
+- **Trigger Logic**: Auto-start on first app entry; tab tutorials on navigation.
+- **Prologue**: Kind-magician intro (2 pages) before coach marks; Bloodstone framed as hope.
+- **Manual restart**: Still planned in Overview (see Future §1).
+- **Note (deferred):** Prologue + tutorial currently replay every app open for testing. After all features are done, persist `seen` flags in SharedPreferences (same pattern as mid-game story beats) so they only trigger on first open.
+
+### 10. Game Lore & Endgame Story
+- **Victory Condition**: Ending triggers when Bloodstone of Dominion is crafted.
+- **Prologue**: Kind-magician welcome + Bloodstone-as-hope pitch (before tutorial).
+- **Mid-game lore beats** (4 greedy-arc steps):
+  1. Dark Matter cell unlocked (Energy Cells tab).
+  2. Dark Matter production max acceleration (Production tab, level 100).
+  3. First Blood Drop crafted.
+  4. Abyssal Heart crafted (darker tone before epilogue).
+- **Evil reveal**: Magician (`magician_evil`) confesses true intent after the craft.
+- **Epilogue**: "To Be Continued" screen after the reveal.
+- **Debug**: Replay buttons in Settings (`kDebugMode`) — remove/comment when polish is done.
+- **Note (deferred):** Same as §9 — wire prologue/tutorial first-open persistence via SharedPrefs after the full feature set ships. Mid-game beats + ending already persist.
+
 ---
 
 ## 🚀 Future Roadmap (TODOs)
 
-### 1. Onboarding & Tutorial System
-- [ ] **Tutorial Overlay**: Implement a "spotlight" effect where the screen darkens, leaving only specific features bright and interactive.
-- [ ] **Lore Integration**: Introduce the "Evil Mage" character as the central figure of the tutorial.
-- [ ] **Trigger Logic**: 
-    - Auto-start on first app entry.
-    - Manual restart button in the **Overview** section.
-- [ ] **Potential Solutions**: Research packages like `tutorial_coach_mark` or `showcaseview` for smooth animations and spotlighting.
+### 1. Overview Section Enhancements
+- [ ] **Game Lore blurb**: Short explanation of the world / player role + persistent “ultimate goal” reminder (Quest: Craft the Bloodstone).
+- [ ] **Tutorial Access**: Prominent "Replay Tutorial" button.
 
-### 2. Overview Section Enhancements
-- [ ] **Game Lore**: Add a short, engaging explanation of the game's world and the player's role.
-- [ ] **Tutorial Access**: Add a prominent "Replay Tutorial" button.
+### 2. Statistics Tab
+- [ ] **Data Tracking** (general lifetime / career stats — Book-o-Stats style):
+  - Total play time
+  - Lifetime energy generated
+  - Lifetime energy spent
+  - Peak energy held
+  - Peak EPS
+  - Lifetime cells produced (total + per cell type)
+  - Highest cell tier unlocked
+  - Lifetime materials crafted (total + per material)
+  - Unique materials discovered (x / 31)
+  - Lifetime crafting reactions completed
+  - Prestige count
+  - Highest prestige multiplier
+  - Best prestige run (highest energy before a prestige)
+  - Story progress (lore beats seen + ending watched)
+- [ ] **UI**: Clean, scrollable list (optional sections: Time, Energy, Cells, Crafting, Prestige, Story).
 
-### 3. Statistics Tab
-- [ ] **Data Tracking**: Implement tracking for:
-    - Total play time.
-    - Lifetime energy farmed.
-    - Lifetime count of each cell type farmed.
-    - Lifetime count of each material type crafted.
-- [ ] **UI**: Create a clean, scrollable list of these stats.
-
-### 4. Settings Tab
+### 3. Settings Tab
 - [ ] **Configuration**: Placeholder for future settings (Audio, Notifications, Account management, etc.).
 
-### 5. Achievements System
+### 4. Achievements System
 - [ ] **Platform Integration**: Research and plan for Google Play Games Services and Apple Game Center integration.
 - [ ] **Achievement List**:
     - Reach `n` total energy.
@@ -88,20 +111,21 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
     - Complete tutorial.
     - Watch final lore cutscene.
 
-### 6. Endgame & Final Lore
-- [ ] **Victory Condition**: Trigger final lore/cutscene when the absolute top-tier material is crafted.
-- [ ] **Cutscene System**: Implement a way to display narrative-heavy endgame content.
+### 5. Story Polish (post-features)
+- [ ] **First-open only**: Persist prologue + tutorial `seen` flags in SharedPreferences (stop replaying every launch).
+- [ ] **Persistent goal UI** — Overview (and/or Research header): “Quest: Craft the Bloodstone of Dominion” with one-line lore.
+- [ ] **Optional idle return** — rare offline dialog: magician “checking on progress” (kind early, greedier late-game).
 
-### 7. Game Balance & Polish
+### 6. Game Balance & Polish
 - [ ] **Material-Specific Metrics**: Move away from test values (5s/5EU) to unique craft timers and costs for each material.
 - [ ] **Button States**: Refine visual feedback for all button states (hover, pressed, disabled).
 - [ ] **General UI/UX**: Continuous improvements to the "gaming" aesthetic across all tabs.
 
-### 8. Monetization & Support
+### 7. Monetization & Support
 - [ ] **"Buy Me a Coffee"**: Add a simple, non-intrusive donation button (e.g., in Settings or Overview) for players who want to support the developer.
 - [ ] **Platform Integration**: Use `url_launcher` or similar to redirect to a support page (PayPal, Ko-fi, etc.).
 
-### 9. Offline Progress
+### 8. Offline Progress
 - [ ] **Time Tracking**: Calculate the duration the user was away from the app.
 - [ ] **Reward Calculation**: Grant energy, cells, and production progress based on offline time.
 - [ ] **Constraints**: Implement a cap on offline progress (e.g., maximum 15 minutes) to encourage regular check-ins.
