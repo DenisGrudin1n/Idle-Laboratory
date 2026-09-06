@@ -69,7 +69,6 @@ class EndingRevealDialog extends StatelessWidget {
                             SizedBox(width: isMobile ? 12 : 20),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     l10n.endingRevealTitle,

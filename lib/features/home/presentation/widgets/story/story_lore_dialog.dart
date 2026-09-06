@@ -25,7 +25,6 @@ class StoryLoreDialog extends StatelessWidget {
       context: context,
       barrierLabel: 'StoryLore',
       barrierColor: OverlayConstants.dimBarrier(),
-      barrierDismissible: false,
       transitionDuration: const Duration(milliseconds: 350),
       pageBuilder: (context, animation, secondaryAnimation) => StoryLoreDialog(beat: beat),
       transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -51,11 +50,7 @@ class StoryLoreDialog extends StatelessWidget {
       builder: (context, appVersion) {
         final isMobile = appVersion == AppVersionEnum.mobile;
         final metrics = StoryDialogMetrics.forVersion(appVersion);
-        final dialog = StoryDialogLayout.constraints(
-          size: size,
-          appVersion: appVersion,
-          compact: !isMobile,
-        );
+        final dialog = StoryDialogLayout.constraints(size: size, appVersion: appVersion, compact: !isMobile);
         final spriteSize = isMobile ? 108.0 : 140.0;
         final gap = isMobile ? 10.0 : 14.0;
         final textInset = EdgeInsets.only(
@@ -81,7 +76,6 @@ class StoryLoreDialog extends StatelessWidget {
                             Padding(
                               padding: textInset,
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     title,

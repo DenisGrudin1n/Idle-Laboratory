@@ -194,7 +194,6 @@ class _ProloguePage extends StatelessWidget {
     final sprite = MagicianSprite(emotion: MagicianEmotion.kind, size: spriteSize, flipped: flipSprite);
     final textColumn = Expanded(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             title,
