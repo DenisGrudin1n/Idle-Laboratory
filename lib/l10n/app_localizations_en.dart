@@ -686,4 +686,106 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get researchBloodstoneOfDominionDesc =>
       'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.';
+
+  @override
+  String get statsSectionTime => 'Time & Sessions';
+
+  @override
+  String get statsSectionEnergy => 'Energy';
+
+  @override
+  String get statsSectionCells => 'Cells';
+
+  @override
+  String get statsSectionProduction => 'Production';
+
+  @override
+  String get statsSectionCrafting => 'Crafting & Research';
+
+  @override
+  String get statsSectionPrestige => 'Prestige';
+
+  @override
+  String get statsTotalPlayTime => 'Total play time';
+
+  @override
+  String get statsSessionsStarted => 'Sessions started';
+
+  @override
+  String get statsLongestSession => 'Longest single session';
+
+  @override
+  String get statsFirstLaunchDate => 'First launch date';
+
+  @override
+  String get statsDaysSinceFirstLaunch => 'Days since first launch';
+
+  @override
+  String get statsLifetimeEnergyGenerated => 'Lifetime energy generated';
+
+  @override
+  String get statsLifetimeEnergySpent => 'Lifetime energy spent';
+
+  @override
+  String get statsPeakEnergy => 'Peak energy held';
+
+  @override
+  String get statsPeakEps => 'Peak EPS';
+
+  @override
+  String get statsCurrentEnergy => 'Current energy';
+
+  @override
+  String get statsCurrentEps => 'Current EPS';
+
+  @override
+  String get statsEnergyThisPrestigeRun => 'Energy earned this prestige run';
+
+  @override
+  String get statsLifetimeCellsProduced => 'Lifetime cells produced';
+
+  @override
+  String get statsLifetimeCellLevelUps => 'Lifetime cell level-ups';
+
+  @override
+  String get statsTotalCellLevels => 'Total cell levels (current / peak)';
+
+  @override
+  String get statsLifetimeProductionGenerated => 'Lifetime production stock generated';
+
+  @override
+  String get statsLifetimeProductionLevelUps => 'Lifetime production level-ups';
+
+  @override
+  String get statsTotalProductionLevels => 'Total production levels (current / peak)';
+
+  @override
+  String get statsLifetimeCraftsCompleted => 'Lifetime crafting reactions completed';
+
+  @override
+  String get statsLifetimeMaterialsCrafted => 'Lifetime materials crafted';
+
+  @override
+  String get statsLifetimeCraftEnergySpent => 'Lifetime EU spent on crafting';
+
+  @override
+  String get statsLifetimeCraftTime => 'Lifetime craft time spent';
+
+  @override
+  String get statsResearchTreeCompletion => 'Research tree completion';
+
+  @override
+  String get statsPrestigeCount => 'Prestige count';
+
+  @override
+  String get statsCurrentPrestigeMultiplier => 'Current prestige multiplier';
+
+  @override
+  String get statsHighestPrestigeMultiplier => 'Highest prestige multiplier';
+
+  @override
+  String get statsEnergyAtLastPrestige => 'Energy at last prestige';
+
+  @override
+  String get statsBestPrestigeRun => 'Best prestige run energy';
 }

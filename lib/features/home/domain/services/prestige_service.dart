@@ -5,17 +5,19 @@ import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class PrestigeService {
-  PrestigeService(this._energyService, this._prestigeRepository) {
+  PrestigeService(this._energyService, this._prestigeRepository, this._statisticsService) {
     _initializeState();
   }
 
   final EnergyService _energyService;
   final PrestigeRepository _prestigeRepository;
+  final StatisticsService _statisticsService;
   final BehaviorSubject<PrestigeStateModel> _prestigeStateSubject = BehaviorSubject<PrestigeStateModel>.seeded(
     PrestigeStateModel.initial(),
   );
@@ -53,6 +55,10 @@ class PrestigeService {
       currentMultiplier: BigNumber.zero(),
       isUnlocked: false,
       prestigeCount: oldState.prestigeCount + 1,
+    );
+    _statisticsService.recordPrestige(
+      energyAtPrestige: currentEnergy,
+      newTotalMultiplier: newState.totalMultiplier,
     );
     _prestigeStateSubject.add(newState);
     await saveState(newState);

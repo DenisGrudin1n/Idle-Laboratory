@@ -18,4 +18,6 @@ class StorageKeys {
   static const storyBeatDarkMatterProductionMax = 'story_beat_dark_matter_production_max';
   static const storyBeatFirstBloodDrop = 'story_beat_first_blood_drop';
   static const storyBeatAbyssalHeart = 'story_beat_abyssal_heart';
+
+  static const statisticsState = 'statistics_state';
 }

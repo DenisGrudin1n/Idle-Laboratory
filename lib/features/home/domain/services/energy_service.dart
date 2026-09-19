@@ -3,16 +3,18 @@ import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/energy_repository.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class EnergyService {
-  EnergyService(this._energyRepository) {
+  EnergyService(this._energyRepository, this._statisticsService) {
     _initialize();
   }
 
   final EnergyRepository _energyRepository;
+  final StatisticsService _statisticsService;
   final BehaviorSubject<BigNumber> _energySubject = BehaviorSubject<BigNumber>();
   final BehaviorSubject<BigNumber> _epsSubject = BehaviorSubject<BigNumber>();
   Timer? _timer;
@@ -50,7 +52,13 @@ class EnergyService {
 
   void _generateEnergy() {
     final increment = _epsSubject.value.multiplyByDouble(GameConstants.energyUpdateIntervalMs * 0.001);
-    _energySubject.add(_energySubject.value + increment);
+    final newEnergy = _energySubject.value + increment;
+    _energySubject.add(newEnergy);
+    _statisticsService.recordEnergyGenerated(
+      increment,
+      currentEnergy: newEnergy,
+      currentEps: _epsSubject.value,
+    );
   }
 
   Future<void> saveEnergy() async => _energyRepository.saveTotalEnergy(currentEnergy);
@@ -58,6 +66,7 @@ class EnergyService {
   void updateEPS(BigNumber newEPS) {
     if (_epsSubject.value != newEPS) {
       _epsSubject.add(newEPS);
+      _statisticsService.recordPeakEps(newEPS);
       // Immediately trigger energy generation update to avoid 100ms lag
       if (_timer == null) start();
     }
@@ -67,6 +76,7 @@ class EnergyService {
   bool trySpendEnergy(BigNumber amount) {
     if (_energySubject.value < amount) return false;
     _energySubject.add(_energySubject.value - amount);
+    _statisticsService.recordEnergySpent(amount);
     return true;
   }
 

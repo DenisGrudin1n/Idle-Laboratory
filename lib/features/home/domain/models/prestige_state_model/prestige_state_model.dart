@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/converters/big_number_converter.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
-import 'package:idle_laboratory/core/utils/big_number_converter.dart';
 
 part 'prestige_state_model.freezed.dart';
 part 'prestige_state_model.g.dart';
@@ -19,10 +19,10 @@ abstract class PrestigeStateModel with _$PrestigeStateModel {
   factory PrestigeStateModel.fromJson(Map<String, dynamic> json) => _$PrestigeStateModelFromJson(json);
 
   factory PrestigeStateModel.initial() => PrestigeStateModel(
-        totalMultiplier: BigNumber(1, 0),
-        currentThreshold: GameBalance.initialThreshold,
-        currentMultiplier: BigNumber.zero(),
-        isUnlocked: false,
-        prestigeCount: 0,
-      );
+    totalMultiplier: BigNumber(1, 0),
+    currentThreshold: GameBalance.initialThreshold,
+    currentMultiplier: BigNumber.zero(),
+    isUnlocked: false,
+    prestigeCount: 0,
+  );
 }

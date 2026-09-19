@@ -6,17 +6,30 @@ import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/app_divider.dart';
+import 'package:idle_laboratory/core/widgets/app_scrollbar.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/core/widgets/status_badge.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
-
 import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 
-class CellsListSection extends StatelessWidget {
+class CellsListSection extends StatefulWidget {
   const CellsListSection({super.key});
+
+  @override
+  State<CellsListSection> createState() => _CellsListSectionState();
+}
+
+class _CellsListSectionState extends State<CellsListSection> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => SectionCard(
@@ -33,23 +46,27 @@ class CellsListSection extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(isMobile ? 12 : 20),
                 alignment: Alignment.center,
-            child: Text(context.l10n.cells, style: context.styles.sectionTitle),
-          ),
-          AppDivider(color: context.color.primaryText.withValues(alpha: 0.2)),
-          Expanded(
+                child: Text(context.l10n.cells, style: context.styles.sectionTitle),
+              ),
+              AppDivider(color: context.color.primaryText.withValues(alpha: 0.2)),
+              Expanded(
                 child: BlocSelector<CellsBloc, CellsState, (List<CellModel>, String?)>(
                   selector: (state) => (state.cells, state.selectedCellId),
                   builder: (context, data) {
                     final (cells, selectedCellId) = data;
                     final selectedId = cells.any((cell) => cell.id == selectedCellId) ? selectedCellId : null;
-                    return ListView.separated(
-                      padding: isMobile ? const EdgeInsets.all(8) : const EdgeInsets.fromLTRB(12, 16, 12, 16),
-                      itemCount: cells.length,
-                      separatorBuilder: (context, index) => SizedBox(height: isMobile ? 8 : 16),
-                      itemBuilder: (context, index) => _CellItem(
-                        cell: cells[index],
-                        isSelected: selectedId == cells[index].id,
-                        onTap: () => context.read<CellsBloc>().add(CellsEvent.selectCell(cells[index].id)),
+                    return AppScrollbar(
+                      controller: _scrollController,
+                      child: ListView.separated(
+                        controller: _scrollController,
+                        padding: isMobile ? const EdgeInsets.all(8) : const EdgeInsets.fromLTRB(12, 16, 12, 16),
+                        itemCount: cells.length,
+                        separatorBuilder: (context, index) => SizedBox(height: isMobile ? 8 : 16),
+                        itemBuilder: (context, index) => _CellItem(
+                          cell: cells[index],
+                          isSelected: selectedId == cells[index].id,
+                          onTap: () => context.read<CellsBloc>().add(CellsEvent.selectCell(cells[index].id)),
+                        ),
                       ),
                     );
                   },

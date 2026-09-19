@@ -12,6 +12,7 @@ import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:injectable/injectable.dart';
 
@@ -23,7 +24,8 @@ part 'crafting_bloc.freezed.dart';
 
 @injectable
 class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
-  CraftingBloc(this._cellsService, this._energyService, this._storageService) : super(const CraftingState()) {
+  CraftingBloc(this._cellsService, this._energyService, this._storageService, this._statisticsService)
+      : super(const CraftingState()) {
     on<_CellSlotChanged>(_onCellSlotChanged);
     on<_Reagent1Changed>(_onReagent1Changed);
     on<_Reagent2Changed>(_onReagent2Changed);
@@ -40,6 +42,7 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
   final CellsService _cellsService;
   final EnergyService _energyService;
   final StorageService _storageService;
+  final StatisticsService _statisticsService;
 
   StreamSubscription<bool>? _serviceSubscription;
 
@@ -227,6 +230,11 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
       // Add output
       if (state.craftingMaterialId != null) {
         _storageService.addMaterial(state.craftingMaterialId!);
+        _statisticsService.recordCraftCompleted(
+          materialId: state.craftingMaterialId!,
+          energySpent: _craftingEnergyCost,
+          durationSeconds: _craftingDurationSeconds,
+        );
       }
 
       final nextQuantity = state.targetQuantity - 1;

@@ -1356,6 +1356,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.'**
   String get researchBloodstoneOfDominionDesc;
+
+  /// No description provided for @statsSectionTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time & Sessions'**
+  String get statsSectionTime;
+
+  /// No description provided for @statsSectionEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy'**
+  String get statsSectionEnergy;
+
+  /// No description provided for @statsSectionCells.
+  ///
+  /// In en, this message translates to:
+  /// **'Cells'**
+  String get statsSectionCells;
+
+  /// No description provided for @statsSectionProduction.
+  ///
+  /// In en, this message translates to:
+  /// **'Production'**
+  String get statsSectionProduction;
+
+  /// No description provided for @statsSectionCrafting.
+  ///
+  /// In en, this message translates to:
+  /// **'Crafting & Research'**
+  String get statsSectionCrafting;
+
+  /// No description provided for @statsSectionPrestige.
+  ///
+  /// In en, this message translates to:
+  /// **'Prestige'**
+  String get statsSectionPrestige;
+
+  /// No description provided for @statsTotalPlayTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Total play time'**
+  String get statsTotalPlayTime;
+
+  /// No description provided for @statsSessionsStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions started'**
+  String get statsSessionsStarted;
+
+  /// No description provided for @statsLongestSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest single session'**
+  String get statsLongestSession;
+
+  /// No description provided for @statsFirstLaunchDate.
+  ///
+  /// In en, this message translates to:
+  /// **'First launch date'**
+  String get statsFirstLaunchDate;
+
+  /// No description provided for @statsDaysSinceFirstLaunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Days since first launch'**
+  String get statsDaysSinceFirstLaunch;
+
+  /// No description provided for @statsLifetimeEnergyGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime energy generated'**
+  String get statsLifetimeEnergyGenerated;
+
+  /// No description provided for @statsLifetimeEnergySpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime energy spent'**
+  String get statsLifetimeEnergySpent;
+
+  /// No description provided for @statsPeakEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak energy held'**
+  String get statsPeakEnergy;
+
+  /// No description provided for @statsPeakEps.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak EPS'**
+  String get statsPeakEps;
+
+  /// No description provided for @statsCurrentEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Current energy'**
+  String get statsCurrentEnergy;
+
+  /// No description provided for @statsCurrentEps.
+  ///
+  /// In en, this message translates to:
+  /// **'Current EPS'**
+  String get statsCurrentEps;
+
+  /// No description provided for @statsEnergyThisPrestigeRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy earned this prestige run'**
+  String get statsEnergyThisPrestigeRun;
+
+  /// No description provided for @statsLifetimeCellsProduced.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime cells produced'**
+  String get statsLifetimeCellsProduced;
+
+  /// No description provided for @statsLifetimeCellLevelUps.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime cell level-ups'**
+  String get statsLifetimeCellLevelUps;
+
+  /// No description provided for @statsTotalCellLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'Total cell levels (current / peak)'**
+  String get statsTotalCellLevels;
+
+  /// No description provided for @statsLifetimeProductionGenerated.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime production stock generated'**
+  String get statsLifetimeProductionGenerated;
+
+  /// No description provided for @statsLifetimeProductionLevelUps.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime production level-ups'**
+  String get statsLifetimeProductionLevelUps;
+
+  /// No description provided for @statsTotalProductionLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'Total production levels (current / peak)'**
+  String get statsTotalProductionLevels;
+
+  /// No description provided for @statsLifetimeCraftsCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime crafting reactions completed'**
+  String get statsLifetimeCraftsCompleted;
+
+  /// No description provided for @statsLifetimeMaterialsCrafted.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime materials crafted'**
+  String get statsLifetimeMaterialsCrafted;
+
+  /// No description provided for @statsLifetimeCraftEnergySpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime EU spent on crafting'**
+  String get statsLifetimeCraftEnergySpent;
+
+  /// No description provided for @statsLifetimeCraftTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Lifetime craft time spent'**
+  String get statsLifetimeCraftTime;
+
+  /// No description provided for @statsResearchTreeCompletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Research tree completion'**
+  String get statsResearchTreeCompletion;
+
+  /// No description provided for @statsPrestigeCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Prestige count'**
+  String get statsPrestigeCount;
+
+  /// No description provided for @statsCurrentPrestigeMultiplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Current prestige multiplier'**
+  String get statsCurrentPrestigeMultiplier;
+
+  /// No description provided for @statsHighestPrestigeMultiplier.
+  ///
+  /// In en, this message translates to:
+  /// **'Highest prestige multiplier'**
+  String get statsHighestPrestigeMultiplier;
+
+  /// No description provided for @statsEnergyAtLastPrestige.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy at last prestige'**
+  String get statsEnergyAtLastPrestige;
+
+  /// No description provided for @statsBestPrestigeRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Best prestige run energy'**
+  String get statsBestPrestigeRun;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

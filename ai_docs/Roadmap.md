@@ -81,22 +81,15 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - [ ] **Tutorial Access**: Prominent "Replay Tutorial" button.
 
 ### 2. Statistics Tab
-- [ ] **Data Tracking** (general lifetime / career stats — Book-o-Stats style):
-  - Total play time
-  - Lifetime energy generated
-  - Lifetime energy spent
-  - Peak energy held
-  - Peak EPS
-  - Lifetime cells produced (total + per cell type)
-  - Highest cell tier unlocked
-  - Lifetime materials crafted (total + per material)
-  - Unique materials discovered (x / 31)
-  - Lifetime crafting reactions completed
-  - Prestige count
-  - Highest prestige multiplier
-  - Best prestige run (highest energy before a prestige)
-  - Story progress (lore beats seen + ending watched)
-- [ ] **UI**: Clean, scrollable list (optional sections: Time, Energy, Cells, Crafting, Prestige, Story).
+- [ ] **Data Tracking** (Book-o-Stats style; expandable rows for per-type breakdowns):
+  - **Time & sessions:** total play time; sessions started; longest single session; first launch date; days since first launch (derived)
+  - **Energy:** lifetime generated; lifetime spent; peak energy; peak EPS; current energy; current EPS; energy earned this prestige run
+  - **Cells:** lifetime produced (all + per type expandable); lifetime cell level-ups; total cell levels (snapshot + peak record)
+  - **Production:** lifetime stock generated (all + per type expandable); lifetime production level-ups; total production accel levels (snapshot + peak record)
+  - **Crafting & research:** reactions completed; materials crafted (all + per material expandable); lifetime EU spent on crafting; lifetime craft time; research tree completion % (derived)
+  - **Prestige:** count; current multiplier (snapshot); highest multiplier reached; energy at last prestige; best prestige run energy
+  - **Offline:** add stats here when Offline Progress ships (not tracked yet)
+- [ ] **UI**: Scrollable section list (Time → Energy → Cells → Production → Crafting → Prestige).
 
 ### 3. Settings Tab
 - [ ] **Configuration**: Placeholder for future settings (Audio, Notifications, Account management, etc.).
@@ -130,3 +123,4 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - [ ] **Reward Calculation**: Grant energy, cells, and production progress based on offline time.
 - [ ] **Constraints**: Implement a cap on offline progress (e.g., maximum 15 minutes) to encourage regular check-ins.
 - [ ] **UI**: Show a summary dialog upon re-entering the app detailing the gains made while away.
+- [ ] **Statistics**: When Offline Progress ships, add an Offline section to the Statistics tab (lifetime offline time claimed, energy/cells gained offline, etc.).

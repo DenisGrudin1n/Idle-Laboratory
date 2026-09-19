@@ -12,12 +12,19 @@ import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_mode
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class CellsService {
-  CellsService(this._cellRepository, this._productionRepository, this._energyService, this._prestigeService) {
+  CellsService(
+    this._cellRepository,
+    this._productionRepository,
+    this._energyService,
+    this._prestigeService,
+    this._statisticsService,
+  ) {
     _cellsSubject.add(_cellRepository.getDefaultCells());
     _init();
   }
@@ -26,6 +33,7 @@ class CellsService {
   final ProductionRepository _productionRepository;
   final EnergyService _energyService;
   final PrestigeService _prestigeService;
+  final StatisticsService _statisticsService;
 
   final BehaviorSubject<List<CellModel>> _cellsSubject = BehaviorSubject<List<CellModel>>();
   final BehaviorSubject<Map<String, BigNumber>> _cellEnergiesSubject = BehaviorSubject<Map<String, BigNumber>>.seeded(
@@ -101,6 +109,7 @@ class CellsService {
     final map = Map<String, CellProductionEntry>.from(_productionSubject.value);
     var changed = false;
     const dt = GameConstants.energyUpdateIntervalMs * 0.001;
+    final producedDeltas = <CellId, BigNumber>{};
 
     for (final cell in cells) {
       if (cell.isLocked) continue;
@@ -112,10 +121,16 @@ class CellsService {
       final delta = pps.multiplyByDouble(dt);
       entry = entry.copyWith(amount: entry.amount + delta);
       map[cell.id] = entry;
+      producedDeltas[cellEnum] = (producedDeltas[cellEnum] ?? BigNumber.zero()) + delta;
       changed = true;
     }
 
-    if (changed) _productionSubject.add(map);
+    if (changed) {
+      _productionSubject.add(map);
+      _statisticsService
+        ..recordCellsProduced(producedDeltas)
+        ..recordProductionGenerated(producedDeltas);
+    }
   }
 
   void _setupEnergyReaction() =>
@@ -200,19 +215,29 @@ class CellsService {
     if (changed) _cellEnergiesSubject.add(updatedEnergies);
   }
 
-  List<CellModel> _processLevelUps(List<CellModel> cells) => cells.map((cell) {
-    final cellEnergy = currentCellEnergies[cell.id];
-    if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
+  List<CellModel> _processLevelUps(List<CellModel> cells) {
+    var levelUps = 0;
+    final updated = cells.map((cell) {
+      final cellEnergy = currentCellEnergies[cell.id];
+      if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
 
-    final id = cell.cellId;
-    if (id == null) return cell;
+      final id = cell.cellId;
+      if (id == null) return cell;
 
-    final newLevel = GameBalance.calculateMaxLevel(id.order, cellEnergy);
-    if (newLevel <= cell.level) return cell;
+      final newLevel = GameBalance.calculateMaxLevel(id.order, cellEnergy);
+      if (newLevel <= cell.level) return cell;
 
-    final updatedCell = cell.copyWith(level: newLevel);
-    return updatedCell.copyWith(energyPerSecond: updatedCell.eps.format());
-  }).toList();
+      levelUps += newLevel - cell.level;
+      final updatedCell = cell.copyWith(level: newLevel);
+      return updatedCell.copyWith(energyPerSecond: updatedCell.eps.format());
+    }).toList();
+
+    if (levelUps > 0) {
+      final totalLevels = updated.fold<int>(0, (sum, cell) => sum + (cell.isLocked ? 0 : cell.level));
+      _statisticsService.recordCellLevelUps(levelUps, totalCellLevels: totalLevels);
+    }
+    return updated;
+  }
 
   BigNumber _calculateTotalEPS(List<CellModel> cells, Map<String, CellProductionEntry> production) {
     final baseEPS = cells.where((cell) => !cell.isLocked).fold(BigNumber.zero(), (total, cell) => total + cell.eps);
@@ -245,6 +270,8 @@ class CellsService {
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
+    final totalLevels = map.values.fold<int>(0, (sum, e) => sum + e.accelerationLevel);
+    _statisticsService.recordProductionLevelUps(1, totalProductionLevels: totalLevels);
     return true;
   }
 
@@ -279,6 +306,8 @@ class CellsService {
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
+    final totalLevels = map.values.fold<int>(0, (sum, e) => sum + e.accelerationLevel);
+    _statisticsService.recordProductionLevelUps(levelsToGain, totalProductionLevels: totalLevels);
     return true;
   }
 

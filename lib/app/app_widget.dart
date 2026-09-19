@@ -13,6 +13,7 @@ import 'package:idle_laboratory/features/home/presentation/blocs/energy/energy_b
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/prestige/prestige_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
+import 'package:idle_laboratory/features/home/presentation/blocs/statistics/statistics_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/storage/badge/storage_badge_cubit.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/storage/storage_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/story_lore/story_lore_bloc.dart';
@@ -33,6 +34,7 @@ class AppWidget extends StatelessWidget {
       BlocProvider(create: (_) => getIt<StorageBloc>()),
       BlocProvider(create: (_) => getIt<StorageBadgeCubit>()),
       BlocProvider(create: (_) => getIt<StoryLoreBloc>()),
+      BlocProvider(create: (_) => getIt<StatisticsBloc>()..add(const StatisticsEvent.start())),
       BlocProvider(create: (_) => getIt<AppLayoutBloc>()),
     ],
     child: CellLoopAnimationScope(
