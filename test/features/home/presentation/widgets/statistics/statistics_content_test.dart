@@ -39,9 +39,14 @@ void main() {
       ),
     );
     when(() => statisticsBloc.stream).thenAnswer((_) => const Stream.empty());
+    when(() => statisticsBloc.add(any())).thenReturn(null);
 
     when(() => settingsBloc.state).thenReturn(SettingsState.initial());
     when(() => settingsBloc.stream).thenAnswer((_) => const Stream.empty());
+  });
+
+  setUpAll(() {
+    registerFallbackValue(const StatisticsEvent.start());
   });
 
   testWidgets('StatisticsContent renders core sections', (tester) async {

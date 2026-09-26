@@ -13,6 +13,9 @@ class GameBalance {
   static const energyTickRateMs = 100;
   static const energyAutoSaveDurationMs = 5000;
 
+  /// Coalesce high-frequency statistics stream emits (energy ticks, production).
+  static const statisticsUiEmitThrottleMs = 1000;
+
   static const cellInitialLevel = 1;
   static const cellDefaultMaxLevel = 1000;
   static const cellLevelCostMultiplier = 1.25;

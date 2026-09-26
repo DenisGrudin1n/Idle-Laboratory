@@ -27,13 +27,13 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
     this._cellsService,
   ) : super(StatisticsState.initial()) {
     on<_Start>(_onStart);
+    on<_SetWatching>(_onSetWatching);
     on<_StatsChanged>(_onStatsChanged);
     on<_EnergyChanged>(_onEnergyChanged);
     on<_EpsChanged>(_onEpsChanged);
     on<_PrestigeChanged>(_onPrestigeChanged);
     on<_CellsChanged>(_onCellsChanged);
     on<_ProductionChanged>(_onProductionChanged);
-    _subscribe();
   }
 
   final StatisticsService _statisticsService;
@@ -41,12 +41,44 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
   final PrestigeService _prestigeService;
   final CellsService _cellsService;
 
+  bool _watching = false;
+
   StreamSubscription<StatisticsModel>? _statsSub;
   StreamSubscription<BigNumber>? _energySub;
   StreamSubscription<BigNumber>? _epsSub;
   StreamSubscription<PrestigeStateModel>? _prestigeSub;
   StreamSubscription<List<CellModel>>? _cellsSub;
   StreamSubscription<Map<String, CellProductionEntry>>? _productionSub;
+
+  Future<void> _onStart(_Start event, Emitter<StatisticsState> emit) => _statisticsService.start();
+
+  Future<void> _onSetWatching(_SetWatching event, Emitter<StatisticsState> emit) async {
+    if (event.watching) {
+      if (_watching) return;
+      _watching = true;
+      _subscribe();
+      emit(_snapshotFromServices());
+      return;
+    }
+    if (!_watching) return;
+    _watching = false;
+    await _unsubscribe();
+  }
+
+  StatisticsState _snapshotFromServices() {
+    final cells = _cellsService.currentCells;
+    final production = _cellsService.currentProduction;
+    final prestige = _prestigeService.currentState;
+    return state.copyWith(
+      stats: _statisticsService.current,
+      currentEnergy: _energyService.currentEnergy,
+      currentEps: _energyService.currentEPS,
+      prestigeCount: prestige.prestigeCount,
+      currentPrestigeMultiplier: prestige.totalMultiplier,
+      totalCellLevels: _totalCellLevels(cells),
+      totalProductionLevels: _totalProductionLevels(production),
+    );
+  }
 
   void _subscribe() {
     _statsSub = _statisticsService.statistics$.listen((stats) => add(StatisticsEvent.statsChanged(stats)));
@@ -61,42 +93,65 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
     );
   }
 
-  void _onStart(_Start event, Emitter<StatisticsState> emit) => _statisticsService.start();
-
-  void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) =>
-      emit(state.copyWith(stats: event.stats));
-
-  void _onEnergyChanged(_EnergyChanged event, Emitter<StatisticsState> emit) =>
-      emit(state.copyWith(currentEnergy: event.energy));
-
-  void _onEpsChanged(_EpsChanged event, Emitter<StatisticsState> emit) =>
-      emit(state.copyWith(currentEps: event.eps));
-
-  void _onPrestigeChanged(_PrestigeChanged event, Emitter<StatisticsState> emit) => emit(
-        state.copyWith(
-          prestigeCount: event.prestige.prestigeCount,
-          currentPrestigeMultiplier: event.prestige.totalMultiplier,
-        ),
-      );
-
-  void _onCellsChanged(_CellsChanged event, Emitter<StatisticsState> emit) {
-    final total = event.cells.fold<int>(0, (sum, cell) => sum + (cell.isLocked ? 0 : cell.level));
-    emit(state.copyWith(totalCellLevels: total));
-  }
-
-  void _onProductionChanged(_ProductionChanged event, Emitter<StatisticsState> emit) {
-    final total = event.production.values.fold<int>(0, (sum, entry) => sum + entry.accelerationLevel);
-    emit(state.copyWith(totalProductionLevels: total));
-  }
-
-  @override
-  Future<void> close() async {
+  Future<void> _unsubscribe() async {
     await _statsSub?.cancel();
     await _energySub?.cancel();
     await _epsSub?.cancel();
     await _prestigeSub?.cancel();
     await _cellsSub?.cancel();
     await _productionSub?.cancel();
+    _statsSub = null;
+    _energySub = null;
+    _epsSub = null;
+    _prestigeSub = null;
+    _cellsSub = null;
+    _productionSub = null;
+  }
+
+  void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(stats: event.stats));
+  }
+
+  void _onEnergyChanged(_EnergyChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(currentEnergy: event.energy));
+  }
+
+  void _onEpsChanged(_EpsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(currentEps: event.eps));
+  }
+
+  void _onPrestigeChanged(_PrestigeChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(
+      state.copyWith(
+        prestigeCount: event.prestige.prestigeCount,
+        currentPrestigeMultiplier: event.prestige.totalMultiplier,
+      ),
+    );
+  }
+
+  void _onCellsChanged(_CellsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(totalCellLevels: _totalCellLevels(event.cells)));
+  }
+
+  void _onProductionChanged(_ProductionChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(totalProductionLevels: _totalProductionLevels(event.production)));
+  }
+
+  static int _totalCellLevels(List<CellModel> cells) =>
+      cells.fold<int>(0, (sum, cell) => sum + (cell.isLocked ? 0 : cell.level));
+
+  static int _totalProductionLevels(Map<String, CellProductionEntry> production) =>
+      production.values.fold<int>(0, (sum, entry) => sum + entry.accelerationLevel);
+
+  @override
+  Future<void> close() async {
+    await _unsubscribe();
     return super.close();
   }
 }

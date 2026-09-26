@@ -1,0 +1,140 @@
+# Idle Laboratory — Agent Rules
+
+When working on this Flutter app, follow the architecture and conventions below.
+Failure to follow them breaks the reactive game loop and persistence model.
+
+Reference docs: `README.md`, `STREAM_ARCHITECTURE.md`, `ai_docs/Roadmap.md`.
+
+---
+
+## 1. Architecture Layers
+
+```
+UI (widgets)
+  → BLoC / Cubit (thin stream subscriber, UI state only)
+    → Service (business logic, timers, RxDart streams)
+      → Repository (persistence interface)
+        → LocalStorageDataSource → SharedPreferences
+```
+
+### Services (required for non-trivial logic)
+- Put game logic, timers, Stream orchestration, and cross-cutting calculations in **Services** (`lib/features/*/domain/services/`).
+- Services own `BehaviorSubject`s / streams and expose `foo$` getters.
+- Prefer `@lazySingleton` services registered via injectable/get_it.
+- Do **not** stuff heavy computation, multi-stream coordination, or optimization into BLoCs.
+
+### BLoCs / Cubits
+- Thin wrappers: subscribe to services, map to UI state, forward user intents to services.
+- Extend `SafeBloc` when using stream-driven `add` from subscriptions.
+- Keep event handlers short; no SharedPreferences or raw repository I/O in the BLoC unless it is pure UI prefs (e.g. settings notation toggle).
+
+### Repositories
+- Persistence only: load/save/clear via `LocalStorageDataSource`.
+- Wrap I/O with `guardAsync` / structured failures — no bare `try/catch` that swallows errors.
+- No game rules inside repositories.
+
+### Models
+- Freezed (+ json_serializable when persisted).
+- Big numbers use `BigNumber` + converters in `lib/core/converters/`.
+
+---
+
+## 2. Where to Put Shared Code (`lib/core`)
+
+| Path | Use for |
+|------|---------|
+| `lib/core/enums/` | Domain IDs, tabs, layout breakpoints (`AppVersionEnum`), typed catalogs — **enum only** |
+| `lib/core/extensions/` | Type-attached helpers and **display formatters** (e.g. `StatisticsFormatters`, `PlayTimeScale` helpers) |
+| `lib/core/utils/` | Pure math/algorithms (`BigNumber`, trees, geometry, validators) |
+| `lib/core/constants/` | Balance, storage keys, layout metrics, unit constants (e.g. play-time second lengths) |
+| `lib/core/widgets/` | Reusable app chrome (`AppScrollbar`, `SectionCard`, `AppBorderContainer`, …) |
+| `lib/core/helper/` | DI (`get_it`) and SharedPreferences module only |
+| `lib/core/theme/` | Colors, text styles, theme |
+
+Do not invent parallel folders for one-off helpers — extend these. Keep enums, extensions, and constants in their own files/folders (do not pile helpers into enum files).
+
+---
+
+## 3. Responsive UI (phone / tablet / desktop / web / macOS)
+
+- Use `AppLayoutBloc` → `AppVersionEnum` (`mobile` | `tablet` | `desk`).
+- Prefer `BlocSelector` on `appVersion` for layout branches (`Row` vs `Column`, padding, font sizes).
+- Do **not** introduce `flutter_screenutil` or similar global scaling packages.
+- Reuse shared chrome: `SectionCard`, `AppBorderContainer`, `AppDivider`, `AppScrollbar`, `InfoRow`.
+- Screens must remain usable on phone **and** wide layouts (tablet/desktop/web/macOS); avoid phone-only assumptions (fixed widths, overflow, non-scrollable columns).
+
+---
+
+## 4. Localization & Copy
+
+- **No hardcoded user-facing strings.** Use `context.l10n` / `AppLocalizations`.
+- Add keys to `lib/l10n/app_en.arb` (and regenerate localizations as the project usually does).
+
+---
+
+## 5. Persistence & Game State
+
+- Persist through repositories + `StorageKeys` — never ad-hoc SharedPreferences keys scattered in UI.
+- Lifetime / meta progress (e.g. statistics) **survives prestige**; prestige only resets run-scoped fields via the owning service.
+- Debounced autosave is normal for hot paths; flush immediately on prestige, lifecycle pause, and dispose.
+- When adding a tracked field: model → repository JSON → service hook → bloc/UI → tests for round-trip + prestige behavior.
+
+---
+
+## 6. Streams & Live Stats
+
+- Follow existing service patterns (`EnergyService`, `CellsService`, `StatisticsService`): emit on meaningful change; BLoC rebuilds UI.
+- Time-based displays that should tick live (e.g. total play time) belong in the **service** (timer + flush/emit), not in a widget `Timer`.
+- Prefer adaptive tick intervals when display precision changes (seconds → minutes → hours → …).
+- Playtime must accumulate for the whole app session while foregrounded — not only while the Statistics tab is visible.
+
+---
+
+## 7. Paginated Data Loads (Data Lists)
+
+**Any data fetching list that loads remote/large pages MUST implement pagination.** Do not fetch all records at once when the source is paginated.
+
+### Rules:
+- **BLoC State:** Must include `hasMore` (bool) and the list of fetched `models`.
+- **Loading Event:** Use a `loadMore` event that passes `offset: state.items.length` to the repository/service.
+- **Scroll Detection:** The UI body must use `NotificationListener<ScrollNotification>` to detect scrolling to the bottom (`metrics.maxScrollExtent - metrics.pixels <= Config.loadMoreDistanceToTop`) to trigger `loadMore`.
+- **Pull to Refresh:** Wrap the body in a `RefreshIndicator` that dispatches `loadMore(refresh: true)` to reset the list and fetch offset 0.
+- **Loading Indicators:** Use a skeleton / bottom loader in the `ListView` when fetching the next page.
+- **Error Handling:** Inline retry UI if the fetch fails, allowing the user to retry the exact offset.
+
+Fixed-size in-game catalogs (enums, research tree nodes, etc.) may render fully without pagination.
+
+---
+
+## 8. Forms
+
+**Forms MUST be built using standardized app elements and strict state interactions** (adapt existing widgets as the form system lands).
+
+### Rules:
+- **Layout:** Prefer `CustomScrollView` with `SliverPadding` and `SliverList.list` for form screens.
+- **Inputs:** Rely on shared field widgets when available (`TextFieldWidget`, `PasswordField`, `FormTextFieldWidget`, or project equivalents).
+- **Read-Only State:** During form processing/API latency (`state.formState.processing` / `isSending`), ALL inputs MUST be locked with `readOnly: true`.
+- **Submission Feedback:**
+  - Include a sending/status text widget directly above the primary submit button.
+  - Surface `state.failure` messages or localized loading text there.
+- **Error Visibility:** Validation errors stay hidden until submission is attempted or the field is explicitly marked invalid.
+- **Localization:** Never hardcode strings. Use `context.l10n`. For validation errors, prefer `state.field.error.value(context)`-style helpers when Formz (or equivalent) is used.
+- **Button Feedback:** The primary submit button must reflect loading with an `isLoading` / processing flag.
+
+---
+
+## 9. Testing Expectations
+
+- Service unit tests for record/persist/prestige interactions (`test/features/.../services/`).
+- Widget tests for critical tab content smoke coverage.
+- Prefer `mocktail` for repositories/services.
+
+---
+
+## 10. What Not To Do
+
+- Do not call repositories directly from widgets.
+- Do not put SharedPreferences or JSON encode/decode in BLoCs/Services beyond calling the repository API.
+- Do not clear lifetime statistics on prestige unless the product explicitly requires a hard wipe.
+- Do not add backend/Supabase/Edge Function assumptions — this app is local-first.
+- Do not pause playtime on `AppLifecycleState.inactive` (desktop focus blips); pause on `paused` / `hidden` / `detached` only.

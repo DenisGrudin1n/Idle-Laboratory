@@ -4,6 +4,7 @@ import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
+import 'package:idle_laboratory/core/extensions/play_time_scale_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/statistics_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/statistics_model/statistics_model.dart';
@@ -13,13 +14,19 @@ import 'package:rxdart/rxdart.dart';
 @lazySingleton
 class StatisticsService {
   StatisticsService(this._repository) {
-    _initialize();
+    _loadFuture = _initialize();
   }
 
   final StatisticsRepository _repository;
   final BehaviorSubject<StatisticsModel> _statsSubject = BehaviorSubject<StatisticsModel>.seeded(
     StatisticsModel.initial(),
   );
+
+  /// Always-current model for writers / persistence (may be ahead of [statistics$]).
+  StatisticsModel _current = StatisticsModel.initial();
+
+  /// Completes after the first load from storage (success or fallback).
+  late final Future<void> _loadFuture;
 
   /// Wall-clock start of the current active session (cold start or resume).
   DateTime? _sessionStartedAt;
@@ -28,13 +35,26 @@ class StatisticsService {
   DateTime? _lastPlaytimeFlushAt;
 
   Timer? _saveTimer;
+  Timer? _playtimeTimer;
+  Timer? _notifyTimer;
+  Duration? _playtimeTickInterval;
   StatisticsModel? _pendingSave;
+  bool _started = false;
 
-  Stream<StatisticsModel> get statistics$ => _statsSubject.stream;
-  StatisticsModel get current => _statsSubject.value;
+  /// UI-facing stream: distinct + coalesced for hot paths (see [_emit]).
+  Stream<StatisticsModel> get statistics$ => _statsSubject.stream.distinct();
 
-  void _initialize() {
-    _load().then(_statsSubject.add).catchError((_) => _statsSubject.add(StatisticsModel.initial()));
+  StatisticsModel get current => _current;
+
+  Future<void> _initialize() async {
+    try {
+      final saved = await _load();
+      _current = saved;
+      _statsSubject.add(saved);
+    } catch (_) {
+      _current = StatisticsModel.initial();
+      _statsSubject.add(_current);
+    }
   }
 
   Future<StatisticsModel> _load() async {
@@ -43,26 +63,38 @@ class StatisticsService {
   }
 
   /// Cold-start session: increments session count and starts playtime segment.
-  void start() {
+  ///
+  /// Awaits the initial storage load so a late `_load` cannot overwrite the
+  /// session increment / first-launch stamp.
+  Future<void> start() async {
+    await _loadFuture;
+    if (_started && _sessionStartedAt != null) return;
+
     final now = DateTime.now();
     var next = current;
     if (next.firstLaunchEpochMs == null) {
       next = next.copyWith(firstLaunchEpochMs: now.millisecondsSinceEpoch);
     }
     next = next.copyWith(sessionsStarted: next.sessionsStarted + 1);
+    _started = true;
     _sessionStartedAt = now;
     _lastPlaytimeFlushAt = now;
-    _emit(next);
+    _emit(next, urgent: true);
     _scheduleSave(next);
+    _restartPlaytimeTicker();
   }
 
-  void pausePlaytime() => _flushPlaytime(endSession: true);
+  void pausePlaytime() {
+    _stopPlaytimeTicker();
+    _flushPlaytime(endSession: true);
+  }
 
   void resumePlaytime() {
     if (_sessionStartedAt != null) return;
     final now = DateTime.now();
     _sessionStartedAt = now;
     _lastPlaytimeFlushAt = now;
+    _restartPlaytimeTicker();
   }
 
   void recordEnergyGenerated(BigNumber amount, {required BigNumber currentEnergy, required BigNumber currentEps}) {
@@ -121,7 +153,7 @@ class StatisticsService {
           ? totalCellLevels
           : current.peakTotalCellLevels,
     );
-    _emit(next);
+    _emit(next, urgent: true);
     _scheduleSave(next);
   }
 
@@ -151,7 +183,7 @@ class StatisticsService {
           ? totalProductionLevels
           : current.peakTotalProductionLevels,
     );
-    _emit(next);
+    _emit(next, urgent: true);
     _scheduleSave(next);
   }
 
@@ -170,7 +202,7 @@ class StatisticsService {
       lifetimeCraftEnergySpent: current.lifetimeCraftEnergySpent + energySpent,
       lifetimeCraftDurationSeconds: current.lifetimeCraftDurationSeconds + durationSeconds,
     );
-    _emit(next);
+    _emit(next, urgent: true);
     _scheduleSave(next);
   }
 
@@ -185,11 +217,61 @@ class StatisticsService {
     if (energyAtPrestige > next.bestPrestigeRunEnergy) {
       next = next.copyWith(bestPrestigeRunEnergy: energyAtPrestige);
     }
-    _emit(next);
+    _emit(next, urgent: true);
     save();
   }
 
-  void _emit(StatisticsModel next) => _statsSubject.add(next);
+  /// Updates [_current] immediately. Hot paths coalesce [statistics$] notifies;
+  /// [urgent] flushes the stream right away (prestige, craft, playtime, start).
+  void _emit(StatisticsModel next, {bool urgent = false}) {
+    _current = next;
+    if (urgent) {
+      _flushNotify();
+      return;
+    }
+    _notifyTimer ??= Timer(
+      const Duration(milliseconds: GameBalance.statisticsUiEmitThrottleMs),
+      _flushNotify,
+    );
+  }
+
+  void _flushNotify() {
+    _notifyTimer?.cancel();
+    _notifyTimer = null;
+    if (!_statsSubject.isClosed && _statsSubject.value != _current) {
+      _statsSubject.add(_current);
+    }
+  }
+
+  int get _effectivePlayTimeSeconds {
+    final lastFlush = _lastPlaytimeFlushAt;
+    final base = current.totalPlayTimeSeconds;
+    if (lastFlush == null || _sessionStartedAt == null) return base;
+    return base + DateTime.now().difference(lastFlush).inSeconds;
+  }
+
+  void _restartPlaytimeTicker() {
+    _stopPlaytimeTicker();
+    if (_sessionStartedAt == null) return;
+    final interval = PlayTimeScaleExt.forSeconds(_effectivePlayTimeSeconds).tickInterval;
+    _playtimeTickInterval = interval;
+    _playtimeTimer = Timer.periodic(interval, (_) => _onPlaytimeTick());
+  }
+
+  void _stopPlaytimeTicker() {
+    _playtimeTimer?.cancel();
+    _playtimeTimer = null;
+    _playtimeTickInterval = null;
+  }
+
+  void _onPlaytimeTick() {
+    _flushPlaytime(endSession: false);
+    _scheduleSave(current);
+    final nextInterval = PlayTimeScaleExt.forSeconds(current.totalPlayTimeSeconds).tickInterval;
+    if (nextInterval != _playtimeTickInterval) {
+      _restartPlaytimeTicker();
+    }
+  }
 
   void _flushPlaytime({required bool endSession}) {
     final lastFlush = _lastPlaytimeFlushAt;
@@ -197,12 +279,13 @@ class StatisticsService {
     if (lastFlush == null || sessionStart == null) return;
 
     final now = DateTime.now();
-    final elapsedSinceFlush = now.difference(lastFlush).inSeconds;
+    final elapsedMs = now.difference(lastFlush).inMilliseconds;
+    final wholeSeconds = elapsedMs ~/ 1000;
     final sessionLength = now.difference(sessionStart).inSeconds;
 
     var next = current;
-    if (elapsedSinceFlush > 0) {
-      next = next.copyWith(totalPlayTimeSeconds: next.totalPlayTimeSeconds + elapsedSinceFlush);
+    if (wholeSeconds > 0) {
+      next = next.copyWith(totalPlayTimeSeconds: next.totalPlayTimeSeconds + wholeSeconds);
     }
     if (sessionLength > next.longestSessionSeconds) {
       next = next.copyWith(longestSessionSeconds: sessionLength);
@@ -211,11 +294,13 @@ class StatisticsService {
     if (endSession) {
       _sessionStartedAt = null;
       _lastPlaytimeFlushAt = null;
-    } else {
-      _lastPlaytimeFlushAt = now;
+    } else if (wholeSeconds > 0) {
+      _lastPlaytimeFlushAt = lastFlush.add(Duration(seconds: wholeSeconds));
     }
 
-    if (next != current) _emit(next);
+    if (next != current) {
+      _emit(next, urgent: true);
+    }
   }
 
   void _scheduleSave(StatisticsModel model) {
@@ -233,12 +318,15 @@ class StatisticsService {
 
   Future<void> save() => guardAsync(() async {
         _flushPlaytime(endSession: false);
+        _flushNotify();
         await _repository.saveStatistics(current);
       });
 
   @disposeMethod
   void dispose() {
+    _stopPlaytimeTicker();
     _flushPlaytime(endSession: true);
+    _flushNotify();
     _saveTimer?.cancel();
     unawaited(_repository.saveStatistics(current));
     _statsSubject.close();

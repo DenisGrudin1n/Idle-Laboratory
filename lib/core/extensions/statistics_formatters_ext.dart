@@ -1,15 +1,59 @@
+import 'package:idle_laboratory/core/constants/play_time_units.dart';
+import 'package:idle_laboratory/core/enums/play_time_scale.dart';
+import 'package:idle_laboratory/core/extensions/play_time_scale_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 
 abstract final class StatisticsFormatters {
+  /// Progressive play-time / duration display:
+  /// - under 1m → `Xs`
+  /// - under 1h → `Xm Ys`
+  /// - under 1d → `Xh`
+  /// - under 30d → `Xd Yh Zm`
+  /// - under 365d → `Xmo Yd Zh Wm`
+  /// - else → `Xy Xmo Yd Zh Wm`
   static String duration(int totalSeconds) {
-    if (totalSeconds < 60) return '${totalSeconds}s';
-    final hours = totalSeconds ~/ 3600;
-    final minutes = (totalSeconds % 3600) ~/ 60;
-    final seconds = totalSeconds % 60;
-    if (hours > 0) {
-      return '${hours}h ${minutes}m ${seconds}s';
+    final s = totalSeconds < 0 ? 0 : totalSeconds;
+    final scale = PlayTimeScaleExt.forSeconds(s);
+
+    return switch (scale) {
+      PlayTimeScale.seconds => '${s}s',
+      PlayTimeScale.minutes =>
+        '${s ~/ PlayTimeUnits.secondsPerMinute}m ${s % PlayTimeUnits.secondsPerMinute}s',
+      PlayTimeScale.hours => '${s ~/ PlayTimeUnits.secondsPerHour}h',
+      // days / months / years share compound formatting; [scale] selects which
+      // larger units to include inside [_compoundDuration].
+      _ => _compoundDuration(s, scale),
+    };
+  }
+
+  static String _compoundDuration(int totalSeconds, PlayTimeScale scale) {
+    var remaining = totalSeconds;
+    final parts = <String>[];
+
+    if (scale == PlayTimeScale.years) {
+      final years = remaining ~/ PlayTimeUnits.secondsPerYear;
+      remaining %= PlayTimeUnits.secondsPerYear;
+      if (years > 0) parts.add('${years}y');
     }
-    return '${minutes}m ${seconds}s';
+
+    if (scale == PlayTimeScale.years || scale == PlayTimeScale.months) {
+      final months = remaining ~/ PlayTimeUnits.secondsPerMonth;
+      remaining %= PlayTimeUnits.secondsPerMonth;
+      if (months > 0 || parts.isNotEmpty) parts.add('${months}mo');
+    }
+
+    final days = remaining ~/ PlayTimeUnits.secondsPerDay;
+    remaining %= PlayTimeUnits.secondsPerDay;
+    final hours = remaining ~/ PlayTimeUnits.secondsPerHour;
+    remaining %= PlayTimeUnits.secondsPerHour;
+    final minutes = remaining ~/ PlayTimeUnits.secondsPerMinute;
+
+    parts
+      ..add('${days}d')
+      ..add('${hours}h')
+      ..add('${minutes}m');
+
+    return parts.join(' ');
   }
 
   static String bigNumber(BigNumber value, {required bool useScientific}) =>

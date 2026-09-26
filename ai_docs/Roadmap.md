@@ -81,15 +81,16 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - [ ] **Tutorial Access**: Prominent "Replay Tutorial" button.
 
 ### 2. Statistics Tab
-- [ ] **Data Tracking** (Book-o-Stats style; expandable rows for per-type breakdowns):
-  - **Time & sessions:** total play time; sessions started; longest single session; first launch date; days since first launch (derived)
+- [x] **Data Tracking** (Book-o-Stats style; expandable rows for per-type breakdowns):
+  - **Time & sessions:** total play time (live adaptive tick + progressive format); sessions started; longest single session; first launch date; days since first launch (derived)
   - **Energy:** lifetime generated; lifetime spent; peak energy; peak EPS; current energy; current EPS; energy earned this prestige run
   - **Cells:** lifetime produced (all + per type expandable); lifetime cell level-ups; total cell levels (snapshot + peak record)
   - **Production:** lifetime stock generated (all + per type expandable); lifetime production level-ups; total production accel levels (snapshot + peak record)
   - **Crafting & research:** reactions completed; materials crafted (all + per material expandable); lifetime EU spent on crafting; lifetime craft time; research tree completion % (derived)
   - **Prestige:** count; current multiplier (snapshot); highest multiplier reached; energy at last prestige; best prestige run energy
   - **Offline:** add stats here when Offline Progress ships (not tracked yet)
-- [ ] **UI**: Scrollable section list (Time → Energy → Cells → Production → Crafting → Prestige).
+- [x] **UI**: Scrollable section list (Time → Energy → Cells → Production → Crafting → Prestige).
+- [x] **Persistence**: SharedPreferences blob (`statistics_state`); lifetime fields survive prestige; playtime flush on pause/save/dispose + periodic tick while foregrounded.
 
 ### 3. Settings Tab
 - [ ] **Configuration**: Placeholder for future settings (Audio, Notifications, Account management, etc.).

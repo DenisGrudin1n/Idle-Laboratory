@@ -23,11 +23,15 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
-      _statisticsService.pausePlaytime();
-      _saveAll();
-    } else if (state == AppLifecycleState.resumed) {
-      _statisticsService.resumePlaytime();
+    // Skip inactive: desktop/macOS fires it on focus blips / transitions.
+    switch (state) {
+      case AppLifecycleState.paused || AppLifecycleState.hidden || AppLifecycleState.detached:
+        _statisticsService.pausePlaytime();
+        _saveAll();
+      case AppLifecycleState.resumed:
+        _statisticsService.resumePlaytime();
+      case _:
+        break;
     }
   }
 

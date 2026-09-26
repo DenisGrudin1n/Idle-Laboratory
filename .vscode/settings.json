@@ -4,5 +4,12 @@
   "explorer.fileNesting.patterns": {
     "pubspec.yaml": ".flutter-plugins, .packages, .dart_tool, .flutter-plugins-dependencies, .metadata, .packages, pubspec.lock, *.yaml",
     "*.dart": "$(capture).g.dart, $(capture).freezed.dart, $(capture).config.dart"
+  },
+  "files.exclude": {
+    "**/._*": true,
+    "**/.DS_Store": true
+  },
+  "files.watcherExclude": {
+    "**/._*": true
   }
 }
