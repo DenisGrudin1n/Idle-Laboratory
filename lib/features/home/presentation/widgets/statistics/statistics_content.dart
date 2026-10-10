@@ -116,7 +116,7 @@ class _TimeSection extends StatelessWidget {
           children: [
             StatisticsRow(
               label: l10n.statsTotalPlayTime,
-              value: StatisticsFormatters.duration(view.playTime),
+              value: l10n.statsDuration(view.playTime),
               isMobile: isMobile,
             ),
             StatisticsRow(
@@ -126,17 +126,17 @@ class _TimeSection extends StatelessWidget {
             ),
             StatisticsRow(
               label: l10n.statsLongestSession,
-              value: StatisticsFormatters.duration(view.longest),
+              value: l10n.statsDuration(view.longest),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsFirstLaunchDate,
-              value: StatisticsFormatters.dateFromEpochMs(view.firstLaunch),
+              value: l10n.statsDate(view.firstLaunch),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsDaysSinceFirstLaunch,
-              value: '${StatisticsFormatters.daysSince(view.firstLaunch)}',
+              value: '${view.firstLaunch?.daysSinceEpochMs ?? 0}',
               isMobile: isMobile,
             ),
           ],
@@ -182,37 +182,37 @@ class _EnergySection extends StatelessWidget {
           children: [
             StatisticsRow(
               label: l10n.statsLifetimeEnergyGenerated,
-              value: StatisticsFormatters.bigNumber(view.lifetimeGenerated, useScientific: useScientific),
+              value: view.lifetimeGenerated.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsLifetimeEnergySpent,
-              value: StatisticsFormatters.bigNumber(view.lifetimeSpent, useScientific: useScientific),
+              value: view.lifetimeSpent.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsPeakEnergy,
-              value: StatisticsFormatters.bigNumber(view.peakEnergy, useScientific: useScientific),
+              value: view.peakEnergy.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsPeakEps,
-              value: StatisticsFormatters.bigNumber(view.peakEps, useScientific: useScientific),
+              value: view.peakEps.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsCurrentEnergy,
-              value: StatisticsFormatters.bigNumber(view.currentEnergy, useScientific: useScientific),
+              value: view.currentEnergy.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsCurrentEps,
-              value: StatisticsFormatters.bigNumber(view.currentEps, useScientific: useScientific),
+              value: view.currentEps.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsEnergyThisPrestigeRun,
-              value: StatisticsFormatters.bigNumber(view.thisRun, useScientific: useScientific),
+              value: view.thisRun.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
           ],
@@ -223,8 +223,6 @@ class _EnergySection extends StatelessWidget {
 }
 
 typedef _CellsView = ({
-  BigNumber lifetimeProduced,
-  Map<String, BigNumber> byType,
   int levelUps,
   int totalLevels,
   int peakLevels,
@@ -241,8 +239,6 @@ class _CellsSection extends StatelessWidget {
     final l10n = context.l10n;
     return BlocSelector<StatisticsBloc, StatisticsState, _CellsView>(
       selector: (state) => (
-        lifetimeProduced: state.stats.lifetimeCellsProduced,
-        byType: state.stats.lifetimeCellsProducedByType,
         levelUps: state.stats.lifetimeCellLevelUps,
         totalLevels: state.totalCellLevels,
         peakLevels: state.stats.peakTotalCellLevels,
@@ -252,22 +248,6 @@ class _CellsSection extends StatelessWidget {
           title: l10n.statsSectionCells,
           isMobile: isMobile,
           children: [
-            StatisticsExpandableRow(
-              label: l10n.statsLifetimeCellsProduced,
-              value: StatisticsFormatters.bigNumber(view.lifetimeProduced, useScientific: useScientific),
-              isMobile: isMobile,
-              children: [
-                for (final cellId in CellId.values)
-                  StatisticsRow(
-                    label: cellId.cellName.localize(l10n),
-                    value: StatisticsFormatters.bigNumber(
-                      view.byType[cellId.id] ?? BigNumber.zero(),
-                      useScientific: useScientific,
-                    ),
-                    isMobile: isMobile,
-                  ),
-              ],
-            ),
             StatisticsRow(
               label: l10n.statsLifetimeCellLevelUps,
               value: '${view.levelUps}',
@@ -286,7 +266,7 @@ class _CellsSection extends StatelessWidget {
 }
 
 typedef _ProductionView = ({
-  BigNumber lifetimeGenerated,
+  BigNumber lifetimeProduced,
   Map<String, BigNumber> byType,
   int levelUps,
   int totalLevels,
@@ -304,8 +284,8 @@ class _ProductionSection extends StatelessWidget {
     final l10n = context.l10n;
     return BlocSelector<StatisticsBloc, StatisticsState, _ProductionView>(
       selector: (state) => (
-        lifetimeGenerated: state.stats.lifetimeProductionGenerated,
-        byType: state.stats.lifetimeProductionGeneratedByType,
+        lifetimeProduced: state.stats.lifetimeCellsProduced,
+        byType: state.stats.lifetimeCellsProducedByType,
         levelUps: state.stats.lifetimeProductionLevelUps,
         totalLevels: state.totalProductionLevels,
         peakLevels: state.stats.peakTotalProductionLevels,
@@ -316,17 +296,14 @@ class _ProductionSection extends StatelessWidget {
           isMobile: isMobile,
           children: [
             StatisticsExpandableRow(
-              label: l10n.statsLifetimeProductionGenerated,
-              value: StatisticsFormatters.bigNumber(view.lifetimeGenerated, useScientific: useScientific),
+              label: l10n.statsLifetimeCellsProduced,
+              value: view.lifetimeProduced.statValue(useScientific: useScientific),
               isMobile: isMobile,
               children: [
                 for (final cellId in CellId.values)
                   StatisticsRow(
                     label: cellId.cellName.localize(l10n),
-                    value: StatisticsFormatters.bigNumber(
-                      view.byType[cellId.id] ?? BigNumber.zero(),
-                      useScientific: useScientific,
-                    ),
+                    value: (view.byType[cellId.id] ?? BigNumber.zero()).statValue(useScientific: useScientific),
                     isMobile: isMobile,
                   ),
               ],
@@ -401,17 +378,17 @@ class _CraftingSection extends StatelessWidget {
             ),
             StatisticsRow(
               label: l10n.statsLifetimeCraftEnergySpent,
-              value: StatisticsFormatters.bigNumber(view.craftEnergySpent, useScientific: useScientific),
+              value: view.craftEnergySpent.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsLifetimeCraftTime,
-              value: StatisticsFormatters.duration(view.craftDurationSeconds),
+              value: l10n.statsDuration(view.craftDurationSeconds),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsResearchTreeCompletion,
-              value: StatisticsFormatters.percent(
+              value: l10n.statsPercent(
                 view.byType.values.where((c) => c > 0).length,
                 ResearchMaterialId.values.length,
               ),
@@ -461,22 +438,22 @@ class _PrestigeSection extends StatelessWidget {
             ),
             StatisticsRow(
               label: l10n.statsCurrentPrestigeMultiplier,
-              value: StatisticsFormatters.bigNumber(view.currentMultiplier, useScientific: useScientific),
+              value: view.currentMultiplier.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsHighestPrestigeMultiplier,
-              value: StatisticsFormatters.bigNumber(view.highestMultiplier, useScientific: useScientific),
+              value: view.highestMultiplier.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsEnergyAtLastPrestige,
-              value: StatisticsFormatters.bigNumber(view.energyAtLast, useScientific: useScientific),
+              value: view.energyAtLast.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
             StatisticsRow(
               label: l10n.statsBestPrestigeRun,
-              value: StatisticsFormatters.bigNumber(view.bestRun, useScientific: useScientific),
+              value: view.bestRun.statValue(useScientific: useScientific),
               isMobile: isMobile,
             ),
           ],

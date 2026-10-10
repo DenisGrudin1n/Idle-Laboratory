@@ -1408,7 +1408,7 @@ abstract class AppLocalizations {
   /// No description provided for @statsLongestSession.
   ///
   /// In en, this message translates to:
-  /// **'Longest single session'**
+  /// **'Longest continuous session'**
   String get statsLongestSession;
 
   /// No description provided for @statsFirstLaunchDate.
@@ -1483,12 +1483,6 @@ abstract class AppLocalizations {
   /// **'Total cell levels (current / peak)'**
   String get statsTotalCellLevels;
 
-  /// No description provided for @statsLifetimeProductionGenerated.
-  ///
-  /// In en, this message translates to:
-  /// **'Lifetime production stock generated'**
-  String get statsLifetimeProductionGenerated;
-
   /// No description provided for @statsLifetimeProductionLevelUps.
   ///
   /// In en, this message translates to:
@@ -1560,6 +1554,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Best prestige run energy'**
   String get statsBestPrestigeRun;
+
+  /// No description provided for @statsValueUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get statsValueUnavailable;
+
+  /// No description provided for @statsDurationSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}s'**
+  String statsDurationSeconds(int value);
+
+  /// No description provided for @statsDurationMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}m'**
+  String statsDurationMinutes(int value);
+
+  /// No description provided for @statsDurationHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}h'**
+  String statsDurationHours(int value);
+
+  /// No description provided for @statsDurationDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}d'**
+  String statsDurationDays(int value);
+
+  /// No description provided for @statsDurationMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}mo'**
+  String statsDurationMonths(int value);
+
+  /// No description provided for @statsDurationYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}y'**
+  String statsDurationYears(int value);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,19 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idle_laboratory/core/constants/storage_keys.dart';
+import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/enums/story_beat_id.dart';
 import 'package:idle_laboratory/features/home/data/data_sources/local_storage_data_source.dart';
+import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/story_lore_service.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockLocalStorageDataSource extends Mock implements LocalStorageDataSource {}
 
+class _MockStorageService extends Mock implements StorageService {}
+
 void main() {
   late _MockLocalStorageDataSource dataSource;
+  late _MockStorageService storageService;
   late StoryLoreService service;
 
   setUp(() {
     dataSource = _MockLocalStorageDataSource();
-    service = StoryLoreService(dataSource);
+    storageService = _MockStorageService();
+    service = StoryLoreService(dataSource, storageService);
   });
 
   test('isBeatSeen returns false when key is absent', () {
@@ -58,5 +64,14 @@ void main() {
     await service.resetEndingSeen();
 
     verify(() => dataSource.remove(StorageKeys.endingCutsceneSeen)).called(1);
+  });
+
+  test('debugReplayEnding resets ending flag and grants bloodstone', () async {
+    when(() => dataSource.remove(StorageKeys.endingCutsceneSeen)).thenAnswer((_) async => true);
+
+    await service.debugReplayEnding();
+
+    verify(() => dataSource.remove(StorageKeys.endingCutsceneSeen)).called(1);
+    verify(() => storageService.addMaterial(ResearchMaterialId.bloodstoneOfDominion)).called(1);
   });
 }

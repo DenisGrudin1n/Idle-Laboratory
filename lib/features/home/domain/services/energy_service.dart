@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
+import 'package:idle_laboratory/core/constants/persistence_labels.dart';
+import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/energy_repository.dart';
 import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
@@ -46,7 +48,7 @@ class EnergyService {
     _saveTimer?.cancel();
     _saveTimer = Timer.periodic(
       const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs),
-      (_) => saveEnergy(),
+      (_) => fireAndForget(saveEnergy(), label: PersistenceLabels.energyAutosave),
     );
   }
 
@@ -83,7 +85,7 @@ class EnergyService {
   void reset() {
     _energySubject.add(BigNumber.zero());
     _epsSubject.add(BigNumber.zero());
-    saveEnergy();
+    fireAndForget(saveEnergy(), label: PersistenceLabels.energyReset);
     start();
   }
 
@@ -91,7 +93,7 @@ class EnergyService {
   void dispose() {
     _timer?.cancel();
     _saveTimer?.cancel();
-    saveEnergy();
+    fireAndForget(saveEnergy(), label: PersistenceLabels.energyDispose);
     _energySubject.close();
     _epsSubject.close();
   }

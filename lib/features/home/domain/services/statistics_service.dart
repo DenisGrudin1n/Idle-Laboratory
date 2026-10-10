@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/constants/persistence_labels.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
@@ -36,6 +37,7 @@ class StatisticsService {
 
   Timer? _saveTimer;
   Timer? _playtimeTimer;
+  Timer? _playtimePersistTimer;
   Timer? _notifyTimer;
   Duration? _playtimeTickInterval;
   StatisticsModel? _pendingSave;
@@ -127,20 +129,23 @@ class StatisticsService {
     _scheduleSave(next);
   }
 
-  void recordCellsProduced(Map<CellId, BigNumber> deltas) {
+  /// Called once per 100ms production tick with a single model copy.
+  void recordProductionTick(Map<CellId, BigNumber> deltas) {
     if (deltas.isEmpty) return;
-    var total = current.lifetimeCellsProduced;
-    final byType = Map<String, BigNumber>.from(current.lifetimeCellsProducedByType);
-    var changed = false;
+    var tickTotal = BigNumber.zero();
+    Map<String, BigNumber>? byType;
     for (final entry in deltas.entries) {
       if (entry.value <= BigNumber.zero()) continue;
-      changed = true;
-      total = total + entry.value;
+      byType ??= Map<String, BigNumber>.from(current.lifetimeCellsProducedByType);
+      tickTotal = tickTotal + entry.value;
       final key = entry.key.id;
       byType[key] = (byType[key] ?? BigNumber.zero()) + entry.value;
     }
-    if (!changed) return;
-    final next = current.copyWith(lifetimeCellsProduced: total, lifetimeCellsProducedByType: byType);
+    if (byType == null) return;
+    final next = current.copyWith(
+      lifetimeCellsProduced: current.lifetimeCellsProduced + tickTotal,
+      lifetimeCellsProducedByType: byType,
+    );
     _emit(next);
     _scheduleSave(next);
   }
@@ -154,24 +159,6 @@ class StatisticsService {
           : current.peakTotalCellLevels,
     );
     _emit(next, urgent: true);
-    _scheduleSave(next);
-  }
-
-  void recordProductionGenerated(Map<CellId, BigNumber> deltas) {
-    if (deltas.isEmpty) return;
-    var total = current.lifetimeProductionGenerated;
-    final byType = Map<String, BigNumber>.from(current.lifetimeProductionGeneratedByType);
-    var changed = false;
-    for (final entry in deltas.entries) {
-      if (entry.value <= BigNumber.zero()) continue;
-      changed = true;
-      total = total + entry.value;
-      final key = entry.key.id;
-      byType[key] = (byType[key] ?? BigNumber.zero()) + entry.value;
-    }
-    if (!changed) return;
-    final next = current.copyWith(lifetimeProductionGenerated: total, lifetimeProductionGeneratedByType: byType);
-    _emit(next);
     _scheduleSave(next);
   }
 
@@ -218,7 +205,7 @@ class StatisticsService {
       next = next.copyWith(bestPrestigeRunEnergy: energyAtPrestige);
     }
     _emit(next, urgent: true);
-    save();
+    fireAndForget(save(), label: PersistenceLabels.statisticsSave);
   }
 
   /// Updates [_current] immediately. Hot paths coalesce [statistics$] notifies;
@@ -256,11 +243,17 @@ class StatisticsService {
     final interval = PlayTimeScaleExt.forSeconds(_effectivePlayTimeSeconds).tickInterval;
     _playtimeTickInterval = interval;
     _playtimeTimer = Timer.periodic(interval, (_) => _onPlaytimeTick());
+    _playtimePersistTimer = Timer.periodic(
+      const Duration(milliseconds: GameBalance.statisticsPlaytimePersistIntervalMs),
+      (_) => _onPlaytimePersistTick(),
+    );
   }
 
   void _stopPlaytimeTicker() {
     _playtimeTimer?.cancel();
     _playtimeTimer = null;
+    _playtimePersistTimer?.cancel();
+    _playtimePersistTimer = null;
     _playtimeTickInterval = null;
   }
 
@@ -273,7 +266,12 @@ class StatisticsService {
     }
   }
 
-  void _flushPlaytime({required bool endSession}) {
+  void _onPlaytimePersistTick() {
+    _flushPlaytime(endSession: false, urgent: false);
+    _scheduleSave(current);
+  }
+
+  void _flushPlaytime({required bool endSession, bool urgent = true}) {
     final lastFlush = _lastPlaytimeFlushAt;
     final sessionStart = _sessionStartedAt;
     if (lastFlush == null || sessionStart == null) return;
@@ -299,7 +297,7 @@ class StatisticsService {
     }
 
     if (next != current) {
-      _emit(next, urgent: true);
+      _emit(next, urgent: urgent);
     }
   }
 
@@ -311,7 +309,7 @@ class StatisticsService {
       _pendingSave = null;
       _saveTimer = null;
       if (pending != null) {
-        unawaited(_repository.saveStatistics(pending));
+        fireAndForget(_repository.saveStatistics(pending), label: PersistenceLabels.statisticsAutosave);
       }
     });
   }
@@ -328,7 +326,7 @@ class StatisticsService {
     _flushPlaytime(endSession: true);
     _flushNotify();
     _saveTimer?.cancel();
-    unawaited(_repository.saveStatistics(current));
+    fireAndForget(_repository.saveStatistics(current), label: PersistenceLabels.statisticsDispose);
     _statsSubject.close();
   }
 }

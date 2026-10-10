@@ -43,12 +43,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   bool _watching = false;
 
-  StreamSubscription<StatisticsModel>? _statsSub;
-  StreamSubscription<BigNumber>? _energySub;
-  StreamSubscription<BigNumber>? _epsSub;
-  StreamSubscription<PrestigeStateModel>? _prestigeSub;
-  StreamSubscription<List<CellModel>>? _cellsSub;
-  StreamSubscription<Map<String, CellProductionEntry>>? _productionSub;
+  final List<StreamSubscription<Object?>> _subscriptions = [];
 
   Future<void> _onStart(_Start event, Emitter<StatisticsState> emit) => _statisticsService.start();
 
@@ -81,31 +76,22 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
   }
 
   void _subscribe() {
-    _statsSub = _statisticsService.statistics$.listen((stats) => add(StatisticsEvent.statsChanged(stats)));
-    _energySub = _energyService.energy$.listen((energy) => add(StatisticsEvent.energyChanged(energy)));
-    _epsSub = _energyService.eps$.listen((eps) => add(StatisticsEvent.epsChanged(eps)));
-    _prestigeSub = _prestigeService.prestigeState$.listen(
-      (prestige) => add(StatisticsEvent.prestigeChanged(prestige)),
-    );
-    _cellsSub = _cellsService.cells$.listen((cells) => add(StatisticsEvent.cellsChanged(cells)));
-    _productionSub = _cellsService.production$.listen(
-      (production) => add(StatisticsEvent.productionChanged(production)),
-    );
+    _subscriptions.addAll([
+      _statisticsService.statistics$.listen((stats) => add(StatisticsEvent.statsChanged(stats))),
+      _energyService.energy$.listen((energy) => add(StatisticsEvent.energyChanged(energy))),
+      _energyService.eps$.listen((eps) => add(StatisticsEvent.epsChanged(eps))),
+      _prestigeService.prestigeState$.listen((prestige) => add(StatisticsEvent.prestigeChanged(prestige))),
+      _cellsService.cells$.listen((cells) => add(StatisticsEvent.cellsChanged(cells))),
+      _cellsService.production$.listen((production) => add(StatisticsEvent.productionChanged(production))),
+    ]);
   }
 
+  /// Detaches subscriptions synchronously before awaiting cancels, so a
+  /// concurrent `setWatching(true)` never has its fresh subscriptions cancelled.
   Future<void> _unsubscribe() async {
-    await _statsSub?.cancel();
-    await _energySub?.cancel();
-    await _epsSub?.cancel();
-    await _prestigeSub?.cancel();
-    await _cellsSub?.cancel();
-    await _productionSub?.cancel();
-    _statsSub = null;
-    _energySub = null;
-    _epsSub = null;
-    _prestigeSub = null;
-    _cellsSub = null;
-    _productionSub = null;
+    final detached = List.of(_subscriptions);
+    _subscriptions.clear();
+    await Future.wait(detached.map((sub) => sub.cancel()));
   }
 
   void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) {

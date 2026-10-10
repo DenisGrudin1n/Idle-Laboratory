@@ -82,7 +82,7 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 
 ### 2. Statistics Tab
 - [x] **Data Tracking** (Book-o-Stats style; expandable rows for per-type breakdowns):
-  - **Time & sessions:** total play time (live adaptive tick + progressive format); sessions started; longest single session; first launch date; days since first launch (derived)
+  - **Time & sessions:** total play time (live adaptive tick + progressive format); sessions started (cold starts); longest continuous session (one foreground stretch, resets on background); first launch date; days since first launch (derived)
   - **Energy:** lifetime generated; lifetime spent; peak energy; peak EPS; current energy; current EPS; energy earned this prestige run
   - **Cells:** lifetime produced (all + per type expandable); lifetime cell level-ups; total cell levels (snapshot + peak record)
   - **Production:** lifetime stock generated (all + per type expandable); lifetime production level-ups; total production accel levels (snapshot + peak record)

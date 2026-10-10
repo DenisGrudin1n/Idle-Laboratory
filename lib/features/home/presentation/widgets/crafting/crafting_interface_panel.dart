@@ -46,8 +46,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   }
 
   static const _cellSlotIndex = 2;
-  static const _craftingEnergyCostPerUnit = 5;
-  static const _craftingDuration = '00:05';
+  static final _craftingDuration = '00:${GameBalance.craftingDurationSeconds.toString().padLeft(2, '0')}';
 
   Future<void> _openCellPicker(BuildContext context, CellId? current, bool isCrafting) async {
     if (isCrafting) return;
@@ -176,7 +175,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
     final l10n = context.l10n;
     final color = context.color;
 
-    final totalEnergyCost = _craftingEnergyCostPerUnit * state.targetQuantity;
+    final totalEnergyCost = GameBalance.craftingEnergyCostPerUnit * state.targetQuantity;
 
     String? cellAmount;
     if (state.selectedCellId != null) {
@@ -366,6 +365,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
         }
       },
       child: BlocBuilder<CraftingBloc, CraftingState>(
+        buildWhen: (prev, curr) => prev.copyWith(craftingProgress: 0) != curr.copyWith(craftingProgress: 0),
         builder: (context, state) {
           return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
             selector: (state) => state.appVersion,
@@ -411,11 +411,14 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
                   const SizedBox(height: 6),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: state.craftingProgress,
-                      minHeight: 5,
-                      backgroundColor: color.sectionBorder.withValues(alpha: 0.25),
-                      color: color.green.withValues(alpha: 0.85),
+                    child: BlocSelector<CraftingBloc, CraftingState, double>(
+                      selector: (state) => state.craftingProgress,
+                      builder: (context, progress) => LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 5,
+                        backgroundColor: color.sectionBorder.withValues(alpha: 0.25),
+                        color: color.green.withValues(alpha: 0.85),
+                      ),
                     ),
                   ),
                 ],

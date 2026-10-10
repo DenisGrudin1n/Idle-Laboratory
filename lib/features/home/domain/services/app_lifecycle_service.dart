@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:idle_laboratory/core/constants/persistence_labels.dart';
+import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
@@ -12,6 +15,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     this._cellsService,
     this._prestigeService,
     this._statisticsService,
+    this._storageService,
   ) {
     WidgetsBinding.instance.addObserver(this);
   }
@@ -20,6 +24,7 @@ class AppLifecycleService with WidgetsBindingObserver {
   final CellsService _cellsService;
   final PrestigeService _prestigeService;
   final StatisticsService _statisticsService;
+  final StorageService _storageService;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -27,7 +32,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.paused || AppLifecycleState.hidden || AppLifecycleState.detached:
         _statisticsService.pausePlaytime();
-        _saveAll();
+        fireAndForget(_saveAll(), label: PersistenceLabels.lifecycleFlush);
       case AppLifecycleState.resumed:
         _statisticsService.resumePlaytime();
       case _:
@@ -35,13 +40,15 @@ class AppLifecycleService with WidgetsBindingObserver {
     }
   }
 
-  void _saveAll() {
-    _energyService.saveEnergy();
-    _cellsService
-      ..saveCells()
-      ..saveProduction();
-    _prestigeService.saveState();
-    _statisticsService.save();
+  Future<void> _saveAll() async {
+    await Future.wait([
+      _energyService.saveEnergy(),
+      _cellsService.saveCells(),
+      _cellsService.saveProduction(),
+      _storageService.saveInventory(),
+      _prestigeService.saveState(),
+      _statisticsService.save(),
+    ]);
   }
 
   @disposeMethod

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
+import 'package:idle_laboratory/core/constants/persistence_labels.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
@@ -44,7 +46,7 @@ class CellsService {
 
   StreamSubscription<List<CellModel>>? _progressionSubscription;
   StreamSubscription<BigNumber>? _epsCalculationSubscription;
-  StreamSubscription<int>? _prestigeCountSubscription;
+  StreamSubscription<void>? _runResetSubscription;
   Timer? _productionTimer;
 
   Stream<List<CellModel>> get cells$ => _cellsSubject.stream;
@@ -127,9 +129,7 @@ class CellsService {
 
     if (changed) {
       _productionSubject.add(map);
-      _statisticsService
-        ..recordCellsProduced(producedDeltas)
-        ..recordProductionGenerated(producedDeltas);
+      _statisticsService.recordProductionTick(producedDeltas);
     }
   }
 
@@ -150,7 +150,7 @@ class CellsService {
 
     _saveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
       if (_pendingCellsToSave != null) {
-        _cellRepository.saveCells(_pendingCellsToSave!);
+        fireAndForget(_cellRepository.saveCells(_pendingCellsToSave!), label: PersistenceLabels.cellsAutosave);
         _pendingCellsToSave = null;
       }
       _saveTimer = null;
@@ -166,7 +166,7 @@ class CellsService {
 
     _productionSaveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
       if (_pendingProductionSave != null) {
-        _productionRepository.saveProduction(_pendingProductionSave!);
+        fireAndForget(_productionRepository.saveProduction(_pendingProductionSave!), label: PersistenceLabels.productionAutosave);
         _pendingProductionSave = null;
       }
       _productionSaveTimer = null;
@@ -181,11 +181,7 @@ class CellsService {
     ).listen(_energyService.updateEPS);
   }
 
-  void _setupPrestigeListener() => _prestigeCountSubscription = _prestigeService.prestigeState$
-      .map((s) => s.prestigeCount)
-      .distinct()
-      .skip(1)
-      .listen((_) => reset());
+  void _setupPrestigeListener() => _runResetSubscription = _prestigeService.runReset$.listen((_) => reset());
 
   List<CellModel> _processProgression(BigNumber totalEnergy) {
     var cells = currentCells;
@@ -311,9 +307,9 @@ class CellsService {
     return true;
   }
 
-  void saveCells() => _cellRepository.saveCells(currentCells);
+  Future<void> saveCells() => _cellRepository.saveCells(currentCells);
 
-  void saveProduction() => _productionRepository.saveProduction(_productionSubject.value);
+  Future<void> saveProduction() => _productionRepository.saveProduction(_productionSubject.value);
 
   double getFillLevel(String cellId) {
     final cell = currentCells.cast<CellModel?>().firstWhere((c) => c?.id == cellId, orElse: () => null);
@@ -342,9 +338,9 @@ class CellsService {
     final defaultCells = _cellRepository.getDefaultCells();
     _cellsSubject.add(defaultCells);
     _cellEnergiesSubject.add({});
-    _cellRepository.saveCells(defaultCells);
+    fireAndForget(_cellRepository.saveCells(defaultCells), label: PersistenceLabels.cellsReset);
     _rebuildProductionMap(defaultCells, null);
-    saveProduction();
+    fireAndForget(saveProduction(), label: PersistenceLabels.productionReset);
     start();
   }
 
@@ -352,7 +348,7 @@ class CellsService {
   void dispose() {
     _progressionSubscription?.cancel();
     _epsCalculationSubscription?.cancel();
-    _prestigeCountSubscription?.cancel();
+    _runResetSubscription?.cancel();
     _saveTimer?.cancel();
     _productionSaveTimer?.cancel();
     _productionTimer?.cancel();

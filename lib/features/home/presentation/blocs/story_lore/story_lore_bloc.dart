@@ -2,9 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/bloc/safe_bloc.dart';
 import 'package:idle_laboratory/core/constants/story_constants.dart';
-import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/enums/story_beat_id.dart';
-import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/story_lore_service.dart';
 import 'package:injectable/injectable.dart';
 
@@ -14,7 +12,7 @@ part 'story_lore_bloc.freezed.dart';
 
 @injectable
 class StoryLoreBloc extends SafeBloc<StoryLoreEvent, StoryLoreState> {
-  StoryLoreBloc(this._storyLoreService, this._storageService) : super(StoryLoreState.initial(_storyLoreService)) {
+  StoryLoreBloc(this._storyLoreService) : super(StoryLoreState.initial(_storyLoreService)) {
     on<_DarkMatterUnlocked>((event, emit) => _tryQueueBeat(StoryBeatId.darkMatterUnlocked, emit));
     on<_DarkMatterProductionMaxed>((event, emit) => _tryQueueBeat(StoryBeatId.darkMatterProductionMaxed, emit));
     on<_BloodDropCrafted>((event, emit) => _tryQueueBeat(StoryBeatId.firstBloodDrop, emit));
@@ -30,7 +28,6 @@ class StoryLoreBloc extends SafeBloc<StoryLoreEvent, StoryLoreState> {
   }
 
   final StoryLoreService _storyLoreService;
-  final StorageService _storageService;
 
   void _tryQueueBeat(StoryBeatId beat, Emitter<StoryLoreState> emit) {
     if (state.pendingBeat != null) return;
@@ -63,9 +60,8 @@ class StoryLoreBloc extends SafeBloc<StoryLoreEvent, StoryLoreState> {
 
   Future<void> _onDebugReplayEnding(_DebugReplayEnding event, Emitter<StoryLoreState> emit) async {
     if (state.isEndingPlaying) return;
-    await _storyLoreService.resetEndingSeen();
     emit(state.copyWith(hasSeenEnding: false, pendingEndingPlay: false, isEndingPlaying: false));
-    _storageService.addMaterial(ResearchMaterialId.bloodstoneOfDominion);
+    await _storyLoreService.debugReplayEnding();
   }
 
   void _onProloguePageChanged(_ProloguePageChanged event, Emitter<StoryLoreState> emit) {

@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/constants/persistence_labels.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
+import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/features/home/data/repositories/storage_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/storage_inventory_model/storage_inventory_model.dart';
 import 'package:injectable/injectable.dart';
@@ -70,31 +72,32 @@ class StorageService {
 
     _saveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
       if (_pendingInventoryToSave != null) {
-        _storageRepository.saveInventory(_pendingInventoryToSave!);
+        fireAndForget(_storageRepository.saveInventory(_pendingInventoryToSave!), label: PersistenceLabels.inventoryAutosave);
         _pendingInventoryToSave = null;
       }
       _saveTimer = null;
     });
   }
 
-  void saveInventory() {
-    if (_pendingInventoryToSave != null) {
-      _storageRepository.saveInventory(_pendingInventoryToSave!);
-      _pendingInventoryToSave = null;
-      _saveTimer?.cancel();
-      _saveTimer = null;
-    }
+  /// Flushes a pending throttled save immediately (lifecycle pause / dispose).
+  Future<void> saveInventory() async {
+    final pending = _pendingInventoryToSave;
+    if (pending == null) return;
+    _pendingInventoryToSave = null;
+    _saveTimer?.cancel();
+    _saveTimer = null;
+    await _storageRepository.saveInventory(pending);
   }
 
   void reset() {
     final emptyModel = StorageInventoryModel.empty();
     _inventorySubject.add(emptyModel);
-    _storageRepository.saveInventory(emptyModel);
+    fireAndForget(_storageRepository.saveInventory(emptyModel), label: PersistenceLabels.inventoryReset);
   }
 
   @disposeMethod
   void dispose() {
-    saveInventory();
+    fireAndForget(saveInventory(), label: PersistenceLabels.inventoryDispose);
     _saveTimer?.cancel();
     _inventorySubject.close();
   }

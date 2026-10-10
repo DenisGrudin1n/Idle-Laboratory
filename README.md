@@ -335,6 +335,16 @@ flutter gen-l10n
 
 Generates Freezed / json_serializable / injectable config / flutter_gen assets.
 
+> **Generated code is not committed.** `*.g.dart`, `*.freezed.dart` and `*.config.dart` are gitignored, so a fresh clone does not compile until codegen runs. Any CI job must run the steps in this order:
+>
+> ```bash
+> flutter pub get
+> dart run build_runner build --delete-conflicting-outputs
+> flutter gen-l10n
+> flutter analyze
+> flutter test
+> ```
+
 ---
 
 ## Testing
@@ -371,6 +381,16 @@ flutter test
 | CocoaPods | iOS / macOS pods when needed |
 
 > Tip: if `flutter` is missing from PATH, use your local FVM default binary (e.g. `~/fvm/default/bin/flutter`) or fix PATH to the SDK.
+
+#### Project on an ExFAT drive (maintainer setup)
+
+The repo lives on an ExFAT external SSD. ExFAT makes macOS create `._*` AppleDouble files (they break `gen-l10n` / `flutter test` with UTF-8 decode errors) and is slow / unreliable for build output. So on that machine, run every `flutter …` command as **`fflutter …`** (`fflutter pub get`, `fflutter gen-l10n`, `fflutter test`, `fflutter run`):
+
+- `fflutter` first runs `fprep`: deletes `._*` files, mounts an APFS sparsebundle at `~/FlutterProjectsBuild/<project>/`, and symlinks `build/`, `ios/Pods`, `ios/Flutter/ephemeral`, `macos/Pods`, `macos/Flutter/ephemeral`, `android/.gradle` into it; then it calls Flutter with auto-retry.
+- Scripts and full explanation live next to the project folder: `../fflutter.sh`, `../exfat-prep.sh`, `../_fflutter_smoke_run.sh`, `../README-EXFAT.md`.
+- The symlinked dirs are gitignored (`/build`, `**/Pods`, `**/Flutter/ephemeral`); never commit them.
+
+On a normal APFS / ext4 checkout plain `flutter` is fine.
 
 ### Setup
 

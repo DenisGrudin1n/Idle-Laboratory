@@ -16,6 +16,10 @@ class GameBalance {
   /// Coalesce high-frequency statistics stream emits (energy ticks, production).
   static const statisticsUiEmitThrottleMs = 1000;
 
+  /// Playtime is folded into the saved model on this cadence regardless of the
+  /// display tick (which can be up to 1h), so a crash loses at most this much.
+  static const statisticsPlaytimePersistIntervalMs = 10000;
+
   static const cellInitialLevel = 1;
   static const cellDefaultMaxLevel = 1000;
   static const cellLevelCostMultiplier = 1.25;
@@ -139,6 +143,13 @@ class GameBalance {
     final mult = productionStockEnergyMultiplier(cellOrder).multiplyByDouble(productionEPSContributionMultiplier);
     return amount * mult;
   }
+
+  // --- Crafting reactions ---
+
+  static const craftingDurationSeconds = 5;
+  static const craftingEnergyCostPerUnit = 5;
+  static const craftingTickIntervalMs = 100;
+  static const craftingMaxTargetQuantity = 999999;
 
   // --- Research: base-tier materials (bottom 16) crafted from matching energy cells ---
 

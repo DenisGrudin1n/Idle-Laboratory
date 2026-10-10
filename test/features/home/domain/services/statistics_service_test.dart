@@ -96,7 +96,7 @@ void main() {
     await service.start();
     service
       ..recordEnergyGenerated(BigNumber(50, 0), currentEnergy: BigNumber(50, 0), currentEps: BigNumber.zero())
-      ..recordCellsProduced({CellId.basicEnergyCell: BigNumber(3, 0)})
+      ..recordProductionTick({CellId.basicEnergyCell: BigNumber(3, 0)})
       ..recordPrestige(energyAtPrestige: BigNumber(50, 0), newTotalMultiplier: BigNumber(3, 0));
 
     expect(service.current.energyEarnedThisPrestigeRun, BigNumber.zero());
@@ -108,13 +108,26 @@ void main() {
     verify(() => repository.saveStatistics(any())).called(greaterThan(0));
   });
 
-  test('recordCellsProduced accumulates total and per type', () async {
+  test('recordProductionTick accumulates cells produced total and per type', () async {
     await service.start();
-    service.recordCellsProduced({CellId.basicEnergyCell: BigNumber(4, 0), CellId.heatCell: BigNumber(2, 0)});
+    service.recordProductionTick({
+      CellId.basicEnergyCell: BigNumber(4, 0),
+      CellId.heatCell: BigNumber(2, 0),
+      CellId.plasmaCell: BigNumber.zero(),
+    });
 
     expect(service.current.lifetimeCellsProduced, BigNumber(6, 0));
     expect(service.current.lifetimeCellsProducedByType[CellId.basicEnergyCell.id], BigNumber(4, 0));
     expect(service.current.lifetimeCellsProducedByType[CellId.heatCell.id], BigNumber(2, 0));
+    expect(service.current.lifetimeCellsProducedByType.containsKey(CellId.plasmaCell.id), isFalse);
+  });
+
+  test('recordProductionTick ignores ticks with no positive deltas', () async {
+    await service.start();
+    final before = service.current;
+    service.recordProductionTick({CellId.basicEnergyCell: BigNumber.zero()});
+
+    expect(identical(service.current, before), isTrue);
   });
 
   test('recordCraftCompleted tracks materials and energy', () async {

@@ -35,6 +35,10 @@ UI → BLoC/Cubit → Service (RxDart) → Repository → LocalStorageDataSource
 - Debounced autosave on hot paths; immediate flush on prestige, lifecycle `paused`/`hidden`/`detached`, dispose.
 - Do **not** pause playtime on `AppLifecycleState.inactive`.
 
+## Tooling (ExFAT drive)
+
+The repo sits on an ExFAT SSD: run Flutter commands as **`fflutter …`** (e.g. `fflutter test`, `fflutter gen-l10n`), not plain `flutter`. It cleans `._*` files and mounts the APFS build volume behind the symlinked `build/`, `Pods`, `Flutter/ephemeral`. `dart analyze` / `dart run build_runner …` work directly. Details: README → "Project on an ExFAT drive".
+
 ## Docs
 
 Read `README.md` and `ai_docs/Roadmap.md` before large changes.

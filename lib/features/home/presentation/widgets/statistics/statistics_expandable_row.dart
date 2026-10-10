@@ -52,22 +52,9 @@ class _StatisticsExpandableRowState extends State<StatisticsExpandableRow> {
                   SizedBox(width: widget.isMobile ? 18 : 22),
                 const SizedBox(width: 4),
                 Expanded(
-                  child: Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: color.primaryText,
-                      fontSize: widget.isMobile ? 11 : 14,
-                    ),
-                  ),
+                  child: Text(widget.label, style: context.styles.statsLabel(isMobile: widget.isMobile)),
                 ),
-                Text(
-                  widget.value,
-                  style: TextStyle(
-                    color: color.primaryText,
-                    fontSize: widget.isMobile ? 11 : 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                Text(widget.value, style: context.styles.statsValue(isMobile: widget.isMobile)),
               ],
             ),
           ),

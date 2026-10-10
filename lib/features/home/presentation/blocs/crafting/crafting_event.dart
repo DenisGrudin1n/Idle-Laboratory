@@ -10,5 +10,5 @@ class CraftingEvent with _$CraftingEvent {
   const factory CraftingEvent.startReaction() = _StartReaction;
   const factory CraftingEvent.stopReaction() = _StopReaction;
   const factory CraftingEvent.validate() = _Validate;
-  const factory CraftingEvent.tick(double dt) = _Tick;
+  const factory CraftingEvent.reactionChanged(CraftingReactionModel reaction) = _ReactionChanged;
 }

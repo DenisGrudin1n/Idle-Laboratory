@@ -52,6 +52,11 @@ class AppTextStyles {
 
   TextStyle get prestigeMultiplier => TextStyle(color: _color.primary, fontSize: 10, fontWeight: FontWeight.w500);
 
+  TextStyle statsLabel({required bool isMobile}) => TextStyle(color: _color.primaryText, fontSize: isMobile ? 11 : 14);
+
+  TextStyle statsValue({required bool isMobile}) =>
+      TextStyle(color: _color.primaryText, fontSize: isMobile ? 11 : 14, fontWeight: FontWeight.w600);
+
   TextStyle prestigeBonus({required bool isUnlocked}) => TextStyle(
     color: isUnlocked ? _color.green : _color.primaryText.withValues(alpha: 0.5),
     fontSize: 11,

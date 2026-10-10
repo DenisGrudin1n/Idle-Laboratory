@@ -21,9 +21,14 @@ class PrestigeService {
   final BehaviorSubject<PrestigeStateModel> _prestigeStateSubject = BehaviorSubject<PrestigeStateModel>.seeded(
     PrestigeStateModel.initial(),
   );
+  final PublishSubject<void> _runResetSubject = PublishSubject<void>();
   StreamSubscription<BigNumber>? _energySubscription;
 
   Stream<PrestigeStateModel> get prestigeState$ => _prestigeStateSubject.stream;
+
+  /// Fires after prestige or a full prestige reset; run-scoped services that
+  /// cannot depend on [PrestigeService] directly (cycle) reset on it.
+  Stream<void> get runReset$ => _runResetSubject.stream;
   PrestigeStateModel get currentState => _prestigeStateSubject.value;
 
   void _initializeState() => _loadState()
@@ -61,8 +66,8 @@ class PrestigeService {
       newTotalMultiplier: newState.totalMultiplier,
     );
     _prestigeStateSubject.add(newState);
+    _resetRun();
     await saveState(newState);
-    _energyService.reset();
   }
 
   BigNumber getEffectiveMultiplier() => currentState.totalMultiplier;
@@ -99,12 +104,19 @@ class PrestigeService {
   Future<void> reset() => guardAsync(() async {
     final initialState = PrestigeStateModel.initial();
     _prestigeStateSubject.add(initialState);
+    _resetRun();
     await saveState(initialState);
   });
+
+  void _resetRun() {
+    _energyService.reset();
+    _runResetSubject.add(null);
+  }
 
   @disposeMethod
   void dispose() {
     _energySubscription?.cancel();
     _prestigeStateSubject.close();
+    _runResetSubject.close();
   }
 }

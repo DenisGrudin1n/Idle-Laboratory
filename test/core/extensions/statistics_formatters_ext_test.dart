@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idle_laboratory/core/constants/play_time_units.dart';
 import 'package:idle_laboratory/core/enums/play_time_scale.dart';
 import 'package:idle_laboratory/core/extensions/play_time_scale_ext.dart';
 import 'package:idle_laboratory/core/extensions/statistics_formatters_ext.dart';
+import 'package:idle_laboratory/l10n/app_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
   group('PlayTimeScaleExt.forSeconds', () {
@@ -28,30 +32,47 @@ void main() {
     });
   });
 
-  group('StatisticsFormatters.duration', () {
+  group('StatisticsFormattersExt.statsDuration', () {
+    final l10n = lookupAppLocalizations(const Locale('en'));
+
     test('seconds and minutes and hours phases', () {
-      expect(StatisticsFormatters.duration(0), '0s');
-      expect(StatisticsFormatters.duration(42), '42s');
-      expect(StatisticsFormatters.duration(60), '1m 0s');
-      expect(StatisticsFormatters.duration(125), '2m 5s');
-      expect(StatisticsFormatters.duration(3600), '1h');
-      expect(StatisticsFormatters.duration(7200), '2h');
+      expect(l10n.statsDuration(0), '0s');
+      expect(l10n.statsDuration(42), '42s');
+      expect(l10n.statsDuration(60), '1m 0s');
+      expect(l10n.statsDuration(125), '2m 5s');
+      expect(l10n.statsDuration(3600), '1h');
+      expect(l10n.statsDuration(7200), '2h');
     });
 
     test('days compound', () {
-      expect(StatisticsFormatters.duration(86400), '1d 0h 0m');
-      expect(StatisticsFormatters.duration(90061), '1d 1h 1m');
+      expect(l10n.statsDuration(86400), '1d 0h 0m');
+      expect(l10n.statsDuration(90061), '1d 1h 1m');
     });
 
     test('months and years compound', () {
+      expect(l10n.statsDuration(PlayTimeUnits.secondsPerMonth + 86400), '1mo 1d 0h 0m');
       expect(
-        StatisticsFormatters.duration(PlayTimeUnits.secondsPerMonth + 86400),
-        '1mo 1d 0h 0m',
-      );
-      expect(
-        StatisticsFormatters.duration(PlayTimeUnits.secondsPerYear + PlayTimeUnits.secondsPerMonth),
+        l10n.statsDuration(PlayTimeUnits.secondsPerYear + PlayTimeUnits.secondsPerMonth),
         '1y 1mo 0d 0h 0m',
       );
+    });
+  });
+
+  group('StatisticsFormattersExt date and percent', () {
+    final l10n = lookupAppLocalizations(const Locale('en'));
+
+    setUpAll(() => initializeDateFormatting('en'));
+
+    test('statsDate uses locale format and placeholder for missing value', () {
+      expect(l10n.statsDate(null), l10n.statsValueUnavailable);
+      expect(l10n.statsDate(DateTime(2026, 10, 9).millisecondsSinceEpoch), '10/9/2026');
+    });
+
+    test('statsPercent clamps and keeps one decimal for fractions', () {
+      expect(l10n.statsPercent(0, 0), '0%');
+      expect(l10n.statsPercent(1, 2), '50%');
+      expect(l10n.statsPercent(1, 3), '33.3%');
+      expect(l10n.statsPercent(5, 2), '100%');
     });
   });
 }

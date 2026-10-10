@@ -36,18 +36,17 @@ fi
 # Dynamically gather all specific custom rules from .cursor/rules/
 RULES_CONTEXT=""
 if [ -d ".cursor/rules" ]; then
-  for rule_file in .cursor/rules/*.md; do
+  for rule_file in .cursor/rules/*.mdc; do
     if [ -f "$rule_file" ]; then
       RULES_CONTEXT="$RULES_CONTEXT\n\n--- Rule: $(basename "$rule_file") ---\n$(cat "$rule_file")"
     fi
-  fi
+  done
 else
-  # Fallback check if rules are stored as extensionless or alternative structures
   for rule_file in .cursor/rules/*; do
     if [ -f "$rule_file" ]; then
       RULES_CONTEXT="$RULES_CONTEXT\n\n--- Rule: $(basename "$rule_file") ---\n$(cat "$rule_file")"
     fi
-  fi
+  done
 fi
 
 echo "🤖 Step 3: Packing prompt for Cursor Pro..."
@@ -73,7 +72,7 @@ PULL REQUEST CHANGES (Git Diff)
 $PR_DIFF
 
 =========================================
-REVIEW INSTRUCTIONS
+REVIEW & AUTO-POST INSTRUCTIONS (CRITICAL)
 =========================================
 Evaluate the Git Diff strictly against the project architecture rules provided above.
 1. Ignore trivial issues (formatting, missing const, typos) unless they break performance rules (e.g. 100ms hot path ticks).
@@ -84,31 +83,36 @@ Evaluate the Git Diff strictly against the project architecture rules provided a
    - Cross-module boundary violations (Feature-First encapsulation breaks).
    - Direct Local Storage or SharedPreferences calls skipping the Repository layer.
 
-Provide your feedback in a clean, professional markdown format. Group your points into "Critical Architectural Breaches" and "Refactoring Options".
+3. OUTPUT FORMAT REQUIREMENT:
+   Provide your feedback in a clean, professional markdown format. Group your points into "Critical Architectural Breaches" and "Refactoring Options".
+
+4. AUTOMATIC EXECUTION (DO NOT WAIT FOR USER):
+   As soon as you finish writing the review text, you MUST automatically use your terminal access tool to execute the following exact command to post this review as a main comment directly to the GitHub PR:
+   
+   gh pr comment $PR_NUMBER --body "<YOUR_GENERATED_MARKDOWN_REVIEW_HERE>"
+
+   Do not ask for permission. Do not wait for a user response. Just run the terminal tool to post the comment, and confirm to the user that it was posted.
 EOF
 
 # Copy the generated payload to system clipboard cleanly based on the OS
 if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "$PROMPT" | pbcopy
-  echo "✅ Success! The entire context and rules prompt has been copied to your macOS clipboard."
+  echo "✅ Success! The automated context prompt has been copied to your macOS clipboard."
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
   echo "$PROMPT" | clip.exe
-  echo "✅ Success! The entire context and rules prompt has been copied to your Windows clipboard."
+  echo "✅ Success! The automated context prompt has been copied to your Windows clipboard."
 else
-  # Linux fallback using xclip
   if command -v xclip &> /dev/null; then
     echo "$PROMPT" | xclip -selection clipboard
-    echo "✅ Success! The entire context and rules prompt has been copied to your Linux clipboard."
+    echo "✅ Success! The automated context prompt has been copied to your Linux clipboard."
   else
-    echo "⚠️ System clipboard utility not found. Writing output directly to 'ai_pr_prompt.txt' instead."
     echo "$PROMPT" > ai_pr_prompt.txt
   fi
 fi
 
 echo ""
-echo "👉 Next steps:"
-echo "1. Press 'Cmd + I' (Mac) or 'Ctrl + I' (Windows) inside Cursor to open the Composer panel."
-echo "2. Switch the Composer mode to 'Agent' and select Claude 3.5 Sonnet."
-echo "3. Paste your clipboard content into the chat and hit Enter."
-echo "4. After the review completes, ask the agent to execute this terminal command to post comments directly back to the GitHub PR:"
-echo "   gh pr comment $PR_NUMBER --body \"<PASTE_AI_RESPONSE_TEXT_HERE>\""
+echo "🚀 Next steps:"
+echo "1. Press 'Cmd + I' to open the Composer panel."
+echo "2. Switch the mode to 'Agent' (Claude 3.5 Sonnet)."
+echo "3. Press 'Cmd + V' and hit Enter."
+echo "🤖 The Agent will run the review AND post it to GitHub PR #$PR_NUMBER automatically in one go!"

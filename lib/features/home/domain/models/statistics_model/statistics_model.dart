@@ -15,21 +15,20 @@ abstract class StatisticsModel with _$StatisticsModel {
     @BigNumberConverter() required BigNumber peakEps,
     @BigNumberConverter() required BigNumber energyEarnedThisPrestigeRun,
     @BigNumberConverter() required BigNumber lifetimeCellsProduced,
-    @BigNumberConverter() required BigNumber lifetimeProductionGenerated,
     @BigNumberConverter() required BigNumber lifetimeCraftEnergySpent,
     @BigNumberConverter() required BigNumber highestPrestigeMultiplier,
     @BigNumberConverter() required BigNumber energyAtLastPrestige,
     @BigNumberConverter() required BigNumber bestPrestigeRunEnergy,
     @Default(0) int totalPlayTimeSeconds,
+    /// Cold starts only; resuming from background is not a new session.
     @Default(0) int sessionsStarted,
+
+    /// Longest uninterrupted foreground stretch (resets on pause/hidden/detached).
     @Default(0) int longestSessionSeconds,
     int? firstLaunchEpochMs,
     @BigNumberStringMapConverter() @Default(<String, BigNumber>{}) Map<String, BigNumber> lifetimeCellsProducedByType,
     @Default(0) int lifetimeCellLevelUps,
     @Default(0) int peakTotalCellLevels,
-    @BigNumberStringMapConverter()
-    @Default(<String, BigNumber>{})
-    Map<String, BigNumber> lifetimeProductionGeneratedByType,
     @Default(0) int lifetimeProductionLevelUps,
     @Default(0) int peakTotalProductionLevels,
     @Default(0) int lifetimeCraftsCompleted,
@@ -47,7 +46,6 @@ abstract class StatisticsModel with _$StatisticsModel {
     peakEps: BigNumber.zero(),
     energyEarnedThisPrestigeRun: BigNumber.zero(),
     lifetimeCellsProduced: BigNumber.zero(),
-    lifetimeProductionGenerated: BigNumber.zero(),
     lifetimeCraftEnergySpent: BigNumber.zero(),
     highestPrestigeMultiplier: BigNumber.zero(),
     energyAtLastPrestige: BigNumber.zero(),

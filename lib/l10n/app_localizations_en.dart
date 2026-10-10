@@ -712,7 +712,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsSessionsStarted => 'Sessions started';
 
   @override
-  String get statsLongestSession => 'Longest single session';
+  String get statsLongestSession => 'Longest continuous session';
 
   @override
   String get statsFirstLaunchDate => 'First launch date';
@@ -751,9 +751,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsTotalCellLevels => 'Total cell levels (current / peak)';
 
   @override
-  String get statsLifetimeProductionGenerated => 'Lifetime production stock generated';
-
-  @override
   String get statsLifetimeProductionLevelUps => 'Lifetime production level-ups';
 
   @override
@@ -788,4 +785,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsBestPrestigeRun => 'Best prestige run energy';
+
+  @override
+  String get statsValueUnavailable => '—';
+
+  @override
+  String statsDurationSeconds(int value) {
+    return '${value}s';
+  }
+
+  @override
+  String statsDurationMinutes(int value) {
+    return '${value}m';
+  }
+
+  @override
+  String statsDurationHours(int value) {
+    return '${value}h';
+  }
+
+  @override
+  String statsDurationDays(int value) {
+    return '${value}d';
+  }
+
+  @override
+  String statsDurationMonths(int value) {
+    return '${value}mo';
+  }
+
+  @override
+  String statsDurationYears(int value) {
+    return '${value}y';
+  }
 }

@@ -1,19 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idle_laboratory/core/constants/story_constants.dart';
-import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/enums/story_beat_id.dart';
-import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/story_lore_service.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/story_lore/story_lore_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _MockStoryLoreService extends Mock implements StoryLoreService {}
 
-class _MockStorageService extends Mock implements StorageService {}
-
 void main() {
   late _MockStoryLoreService storyLoreService;
-  late _MockStorageService storageService;
 
   setUpAll(() {
     registerFallbackValue(StoryBeatId.darkMatterUnlocked);
@@ -21,16 +16,16 @@ void main() {
 
   setUp(() {
     storyLoreService = _MockStoryLoreService();
-    storageService = _MockStorageService();
     when(() => storyLoreService.isBeatSeen(any())).thenReturn(false);
     when(() => storyLoreService.isEndingSeen()).thenReturn(false);
     when(() => storyLoreService.markSeen(any())).thenAnswer((_) async {});
     when(() => storyLoreService.markEndingSeen()).thenAnswer((_) async {});
     when(() => storyLoreService.resetBeat(any())).thenAnswer((_) async {});
     when(() => storyLoreService.resetEndingSeen()).thenAnswer((_) async {});
+    when(() => storyLoreService.debugReplayEnding()).thenAnswer((_) async {});
   });
 
-  StoryLoreBloc buildBloc() => StoryLoreBloc(storyLoreService, storageService);
+  StoryLoreBloc buildBloc() => StoryLoreBloc(storyLoreService);
 
   test('darkMatterUnlocked queues beat when not seen', () {
     final bloc = buildBloc()..add(const StoryLoreEvent.darkMatterUnlocked());
@@ -101,13 +96,12 @@ void main() {
     expect(bloc.state.isEndingPlaying, isFalse);
   });
 
-  test('debugReplayEnding resets flag and crafts bloodstone', () async {
+  test('debugReplayEnding clears ending flag and delegates replay to service', () async {
     when(() => storyLoreService.isEndingSeen()).thenReturn(true);
     final bloc = buildBloc()..add(const StoryLoreEvent.debugReplayEnding());
     await Future<void>.delayed(Duration.zero);
 
-    verify(() => storyLoreService.resetEndingSeen()).called(1);
-    verify(() => storageService.addMaterial(ResearchMaterialId.bloodstoneOfDominion)).called(1);
+    verify(() => storyLoreService.debugReplayEnding()).called(1);
     expect(bloc.state.hasSeenEnding, isFalse);
   });
 

@@ -1,13 +1,16 @@
 import 'package:idle_laboratory/core/constants/storage_keys.dart';
+import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/enums/story_beat_id.dart';
 import 'package:idle_laboratory/features/home/data/data_sources/local_storage_data_source.dart';
+import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class StoryLoreService {
-  StoryLoreService(this._dataSource);
+  StoryLoreService(this._dataSource, this._storageService);
 
   final LocalStorageDataSource _dataSource;
+  final StorageService _storageService;
 
   bool isBeatSeen(StoryBeatId beat) => _dataSource.getBool(_keyFor(beat)) ?? false;
 
@@ -20,6 +23,13 @@ class StoryLoreService {
   Future<void> resetBeat(StoryBeatId beat) => _dataSource.remove(_keyFor(beat));
 
   Future<void> resetEndingSeen() => _dataSource.remove(StorageKeys.endingCutsceneSeen);
+
+  /// Debug: clears the ending flag and grants the final material so the
+  /// ending cutscene triggers again through the normal crafting path.
+  Future<void> debugReplayEnding() async {
+    await resetEndingSeen();
+    _storageService.addMaterial(ResearchMaterialId.bloodstoneOfDominion);
+  }
 
   String _keyFor(StoryBeatId beat) => switch (beat) {
         StoryBeatId.darkMatterUnlocked => StorageKeys.storyBeatDarkMatterUnlocked,
