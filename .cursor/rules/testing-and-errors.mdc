@@ -1,0 +1,31 @@
+---
+description: Testing, codegen, and repository error handling conventions
+globs: "**/*.{dart}"
+alwaysApply: false
+---
+
+# Testing, Codegen & Errors
+
+## Errors
+
+- Repository / critical async I/O: wrap with `guardAsync` → `GameException`.
+- No empty `catch` that swallows failures.
+- Do not call repositories from widgets.
+
+## Testing
+
+- Service unit tests for logic + persistence + prestige survival (`test/features/.../services/`).
+- Widget smoke tests for critical tabs.
+- Use `mocktail` for doubles.
+- Mirror `lib/` paths under `test/`.
+
+## Codegen
+
+After Freezed / injectable / json_serializable / flutter_gen changes:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+flutter gen-l10n
+```
+
+Bool parameters on public APIs / Freezed factories should be **named** (`{required bool watching}`).

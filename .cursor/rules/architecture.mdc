@@ -1,0 +1,40 @@
+---
+description: Core architecture — UI → BLoC → Service → Repository → SharedPreferences
+alwaysApply: true
+---
+
+# Architecture (Idle Laboratory)
+
+Local-first idle game. **No** Firebase / Supabase / remote DB clients.
+
+```
+UI → BLoC/Cubit → Service (RxDart) → Repository → LocalStorageDataSource → SharedPreferences
+```
+
+## Layers
+
+- **Services** (`lib/features/*/domain/services/`): game logic, timers, `BehaviorSubject` / `foo$` streams, `@lazySingleton`. Heavy work lives here — not in BLoCs.
+- **BLoCs**: thin stream subscribers; forward intents; extend `SafeBloc` when subscriptions call `add`. No SharedPreferences / JSON in BLoCs (except simple UI prefs via settings repo if already patterned that way).
+- **Repositories**: persistence only (`guardAsync`, `StorageKeys`). No game rules.
+- **Models**: Freezed; `BigNumber` + `lib/core/converters/`.
+
+## `lib/core` placement
+
+| Path | Contents |
+|------|----------|
+| `enums/` | Enum only |
+| `extensions/` | Type helpers / formatters |
+| `constants/` | Balance, keys, units |
+| `utils/` | Pure math / algorithms |
+| `widgets/` | Shared chrome |
+
+## Persistence
+
+- Keys only via `StorageKeys` — never ad-hoc prefs in UI.
+- Lifetime stats survive prestige; run-scoped fields reset in the owning service.
+- Debounced autosave on hot paths; immediate flush on prestige, lifecycle `paused`/`hidden`/`detached`, dispose.
+- Do **not** pause playtime on `AppLifecycleState.inactive`.
+
+## Docs
+
+Read `README.md`, `STREAM_ARCHITECTURE.md`, `ai_docs/Roadmap.md` before large changes.

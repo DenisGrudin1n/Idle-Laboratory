@@ -1,0 +1,28 @@
+---
+description: Forms and paginated lists — standards to adopt when those UI types appear
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Forms & Paginated Lists
+
+Most game UIs use fixed enums (no pagination). When adding **forms** or **large/remote lists**, follow these standards so the codebase stays consistent.
+
+## Paginated data lists
+
+- BLoC state: `hasMore` + `items` (or equivalent).
+- `loadMore` uses `offset: state.items.length`; refresh resets to offset `0`.
+- UI: `NotificationListener<ScrollNotification>` near bottom to load more.
+- `RefreshIndicator` for pull-to-refresh.
+- Bottom loader / skeleton while fetching next page; inline retry on failure.
+
+Fixed catalogs (`CellId`, `ResearchMaterialId`, research tree) may render fully without pagination.
+
+## Forms
+
+- Layout: `CustomScrollView` + `SliverPadding` + `SliverList.list` preferred.
+- While processing: inputs `readOnly: true`; primary button shows loading.
+- Status / failure text directly above the submit button.
+- Validation errors hidden until submit (or explicit invalid).
+- All strings via `context.l10n`.
+- Prefer shared field widgets (`AmountTextField` today; add themed text fields as needed rather than one-offs).

@@ -1,0 +1,27 @@
+---
+description: Performance — BlocSelector, visibility subscriptions, stream throttle, timers in services
+alwaysApply: true
+---
+
+# Performance (Idle Laboratory)
+
+Energy and production tick frequently (~100ms). Avoid idle CPU and full-tree rebuilds.
+
+## Required patterns
+
+1. Prefer **`BlocSelector`** (or `buildWhen`) over a single `BlocBuilder` on a large state object.
+2. **Gate expensive subscriptions** to visible UI (pattern: `StatisticsEvent.setWatching` — subscribe on mount, cancel on dispose).
+3. Hot service emits: keep `.current` accurate; **throttle / coalesce** UI streams; use `.distinct()` where values can repeat.
+4. Put **timers in services**, not widgets (energy, playtime, autosave).
+5. Share animation controllers when many widgets loop together (`CellLoopAnimationScope`).
+6. Fixed-size in-game catalogs (enums) may render fully; do not invent pagination overhead for them.
+
+## Anti-patterns
+
+- Subscribing BLoCs to `energy$` / production streams while the related tab is not mounted (unless truly global UI like a persistent header that needs it).
+- Emitting a full Freezed model to the UI on every 100ms tick without throttle when only aggregates changed.
+- Widget-local `Timer.periodic` for meta stats (playtime, etc.).
+
+## Debug
+
+Use `lib/core/debug/` rebuild profiler when investigating jank (debug settings toggle).
