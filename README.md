@@ -5,8 +5,6 @@ A cross-platform **idle / incremental** game built with Flutter. Progress is dri
 Primary docs for agents and reviewers:
 - This `README.md` — architecture, structure, how to extend features
 - [`.cursor/rules/`](.cursor/rules/) — enforceable coding standards (used by Cursor / Bugbot)
-- [`STREAM_ARCHITECTURE.md`](STREAM_ARCHITECTURE.md) — reactive stream design notes
-- [`PRESTIGE_SYSTEM.md`](PRESTIGE_SYSTEM.md) — prestige mechanics
 - [`ai_docs/Roadmap.md`](ai_docs/Roadmap.md) — shipped features vs TODOs
 
 ---
@@ -73,8 +71,6 @@ idle_laboratory/
 ├── ai_docs/                      # Roadmap & AI notes
 ├── android/ ios/ macos/          # Native hosts
 ├── .cursor/rules/                # Cursor / Bugbot project rules
-├── STREAM_ARCHITECTURE.md
-├── PRESTIGE_SYSTEM.md
 └── pubspec.yaml
 ```
 
@@ -393,7 +389,5 @@ flutter run
 
 | Doc | Contents |
 |---|---|
-| [`STREAM_ARCHITECTURE.md`](STREAM_ARCHITECTURE.md) | Reactive services / streams |
-| [`PRESTIGE_SYSTEM.md`](PRESTIGE_SYSTEM.md) | Prestige reset & multipliers |
 | [`ai_docs/Roadmap.md`](ai_docs/Roadmap.md) | Feature checklist & future work |
 | [`.cursor/rules/`](.cursor/rules/) | Agent & code-review rules |

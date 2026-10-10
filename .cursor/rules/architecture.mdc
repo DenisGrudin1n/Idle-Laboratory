@@ -37,4 +37,4 @@ UI → BLoC/Cubit → Service (RxDart) → Repository → LocalStorageDataSource
 
 ## Docs
 
-Read `README.md`, `STREAM_ARCHITECTURE.md`, `ai_docs/Roadmap.md` before large changes.
+Read `README.md` and `ai_docs/Roadmap.md` before large changes.
