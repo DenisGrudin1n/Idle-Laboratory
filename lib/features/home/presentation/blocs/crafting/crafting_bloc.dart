@@ -23,10 +23,10 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
     on<_InputsCleared>((_, emit) => emit(const CraftingState()));
     on<_StartReaction>(_onStartReaction);
     on<_StopReaction>((_, _) => _craftingService.stop());
-    on<_Validate>((_, emit) => _validateAndEmit(state, emit));
+    on<_Validate>(_onValidate);
+    on<_SetWatching>(_onSetWatching);
     on<_ReactionChanged>(_onReactionChanged);
 
-    _resourcesSubscription = _craftingService.resourcesChanged$.listen((_) => add(const CraftingEvent.validate()));
     _reactionSubscription = _craftingService.reaction$.listen(
       (reaction) => add(CraftingEvent.reactionChanged(reaction)),
     );
@@ -36,6 +36,25 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
 
   StreamSubscription<void>? _resourcesSubscription;
   StreamSubscription<CraftingReactionModel>? _reactionSubscription;
+
+  Future<void> _onSetWatching(_SetWatching event, Emitter<CraftingState> emit) async {
+    if (event.watching) {
+      if (_resourcesSubscription != null) return;
+      _resourcesSubscription = _craftingService.resourcesChanged$.listen((_) => add(const CraftingEvent.validate()));
+      _revalidate(emit);
+      return;
+    }
+    final subscription = _resourcesSubscription;
+    _resourcesSubscription = null;
+    await subscription?.cancel();
+  }
+
+  void _onValidate(_Validate event, Emitter<CraftingState> emit) => _revalidate(emit);
+
+  void _revalidate(Emitter<CraftingState> emit) {
+    if (state.craftingMaterialId == null) return;
+    _validateAndEmit(state, emit);
+  }
 
   void _onCellSlotChanged(_CellSlotChanged event, Emitter<CraftingState> emit) {
     if (state.isCrafting) return;
@@ -75,12 +94,13 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
 
   void _onStartReaction(_StartReaction event, Emitter<CraftingState> emit) {
     if (state.isCrafting || state.craftingMaterialId == null || state.error != null) return;
-    _craftingService.start(
+    final started = _craftingService.start(
       quantity: state.targetQuantity,
       cellId: state.selectedCellId,
       reagent1Id: state.reagent1Id,
       reagent2Id: state.reagent2Id,
     );
+    if (started) emit(state.copyWith(isCrafting: true, craftingProgress: 0));
   }
 
   void _onReactionChanged(_ReactionChanged event, Emitter<CraftingState> emit) {

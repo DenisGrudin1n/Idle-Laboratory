@@ -10,6 +10,7 @@ import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/features/home/domain/models/crafting_reaction_model/crafting_reaction_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:injectable/injectable.dart';
@@ -19,12 +20,21 @@ import 'package:rxdart/rxdart.dart';
 /// (timer, resource spending, output, statistics).
 @lazySingleton
 class CraftingService {
-  CraftingService(this._cellsService, this._energyService, this._storageService, this._statisticsService);
+  CraftingService(
+    this._cellsService,
+    this._energyService,
+    this._storageService,
+    this._statisticsService,
+    PrestigeService prestigeService,
+  ) {
+    _runResetSubscription = prestigeService.runReset$.listen((_) => _resetReaction());
+  }
 
   final CellsService _cellsService;
   final EnergyService _energyService;
   final StorageService _storageService;
   final StatisticsService _statisticsService;
+  StreamSubscription<void>? _runResetSubscription;
 
   final BehaviorSubject<CraftingReactionModel> _reactionSubject = BehaviorSubject<CraftingReactionModel>.seeded(
     const CraftingReactionModel(),
@@ -38,11 +48,14 @@ class CraftingService {
   CraftingReactionModel get currentReaction => _reactionSubject.value;
 
   /// Fires when energy, cell stock or inventory change, so callers can re-run [validate].
+  /// Throttled: energy and production tick every ~100ms.
   Stream<void> get resourcesChanged$ => Rx.merge<Object?>([
         _cellsService.production$,
         _energyService.energy$,
         _storageService.inventory$,
-      ]).map((_) {});
+      ])
+          .throttleTime(const Duration(milliseconds: GameBalance.craftingResourcesThrottleMs), trailing: true)
+          .map((_) {});
 
   ResearchMaterialId? outputFor({CellId? cellId, ResearchMaterialId? reagent1Id, ResearchMaterialId? reagent2Id}) {
     if (cellId != null) return cellId.baseResearchMaterial;
@@ -99,6 +112,13 @@ class CraftingService {
     final reaction = currentReaction;
     if (!reaction.isCrafting) return;
     _reactionSubject.add(reaction.copyWith(isCrafting: false, progress: 0));
+  }
+
+  /// Prestige wipes the run's energy and cells, so an in-flight reaction is dropped.
+  void _resetReaction() {
+    _stopTimer();
+    if (currentReaction == const CraftingReactionModel()) return;
+    _reactionSubject.add(const CraftingReactionModel());
   }
 
   void _startTimer() {
@@ -207,6 +227,7 @@ class CraftingService {
 
   @disposeMethod
   void dispose() {
+    _runResetSubscription?.cancel();
     _stopTimer();
     _reactionSubject.close();
   }

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:developer' as developer;
+import 'dart:math' as math;
 
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/persistence_labels.dart';
@@ -53,7 +55,13 @@ class StatisticsService {
       final saved = await _load();
       _current = saved;
       _statsSubject.add(saved);
-    } catch (_) {
+    } catch (error, stackTrace) {
+      developer.log(
+        '${PersistenceLabels.statisticsLoad} failed, starting from empty statistics',
+        name: 'idle_laboratory',
+        error: error,
+        stackTrace: stackTrace,
+      );
       _current = StatisticsModel.initial();
       _statsSubject.add(_current);
     }
@@ -208,6 +216,14 @@ class StatisticsService {
     fireAndForget(save(), label: PersistenceLabels.statisticsSave);
   }
 
+  /// Clears run-scoped fields on any run reset (prestige or full prestige reset).
+  void resetRun() {
+    if (current.energyEarnedThisPrestigeRun == BigNumber.zero()) return;
+    final next = current.copyWith(energyEarnedThisPrestigeRun: BigNumber.zero());
+    _emit(next, urgent: true);
+    _scheduleSave(next);
+  }
+
   /// Updates [_current] immediately. Hot paths coalesce [statistics$] notifies;
   /// [urgent] flushes the stream right away (prestige, craft, playtime, start).
   void _emit(StatisticsModel next, {bool urgent = false}) {
@@ -266,12 +282,23 @@ class StatisticsService {
     }
   }
 
-  void _onPlaytimePersistTick() {
-    _flushPlaytime(endSession: false, urgent: false);
-    _scheduleSave(current);
+  /// Saves unflushed playtime without touching [_current], so the UI only
+  /// changes on the adaptive display tick.
+  void _onPlaytimePersistTick() => _scheduleSave(current);
+
+  /// [model] plus the playtime elapsed since the last display flush.
+  StatisticsModel _withUnflushedPlaytime(StatisticsModel model) {
+    final lastFlush = _lastPlaytimeFlushAt;
+    final sessionStart = _sessionStartedAt;
+    if (lastFlush == null || sessionStart == null) return model;
+    final now = DateTime.now();
+    return model.copyWith(
+      totalPlayTimeSeconds: model.totalPlayTimeSeconds + now.difference(lastFlush).inSeconds,
+      longestSessionSeconds: math.max(model.longestSessionSeconds, now.difference(sessionStart).inSeconds),
+    );
   }
 
-  void _flushPlaytime({required bool endSession, bool urgent = true}) {
+  void _flushPlaytime({required bool endSession}) {
     final lastFlush = _lastPlaytimeFlushAt;
     final sessionStart = _sessionStartedAt;
     if (lastFlush == null || sessionStart == null) return;
@@ -297,7 +324,7 @@ class StatisticsService {
     }
 
     if (next != current) {
-      _emit(next, urgent: urgent);
+      _emit(next, urgent: true);
     }
   }
 
@@ -309,7 +336,10 @@ class StatisticsService {
       _pendingSave = null;
       _saveTimer = null;
       if (pending != null) {
-        fireAndForget(_repository.saveStatistics(pending), label: PersistenceLabels.statisticsAutosave);
+        fireAndForget(
+          _repository.saveStatistics(_withUnflushedPlaytime(pending)),
+          label: PersistenceLabels.statisticsAutosave,
+        );
       }
     });
   }

@@ -17,6 +17,7 @@ class PersistenceLabels {
   static const inventoryReset = 'inventory reset save';
   static const inventoryDispose = 'inventory dispose save';
 
+  static const statisticsLoad = 'statistics load';
   static const statisticsSave = 'statistics save';
   static const statisticsAutosave = 'statistics autosave';
   static const statisticsDispose = 'statistics dispose save';

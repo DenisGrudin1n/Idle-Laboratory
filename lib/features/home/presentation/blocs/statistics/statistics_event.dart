@@ -11,7 +11,6 @@ class StatisticsEvent with _$StatisticsEvent {
   const factory StatisticsEvent.energyChanged(BigNumber energy) = _EnergyChanged;
   const factory StatisticsEvent.epsChanged(BigNumber eps) = _EpsChanged;
   const factory StatisticsEvent.prestigeChanged(PrestigeStateModel prestige) = _PrestigeChanged;
-  const factory StatisticsEvent.cellsChanged(List<CellModel> cells) = _CellsChanged;
-  const factory StatisticsEvent.productionChanged(Map<String, CellProductionEntry> production) =
-      _ProductionChanged;
+  const factory StatisticsEvent.totalCellLevelsChanged(int total) = _TotalCellLevelsChanged;
+  const factory StatisticsEvent.totalProductionLevelsChanged(int total) = _TotalProductionLevelsChanged;
 }

@@ -57,6 +57,20 @@ class CellsService {
   Map<String, BigNumber> get currentCellEnergies => _cellEnergiesSubject.value;
   Map<String, CellProductionEntry> get currentProduction => _productionSubject.value;
 
+  /// Sum of unlocked cell levels; emits only when the total changes.
+  Stream<int> get totalCellLevels$ => cells$.map(_totalCellLevelsOf).distinct();
+  int get totalCellLevels => _totalCellLevelsOf(currentCells);
+
+  /// Sum of production acceleration levels; emits only when the total changes.
+  Stream<int> get totalProductionLevels$ => production$.map(_totalProductionLevelsOf).distinct();
+  int get totalProductionLevels => _totalProductionLevelsOf(currentProduction);
+
+  static int _totalCellLevelsOf(List<CellModel> cells) =>
+      cells.fold<int>(0, (sum, cell) => sum + (cell.isLocked ? 0 : cell.level));
+
+  static int _totalProductionLevelsOf(Map<String, CellProductionEntry> production) =>
+      production.values.fold<int>(0, (sum, entry) => sum + entry.accelerationLevel);
+
   Future<void> _init() async {
     await _initializeCells();
     _setupEnergyReaction();
@@ -229,8 +243,7 @@ class CellsService {
     }).toList();
 
     if (levelUps > 0) {
-      final totalLevels = updated.fold<int>(0, (sum, cell) => sum + (cell.isLocked ? 0 : cell.level));
-      _statisticsService.recordCellLevelUps(levelUps, totalCellLevels: totalLevels);
+      _statisticsService.recordCellLevelUps(levelUps, totalCellLevels: _totalCellLevelsOf(updated));
     }
     return updated;
   }
@@ -266,8 +279,7 @@ class CellsService {
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
-    final totalLevels = map.values.fold<int>(0, (sum, e) => sum + e.accelerationLevel);
-    _statisticsService.recordProductionLevelUps(1, totalProductionLevels: totalLevels);
+    _statisticsService.recordProductionLevelUps(1, totalProductionLevels: _totalProductionLevelsOf(map));
     return true;
   }
 
@@ -302,8 +314,7 @@ class CellsService {
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
-    final totalLevels = map.values.fold<int>(0, (sum, e) => sum + e.accelerationLevel);
-    _statisticsService.recordProductionLevelUps(levelsToGain, totalProductionLevels: totalLevels);
+    _statisticsService.recordProductionLevelUps(levelsToGain, totalProductionLevels: _totalProductionLevelsOf(map));
     return true;
   }
 

@@ -110,6 +110,7 @@ class PrestigeService {
 
   void _resetRun() {
     _energyService.reset();
+    _statisticsService.resetRun();
     _runResetSubject.add(null);
   }
 

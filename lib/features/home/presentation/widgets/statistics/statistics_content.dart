@@ -331,6 +331,8 @@ typedef _CraftingView = ({
   Map<String, int> byType,
   BigNumber craftEnergySpent,
   int craftDurationSeconds,
+  int researchDiscovered,
+  int researchTotal,
 });
 
 class _CraftingSection extends StatelessWidget {
@@ -351,6 +353,8 @@ class _CraftingSection extends StatelessWidget {
           byType: stats.lifetimeMaterialsCraftedByType,
           craftEnergySpent: stats.lifetimeCraftEnergySpent,
           craftDurationSeconds: stats.lifetimeCraftDurationSeconds,
+          researchDiscovered: stats.researchMaterialsDiscovered,
+          researchTotal: stats.researchMaterialsTotal,
         );
       },
       builder: (context, view) {
@@ -388,10 +392,7 @@ class _CraftingSection extends StatelessWidget {
             ),
             StatisticsRow(
               label: l10n.statsResearchTreeCompletion,
-              value: l10n.statsPercent(
-                view.byType.values.where((c) => c > 0).length,
-                ResearchMaterialId.values.length,
-              ),
+              value: l10n.statsPercent(view.researchDiscovered, view.researchTotal),
               isMobile: isMobile,
             ),
           ],

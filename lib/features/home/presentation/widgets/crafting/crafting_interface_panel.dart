@@ -31,6 +31,7 @@ class CraftingInterfacePanel extends StatefulWidget {
 
 class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   late final TextEditingController _quantityController;
+  CraftingBloc? _craftingBloc;
 
   @override
   void initState() {
@@ -40,7 +41,18 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bloc = context.read<CraftingBloc>();
+    if (identical(_craftingBloc, bloc)) return;
+    _craftingBloc?.add(const CraftingEvent.setWatching(watching: false));
+    _craftingBloc = bloc;
+    bloc.add(const CraftingEvent.setWatching(watching: true));
+  }
+
+  @override
   void dispose() {
+    _craftingBloc?.add(const CraftingEvent.setWatching(watching: false));
     _quantityController.dispose();
     super.dispose();
   }

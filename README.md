@@ -335,7 +335,11 @@ flutter gen-l10n
 
 Generates Freezed / json_serializable / injectable config / flutter_gen assets.
 
-> **Generated code is not committed.** `*.g.dart`, `*.freezed.dart` and `*.config.dart` are gitignored, so a fresh clone does not compile until codegen runs. Any CI job must run the steps in this order:
+> **Generated code is not committed.** `*.g.dart`, `*.freezed.dart` and `*.config.dart` are gitignored, so a fresh clone does not compile until codegen runs.
+>
+> **Exception: l10n output is committed.** `lib/l10n/app_localizations*.dart` lives in the source tree (no synthetic package) and `generate: true` in `pubspec.yaml` rewrites it on every `pub get` / `run`, so it cannot drift silently. Commit it together with the `.arb` change that produced it.
+>
+> Any CI job must run the steps in this order:
 >
 > ```bash
 > flutter pub get
@@ -389,6 +393,7 @@ The repo lives on an ExFAT external SSD. ExFAT makes macOS create `._*` AppleDou
 - `fflutter` first runs `fprep`: deletes `._*` files, mounts an APFS sparsebundle at `~/FlutterProjectsBuild/<project>/`, and symlinks `build/`, `ios/Pods`, `ios/Flutter/ephemeral`, `macos/Pods`, `macos/Flutter/ephemeral`, `android/.gradle` into it; then it calls Flutter with auto-retry.
 - Scripts and full explanation live next to the project folder: `../fflutter.sh`, `../exfat-prep.sh`, `../_fflutter_smoke_run.sh`, `../README-EXFAT.md`.
 - The symlinked dirs are gitignored (`/build`, `**/Pods`, `**/Flutter/ephemeral`); never commit them.
+- `pod install` through the symlinked `ios/Pods` (which `fflutter` runs when pods are out of sync) re-adds a second `FileRef` with an absolute `…/FlutterProjectsBuild/…/ios-Pods` path to `ios/Runner.xcworkspace/contents.xcworkspacedata`. On the ExFAT machine this file is expected to stay **locally modified**: leave it as the tooling wrote it and **never stage or commit it**. Only `group:Pods/Pods.xcodeproj` belongs in git. Treat any other tooling-only rewrite of iOS / macOS project files that adds `FlutterProjectsBuild` paths the same way.
 
 On a normal APFS / ext4 checkout plain `flutter` is fine.
 

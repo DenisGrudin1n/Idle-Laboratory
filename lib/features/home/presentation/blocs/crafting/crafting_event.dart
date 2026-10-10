@@ -10,5 +10,8 @@ class CraftingEvent with _$CraftingEvent {
   const factory CraftingEvent.startReaction() = _StartReaction;
   const factory CraftingEvent.stopReaction() = _StopReaction;
   const factory CraftingEvent.validate() = _Validate;
+
+  /// Subscribes to resource changes only while the crafting panel is mounted.
+  const factory CraftingEvent.setWatching({required bool watching}) = _SetWatching;
   const factory CraftingEvent.reactionChanged(CraftingReactionModel reaction) = _ReactionChanged;
 }

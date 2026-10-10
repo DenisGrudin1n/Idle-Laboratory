@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/converters/big_number_converter.dart';
 import 'package:idle_laboratory/core/converters/big_number_map_converter.dart';
+import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 
 part 'statistics_model.freezed.dart';
@@ -37,6 +38,8 @@ abstract class StatisticsModel with _$StatisticsModel {
     @Default(0) int lifetimeCraftDurationSeconds,
   }) = _StatisticsModel;
 
+  const StatisticsModel._();
+
   factory StatisticsModel.fromJson(Map<String, dynamic> json) => _$StatisticsModelFromJson(json);
 
   factory StatisticsModel.initial() => StatisticsModel(
@@ -51,4 +54,9 @@ abstract class StatisticsModel with _$StatisticsModel {
     energyAtLastPrestige: BigNumber.zero(),
     bestPrestigeRunEnergy: BigNumber.zero(),
   );
+
+  /// Research tree nodes crafted at least once.
+  int get researchMaterialsDiscovered => lifetimeMaterialsCraftedByType.values.where((count) => count > 0).length;
+
+  int get researchMaterialsTotal => ResearchMaterialId.values.length;
 }

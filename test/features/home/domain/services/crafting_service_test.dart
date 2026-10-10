@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_errors.dart';
@@ -9,6 +11,7 @@ import 'package:idle_laboratory/features/home/domain/models/cell_production_entr
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/crafting_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:mocktail/mocktail.dart';
@@ -21,11 +24,15 @@ class _MockStorageService extends Mock implements StorageService {}
 
 class _MockStatisticsService extends Mock implements StatisticsService {}
 
+class _MockPrestigeService extends Mock implements PrestigeService {}
+
 void main() {
   late _MockCellsService cellsService;
   late _MockEnergyService energyService;
   late _MockStorageService storageService;
   late _MockStatisticsService statisticsService;
+  late _MockPrestigeService prestigeService;
+  late StreamController<void> runReset;
 
   const cellId = CellId.basicEnergyCell;
   const unit = Duration(seconds: GameBalance.craftingDurationSeconds);
@@ -41,7 +48,11 @@ void main() {
     energyService = _MockEnergyService();
     storageService = _MockStorageService();
     statisticsService = _MockStatisticsService();
+    prestigeService = _MockPrestigeService();
+    runReset = StreamController<void>.broadcast();
+    addTearDown(runReset.close);
 
+    when(() => prestigeService.runReset$).thenAnswer((_) => runReset.stream);
     when(() => energyService.currentEnergy).thenReturn(BigNumber(1, 6));
     when(() => energyService.trySpendEnergy(any())).thenReturn(true);
     when(() => cellsService.currentProduction).thenReturn({
@@ -51,7 +62,8 @@ void main() {
     when(() => storageService.hasMaterial(any(), count: any(named: 'count'))).thenReturn(false);
   });
 
-  CraftingService build() => CraftingService(cellsService, energyService, storageService, statisticsService);
+  CraftingService build() =>
+      CraftingService(cellsService, energyService, storageService, statisticsService, prestigeService);
 
   test('outputFor maps a cell slot to its base research material', () {
     final service = build();
@@ -122,5 +134,19 @@ void main() {
     expect(service.currentReaction.isCrafting, isFalse);
     expect(service.currentReaction.progress, 0);
     expect(service.currentReaction.remaining, 2);
+  });
+
+  testWidgets('run reset drops the in-flight reaction', (tester) async {
+    final service = build();
+    addTearDown(service.dispose);
+
+    service.start(quantity: 2, cellId: cellId);
+    await tester.pump(const Duration(seconds: 1));
+    runReset.add(null);
+    await tester.pump(unit * 2);
+
+    verifyNever(() => storageService.addMaterial(any()));
+    expect(service.currentReaction.isCrafting, isFalse);
+    expect(service.currentReaction.remaining, 0);
   });
 }

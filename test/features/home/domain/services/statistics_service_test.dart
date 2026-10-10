@@ -108,6 +108,27 @@ void main() {
     verify(() => repository.saveStatistics(any())).called(greaterThan(0));
   });
 
+  test('resetRun clears this-run energy and keeps lifetime fields', () async {
+    await service.start();
+    service
+      ..recordEnergyGenerated(BigNumber(20, 0), currentEnergy: BigNumber(20, 0), currentEps: BigNumber.zero())
+      ..resetRun();
+
+    expect(service.current.energyEarnedThisPrestigeRun, BigNumber.zero());
+    expect(service.current.lifetimeEnergyGenerated, BigNumber(20, 0));
+  });
+
+  test('load failure falls back to initial statistics', () async {
+    when(() => repository.getStatistics()).thenThrow(Exception('corrupt blob'));
+    final fresh = StatisticsService(repository);
+    addTearDown(fresh.dispose);
+
+    await fresh.start();
+
+    expect(fresh.current.sessionsStarted, 1);
+    expect(fresh.current.lifetimeEnergyGenerated, BigNumber.zero());
+  });
+
   test('recordProductionTick accumulates cells produced total and per type', () async {
     await service.start();
     service.recordProductionTick({
