@@ -24,29 +24,3 @@ extension PlayTimeScaleExt on PlayTimeScale {
     return sessionTick < totalTick ? sessionTick : totalTick;
   }
 }
-
-String _two(int value) => value.toString().padLeft(2, '0');
-
-String formatStatDuration(int totalSeconds) {
-  final s = totalSeconds < 0 ? 0 : totalSeconds;
-  return switch (PlayTimeScaleExt.forSeconds(s)) {
-    PlayTimeScale.seconds || PlayTimeScale.minutes =>
-      '${_two(s ~/ PlayTimeUnits.secondsPerMinute)}m ${_two(s % PlayTimeUnits.secondsPerMinute)}s',
-    PlayTimeScale.hours =>
-      '${_two(s ~/ PlayTimeUnits.secondsPerHour)}h ${_two((s % PlayTimeUnits.secondsPerHour) ~/ PlayTimeUnits.secondsPerMinute)}m',
-    PlayTimeScale.days =>
-      '${_two(s ~/ PlayTimeUnits.secondsPerDay)}d ${_two((s % PlayTimeUnits.secondsPerDay) ~/ PlayTimeUnits.secondsPerHour)}h',
-  };
-}
-
-String formatClockDuration(int totalSeconds) {
-  final s = totalSeconds < 0 ? 0 : totalSeconds;
-  return switch (PlayTimeScaleExt.forSeconds(s)) {
-    PlayTimeScale.seconds ||
-    PlayTimeScale.minutes => '${_two(s ~/ PlayTimeUnits.secondsPerMinute)}:${_two(s % PlayTimeUnits.secondsPerMinute)}',
-    PlayTimeScale.hours =>
-      '${_two(s ~/ PlayTimeUnits.secondsPerHour)}h ${_two((s % PlayTimeUnits.secondsPerHour) ~/ PlayTimeUnits.secondsPerMinute)}m',
-    PlayTimeScale.days =>
-      '${_two(s ~/ PlayTimeUnits.secondsPerDay)}d ${_two((s % PlayTimeUnits.secondsPerDay) ~/ PlayTimeUnits.secondsPerHour)}h',
-  };
-}

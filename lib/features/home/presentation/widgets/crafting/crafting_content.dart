@@ -64,7 +64,7 @@ class CraftingContent extends StatelessWidget {
       CraftingTab.research => const SectionCard(
         child: Padding(padding: EdgeInsets.all(12), child: ResearchTreeView()),
       ),
-      CraftingTab.overview => const Center(child: Text('Coming Soon')),
+      CraftingTab.overview => Center(child: Text(context.l10n.comingSoon)),
     };
   }
 }

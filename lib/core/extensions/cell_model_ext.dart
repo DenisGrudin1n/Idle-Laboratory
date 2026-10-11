@@ -64,7 +64,11 @@ extension CellModelExt on CellModel {
     return (currentEnergy - currentReq).ratio(nextReq - currentReq, max: 1);
   }
 
-  String getUnlockRequirementFormatted({bool compact = true}) => unlockRequirement?.format(compact: compact) ?? '???';
+}
+
+extension CellProductionEntryExt on CellProductionEntry {
+  /// Production stock per second for [cellId] at this acceleration level.
+  BigNumber productionPPS(CellId cellId) => GameBalance.calculateProductionPPS(cellId.order, accelerationLevel);
 }
 
 extension CellListProductionExt on List<CellModel> {

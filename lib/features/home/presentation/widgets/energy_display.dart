@@ -45,7 +45,10 @@ class EnergyDisplay extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '+${energyPerSecond.format(useScientific: isScientific)} ${context.l10n.perSecond}',
+                  context.l10n.signedAmountWithUnit(
+                    energyPerSecond.format(useScientific: isScientific),
+                    context.l10n.perSecond,
+                  ),
                   style: context.styles.successText,
                   textAlign: TextAlign.center,
                 ),

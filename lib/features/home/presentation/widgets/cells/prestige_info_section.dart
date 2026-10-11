@@ -97,7 +97,10 @@ class _PrestigeMultiplierSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${l10n.prestigeMultiplier}: ${data.total.format(compact: true)}x',
+                  l10n.labeledValue(
+                    l10n.prestigeMultiplier,
+                    l10n.multiplierValue(data.total.format(compact: true)),
+                  ),
                   style: context.styles.prestigeMultiplier,
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -105,7 +108,10 @@ class _PrestigeMultiplierSection extends StatelessWidget {
                 ),
                 SizedBox(height: isMobile ? 3 : 9),
                 Text(
-                  '+ ${data.current.format(compact: true)}x ${l10n.prestigeBonus}',
+                  l10n.prestigeBonusLine(
+                    l10n.multiplierValue(data.current.format(compact: true)),
+                    l10n.prestigeBonus,
+                  ),
                   style: context.styles.prestigeBonus(isUnlocked: data.isUnlocked),
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -210,14 +216,15 @@ class _PrestigeResetButton extends StatelessWidget {
     color: Colors.transparent,
     child: InkWell(
       onTap: () async {
+        final l10n = context.l10n;
         final confirm = await showDialog<bool>(
           context: context,
           builder: (dialogContext) => AlertDialog(
-            title: const Text('Reset Prestige'),
-            content: const Text('This will reset all prestige progress to zero. Continue?'),
+            title: Text(l10n.prestigeResetTitle),
+            content: Text(l10n.prestigeResetConfirm),
             actions: [
-              TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: const Text('Cancel')),
-              TextButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: const Text('Reset')),
+              TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.cancel)),
+              TextButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l10n.reset)),
             ],
           ),
         );

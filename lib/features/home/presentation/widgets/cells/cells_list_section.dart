@@ -116,13 +116,13 @@ class _CellItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${l10n.level}: ${cell.level}', style: context.styles.compactValue),
+                    Text(l10n.labeledValue(l10n.level, '${cell.level}'), style: context.styles.compactValue),
                     Row(
                       children: [
                         Icon(Icons.arrow_upward, color: context.color.green, size: 10),
                         const SizedBox(width: 2),
                         Text(
-                          '${cell.energyPerSecond ?? '0.0'} / ${l10n.sec}',
+                          l10n.ratePerUnit(cell.energyPerSecond ?? '0.0', l10n.sec),
                           style: context.styles.compactAccentValue,
                         ),
                       ],
@@ -141,7 +141,10 @@ class _CellItem extends StatelessWidget {
                         Text(
                           nextLevel == null
                               ? l10n.maxLvl
-                              : '${l10n.nextLvl}: ${nextLevel.energyRequired.format(useScientific: isScientific)}',
+                              : l10n.labeledValue(
+                                  l10n.nextLvl,
+                                  nextLevel.energyRequired.format(useScientific: isScientific),
+                                ),
                           style: context.styles.compactSupporting,
                         ),
                       ],
@@ -151,7 +154,12 @@ class _CellItem extends StatelessWidget {
               ],
               if (cell.isLocked) ...[
                 const SizedBox(height: 6),
-                StatusBadge(text: '${l10n.unlockAt}: ${cell.getUnlockRequirementFormatted()}'),
+                StatusBadge(
+                  text: l10n.labeledValue(
+                    l10n.unlockAt,
+                    cell.unlockRequirement?.format(compact: true) ?? l10n.valueUnavailable,
+                  ),
+                ),
               ],
             ],
           ),

@@ -103,6 +103,12 @@ abstract class AppLocalizations {
   /// **'Energy Units (EU)'**
   String get energyUnits;
 
+  /// No description provided for @eu.
+  ///
+  /// In en, this message translates to:
+  /// **'EU'**
+  String get eu;
+
   /// No description provided for @perSecond.
   ///
   /// In en, this message translates to:
@@ -126,6 +132,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OFF'**
   String get off;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get comingSoon;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get reset;
+
+  /// No description provided for @valueUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get valueUnavailable;
+
+  /// No description provided for @amountWithUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} {unit}'**
+  String amountWithUnit(String amount, String unit);
+
+  /// No description provided for @signedAmountWithUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'+{amount} {unit}'**
+  String signedAmountWithUnit(String amount, String unit);
+
+  /// No description provided for @labeledValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String labeledValue(String label, String value);
+
+  /// No description provided for @spacedLabelValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{label} {value}'**
+  String spacedLabelValue(String label, String value);
+
+  /// No description provided for @fieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}:'**
+  String fieldLabel(String label);
+
+  /// No description provided for @quantityDelta.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count}'**
+  String quantityDelta(int count);
+
+  /// No description provided for @plusSign.
+  ///
+  /// In en, this message translates to:
+  /// **'+'**
+  String get plusSign;
+
+  /// No description provided for @multiplierValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{value}x'**
+  String multiplierValue(String value);
+
+  /// No description provided for @prestigeBonusLine.
+  ///
+  /// In en, this message translates to:
+  /// **'+ {multiplier} {bonusLabel}'**
+  String prestigeBonusLine(String multiplier, String bonusLabel);
+
+  /// No description provided for @ratePerUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} / {unit}'**
+  String ratePerUnit(String amount, String unit);
+
+  /// No description provided for @productionRatePerSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'{rate}/s'**
+  String productionRatePerSecond(String rate);
+
+  /// No description provided for @currentOverPeak.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {peak}'**
+  String currentOverPeak(String current, String peak);
+
+  /// No description provided for @durationStatMinutesSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}m {seconds}s'**
+  String durationStatMinutesSeconds(String minutes, String seconds);
+
+  /// No description provided for @durationStatHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String durationStatHoursMinutes(String hours, String minutes);
+
+  /// No description provided for @durationStatDaysHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d {hours}h'**
+  String durationStatDaysHours(String days, String hours);
+
+  /// No description provided for @durationClockMinutesSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes}:{seconds}'**
+  String durationClockMinutesSeconds(String minutes, String seconds);
+
+  /// No description provided for @durationClockHoursMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours}h {minutes}m'**
+  String durationClockHoursMinutes(String hours, String minutes);
+
+  /// No description provided for @durationClockDaysHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d {hours}h'**
+  String durationClockDaysHours(String days, String hours);
 
   /// No description provided for @cells.
   ///
@@ -534,6 +672,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset progress for permanent EPS multiplier'**
   String get prestigeDescription;
+
+  /// No description provided for @prestigeResetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Prestige'**
+  String get prestigeResetTitle;
+
+  /// No description provided for @prestigeResetConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This will reset all prestige progress to zero. Continue?'**
+  String get prestigeResetConfirm;
 
   /// No description provided for @tutorialWelcomeTitle.
   ///
@@ -1554,12 +1704,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Best prestige run energy'**
   String get statsBestPrestigeRun;
-
-  /// No description provided for @statsValueUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'—'**
-  String get statsValueUnavailable;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

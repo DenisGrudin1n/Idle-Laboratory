@@ -30,15 +30,15 @@ class CellContent extends StatelessWidget {
             tabLabel: (context, tab) => tab.localize(context.l10n),
           ),
           const SizedBox(height: 12),
-          Expanded(child: _buildTabContent(selectedTab)),
+          Expanded(child: _buildTabContent(context, selectedTab)),
         ],
       ),
     ),
   );
 
-  Widget _buildTabContent(CellsTab tab) => switch (tab) {
+  Widget _buildTabContent(BuildContext context, CellsTab tab) => switch (tab) {
     CellsTab.energyCells => const EnergyCellsContent(),
     CellsTab.production => const ProductionContent(),
-    CellsTab.overview => const Center(child: Text('Coming Soon')),
+    CellsTab.overview => Center(child: Text(context.l10n.comingSoon)),
   };
 }

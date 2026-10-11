@@ -23,6 +23,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
   StatisticsBloc(this._statisticsService, this._energyService, this._prestigeService, this._cellsService)
     : super(StatisticsState.initial()) {
     on<_SetWatching>(_onSetWatching);
+    on<_SyncPlaytimeClock>(_onSyncPlaytimeClock);
     on<_StatsChanged>(_onStatsChanged);
     on<_EnergyChanged>(_onEnergyChanged);
     on<_EpsChanged>(_onEpsChanged);
@@ -37,8 +38,6 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
   final CellsService _cellsService;
 
   bool _watching = false;
-
-  void syncPlaytimeClock() => _statisticsService.syncPlaytimeClock();
 
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
@@ -56,6 +55,12 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
     if (!_watching) return;
     _watching = false;
     await _unsubscribe();
+  }
+
+  void _onSyncPlaytimeClock(_SyncPlaytimeClock event, Emitter<StatisticsState> emit) {
+    _statisticsService.syncPlaytimeClock();
+    if (!_watching) return;
+    emit(_snapshotFromServices());
   }
 
   StatisticsState _snapshotFromServices() {

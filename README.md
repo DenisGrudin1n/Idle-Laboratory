@@ -235,7 +235,7 @@ Idle games tick often (energy ~100ms). Follow existing hot-path patterns:
 2. **Subscribe only when visible** — e.g. `StatisticsBloc` + `StatisticsEvent.setWatching` while the Statistics tab is mounted.
 3. **Throttle / coalesce hot streams** — e.g. `StatisticsService` keeps `.current` live but throttles `statistics$` UI emits (`GameBalance.statisticsUiEmitThrottleMs`); use `.distinct()` on streams.
 4. **Timers in services**, not widgets — playtime, energy generation, autosave.
-5. **Debounced autosave** on hot paths; **immediate flush** on prestige, lifecycle pause (`paused` / `hidden` / `detached`), dispose. Do **not** pause playtime on `inactive` (desktop focus blips).
+5. **Debounced autosave** on hot paths; **immediate flush** on prestige, lifecycle pause (`paused` / `hidden` / `detached`), dispose. Playtime keeps running for `inactive` / `paused` / `hidden` while the process is alive; only end the segment on `detached` / dispose. Wall-clock catch-up on resume covers suspended timers.
 6. Prefer **shared** animation scopes (e.g. `CellLoopAnimationScope`) over per-cell controllers when many widgets animate together.
 7. Use debug rebuild tools under `lib/core/debug/` when investigating jank.
 
@@ -369,6 +369,7 @@ test/
 
 ```bash
 flutter test
+# On the ExFAT maintainer machine: fflutter test
 ```
 
 ---

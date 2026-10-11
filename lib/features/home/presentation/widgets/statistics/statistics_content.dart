@@ -32,7 +32,7 @@ class _StatisticsContentState extends State<StatisticsContent> {
   @override
   void reassemble() {
     super.reassemble();
-    _statisticsBloc?.syncPlaytimeClock();
+    _statisticsBloc?.add(const StatisticsEvent.syncPlaytimeClock());
   }
 
   @override
@@ -237,7 +237,7 @@ class _CellsSection extends StatelessWidget {
             StatisticsRow(label: l10n.statsLifetimeCellLevelUps, value: '${view.levelUps}', isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsTotalCellLevels,
-              value: '${view.totalLevels} / ${view.peakLevels}',
+              value: l10n.currentOverPeak('${view.totalLevels}', '${view.peakLevels}'),
               isMobile: isMobile,
             ),
           ],
@@ -293,7 +293,7 @@ class _ProductionSection extends StatelessWidget {
             StatisticsRow(label: l10n.statsLifetimeProductionLevelUps, value: '${view.levelUps}', isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsTotalProductionLevels,
-              value: '${view.totalLevels} / ${view.peakLevels}',
+              value: l10n.currentOverPeak('${view.totalLevels}', '${view.peakLevels}'),
               isMobile: isMobile,
             ),
           ],

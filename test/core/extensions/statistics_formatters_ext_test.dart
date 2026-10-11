@@ -51,34 +51,36 @@ void main() {
     });
   });
 
-  group('formatClockDuration', () {
+  group('AppLocalizations.formatClockDuration', () {
+    final l10n = lookupAppLocalizations(const Locale('en'));
+
     test('mm:ss, then hh:mm, then dd:hh', () {
-      expect(formatClockDuration(-5), '00:00');
-      expect(formatClockDuration(0), '00:00');
-      expect(formatClockDuration(5), '00:05');
-      expect(formatClockDuration(42), '00:42');
-      expect(formatClockDuration(60), '01:00');
-      expect(formatClockDuration(90), '01:30');
-      expect(formatClockDuration(125), '02:05');
-      expect(formatClockDuration(3599), '59:59');
+      expect(l10n.formatClockDuration(-5), '00:00');
+      expect(l10n.formatClockDuration(0), '00:00');
+      expect(l10n.formatClockDuration(5), '00:05');
+      expect(l10n.formatClockDuration(42), '00:42');
+      expect(l10n.formatClockDuration(60), '01:00');
+      expect(l10n.formatClockDuration(90), '01:30');
+      expect(l10n.formatClockDuration(125), '02:05');
+      expect(l10n.formatClockDuration(3599), '59:59');
 
-      expect(formatClockDuration(3600), '01h 00m');
-      expect(formatClockDuration(3660), '01h 01m');
-      expect(formatClockDuration(2 * 3600 + 15 * 60), '02h 15m');
-      expect(formatClockDuration(3 * 3600), '03h 00m');
-      expect(formatClockDuration(86399), '23h 59m');
+      expect(l10n.formatClockDuration(3600), '01h 00m');
+      expect(l10n.formatClockDuration(3660), '01h 01m');
+      expect(l10n.formatClockDuration(2 * 3600 + 15 * 60), '02h 15m');
+      expect(l10n.formatClockDuration(3 * 3600), '03h 00m');
+      expect(l10n.formatClockDuration(86399), '23h 59m');
 
-      expect(formatClockDuration(86400), '01d 00h');
-      expect(formatClockDuration(86400 + 3 * 3600), '01d 03h');
-      expect(formatClockDuration(2 * 86400 + 4 * 3600), '02d 04h');
-      expect(formatClockDuration(100 * 86400 + 4 * 3600), '100d 04h');
+      expect(l10n.formatClockDuration(86400), '01d 00h');
+      expect(l10n.formatClockDuration(86400 + 3 * 3600), '01d 03h');
+      expect(l10n.formatClockDuration(2 * 86400 + 4 * 3600), '02d 04h');
+      expect(l10n.formatClockDuration(100 * 86400 + 4 * 3600), '100d 04h');
     });
   });
 
   group('StatisticsFormattersExt.statsDuration', () {
     final l10n = lookupAppLocalizations(const Locale('en'));
 
-    test('uses m/s, h/m, and d/h', () {
+    test('uses m/s, h/m, and d/h from ARB templates', () {
       expect(l10n.statsDuration(0), '00m 00s');
       expect(l10n.statsDuration(5), '00m 05s');
       expect(l10n.statsDuration(125), '02m 05s');
@@ -95,7 +97,7 @@ void main() {
     setUpAll(() => initializeDateFormatting('en'));
 
     test('statsDate uses locale format and placeholder for missing value', () {
-      expect(l10n.statsDate(null), l10n.statsValueUnavailable);
+      expect(l10n.statsDate(null), l10n.valueUnavailable);
       expect(l10n.statsDate(DateTime(2026, 10, 9).millisecondsSinceEpoch), '10/9/2026');
     });
 

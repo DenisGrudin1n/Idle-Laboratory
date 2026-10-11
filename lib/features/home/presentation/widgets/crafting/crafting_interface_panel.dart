@@ -7,7 +7,7 @@ import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
-import 'package:idle_laboratory/core/extensions/play_time_scale_ext.dart';
+import 'package:idle_laboratory/core/extensions/statistics_formatters_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/amount_text_field.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
@@ -186,7 +186,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
     final color = context.color;
     final crafting = context.read<CraftingBloc>();
     final totalEnergyCost = crafting.energyCostFor(state.targetQuantity);
-    final duration = formatClockDuration(crafting.reactionDurationSeconds);
+    final duration = l10n.formatClockDuration(crafting.reactionDurationSeconds);
     final selectedCellId = state.selectedCellId;
 
     String? cellAmount;
@@ -217,7 +217,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                l10n.craftingCostWithAmount('$totalEnergyCost EU'),
+                l10n.craftingCostWithAmount(l10n.amountWithUnit('$totalEnergyCost', l10n.eu)),
                 style: context.styles.compactValue,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -252,13 +252,13 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('${state.targetQuantity}×', style: context.styles.compactAccentValue),
+                    Text(l10n.craftingQuantityMultiplier(state.targetQuantity), style: context.styles.compactAccentValue),
                     const SizedBox(width: 2),
                     SizedBox(width: 10, height: 10, child: ResearchMaterialSlotIcon(materialId: state.reagent1Id!)),
                     const SizedBox(width: 4),
-                    Text('+', style: context.styles.compactValue),
+                    Text(l10n.plusSign, style: context.styles.compactValue),
                     const SizedBox(width: 4),
-                    Text('${state.targetQuantity}×', style: context.styles.compactAccentValue),
+                    Text(l10n.craftingQuantityMultiplier(state.targetQuantity), style: context.styles.compactAccentValue),
                     const SizedBox(width: 2),
                     SizedBox(width: 10, height: 10, child: ResearchMaterialSlotIcon(materialId: state.reagent2Id!)),
                   ],
@@ -322,7 +322,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
                   Padding(
                     padding: const EdgeInsets.only(top: 1),
                     child: Text(
-                      '${l10n.craftingTargetAmount}:',
+                      l10n.fieldLabel(l10n.craftingTargetAmount),
                       style: context.styles.compactSupporting.copyWith(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ),

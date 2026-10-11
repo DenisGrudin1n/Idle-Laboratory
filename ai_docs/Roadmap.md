@@ -82,7 +82,7 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 
 ### 2. Statistics Tab
 - [x] **Data Tracking** (Book-o-Stats style; expandable rows for per-type breakdowns):
-  - **Time & sessions:** total play time (live adaptive tick + progressive format); sessions started (cold starts); longest continuous session (one foreground stretch, resets on background); first launch date; days since first launch (derived)
+  - **Time & sessions:** total play time (live adaptive tick + progressive format); sessions started (cold starts); longest continuous session (one process lifetime stretch — continues across inactive/paused/hidden, ends on terminate/dispose); first launch date; days since first launch (derived)
   - **Energy:** lifetime generated; lifetime spent; peak energy; peak EPS; current energy; current EPS; energy earned this prestige run
   - **Cells:** lifetime produced (all + per type expandable); lifetime cell level-ups; total cell levels (snapshot + peak record)
   - **Production:** lifetime stock generated (all + per type expandable); lifetime production level-ups; total production accel levels (snapshot + peak record)
@@ -90,7 +90,7 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
   - **Prestige:** count; current multiplier (snapshot); highest multiplier reached; energy at last prestige; best prestige run energy
   - **Offline:** add stats here when Offline Progress ships (not tracked yet)
 - [x] **UI**: Scrollable section list (Time → Energy → Cells → Production → Crafting → Prestige).
-- [x] **Persistence**: SharedPreferences blob (`statistics_state`); lifetime fields survive prestige; playtime flush on pause/save/dispose + periodic tick while foregrounded.
+- [x] **Persistence**: SharedPreferences blob (`statistics_state`); lifetime fields survive prestige; playtime flush on pause/save/dispose + adaptive display tick; wall-clock catch-up on resume; playtime keeps running while the process is alive (`inactive` / `paused` / `hidden`).
 
 ### 3. Settings Tab
 - [ ] **Configuration**: Placeholder for future settings (Audio, Notifications, Account management, etc.).

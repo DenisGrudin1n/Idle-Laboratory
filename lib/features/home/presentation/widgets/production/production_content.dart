@@ -152,13 +152,13 @@ class _ProductionItem extends StatelessWidget {
     final cellId = cell.cellId;
     if (cellId == null) return const SizedBox.shrink();
 
-    final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
+    final pps = entry.productionPPS(cellId);
     final productionRateLabel = pps.format(compact: true);
     final atMaxAcceleration = entry.accelerationLevel >= GameBalance.maxAccelerationLevel;
     final accelerationCost = atMaxAcceleration
         ? BigNumber.zero()
         : GameBalance.calculateAccelerationUpgradeCost(cellId.order, entry.accelerationLevel);
-    final costLabel = atMaxAcceleration ? '—' : accelerationCost.format(compact: true);
+    final costLabel = atMaxAcceleration ? l10n.valueUnavailable : accelerationCost.format(compact: true);
 
     return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
@@ -181,10 +181,10 @@ class _ProductionItem extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('$productionRateLabel/s', style: context.styles.productionRate),
+                        Text(l10n.productionRatePerSecond(productionRateLabel), style: context.styles.productionRate),
                         const SizedBox(height: 2),
                         Text(
-                          '${l10n.lvl} ${entry.accelerationLevel}',
+                          l10n.spacedLabelValue(l10n.lvl, '${entry.accelerationLevel}'),
                           style: context.styles.productionAccelerationLevel,
                         ),
                       ],
@@ -232,7 +232,7 @@ class _ProductionItem extends StatelessWidget {
                 _buildAccelerateButton(
                   context,
                   label: l10n.accelerateMax,
-                  costLabel: atMaxAcceleration ? '—' : '',
+                  costLabel: atMaxAcceleration ? l10n.valueUnavailable : '',
                   accelerateMax: true,
                   onTap: atMaxAcceleration
                       ? null
@@ -254,6 +254,7 @@ class _ProductionItem extends StatelessWidget {
     bool accelerateMax = false,
   }) {
     final color = context.color;
+    final unavailable = context.l10n.valueUnavailable;
     return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
@@ -288,7 +289,7 @@ class _ProductionItem extends StatelessWidget {
                     style: context.styles.productionButtonLabel,
                   ),
                 ),
-                if (costLabel == '—' || !accelerateMax) const SizedBox(width: 4),
+                if (costLabel == unavailable || !accelerateMax) const SizedBox(width: 4),
                 Text(
                   costLabel,
                   maxLines: 1,

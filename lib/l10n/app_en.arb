@@ -2,10 +2,131 @@
     "@@locale": "en",
     "appTitle": "Idle Laboratory",
     "energyUnits": "Energy Units (EU)",
+    "eu": "EU",
     "perSecond": "EU/s",
     "scientificNotation": "Scientific Notation",
     "on": "ON",
     "off": "OFF",
+    "comingSoon": "Coming Soon",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "valueUnavailable": "—",
+    "amountWithUnit": "{amount} {unit}",
+    "@amountWithUnit": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "unit": { "type": "String" }
+        }
+    },
+    "signedAmountWithUnit": "+{amount} {unit}",
+    "@signedAmountWithUnit": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "unit": { "type": "String" }
+        }
+    },
+    "labeledValue": "{label}: {value}",
+    "@labeledValue": {
+        "placeholders": {
+            "label": { "type": "String" },
+            "value": { "type": "String" }
+        }
+    },
+    "spacedLabelValue": "{label} {value}",
+    "@spacedLabelValue": {
+        "placeholders": {
+            "label": { "type": "String" },
+            "value": { "type": "String" }
+        }
+    },
+    "fieldLabel": "{label}:",
+    "@fieldLabel": {
+        "placeholders": {
+            "label": { "type": "String" }
+        }
+    },
+    "quantityDelta": "+{count}",
+    "@quantityDelta": {
+        "placeholders": {
+            "count": { "type": "int" }
+        }
+    },
+    "plusSign": "+",
+    "multiplierValue": "{value}x",
+    "@multiplierValue": {
+        "placeholders": {
+            "value": { "type": "String" }
+        }
+    },
+    "prestigeBonusLine": "+ {multiplier} {bonusLabel}",
+    "@prestigeBonusLine": {
+        "placeholders": {
+            "multiplier": { "type": "String" },
+            "bonusLabel": { "type": "String" }
+        }
+    },
+    "ratePerUnit": "{amount} / {unit}",
+    "@ratePerUnit": {
+        "placeholders": {
+            "amount": { "type": "String" },
+            "unit": { "type": "String" }
+        }
+    },
+    "productionRatePerSecond": "{rate}/s",
+    "@productionRatePerSecond": {
+        "placeholders": {
+            "rate": { "type": "String" }
+        }
+    },
+    "currentOverPeak": "{current} / {peak}",
+    "@currentOverPeak": {
+        "placeholders": {
+            "current": { "type": "String" },
+            "peak": { "type": "String" }
+        }
+    },
+    "durationStatMinutesSeconds": "{minutes}m {seconds}s",
+    "@durationStatMinutesSeconds": {
+        "placeholders": {
+            "minutes": { "type": "String" },
+            "seconds": { "type": "String" }
+        }
+    },
+    "durationStatHoursMinutes": "{hours}h {minutes}m",
+    "@durationStatHoursMinutes": {
+        "placeholders": {
+            "hours": { "type": "String" },
+            "minutes": { "type": "String" }
+        }
+    },
+    "durationStatDaysHours": "{days}d {hours}h",
+    "@durationStatDaysHours": {
+        "placeholders": {
+            "days": { "type": "String" },
+            "hours": { "type": "String" }
+        }
+    },
+    "durationClockMinutesSeconds": "{minutes}:{seconds}",
+    "@durationClockMinutesSeconds": {
+        "placeholders": {
+            "minutes": { "type": "String" },
+            "seconds": { "type": "String" }
+        }
+    },
+    "durationClockHoursMinutes": "{hours}h {minutes}m",
+    "@durationClockHoursMinutes": {
+        "placeholders": {
+            "hours": { "type": "String" },
+            "minutes": { "type": "String" }
+        }
+    },
+    "durationClockDaysHours": "{days}d {hours}h",
+    "@durationClockDaysHours": {
+        "placeholders": {
+            "days": { "type": "String" },
+            "hours": { "type": "String" }
+        }
+    },
     "cells": "Cells",
     "crafting": "Crafting",
     "craftingInterfaceTitle": "Crafting interface",
@@ -107,6 +228,8 @@
     "prestigeButton": "Prestige Now",
     "prestigeLocked": "Reach {requirement} to unlock",
     "prestigeDescription": "Reset progress for permanent EPS multiplier",
+    "prestigeResetTitle": "Reset Prestige",
+    "prestigeResetConfirm": "This will reset all prestige progress to zero. Continue?",
     "tutorialWelcomeTitle": "Welcome to Idle Laboratory!",
     "tutorialWelcomeDesc": "You are an apprentice alchemist in this laboratory. Produce energy, craft materials, and follow the magician's guidance — every spark matters.",
     "prologueStep1Title": "A New Laboratory",
@@ -289,6 +412,5 @@
     "statsCurrentPrestigeMultiplier": "Current prestige multiplier",
     "statsHighestPrestigeMultiplier": "Highest prestige multiplier",
     "statsEnergyAtLastPrestige": "Energy at last prestige",
-    "statsBestPrestigeRun": "Best prestige run energy",
-    "statsValueUnavailable": "—"
+    "statsBestPrestigeRun": "Best prestige run energy"
 }
