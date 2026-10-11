@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/bloc/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
-import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
-
-import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
 
 class TopNavigationBar<T> extends StatelessWidget {
   const TopNavigationBar({
@@ -15,6 +13,7 @@ class TopNavigationBar<T> extends StatelessWidget {
     required this.onTabSelected,
     required this.tabLabel,
     this.badgeBuilder,
+    this.sectionKey,
     super.key,
   });
 
@@ -24,9 +23,12 @@ class TopNavigationBar<T> extends StatelessWidget {
   final String Function(BuildContext context, T tab) tabLabel;
   final Widget? Function(BuildContext context, T tab)? badgeBuilder;
 
+  /// Optional key for the outer [SectionCard] (e.g. tutorial target).
+  final Key? sectionKey;
+
   @override
   Widget build(BuildContext context) => SectionCard(
-    key: TutorialController.topNavKey,
+    key: sectionKey,
     child: BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {

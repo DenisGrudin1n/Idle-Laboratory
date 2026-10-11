@@ -1,7 +1,6 @@
 import 'package:idle_laboratory/core/constants/cell_level_constants.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
-import 'package:idle_laboratory/core/extensions/cell_level_extensions.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_level_model/cell_level_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
@@ -45,13 +44,13 @@ extension CellModelExt on CellModel {
   BigNumber get eps {
     if (isLocked) return BigNumber.zero();
     final id = cellId;
-    return id == null ? BigNumber.zero() : CellEnergyPerSecond.getEPS(id, level);
+    return id == null ? BigNumber.zero() : GameBalance.calculateLevelEPS(id.order, level);
   }
 
   BigNumber get nextLevelEPS {
     if (isLocked || isMaxLevel) return BigNumber.zero();
     final id = cellId;
-    return id == null ? BigNumber.zero() : CellEnergyPerSecond.getEPS(id, level + 1);
+    return id == null ? BigNumber.zero() : GameBalance.calculateLevelEPS(id.order, level + 1);
   }
 
   double getProgressToNextLevel(BigNumber currentEnergy) {
@@ -63,7 +62,6 @@ extension CellModelExt on CellModel {
     if (currentEnergy >= nextReq) return 1;
     return (currentEnergy - currentReq).ratio(nextReq - currentReq, max: 1);
   }
-
 }
 
 extension CellProductionEntryExt on CellProductionEntry {

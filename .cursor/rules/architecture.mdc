@@ -28,6 +28,8 @@ UI → BLoC/Cubit → Service (RxDart) → Repository → LocalStorageDataSource
 | `utils/` | Pure math / algorithms |
 | `widgets/` | Shared chrome |
 
+**Features do not host a second “core”.** Do **not** add `constants/`, `extensions/`, or `utils/` under `lib/features/*/`. Put shared helpers in `lib/core/` even when they touch home Freezed models (single-feature app today). Feature trees stay: `data/` + `domain/models|services/` + `presentation/`.
+
 ## Persistence
 
 - Keys only via `StorageKeys` — never ad-hoc prefs in UI.

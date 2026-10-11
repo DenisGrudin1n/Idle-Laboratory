@@ -115,7 +115,7 @@ App-wide infrastructure. Prefer extending these folders over inventing new top-l
 
 ```
 lib/core/
-├── bloc/                 # SafeBloc
+├── bloc/                 # SafeBloc, AppLayoutBloc
 ├── constants/            # GameBalance, GameConstants, StorageKeys, layout metrics
 ├── converters/           # BigNumber JSON converters
 ├── debug/                # Rebuild profiler overlay / trackers
@@ -140,11 +140,13 @@ lib/core/
 | `constants/` | Balance, keys, unit lengths |
 | `utils/` | Pure algorithms |
 
+**No parallel core inside features.** Shared constants, extensions, and utils always live under `lib/core/` — not under `lib/features/*/domain/constants` (or `extensions/` / `utils/`). With a single home feature, core helpers may import `features/home/domain/models`; that is preferred over inventing a second core tree in the feature.
+
 ---
 
 ### Feature Module (`lib/features/home/`)
 
-Single feature module today (the whole game UI).
+Single feature module today (the whole game UI). Feature folders are **not** a place for app-wide helpers — keep those in `lib/core/`.
 
 ```
 lib/features/home/

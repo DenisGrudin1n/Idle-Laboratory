@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/bloc/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 
 class AmountTextField extends StatelessWidget {
   const AmountTextField({required this.controller, required this.onChanged, this.readOnly = false, super.key});

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:idle_laboratory/core/bloc/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
+import 'package:idle_laboratory/core/extensions/cell_name_l10n_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/app_border_container.dart';
 import 'package:idle_laboratory/core/widgets/app_divider.dart';
@@ -10,7 +12,6 @@ import 'package:idle_laboratory/core/widgets/app_scrollbar.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/core/widgets/status_badge.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
-import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/cells/cells_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/settings/settings_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';

@@ -16,7 +16,8 @@ import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class StatisticsService {
-  StatisticsService(this._repository, {DateTime Function()? now}) : _now = now ?? DateTime.now {
+  /// [now] is test-only (clock injection); ignored by GetIt / injectable.
+  StatisticsService(this._repository, {@ignoreParam DateTime Function()? now}) : _now = now ?? DateTime.now {
     _loadFuture = _initialize();
   }
 

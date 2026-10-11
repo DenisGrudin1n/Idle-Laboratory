@@ -1,5 +1,6 @@
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_id_ext.dart';
+import 'package:idle_laboratory/core/extensions/cell_name_l10n_ext.dart';
 import 'package:idle_laboratory/core/extensions/research_material_meta_ext.dart';
 import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';

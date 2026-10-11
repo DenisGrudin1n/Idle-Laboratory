@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/enums/cells_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/extensions/cells_tab_l10n_ext.dart';
 import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/navigation/navigation_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_controller.dart';
@@ -24,6 +25,7 @@ class CellContent extends StatelessWidget {
       builder: (context, selectedTab) => Column(
         children: [
           TopNavigationBar<CellsTab>(
+            sectionKey: TutorialController.topNavKey,
             tabs: CellsTab.values,
             selectedTab: selectedTab,
             onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.cellsTabChanged(tab)),

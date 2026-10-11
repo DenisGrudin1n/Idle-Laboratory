@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/enums/crafting_tab.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/extensions/crafting_tab_l10n_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/core/widgets/top_navigation_bar.dart';
@@ -28,6 +29,7 @@ class CraftingContent extends StatelessWidget {
       builder: (context, selectedTab) => Column(
         children: [
           TopNavigationBar<CraftingTab>(
+            sectionKey: TutorialController.topNavKey,
             tabs: CraftingTab.values,
             selectedTab: selectedTab,
             onTabSelected: (tab) => context.read<NavigationBloc>().add(NavigationEvent.craftingTabChanged(tab)),
