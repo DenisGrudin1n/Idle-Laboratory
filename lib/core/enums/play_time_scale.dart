@@ -1,8 +1,1 @@
-enum PlayTimeScale {
-  seconds,
-  minutes,
-  hours,
-  days,
-  months,
-  years,
-}
+enum PlayTimeScale { seconds, minutes, hours, days }

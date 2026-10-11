@@ -788,34 +788,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statsValueUnavailable => '—';
-
-  @override
-  String statsDurationSeconds(int value) {
-    return '${value}s';
-  }
-
-  @override
-  String statsDurationMinutes(int value) {
-    return '${value}m';
-  }
-
-  @override
-  String statsDurationHours(int value) {
-    return '${value}h';
-  }
-
-  @override
-  String statsDurationDays(int value) {
-    return '${value}d';
-  }
-
-  @override
-  String statsDurationMonths(int value) {
-    return '${value}mo';
-  }
-
-  @override
-  String statsDurationYears(int value) {
-    return '${value}y';
-  }
 }

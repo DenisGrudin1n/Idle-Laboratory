@@ -41,8 +41,18 @@ class CraftingService {
   );
   Timer? _tickTimer;
 
-  static final _energyCostPerUnit = BigNumber(GameBalance.craftingEnergyCostPerUnit.toDouble(), 0);
   static const _progressPerTick = GameBalance.craftingTickIntervalMs / 1000 / GameBalance.craftingDurationSeconds;
+
+  int get reactionDurationSeconds => GameBalance.craftingDurationSeconds;
+
+  /// Batch energy cost shown in the crafting panel and charged across [quantity] units.
+  int energyCostFor(int quantity) => GameBalance.craftingEnergyCostPerUnit * quantity;
+
+  BigNumber _energyCostAmount(int quantity) => BigNumber(energyCostFor(quantity).toDouble(), 0);
+
+  /// Cell stock spent to craft [quantity] units from [cellId].
+  BigNumber cellCostFor({required CellId cellId, required int quantity}) =>
+      GameBalance.calculateBaseTierResearchCraftCellCost(cellId.order) * BigNumber(quantity.toDouble(), 0);
 
   Stream<CraftingReactionModel> get reaction$ => _reactionSubject.stream.distinct();
 
@@ -158,8 +168,8 @@ class CraftingService {
     _storageService.addMaterial(output);
     _statisticsService.recordCraftCompleted(
       materialId: output,
-      energySpent: _energyCostPerUnit,
-      durationSeconds: GameBalance.craftingDurationSeconds,
+      energySpent: _energyCostAmount(1),
+      durationSeconds: reactionDurationSeconds,
     );
 
     final remaining = reaction.remaining - 1;
@@ -193,13 +203,12 @@ class CraftingService {
     ResearchMaterialId? reagent1Id,
     ResearchMaterialId? reagent2Id,
   }) {
-    final batch = BigNumber(quantity.toDouble(), 0);
-    if (_energyService.currentEnergy < _energyCostPerUnit * batch) {
+    if (_energyService.currentEnergy < _energyCostAmount(quantity)) {
       return GameErrors.craftingNotEnoughEnergy;
     }
 
     if (cellId != null) {
-      final cellCost = GameBalance.calculateBaseTierResearchCraftCellCost(cellId.order) * batch;
+      final cellCost = cellCostFor(cellId: cellId, quantity: quantity);
       final available = _cellsService.currentProduction[cellId.id]?.amount ?? BigNumber.zero();
       return available < cellCost ? GameErrors.craftingNotEnoughMaterials : null;
     }
@@ -216,12 +225,12 @@ class CraftingService {
   }
 
   void _spendOneUnit(CraftingReactionModel reaction) {
-    _energyService.trySpendEnergy(_energyCostPerUnit);
+    _energyService.trySpendEnergy(_energyCostAmount(1));
     final cellId = reaction.cellId;
     final reagent1Id = reaction.reagent1Id;
     final reagent2Id = reaction.reagent2Id;
     if (cellId != null) {
-      _cellsService.trySpendCells(cellId, GameBalance.calculateBaseTierResearchCraftCellCost(cellId.order));
+      _cellsService.trySpendCells(cellId, cellCostFor(cellId: cellId, quantity: 1));
     } else if (reagent1Id != null && reagent2Id != null) {
       _storageService
         ..trySpendMaterial(reagent1Id)

@@ -16,9 +16,11 @@ import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class StatisticsService {
-  StatisticsService(this._repository) {
+  StatisticsService(this._repository, {DateTime Function()? now}) : _now = now ?? DateTime.now {
     _loadFuture = _initialize();
   }
+
+  final DateTime Function() _now;
 
   final StatisticsRepository _repository;
   final BehaviorSubject<StatisticsModel> _statsSubject = BehaviorSubject<StatisticsModel>.seeded(
@@ -48,6 +50,12 @@ class StatisticsService {
   bool _started = false;
   bool _sessionCounted = false;
   bool _inForeground = true;
+  bool _loaded = false;
+  bool _disposed = false;
+
+  /// Writers that arrived before [_load] finished. Replayed onto the saved
+  /// model so a slow prefs read cannot replace them with the snapshot.
+  final List<void Function()> _beforeLoad = [];
 
   /// UI-facing stream: distinct + coalesced for hot paths (see [_emit]).
   Stream<StatisticsModel> get statistics$ => _statsSubject.stream.distinct();
@@ -62,10 +70,9 @@ class StatisticsService {
   }
 
   Future<void> _initialize() async {
+    StatisticsModel loaded;
     try {
-      final saved = await _load();
-      _current = saved;
-      _statsSubject.add(saved);
+      loaded = await _load();
     } catch (error, stackTrace) {
       developer.log(
         '${PersistenceLabels.statisticsLoad} failed, starting from empty statistics',
@@ -73,9 +80,36 @@ class StatisticsService {
         error: error,
         stackTrace: stackTrace,
       );
-      _current = StatisticsModel.initial();
-      _statsSubject.add(_current);
+      loaded = StatisticsModel.initial();
     }
+
+    _current = loaded;
+    _loaded = true;
+    _replayBeforeLoad();
+    _publish(current);
+  }
+
+  void _replayBeforeLoad() {
+    final queued = List<void Function()>.of(_beforeLoad);
+    _beforeLoad.clear();
+    for (final write in queued) {
+      write();
+    }
+  }
+
+  /// Runs [write] once the saved ledger is in memory.
+  /// Cold paths only — hot ticks check [_loaded] inline to avoid a closure.
+  void _afterLoad(void Function() write) {
+    if (_loaded) {
+      write();
+      return;
+    }
+    _beforeLoad.add(write);
+  }
+
+  void _publish(StatisticsModel model) {
+    if (_disposed || _statsSubject.isClosed || _statsSubject.value == model) return;
+    _statsSubject.add(model);
   }
 
   Future<StatisticsModel> _load() async {
@@ -92,8 +126,9 @@ class StatisticsService {
     if (_started) return;
     _started = true;
     await _loadFuture;
+    if (_disposed) return;
 
-    final now = DateTime.now();
+    final now = _now();
     var next = current;
     if (next.firstLaunchEpochMs == null) {
       next = next.copyWith(firstLaunchEpochMs: now.millisecondsSinceEpoch);
@@ -115,7 +150,7 @@ class StatisticsService {
   void resumePlaytime() {
     _inForeground = true;
     if (!_sessionCounted || _sessionStartedAt != null) return;
-    _beginPlaytimeSegment(DateTime.now());
+    _beginPlaytimeSegment(_now());
   }
 
   void _beginPlaytimeSegment(DateTime now) {
@@ -124,9 +159,26 @@ class StatisticsService {
     _restartPlaytimeTicker();
   }
 
+  void syncPlaytimeClock() {
+    if (!_sessionCounted || _disposed) return;
+    _inForeground = true;
+    if (_sessionStartedAt == null) {
+      _beginPlaytimeSegment(_now());
+      return;
+    }
+    _flushPlaytime(endSession: false);
+    _restartPlaytimeTicker();
+  }
+
   /// Hot path (every energy tick): accumulates in place, no model copy.
   void recordEnergyGenerated(BigNumber amount, {required BigNumber currentEnergy, required BigNumber currentEps}) {
     if (amount <= BigNumber.zero()) return;
+    if (!_loaded) {
+      _beforeLoad.add(
+        () => recordEnergyGenerated(amount, currentEnergy: currentEnergy, currentEps: currentEps),
+      );
+      return;
+    }
     _pending
       ..energyGenerated = _pending.energyGenerated + amount
       ..isDirty = true;
@@ -141,12 +193,20 @@ class StatisticsService {
 
   void recordEnergySpent(BigNumber amount) {
     if (amount <= BigNumber.zero()) return;
+    _afterLoad(() => _recordEnergySpent(amount));
+  }
+
+  void _recordEnergySpent(BigNumber amount) {
     final next = current.copyWith(lifetimeEnergySpent: current.lifetimeEnergySpent + amount);
     _emit(next);
     _scheduleSave();
   }
 
   void recordPeakEps(BigNumber eps) {
+    _afterLoad(() => _recordPeakEps(eps));
+  }
+
+  void _recordPeakEps(BigNumber eps) {
     if (eps <= current.peakEps) return;
     final next = current.copyWith(peakEps: eps);
     _emit(next);
@@ -155,6 +215,12 @@ class StatisticsService {
 
   /// Hot path (every production tick): accumulates in place, no model copy.
   void recordProductionTick(Map<CellId, BigNumber> deltas) {
+    if (!_loaded) {
+      if (!_hasPositiveDelta(deltas)) return;
+      final snapshot = Map<CellId, BigNumber>.of(deltas);
+      _beforeLoad.add(() => recordProductionTick(snapshot));
+      return;
+    }
     var changed = false;
     for (final entry in deltas.entries) {
       if (entry.value <= BigNumber.zero()) continue;
@@ -169,7 +235,18 @@ class StatisticsService {
     _markHotChange();
   }
 
+  bool _hasPositiveDelta(Map<CellId, BigNumber> deltas) {
+    for (final value in deltas.values) {
+      if (value > BigNumber.zero()) return true;
+    }
+    return false;
+  }
+
   void recordCellLevelUps(int levels, {required int totalCellLevels}) {
+    _afterLoad(() => _recordCellLevelUps(levels, totalCellLevels: totalCellLevels));
+  }
+
+  void _recordCellLevelUps(int levels, {required int totalCellLevels}) {
     if (levels <= 0 && totalCellLevels <= current.peakTotalCellLevels) return;
     final next = current.copyWith(
       lifetimeCellLevelUps: current.lifetimeCellLevelUps + (levels > 0 ? levels : 0),
@@ -182,6 +259,10 @@ class StatisticsService {
   }
 
   void recordProductionLevelUps(int levels, {required int totalProductionLevels}) {
+    _afterLoad(() => _recordProductionLevelUps(levels, totalProductionLevels: totalProductionLevels));
+  }
+
+  void _recordProductionLevelUps(int levels, {required int totalProductionLevels}) {
     if (levels <= 0 && totalProductionLevels <= current.peakTotalProductionLevels) return;
     final next = current.copyWith(
       lifetimeProductionLevelUps: current.lifetimeProductionLevelUps + (levels > 0 ? levels : 0),
@@ -194,6 +275,16 @@ class StatisticsService {
   }
 
   void recordCraftCompleted({
+    required ResearchMaterialId materialId,
+    required BigNumber energySpent,
+    required int durationSeconds,
+  }) {
+    _afterLoad(
+      () => _recordCraftCompleted(materialId: materialId, energySpent: energySpent, durationSeconds: durationSeconds),
+    );
+  }
+
+  void _recordCraftCompleted({
     required ResearchMaterialId materialId,
     required BigNumber energySpent,
     required int durationSeconds,
@@ -213,6 +304,10 @@ class StatisticsService {
   }
 
   void recordPrestige({required BigNumber energyAtPrestige, required BigNumber newTotalMultiplier}) {
+    _afterLoad(() => _recordPrestige(energyAtPrestige: energyAtPrestige, newTotalMultiplier: newTotalMultiplier));
+  }
+
+  void _recordPrestige({required BigNumber energyAtPrestige, required BigNumber newTotalMultiplier}) {
     var next = current.copyWith(
       energyAtLastPrestige: energyAtPrestige,
       energyEarnedThisPrestigeRun: BigNumber.zero(),
@@ -229,6 +324,10 @@ class StatisticsService {
 
   /// Clears run-scoped fields on any run reset (prestige or full prestige reset).
   void resetRun() {
+    _afterLoad(_resetRun);
+  }
+
+  void _resetRun() {
     if (current.energyEarnedThisPrestigeRun == BigNumber.zero()) return;
     final next = current.copyWith(energyEarnedThisPrestigeRun: BigNumber.zero());
     _emit(next, urgent: true);
@@ -239,6 +338,7 @@ class StatisticsService {
   /// [urgent] flushes the stream right away (prestige, craft, playtime, start).
   void _emit(StatisticsModel next, {bool urgent = false}) {
     _current = next;
+    if (_disposed) return;
     if (urgent) {
       _flushNotify();
       return;
@@ -252,6 +352,7 @@ class StatisticsService {
   }
 
   void _scheduleNotify() {
+    if (!_loaded || _disposed) return;
     _notifyTimer ??= Timer(
       const Duration(milliseconds: GameBalance.statisticsUiEmitThrottleMs),
       _flushNotify,
@@ -261,23 +362,31 @@ class StatisticsService {
   void _flushNotify() {
     _notifyTimer?.cancel();
     _notifyTimer = null;
-    final model = current;
-    if (!_statsSubject.isClosed && _statsSubject.value != model) {
-      _statsSubject.add(model);
-    }
+    _publish(current);
   }
 
   int get _effectivePlayTimeSeconds {
     final lastFlush = _lastPlaytimeFlushAt;
     final base = current.totalPlayTimeSeconds;
     if (lastFlush == null || _sessionStartedAt == null) return base;
-    return base + DateTime.now().difference(lastFlush).inSeconds;
+    return base + _now().difference(lastFlush).inSeconds;
   }
+
+  int get _sessionLengthSeconds {
+    final sessionStart = _sessionStartedAt;
+    if (sessionStart == null) return 0;
+    return _now().difference(sessionStart).inSeconds;
+  }
+
+  Duration _nextPlaytimeTickInterval() => PlayTimeScaleExt.tickFor(
+        totalPlayTimeSeconds: _effectivePlayTimeSeconds,
+        sessionSeconds: _sessionLengthSeconds,
+      );
 
   void _restartPlaytimeTicker() {
     _stopPlaytimeTicker();
     if (_sessionStartedAt == null) return;
-    final interval = PlayTimeScaleExt.forSeconds(_effectivePlayTimeSeconds).tickInterval;
+    final interval = _nextPlaytimeTickInterval();
     _playtimeTickInterval = interval;
     _playtimeTimer = Timer.periodic(interval, (_) => _onPlaytimeTick());
     _playtimePersistTimer = Timer.periodic(
@@ -297,7 +406,7 @@ class StatisticsService {
   void _onPlaytimeTick() {
     _flushPlaytime(endSession: false);
     _scheduleSave();
-    final nextInterval = PlayTimeScaleExt.forSeconds(current.totalPlayTimeSeconds).tickInterval;
+    final nextInterval = _nextPlaytimeTickInterval();
     if (nextInterval != _playtimeTickInterval) {
       _restartPlaytimeTicker();
     }
@@ -312,7 +421,7 @@ class StatisticsService {
     final lastFlush = _lastPlaytimeFlushAt;
     final sessionStart = _sessionStartedAt;
     if (lastFlush == null || sessionStart == null) return model;
-    final now = DateTime.now();
+    final now = _now();
     return model.copyWith(
       totalPlayTimeSeconds: model.totalPlayTimeSeconds + now.difference(lastFlush).inSeconds,
       longestSessionSeconds: math.max(model.longestSessionSeconds, now.difference(sessionStart).inSeconds),
@@ -324,7 +433,7 @@ class StatisticsService {
     final sessionStart = _sessionStartedAt;
     if (lastFlush == null || sessionStart == null) return;
 
-    final now = DateTime.now();
+    final now = _now();
     final elapsedMs = now.difference(lastFlush).inMilliseconds;
     final wholeSeconds = elapsedMs ~/ 1000;
     final sessionLength = now.difference(sessionStart).inSeconds;
@@ -351,17 +460,24 @@ class StatisticsService {
 
   /// Debounced autosave of [current] (including unflushed playtime).
   void _scheduleSave() {
-    if (_saveTimer != null) return;
+    if (!_loaded || _disposed || _saveTimer != null) return;
     _saveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
       _saveTimer = null;
-      fireAndForget(
-        _repository.saveStatistics(_withUnflushedPlaytime(current)),
-        label: PersistenceLabels.statisticsAutosave,
-      );
+      fireAndForget(_autosave(), label: PersistenceLabels.statisticsAutosave);
     });
   }
 
+  /// Persists playtime that is not yet on [_current], so the UI still ticks
+  /// on the adaptive display interval.
+  Future<void> _autosave() => guardAsync(() async {
+        if (!_loaded) await _loadFuture;
+        if (_disposed) return;
+        await _repository.saveStatistics(_withUnflushedPlaytime(current));
+      });
+
   Future<void> save() => guardAsync(() async {
+        if (!_loaded) await _loadFuture;
+        if (_disposed) return;
         _flushPlaytime(endSession: false);
         _flushNotify();
         await _repository.saveStatistics(current);
@@ -369,16 +485,28 @@ class StatisticsService {
 
   @disposeMethod
   void dispose() {
+    if (_disposed) return;
+    _disposed = true;
     _stopPlaytimeTicker();
-    _flushPlaytime(endSession: true);
-    _flushNotify();
+    _notifyTimer?.cancel();
+    _notifyTimer = null;
     _saveTimer?.cancel();
-    fireAndForget(_repository.saveStatistics(current), label: PersistenceLabels.statisticsDispose);
+    _saveTimer = null;
+    _flushPlaytime(endSession: true);
+    fireAndForget(_saveAfterLoad(), label: PersistenceLabels.statisticsDispose);
     _statsSubject.close();
+  }
+
+  Future<void> _saveAfterLoad() async {
+    if (!_loaded) await _loadFuture;
+    await _repository.saveStatistics(current);
   }
 }
 
-/// Mutable accumulator for 100ms-tick stats, so hot ticks skip Freezed copies.
+/// Mutable 100ms-tick accumulator owned by [StatisticsService].
+///
+/// Stays service-private on purpose: it is not a persisted or UI model, so it
+/// does not belong in `domain/models` and must not be generated with Freezed.
 class _PendingTickStats {
   bool isDirty = false;
   BigNumber energyGenerated = BigNumber.zero();

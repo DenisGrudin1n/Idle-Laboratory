@@ -20,12 +20,8 @@ part 'statistics_bloc.freezed.dart';
 
 @injectable
 class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
-  StatisticsBloc(
-    this._statisticsService,
-    this._energyService,
-    this._prestigeService,
-    this._cellsService,
-  ) : super(StatisticsState.initial()) {
+  StatisticsBloc(this._statisticsService, this._energyService, this._prestigeService, this._cellsService)
+    : super(StatisticsState.initial()) {
     on<_SetWatching>(_onSetWatching);
     on<_StatsChanged>(_onStatsChanged);
     on<_EnergyChanged>(_onEnergyChanged);
@@ -42,6 +38,8 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   bool _watching = false;
 
+  void syncPlaytimeClock() => _statisticsService.syncPlaytimeClock();
+
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
   static const _liveValueThrottle = Duration(milliseconds: GameBalance.statisticsUiEmitThrottleMs);
@@ -50,6 +48,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
     if (event.watching) {
       if (_watching) return;
       _watching = true;
+      _statisticsService.syncPlaytimeClock();
       _subscribe();
       emit(_snapshotFromServices());
       return;
@@ -85,9 +84,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
           .listen((eps) => add(StatisticsEvent.epsChanged(eps))),
       _prestigeService.prestigeState$.listen((prestige) => add(StatisticsEvent.prestigeChanged(prestige))),
       _cellsService.totalCellLevels$.listen((total) => add(StatisticsEvent.totalCellLevelsChanged(total))),
-      _cellsService.totalProductionLevels$.listen(
-        (total) => add(StatisticsEvent.totalProductionLevelsChanged(total)),
-      ),
+      _cellsService.totalProductionLevels$.listen((total) => add(StatisticsEvent.totalProductionLevelsChanged(total))),
     ]);
   }
 
@@ -101,12 +98,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) {
     if (!_watching) return;
-    emit(
-      state.copyWith(
-        stats: event.stats,
-        daysSinceFirstLaunch: event.stats.daysSinceFirstLaunch(DateTime.now()),
-      ),
-    );
+    emit(state.copyWith(stats: event.stats, daysSinceFirstLaunch: event.stats.daysSinceFirstLaunch(DateTime.now())));
   }
 
   void _onEnergyChanged(_EnergyChanged event, Emitter<StatisticsState> emit) {

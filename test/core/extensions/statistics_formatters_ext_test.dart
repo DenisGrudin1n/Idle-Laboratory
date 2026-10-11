@@ -18,43 +18,74 @@ void main() {
       expect(PlayTimeScaleExt.forSeconds(3600), PlayTimeScale.hours);
       expect(PlayTimeScaleExt.forSeconds(86399), PlayTimeScale.hours);
       expect(PlayTimeScaleExt.forSeconds(86400), PlayTimeScale.days);
-      expect(PlayTimeScaleExt.forSeconds(PlayTimeUnits.secondsPerMonth), PlayTimeScale.months);
-      expect(PlayTimeScaleExt.forSeconds(PlayTimeUnits.secondsPerYear), PlayTimeScale.years);
+      expect(PlayTimeScaleExt.forSeconds(40 * PlayTimeUnits.secondsPerDay), PlayTimeScale.days);
     });
 
-    test('tick intervals match scale', () {
+    test('tick intervals follow the smaller displayed unit', () {
       expect(PlayTimeScale.seconds.tickInterval, const Duration(seconds: 1));
       expect(PlayTimeScale.minutes.tickInterval, const Duration(seconds: 1));
-      expect(PlayTimeScale.hours.tickInterval, const Duration(hours: 1));
-      expect(PlayTimeScale.days.tickInterval, const Duration(minutes: 1));
-      expect(PlayTimeScale.months.tickInterval, const Duration(minutes: 1));
-      expect(PlayTimeScale.years.tickInterval, const Duration(minutes: 1));
+      expect(PlayTimeScale.hours.tickInterval, const Duration(minutes: 1));
+      expect(PlayTimeScale.days.tickInterval, const Duration(hours: 1));
+    });
+
+    test('tickFor keeps a short session moving when lifetime play is already coarse', () {
+      expect(
+        PlayTimeScaleExt.tickFor(totalPlayTimeSeconds: 2 * PlayTimeUnits.secondsPerDay, sessionSeconds: 30),
+        const Duration(seconds: 1),
+      );
+      expect(
+        PlayTimeScaleExt.tickFor(totalPlayTimeSeconds: 3 * PlayTimeUnits.secondsPerDay, sessionSeconds: 5 * 3600),
+        const Duration(minutes: 1),
+      );
+      expect(
+        PlayTimeScaleExt.tickFor(totalPlayTimeSeconds: 2 * 3600, sessionSeconds: 2 * 3600),
+        const Duration(minutes: 1),
+      );
+      expect(
+        PlayTimeScaleExt.tickFor(
+          totalPlayTimeSeconds: 3 * PlayTimeUnits.secondsPerDay,
+          sessionSeconds: 2 * PlayTimeUnits.secondsPerDay,
+        ),
+        const Duration(hours: 1),
+      );
+    });
+  });
+
+  group('formatClockDuration', () {
+    test('mm:ss, then hh:mm, then dd:hh', () {
+      expect(formatClockDuration(-5), '00:00');
+      expect(formatClockDuration(0), '00:00');
+      expect(formatClockDuration(5), '00:05');
+      expect(formatClockDuration(42), '00:42');
+      expect(formatClockDuration(60), '01:00');
+      expect(formatClockDuration(90), '01:30');
+      expect(formatClockDuration(125), '02:05');
+      expect(formatClockDuration(3599), '59:59');
+
+      expect(formatClockDuration(3600), '01h 00m');
+      expect(formatClockDuration(3660), '01h 01m');
+      expect(formatClockDuration(2 * 3600 + 15 * 60), '02h 15m');
+      expect(formatClockDuration(3 * 3600), '03h 00m');
+      expect(formatClockDuration(86399), '23h 59m');
+
+      expect(formatClockDuration(86400), '01d 00h');
+      expect(formatClockDuration(86400 + 3 * 3600), '01d 03h');
+      expect(formatClockDuration(2 * 86400 + 4 * 3600), '02d 04h');
+      expect(formatClockDuration(100 * 86400 + 4 * 3600), '100d 04h');
     });
   });
 
   group('StatisticsFormattersExt.statsDuration', () {
     final l10n = lookupAppLocalizations(const Locale('en'));
 
-    test('seconds and minutes and hours phases', () {
-      expect(l10n.statsDuration(0), '0s');
-      expect(l10n.statsDuration(42), '42s');
-      expect(l10n.statsDuration(60), '1m 0s');
-      expect(l10n.statsDuration(125), '2m 5s');
-      expect(l10n.statsDuration(3600), '1h');
-      expect(l10n.statsDuration(7200), '2h');
-    });
-
-    test('days compound', () {
-      expect(l10n.statsDuration(86400), '1d 0h 0m');
-      expect(l10n.statsDuration(90061), '1d 1h 1m');
-    });
-
-    test('months and years compound', () {
-      expect(l10n.statsDuration(PlayTimeUnits.secondsPerMonth + 86400), '1mo 1d 0h 0m');
-      expect(
-        l10n.statsDuration(PlayTimeUnits.secondsPerYear + PlayTimeUnits.secondsPerMonth),
-        '1y 1mo 0d 0h 0m',
-      );
+    test('uses m/s, h/m, and d/h', () {
+      expect(l10n.statsDuration(0), '00m 00s');
+      expect(l10n.statsDuration(5), '00m 05s');
+      expect(l10n.statsDuration(125), '02m 05s');
+      expect(l10n.statsDuration(25 * 60 + 12), '25m 12s');
+      expect(l10n.statsDuration(12 * 3600 + 8 * 60), '12h 08m');
+      expect(l10n.statsDuration(3600 + 4 * 60), '01h 04m');
+      expect(l10n.statsDuration(2 * 86400 + 4 * 3600), '02d 04h');
     });
   });
 

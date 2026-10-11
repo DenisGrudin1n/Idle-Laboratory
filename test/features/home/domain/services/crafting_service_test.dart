@@ -72,6 +72,18 @@ void main() {
     expect(service.outputFor(reagent1Id: ResearchMaterialId.energyCore), isNull);
   });
 
+  test('energyCostFor and cellCostFor follow crafting balance', () {
+    final service = build();
+    addTearDown(service.dispose);
+
+    expect(service.energyCostFor(3), GameBalance.craftingEnergyCostPerUnit * 3);
+    expect(service.reactionDurationSeconds, GameBalance.craftingDurationSeconds);
+    expect(
+      service.cellCostFor(cellId: cellId, quantity: 2),
+      GameBalance.calculateBaseTierResearchCraftCellCost(cellId.order) * BigNumber(2, 0),
+    );
+  });
+
   test('validate reports missing energy for the whole batch', () {
     when(() => energyService.currentEnergy).thenReturn(BigNumber(9, 0));
     final service = build();

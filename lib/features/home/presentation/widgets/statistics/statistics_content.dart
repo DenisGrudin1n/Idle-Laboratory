@@ -30,6 +30,12 @@ class _StatisticsContentState extends State<StatisticsContent> {
   var _watching = false;
 
   @override
+  void reassemble() {
+    super.reassemble();
+    _statisticsBloc?.syncPlaytimeClock();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final bloc = context.read<StatisticsBloc>();
@@ -87,13 +93,7 @@ class _StatisticsContentState extends State<StatisticsContent> {
   }
 }
 
-typedef _TimeView = ({
-  int playTime,
-  int sessions,
-  int longest,
-  int? firstLaunch,
-  int daysSinceFirstLaunch,
-});
+typedef _TimeView = ({int playTime, int sessions, int longest, int? firstLaunch, int daysSinceFirstLaunch});
 
 class _TimeSection extends StatelessWidget {
   const _TimeSection({required this.isMobile});
@@ -116,21 +116,9 @@ class _TimeSection extends StatelessWidget {
           title: l10n.statsSectionTime,
           isMobile: isMobile,
           children: [
-            StatisticsRow(
-              label: l10n.statsTotalPlayTime,
-              value: l10n.statsDuration(view.playTime),
-              isMobile: isMobile,
-            ),
-            StatisticsRow(
-              label: l10n.statsSessionsStarted,
-              value: '${view.sessions}',
-              isMobile: isMobile,
-            ),
-            StatisticsRow(
-              label: l10n.statsLongestSession,
-              value: l10n.statsDuration(view.longest),
-              isMobile: isMobile,
-            ),
+            StatisticsRow(label: l10n.statsTotalPlayTime, value: l10n.statsDuration(view.playTime), isMobile: isMobile),
+            StatisticsRow(label: l10n.statsSessionsStarted, value: '${view.sessions}', isMobile: isMobile),
+            StatisticsRow(label: l10n.statsLongestSession, value: l10n.statsDuration(view.longest), isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsFirstLaunchDate,
               value: l10n.statsDate(view.firstLaunch),
@@ -224,11 +212,7 @@ class _EnergySection extends StatelessWidget {
   }
 }
 
-typedef _CellsView = ({
-  int levelUps,
-  int totalLevels,
-  int peakLevels,
-});
+typedef _CellsView = ({int levelUps, int totalLevels, int peakLevels});
 
 class _CellsSection extends StatelessWidget {
   const _CellsSection({required this.isMobile, required this.useScientific});
@@ -250,11 +234,7 @@ class _CellsSection extends StatelessWidget {
           title: l10n.statsSectionCells,
           isMobile: isMobile,
           children: [
-            StatisticsRow(
-              label: l10n.statsLifetimeCellLevelUps,
-              value: '${view.levelUps}',
-              isMobile: isMobile,
-            ),
+            StatisticsRow(label: l10n.statsLifetimeCellLevelUps, value: '${view.levelUps}', isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsTotalCellLevels,
               value: '${view.totalLevels} / ${view.peakLevels}',
@@ -310,11 +290,7 @@ class _ProductionSection extends StatelessWidget {
                   ),
               ],
             ),
-            StatisticsRow(
-              label: l10n.statsLifetimeProductionLevelUps,
-              value: '${view.levelUps}',
-              isMobile: isMobile,
-            ),
+            StatisticsRow(label: l10n.statsLifetimeProductionLevelUps, value: '${view.levelUps}', isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsTotalProductionLevels,
               value: '${view.totalLevels} / ${view.peakLevels}',
@@ -434,11 +410,7 @@ class _PrestigeSection extends StatelessWidget {
           title: l10n.statsSectionPrestige,
           isMobile: isMobile,
           children: [
-            StatisticsRow(
-              label: l10n.statsPrestigeCount,
-              value: '${view.count}',
-              isMobile: isMobile,
-            ),
+            StatisticsRow(label: l10n.statsPrestigeCount, value: '${view.count}', isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsCurrentPrestigeMultiplier,
               value: view.currentMultiplier.statValue(useScientific: useScientific),

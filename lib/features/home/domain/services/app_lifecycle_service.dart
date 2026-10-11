@@ -29,15 +29,20 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Skip inactive: desktop/macOS fires it on focus blips / transitions.
     switch (state) {
-      case AppLifecycleState.paused || AppLifecycleState.hidden || AppLifecycleState.detached:
-        _statisticsService.pausePlaytime();
+      case AppLifecycleState.inactive:
+        // Focus blips on desktop/macOS — keep playtime running.
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+        // Process is still alive (minimized / covered). Persist, but do not end
+        // the playtime segment — wall-clock catch-up covers suspended timers.
         fireAndForget(_saveAll(), label: PersistenceLabels.lifecycleFlush);
       case AppLifecycleState.resumed:
-        _statisticsService.resumePlaytime();
-      case _:
-        break;
+        _statisticsService.syncPlaytimeClock();
+      case AppLifecycleState.detached:
+        _statisticsService.pausePlaytime();
+        fireAndForget(_saveAll(), label: PersistenceLabels.lifecycleFlush);
     }
   }
 

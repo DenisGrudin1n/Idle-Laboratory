@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
@@ -265,5 +266,182 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 1100));
     expect(emissions, isNotEmpty);
     expect(emissions.last.lifetimeEnergyGenerated, BigNumber(5, 0));
+  });
+
+  test('writes that arrive before storage load merge onto the saved ledger', () async {
+    final saved = StatisticsModel.initial().copyWith(
+      sessionsStarted: 4,
+      firstLaunchEpochMs: 1_600_000_000_000,
+      lifetimeEnergyGenerated: BigNumber(100, 0),
+      peakEnergy: BigNumber(80, 0),
+      peakEps: BigNumber(5, 0),
+      lifetimeCellsProduced: BigNumber(10, 0),
+      lifetimeCellsProducedByType: {CellId.basicEnergyCell.id: BigNumber(10, 0)},
+    );
+    final gate = Completer<StatisticsModel?>();
+    when(() => repository.getStatistics()).thenAnswer((_) => gate.future);
+
+    final fresh = StatisticsService(repository);
+    addTearDown(fresh.dispose);
+
+    fresh.recordPeakEps(BigNumber(9, 0));
+    for (var i = 0; i < 3; i++) {
+      fresh
+        ..recordEnergyGenerated(
+          BigNumber(1, 0),
+          currentEnergy: BigNumber((91 + i).toDouble(), 0),
+          currentEps: BigNumber(9, 0),
+        )
+        ..recordProductionTick({CellId.basicEnergyCell: BigNumber(2, 0)});
+    }
+
+    expect(fresh.current.lifetimeEnergyGenerated, BigNumber.zero());
+    verifyNever(() => repository.saveStatistics(any()));
+
+    final persisted = fresh.save();
+    gate.complete(saved);
+    await persisted;
+
+    final written = verify(() => repository.saveStatistics(captureAny())).captured.single as StatisticsModel;
+    expect(written.lifetimeEnergyGenerated.toDouble(), closeTo(103, 1e-9));
+    expect(written.peakEnergy, BigNumber(93, 0));
+    expect(written.peakEps, BigNumber(9, 0));
+    expect(written.lifetimeCellsProduced.toDouble(), closeTo(16, 1e-9));
+    expect(written.lifetimeCellsProducedByType[CellId.basicEnergyCell.id]!.toDouble(), closeTo(16, 1e-9));
+    expect(written.sessionsStarted, 4);
+    expect(written.firstLaunchEpochMs, 1_600_000_000_000);
+
+    await fresh.start();
+    expect(fresh.current.sessionsStarted, 5);
+    expect(fresh.current.lifetimeEnergyGenerated.toDouble(), closeTo(103, 1e-9));
+    expect(fresh.current.firstLaunchEpochMs, 1_600_000_000_000);
+  });
+
+  test('playtime and longest session keep moving through hours', () {
+    fakeAsync((async) {
+      var now = DateTime.utc(2026, 10, 11, 12);
+      final fresh = StatisticsService(repository, now: () => now);
+      addTearDown(fresh.dispose);
+
+      unawaited(fresh.start());
+      async.flushMicrotasks();
+
+      now = now.add(const Duration(hours: 1));
+      async.elapse(const Duration(hours: 1));
+      expect(fresh.current.totalPlayTimeSeconds, 3600);
+      expect(fresh.current.longestSessionSeconds, 3600);
+
+      now = now.add(const Duration(minutes: 15));
+      async.elapse(const Duration(minutes: 15));
+      expect(fresh.current.totalPlayTimeSeconds, 3600 + 15 * 60);
+      expect(fresh.current.longestSessionSeconds, 3600 + 15 * 60);
+
+      now = now.add(const Duration(hours: 2));
+      async.elapse(const Duration(hours: 2));
+      expect(fresh.current.totalPlayTimeSeconds, 3 * 3600 + 15 * 60);
+      expect(fresh.current.longestSessionSeconds, 3 * 3600 + 15 * 60);
+
+      fresh.dispose();
+    });
+  });
+
+  test('a new session still accumulates when lifetime play is already in days', () {
+    fakeAsync((async) {
+      var now = DateTime.utc(2026, 10, 11, 12);
+      when(() => repository.getStatistics()).thenAnswer(
+        (_) async => StatisticsModel.initial().copyWith(
+          totalPlayTimeSeconds: 2 * 86400,
+          longestSessionSeconds: 10 * 60,
+          sessionsStarted: 4,
+          firstLaunchEpochMs: 1_600_000_000_000,
+        ),
+      );
+      final fresh = StatisticsService(repository, now: () => now);
+      addTearDown(fresh.dispose);
+
+      unawaited(fresh.start());
+      async.flushMicrotasks();
+
+      now = now.add(const Duration(minutes: 12));
+      async.elapse(const Duration(minutes: 12));
+
+      expect(fresh.current.totalPlayTimeSeconds, 2 * 86400 + 12 * 60);
+      expect(fresh.current.longestSessionSeconds, 12 * 60);
+      expect(fresh.current.sessionsStarted, 5);
+
+      fresh.dispose();
+    });
+  });
+
+  test('syncPlaytimeClock applies time that the display timer has not flushed yet', () {
+    fakeAsync((async) {
+      var now = DateTime.utc(2026, 10, 11, 12);
+      final fresh = StatisticsService(repository, now: () => now);
+      addTearDown(fresh.dispose);
+
+      unawaited(fresh.start());
+      async.flushMicrotasks();
+
+      now = now.add(const Duration(hours: 1, minutes: 4));
+      async.elapse(const Duration(hours: 1, minutes: 4));
+      expect(fresh.current.totalPlayTimeSeconds, 3600 + 4 * 60);
+
+      now = now.add(const Duration(minutes: 15));
+      fresh.syncPlaytimeClock();
+
+      expect(fresh.current.totalPlayTimeSeconds, 3600 + 19 * 60);
+      expect(fresh.current.longestSessionSeconds, 3600 + 19 * 60);
+
+      fresh.dispose();
+    });
+  });
+
+  test('save without ending the session keeps accumulating wall-clock playtime', () {
+    fakeAsync((async) {
+      var now = DateTime.utc(2026, 10, 11, 12);
+      final fresh = StatisticsService(repository, now: () => now);
+      addTearDown(fresh.dispose);
+
+      unawaited(fresh.start());
+      async.flushMicrotasks();
+
+      now = now.add(const Duration(minutes: 5));
+      unawaited(fresh.save());
+      async.flushMicrotasks();
+      expect(fresh.current.totalPlayTimeSeconds, 5 * 60);
+
+      now = now.add(const Duration(minutes: 10));
+      fresh.syncPlaytimeClock();
+      expect(fresh.current.totalPlayTimeSeconds, 15 * 60);
+      expect(fresh.current.longestSessionSeconds, 15 * 60);
+
+      fresh.dispose();
+    });
+  });
+
+  test('syncPlaytimeClock reopens a stopped session and resumes ticking', () {
+    fakeAsync((async) {
+      var now = DateTime.utc(2026, 10, 11, 12);
+      final fresh = StatisticsService(repository, now: () => now);
+      addTearDown(fresh.dispose);
+
+      unawaited(fresh.start());
+      async.flushMicrotasks();
+
+      now = now.add(const Duration(minutes: 2));
+      async.elapse(const Duration(minutes: 2));
+      fresh.pausePlaytime();
+      final pausedAt = fresh.current.totalPlayTimeSeconds;
+      expect(pausedAt, 2 * 60);
+
+      now = now.add(const Duration(minutes: 10));
+      fresh.syncPlaytimeClock();
+
+      now = now.add(const Duration(minutes: 3));
+      async.elapse(const Duration(minutes: 3));
+      expect(fresh.current.totalPlayTimeSeconds, pausedAt + 3 * 60);
+
+      fresh.dispose();
+    });
   });
 }

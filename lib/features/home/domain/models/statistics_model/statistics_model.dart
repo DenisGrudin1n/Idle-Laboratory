@@ -24,7 +24,7 @@ abstract class StatisticsModel with _$StatisticsModel {
     /// Cold starts only; resuming from background is not a new session.
     @Default(0) int sessionsStarted,
 
-    /// Longest uninterrupted foreground stretch (resets on pause/hidden/detached).
+    /// Longest stretch within one app process (ends on terminate / dispose).
     @Default(0) int longestSessionSeconds,
     int? firstLaunchEpochMs,
     @BigNumberStringMapConverter() @Default(<String, BigNumber>{}) Map<String, BigNumber> lifetimeCellsProducedByType,

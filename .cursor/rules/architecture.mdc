@@ -33,7 +33,7 @@ UI → BLoC/Cubit → Service (RxDart) → Repository → LocalStorageDataSource
 - Keys only via `StorageKeys` — never ad-hoc prefs in UI.
 - Lifetime stats survive prestige; run-scoped fields reset in the owning service.
 - Debounced autosave on hot paths; immediate flush on prestige, lifecycle `paused`/`hidden`/`detached`, dispose.
-- Do **not** pause playtime on `AppLifecycleState.inactive`.
+- Playtime keeps running for `inactive` / `paused` / `hidden` while the process is alive; only end the segment on `detached` / dispose. Wall-clock catch-up on resume covers suspended timers.
 
 ## Tooling (ExFAT drive)
 

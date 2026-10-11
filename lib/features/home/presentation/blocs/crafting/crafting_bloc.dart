@@ -5,6 +5,7 @@ import 'package:idle_laboratory/core/bloc/safe_bloc.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
+import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/crafting_reaction_model/crafting_reaction_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/crafting_service.dart';
 import 'package:injectable/injectable.dart';
@@ -31,6 +32,13 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
   }
 
   final CraftingService _craftingService;
+
+  int energyCostFor(int quantity) => _craftingService.energyCostFor(quantity);
+
+  BigNumber cellCostFor({required CellId cellId, required int quantity}) =>
+      _craftingService.cellCostFor(cellId: cellId, quantity: quantity);
+
+  int get reactionDurationSeconds => _craftingService.reactionDurationSeconds;
 
   StreamSubscription<void>? _resourcesSubscription;
   StreamSubscription<CraftingReactionModel>? _reactionSubscription;

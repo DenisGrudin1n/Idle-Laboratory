@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout_metrics.dart';
-import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_errors.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/extensions/play_time_scale_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/core/widgets/amount_text_field.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart';
@@ -58,7 +57,6 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   }
 
   static const _cellSlotIndex = 2;
-  static final _craftingDuration = '00:${GameBalance.craftingDurationSeconds.toString().padLeft(2, '0')}';
 
   Future<void> _openCellPicker(BuildContext context, CellId? current, bool isCrafting) async {
     if (isCrafting) return;
@@ -186,15 +184,14 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   Widget _buildActionColumn(BuildContext context, {required CraftingState state}) {
     final l10n = context.l10n;
     final color = context.color;
-
-    final totalEnergyCost = GameBalance.craftingEnergyCostPerUnit * state.targetQuantity;
+    final crafting = context.read<CraftingBloc>();
+    final totalEnergyCost = crafting.energyCostFor(state.targetQuantity);
+    final duration = formatClockDuration(crafting.reactionDurationSeconds);
+    final selectedCellId = state.selectedCellId;
 
     String? cellAmount;
-    if (state.selectedCellId != null) {
-      cellAmount =
-          (GameBalance.calculateBaseTierResearchCraftCellCost(state.selectedCellId!.order) *
-                  BigNumber(state.targetQuantity.toDouble(), 0))
-              .format(compact: true);
+    if (selectedCellId != null) {
+      cellAmount = crafting.cellCostFor(cellId: selectedCellId, quantity: state.targetQuantity).format(compact: true);
     }
 
     final canStart = state.craftingMaterialId != null && !state.isCrafting && state.error == null;
@@ -269,7 +266,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
               ],
               SizedBox(height: isMobile ? 2 : 6),
               Text(
-                l10n.craftingTimeWithDuration(_craftingDuration),
+                l10n.craftingTimeWithDuration(duration),
                 style: context.styles.compactValue,
                 textAlign: TextAlign.center,
               ),

@@ -290,53 +290,5 @@
     "statsHighestPrestigeMultiplier": "Highest prestige multiplier",
     "statsEnergyAtLastPrestige": "Energy at last prestige",
     "statsBestPrestigeRun": "Best prestige run energy",
-    "statsValueUnavailable": "—",
-    "statsDurationSeconds": "{value}s",
-    "@statsDurationSeconds": {
-        "placeholders": {
-            "value": {
-                "type": "int"
-            }
-        }
-    },
-    "statsDurationMinutes": "{value}m",
-    "@statsDurationMinutes": {
-        "placeholders": {
-            "value": {
-                "type": "int"
-            }
-        }
-    },
-    "statsDurationHours": "{value}h",
-    "@statsDurationHours": {
-        "placeholders": {
-            "value": {
-                "type": "int"
-            }
-        }
-    },
-    "statsDurationDays": "{value}d",
-    "@statsDurationDays": {
-        "placeholders": {
-            "value": {
-                "type": "int"
-            }
-        }
-    },
-    "statsDurationMonths": "{value}mo",
-    "@statsDurationMonths": {
-        "placeholders": {
-            "value": {
-                "type": "int"
-            }
-        }
-    },
-    "statsDurationYears": "{value}y",
-    "@statsDurationYears": {
-        "placeholders": {
-            "value": {
-                "type": "int"
-            }
-        }
-    }
+    "statsValueUnavailable": "—"
 }
