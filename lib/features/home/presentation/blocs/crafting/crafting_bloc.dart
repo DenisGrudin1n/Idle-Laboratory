@@ -27,9 +27,7 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
     on<_SetWatching>(_onSetWatching);
     on<_ReactionChanged>(_onReactionChanged);
 
-    _reactionSubscription = _craftingService.reaction$.listen(
-      (reaction) => add(CraftingEvent.reactionChanged(reaction)),
-    );
+    _reactionSubscription = _listenReaction(_craftingService.reactionStatus$);
   }
 
   final CraftingService _craftingService;
@@ -37,16 +35,30 @@ class CraftingBloc extends SafeBloc<CraftingEvent, CraftingState> {
   StreamSubscription<void>? _resourcesSubscription;
   StreamSubscription<CraftingReactionModel>? _reactionSubscription;
 
+  StreamSubscription<CraftingReactionModel> _listenReaction(Stream<CraftingReactionModel> source) =>
+      source.listen((reaction) => add(CraftingEvent.reactionChanged(reaction)));
+
+  /// Per-tick progress only while the panel is mounted; status changes always.
+  Future<void> _swapReactionSource({required bool watching}) async {
+    final previous = _reactionSubscription;
+    _reactionSubscription = _listenReaction(
+      watching ? _craftingService.reaction$ : _craftingService.reactionStatus$,
+    );
+    await previous?.cancel();
+  }
+
   Future<void> _onSetWatching(_SetWatching event, Emitter<CraftingState> emit) async {
     if (event.watching) {
       if (_resourcesSubscription != null) return;
       _resourcesSubscription = _craftingService.resourcesChanged$.listen((_) => add(const CraftingEvent.validate()));
       _revalidate(emit);
+      await _swapReactionSource(watching: true);
       return;
     }
     final subscription = _resourcesSubscription;
+    if (subscription == null) return;
     _resourcesSubscription = null;
-    await subscription?.cancel();
+    await Future.wait([subscription.cancel(), _swapReactionSource(watching: false)]);
   }
 
   void _onValidate(_Validate event, Emitter<CraftingState> emit) => _revalidate(emit);

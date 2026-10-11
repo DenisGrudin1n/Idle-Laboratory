@@ -136,6 +136,27 @@ void main() {
     expect(service.currentReaction.remaining, 2);
   });
 
+  testWidgets(r'reactionStatus$ skips progress-only ticks', (tester) async {
+    final service = build();
+    addTearDown(service.dispose);
+    final full = <double>[];
+    final status = <int>[];
+    final fullSub = service.reaction$.listen((r) => full.add(r.progress));
+    final statusSub = service.reactionStatus$.listen((r) => status.add(r.remaining));
+    addTearDown(fullSub.cancel);
+    addTearDown(statusSub.cancel);
+
+    service.start(quantity: 2, cellId: cellId);
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(full.length, greaterThan(5));
+    expect(status, [0, 2]);
+
+    service.stop();
+    await tester.pump();
+  });
+
   testWidgets('run reset drops the in-flight reaction', (tester) async {
     final service = build();
     addTearDown(service.dispose);

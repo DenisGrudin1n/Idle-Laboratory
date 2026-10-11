@@ -46,7 +46,7 @@ void main() {
   });
 
   setUpAll(() {
-    registerFallbackValue(const StatisticsEvent.start());
+    registerFallbackValue(const StatisticsEvent.setWatching(watching: false));
   });
 
   testWidgets('StatisticsContent renders core sections', (tester) async {

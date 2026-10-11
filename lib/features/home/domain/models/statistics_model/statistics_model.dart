@@ -59,4 +59,10 @@ abstract class StatisticsModel with _$StatisticsModel {
   int get researchMaterialsDiscovered => lifetimeMaterialsCraftedByType.values.where((count) => count > 0).length;
 
   int get researchMaterialsTotal => ResearchMaterialId.values.length;
+
+  int daysSinceFirstLaunch(DateTime now) {
+    final firstLaunch = firstLaunchEpochMs;
+    if (firstLaunch == null) return 0;
+    return now.difference(DateTime.fromMillisecondsSinceEpoch(firstLaunch)).inDays;
+  }
 }

@@ -25,8 +25,11 @@ class StatisticsService {
     StatisticsModel.initial(),
   );
 
-  /// Always-current model for writers / persistence (may be ahead of [statistics$]).
+  /// Folded model; read through [current] so pending hot-tick deltas are applied.
   StatisticsModel _current = StatisticsModel.initial();
+
+  /// 100ms-tick deltas accumulated in place; folded into [_current] on read.
+  final _PendingTickStats _pending = _PendingTickStats();
 
   /// Completes after the first load from storage (success or fallback).
   late final Future<void> _loadFuture;
@@ -42,13 +45,21 @@ class StatisticsService {
   Timer? _playtimePersistTimer;
   Timer? _notifyTimer;
   Duration? _playtimeTickInterval;
-  StatisticsModel? _pendingSave;
   bool _started = false;
+  bool _sessionCounted = false;
+  bool _inForeground = true;
 
   /// UI-facing stream: distinct + coalesced for hot paths (see [_emit]).
   Stream<StatisticsModel> get statistics$ => _statsSubject.stream.distinct();
 
-  StatisticsModel get current => _current;
+  /// Always-current model for writers / persistence (may be ahead of [statistics$]).
+  StatisticsModel get current {
+    if (_pending.isDirty) {
+      _current = _pending.applyTo(_current);
+      _pending.clear();
+    }
+    return _current;
+  }
 
   Future<void> _initialize() async {
     try {
@@ -73,12 +84,14 @@ class StatisticsService {
   }
 
   /// Cold-start session: increments session count and starts playtime segment.
+  /// Called once per app process by `AppLifecycleService`.
   ///
   /// Awaits the initial storage load so a late `_load` cannot overwrite the
   /// session increment / first-launch stamp.
   Future<void> start() async {
+    if (_started) return;
+    _started = true;
     await _loadFuture;
-    if (_started && _sessionStartedAt != null) return;
 
     final now = DateTime.now();
     var next = current;
@@ -86,76 +99,74 @@ class StatisticsService {
       next = next.copyWith(firstLaunchEpochMs: now.millisecondsSinceEpoch);
     }
     next = next.copyWith(sessionsStarted: next.sessionsStarted + 1);
-    _started = true;
-    _sessionStartedAt = now;
-    _lastPlaytimeFlushAt = now;
+    _sessionCounted = true;
     _emit(next, urgent: true);
-    _scheduleSave(next);
-    _restartPlaytimeTicker();
+    _scheduleSave();
+    if (_inForeground) _beginPlaytimeSegment(now);
   }
 
   void pausePlaytime() {
+    _inForeground = false;
     _stopPlaytimeTicker();
     _flushPlaytime(endSession: true);
   }
 
+  /// No-op until [start] has counted the session; [start] then opens the segment.
   void resumePlaytime() {
-    if (_sessionStartedAt != null) return;
-    final now = DateTime.now();
+    _inForeground = true;
+    if (!_sessionCounted || _sessionStartedAt != null) return;
+    _beginPlaytimeSegment(DateTime.now());
+  }
+
+  void _beginPlaytimeSegment(DateTime now) {
     _sessionStartedAt = now;
     _lastPlaytimeFlushAt = now;
     _restartPlaytimeTicker();
   }
 
+  /// Hot path (every energy tick): accumulates in place, no model copy.
   void recordEnergyGenerated(BigNumber amount, {required BigNumber currentEnergy, required BigNumber currentEps}) {
     if (amount <= BigNumber.zero()) return;
-    var next = current.copyWith(
-      lifetimeEnergyGenerated: current.lifetimeEnergyGenerated + amount,
-      energyEarnedThisPrestigeRun: current.energyEarnedThisPrestigeRun + amount,
-    );
-    if (currentEnergy > next.peakEnergy) {
-      next = next.copyWith(peakEnergy: currentEnergy);
+    _pending
+      ..energyGenerated = _pending.energyGenerated + amount
+      ..isDirty = true;
+    if (currentEnergy > (_pending.peakEnergy ?? _current.peakEnergy)) {
+      _pending.peakEnergy = currentEnergy;
     }
-    if (currentEps > next.peakEps) {
-      next = next.copyWith(peakEps: currentEps);
+    if (currentEps > (_pending.peakEps ?? _current.peakEps)) {
+      _pending.peakEps = currentEps;
     }
-    _emit(next);
-    _scheduleSave(next);
+    _markHotChange();
   }
 
   void recordEnergySpent(BigNumber amount) {
     if (amount <= BigNumber.zero()) return;
     final next = current.copyWith(lifetimeEnergySpent: current.lifetimeEnergySpent + amount);
     _emit(next);
-    _scheduleSave(next);
+    _scheduleSave();
   }
 
   void recordPeakEps(BigNumber eps) {
     if (eps <= current.peakEps) return;
     final next = current.copyWith(peakEps: eps);
     _emit(next);
-    _scheduleSave(next);
+    _scheduleSave();
   }
 
-  /// Called once per 100ms production tick with a single model copy.
+  /// Hot path (every production tick): accumulates in place, no model copy.
   void recordProductionTick(Map<CellId, BigNumber> deltas) {
-    if (deltas.isEmpty) return;
-    var tickTotal = BigNumber.zero();
-    Map<String, BigNumber>? byType;
+    var changed = false;
     for (final entry in deltas.entries) {
       if (entry.value <= BigNumber.zero()) continue;
-      byType ??= Map<String, BigNumber>.from(current.lifetimeCellsProducedByType);
-      tickTotal = tickTotal + entry.value;
+      changed = true;
       final key = entry.key.id;
-      byType[key] = (byType[key] ?? BigNumber.zero()) + entry.value;
+      _pending
+        ..cellsProduced = _pending.cellsProduced + entry.value
+        ..cellsProducedByType[key] = (_pending.cellsProducedByType[key] ?? BigNumber.zero()) + entry.value;
     }
-    if (byType == null) return;
-    final next = current.copyWith(
-      lifetimeCellsProduced: current.lifetimeCellsProduced + tickTotal,
-      lifetimeCellsProducedByType: byType,
-    );
-    _emit(next);
-    _scheduleSave(next);
+    if (!changed) return;
+    _pending.isDirty = true;
+    _markHotChange();
   }
 
   void recordCellLevelUps(int levels, {required int totalCellLevels}) {
@@ -167,7 +178,7 @@ class StatisticsService {
           : current.peakTotalCellLevels,
     );
     _emit(next, urgent: true);
-    _scheduleSave(next);
+    _scheduleSave();
   }
 
   void recordProductionLevelUps(int levels, {required int totalProductionLevels}) {
@@ -179,7 +190,7 @@ class StatisticsService {
           : current.peakTotalProductionLevels,
     );
     _emit(next, urgent: true);
-    _scheduleSave(next);
+    _scheduleSave();
   }
 
   void recordCraftCompleted({
@@ -198,7 +209,7 @@ class StatisticsService {
       lifetimeCraftDurationSeconds: current.lifetimeCraftDurationSeconds + durationSeconds,
     );
     _emit(next, urgent: true);
-    _scheduleSave(next);
+    _scheduleSave();
   }
 
   void recordPrestige({required BigNumber energyAtPrestige, required BigNumber newTotalMultiplier}) {
@@ -221,7 +232,7 @@ class StatisticsService {
     if (current.energyEarnedThisPrestigeRun == BigNumber.zero()) return;
     final next = current.copyWith(energyEarnedThisPrestigeRun: BigNumber.zero());
     _emit(next, urgent: true);
-    _scheduleSave(next);
+    _scheduleSave();
   }
 
   /// Updates [_current] immediately. Hot paths coalesce [statistics$] notifies;
@@ -232,6 +243,15 @@ class StatisticsService {
       _flushNotify();
       return;
     }
+    _scheduleNotify();
+  }
+
+  void _markHotChange() {
+    _scheduleNotify();
+    _scheduleSave();
+  }
+
+  void _scheduleNotify() {
     _notifyTimer ??= Timer(
       const Duration(milliseconds: GameBalance.statisticsUiEmitThrottleMs),
       _flushNotify,
@@ -241,8 +261,9 @@ class StatisticsService {
   void _flushNotify() {
     _notifyTimer?.cancel();
     _notifyTimer = null;
-    if (!_statsSubject.isClosed && _statsSubject.value != _current) {
-      _statsSubject.add(_current);
+    final model = current;
+    if (!_statsSubject.isClosed && _statsSubject.value != model) {
+      _statsSubject.add(model);
     }
   }
 
@@ -275,7 +296,7 @@ class StatisticsService {
 
   void _onPlaytimeTick() {
     _flushPlaytime(endSession: false);
-    _scheduleSave(current);
+    _scheduleSave();
     final nextInterval = PlayTimeScaleExt.forSeconds(current.totalPlayTimeSeconds).tickInterval;
     if (nextInterval != _playtimeTickInterval) {
       _restartPlaytimeTicker();
@@ -284,7 +305,7 @@ class StatisticsService {
 
   /// Saves unflushed playtime without touching [_current], so the UI only
   /// changes on the adaptive display tick.
-  void _onPlaytimePersistTick() => _scheduleSave(current);
+  void _onPlaytimePersistTick() => _scheduleSave();
 
   /// [model] plus the playtime elapsed since the last display flush.
   StatisticsModel _withUnflushedPlaytime(StatisticsModel model) {
@@ -328,19 +349,15 @@ class StatisticsService {
     }
   }
 
-  void _scheduleSave(StatisticsModel model) {
-    _pendingSave = model;
+  /// Debounced autosave of [current] (including unflushed playtime).
+  void _scheduleSave() {
     if (_saveTimer != null) return;
     _saveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
-      final pending = _pendingSave;
-      _pendingSave = null;
       _saveTimer = null;
-      if (pending != null) {
-        fireAndForget(
-          _repository.saveStatistics(_withUnflushedPlaytime(pending)),
-          label: PersistenceLabels.statisticsAutosave,
-        );
-      }
+      fireAndForget(
+        _repository.saveStatistics(_withUnflushedPlaytime(current)),
+        label: PersistenceLabels.statisticsAutosave,
+      );
     });
   }
 
@@ -358,5 +375,44 @@ class StatisticsService {
     _saveTimer?.cancel();
     fireAndForget(_repository.saveStatistics(current), label: PersistenceLabels.statisticsDispose);
     _statsSubject.close();
+  }
+}
+
+/// Mutable accumulator for 100ms-tick stats, so hot ticks skip Freezed copies.
+class _PendingTickStats {
+  bool isDirty = false;
+  BigNumber energyGenerated = BigNumber.zero();
+  BigNumber? peakEnergy;
+  BigNumber? peakEps;
+  BigNumber cellsProduced = BigNumber.zero();
+  final Map<String, BigNumber> cellsProducedByType = {};
+
+  StatisticsModel applyTo(StatisticsModel model) {
+    final peakEnergy = this.peakEnergy;
+    final peakEps = this.peakEps;
+    final byType = cellsProducedByType.isEmpty
+        ? model.lifetimeCellsProducedByType
+        : {
+            ...model.lifetimeCellsProducedByType,
+            for (final entry in cellsProducedByType.entries)
+              entry.key: (model.lifetimeCellsProducedByType[entry.key] ?? BigNumber.zero()) + entry.value,
+          };
+    return model.copyWith(
+      lifetimeEnergyGenerated: model.lifetimeEnergyGenerated + energyGenerated,
+      energyEarnedThisPrestigeRun: model.energyEarnedThisPrestigeRun + energyGenerated,
+      peakEnergy: peakEnergy != null && peakEnergy > model.peakEnergy ? peakEnergy : model.peakEnergy,
+      peakEps: peakEps != null && peakEps > model.peakEps ? peakEps : model.peakEps,
+      lifetimeCellsProduced: model.lifetimeCellsProduced + cellsProduced,
+      lifetimeCellsProducedByType: byType,
+    );
+  }
+
+  void clear() {
+    isDirty = false;
+    energyGenerated = BigNumber.zero();
+    peakEnergy = null;
+    peakEps = null;
+    cellsProduced = BigNumber.zero();
+    cellsProducedByType.clear();
   }
 }

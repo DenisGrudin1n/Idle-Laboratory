@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
@@ -186,6 +188,61 @@ void main() {
     service.pausePlaytime();
 
     expect(service.current.totalPlayTimeSeconds, greaterThanOrEqualTo(afterPause + 1));
+  });
+
+  test('resumePlaytime before start does not open a playtime segment', () async {
+    service.resumePlaytime();
+    await Future<void>.delayed(const Duration(milliseconds: 1100));
+    service.pausePlaytime();
+
+    expect(service.current.totalPlayTimeSeconds, 0);
+    expect(service.current.sessionsStarted, 0);
+  });
+
+  test('backgrounded during load: session counted, playtime waits for resume', () async {
+    final pendingLoad = Completer<StatisticsModel?>();
+    when(() => repository.getStatistics()).thenAnswer((_) => pendingLoad.future);
+    final fresh = StatisticsService(repository);
+    addTearDown(fresh.dispose);
+
+    final started = fresh.start();
+    fresh.pausePlaytime();
+    pendingLoad.complete(null);
+    await started;
+
+    expect(fresh.current.sessionsStarted, 1);
+    await Future<void>.delayed(const Duration(milliseconds: 1100));
+    fresh.pausePlaytime();
+    expect(fresh.current.totalPlayTimeSeconds, 0);
+
+    fresh.resumePlaytime();
+    await Future<void>.delayed(const Duration(milliseconds: 1100));
+    fresh.pausePlaytime();
+    expect(fresh.current.totalPlayTimeSeconds, greaterThanOrEqualTo(1));
+  });
+
+  test('hot ticks accumulate across many calls and fold peaks correctly', () async {
+    await service.start();
+    for (var i = 1; i <= 10; i++) {
+      service
+        ..recordEnergyGenerated(BigNumber(1, 0), currentEnergy: BigNumber(i.toDouble(), 0), currentEps: BigNumber(1, 0))
+        ..recordProductionTick({CellId.basicEnergyCell: BigNumber(2, 0)});
+    }
+    expect(service.current.lifetimeEnergyGenerated.toDouble(), closeTo(10, 1e-9));
+    expect(service.current.peakEnergy, BigNumber(10, 0));
+
+    service.recordEnergyGenerated(BigNumber(1, 0), currentEnergy: BigNumber(3, 0), currentEps: BigNumber(1, 0));
+    expect(service.current.peakEnergy, BigNumber(10, 0));
+    expect(service.current.lifetimeEnergyGenerated.toDouble(), closeTo(11, 1e-9));
+    expect(service.current.lifetimeCellsProduced.toDouble(), closeTo(20, 1e-9));
+    expect(service.current.lifetimeCellsProducedByType[CellId.basicEnergyCell.id]!.toDouble(), closeTo(20, 1e-9));
+  });
+
+  test('daysSinceFirstLaunch derives whole days from first launch', () {
+    final first = DateTime(2026, 1, 1, 12);
+    final model = StatisticsModel.initial().copyWith(firstLaunchEpochMs: first.millisecondsSinceEpoch);
+    expect(model.daysSinceFirstLaunch(first.add(const Duration(days: 3, hours: 5))), 3);
+    expect(StatisticsModel.initial().daysSinceFirstLaunch(first), 0);
   });
 
   test(r'statistics$ throttles hot energy updates but current stays live', () async {

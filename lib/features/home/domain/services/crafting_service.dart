@@ -45,6 +45,10 @@ class CraftingService {
   static const _progressPerTick = GameBalance.craftingTickIntervalMs / 1000 / GameBalance.craftingDurationSeconds;
 
   Stream<CraftingReactionModel> get reaction$ => _reactionSubject.stream.distinct();
+
+  /// [reaction$] without per-tick progress updates, for off-screen listeners.
+  Stream<CraftingReactionModel> get reactionStatus$ =>
+      _reactionSubject.stream.distinct((a, b) => a.copyWith(progress: 0) == b.copyWith(progress: 0));
   CraftingReactionModel get currentReaction => _reactionSubject.value;
 
   /// Fires when energy, cell stock or inventory change, so callers can re-run [validate].

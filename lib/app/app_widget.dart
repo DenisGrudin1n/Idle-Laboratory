@@ -34,7 +34,7 @@ class AppWidget extends StatelessWidget {
       BlocProvider(create: (_) => getIt<StorageBloc>()),
       BlocProvider(create: (_) => getIt<StorageBadgeCubit>()),
       BlocProvider(create: (_) => getIt<StoryLoreBloc>()),
-      BlocProvider(create: (_) => getIt<StatisticsBloc>()..add(const StatisticsEvent.start())),
+      BlocProvider(create: (_) => getIt<StatisticsBloc>()),
       BlocProvider(create: (_) => getIt<AppLayoutBloc>()),
     ],
     child: CellLoopAnimationScope(

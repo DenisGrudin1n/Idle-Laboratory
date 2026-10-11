@@ -92,6 +92,7 @@ typedef _TimeView = ({
   int sessions,
   int longest,
   int? firstLaunch,
+  int daysSinceFirstLaunch,
 });
 
 class _TimeSection extends StatelessWidget {
@@ -108,6 +109,7 @@ class _TimeSection extends StatelessWidget {
         sessions: state.stats.sessionsStarted,
         longest: state.stats.longestSessionSeconds,
         firstLaunch: state.stats.firstLaunchEpochMs,
+        daysSinceFirstLaunch: state.daysSinceFirstLaunch,
       ),
       builder: (context, view) {
         return StatisticsSection(
@@ -136,7 +138,7 @@ class _TimeSection extends StatelessWidget {
             ),
             StatisticsRow(
               label: l10n.statsDaysSinceFirstLaunch,
-              value: '${view.firstLaunch?.daysSinceEpochMs ?? 0}',
+              value: '${view.daysSinceFirstLaunch}',
               isMobile: isMobile,
             ),
           ],

@@ -2,8 +2,6 @@ part of 'statistics_bloc.dart';
 
 @freezed
 class StatisticsEvent with _$StatisticsEvent {
-  const factory StatisticsEvent.start() = _Start;
-
   /// Subscribe to live streams only while the Statistics tab is mounted.
   const factory StatisticsEvent.setWatching({required bool watching}) = _SetWatching;
 

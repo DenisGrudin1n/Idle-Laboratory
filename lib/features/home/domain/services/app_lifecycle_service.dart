@@ -18,6 +18,7 @@ class AppLifecycleService with WidgetsBindingObserver {
     this._storageService,
   ) {
     WidgetsBinding.instance.addObserver(this);
+    fireAndForget(_statisticsService.start(), label: PersistenceLabels.statisticsSessionStart);
   }
 
   final EnergyService _energyService;

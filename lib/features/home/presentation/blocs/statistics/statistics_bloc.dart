@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:idle_laboratory/core/bloc/safe_bloc.dart';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/features/home/domain/models/statistics_model/statistics_model.dart';
@@ -11,6 +12,7 @@ import 'package:idle_laboratory/features/home/domain/services/energy_service.dar
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'statistics_event.dart';
 part 'statistics_state.dart';
@@ -24,7 +26,6 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
     this._prestigeService,
     this._cellsService,
   ) : super(StatisticsState.initial()) {
-    on<_Start>(_onStart);
     on<_SetWatching>(_onSetWatching);
     on<_StatsChanged>(_onStatsChanged);
     on<_EnergyChanged>(_onEnergyChanged);
@@ -43,7 +44,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   final List<StreamSubscription<Object?>> _subscriptions = [];
 
-  Future<void> _onStart(_Start event, Emitter<StatisticsState> emit) => _statisticsService.start();
+  static const _liveValueThrottle = Duration(milliseconds: GameBalance.statisticsUiEmitThrottleMs);
 
   Future<void> _onSetWatching(_SetWatching event, Emitter<StatisticsState> emit) async {
     if (event.watching) {
@@ -60,8 +61,10 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   StatisticsState _snapshotFromServices() {
     final prestige = _prestigeService.currentState;
+    final stats = _statisticsService.current;
     return state.copyWith(
-      stats: _statisticsService.current,
+      stats: stats,
+      daysSinceFirstLaunch: stats.daysSinceFirstLaunch(DateTime.now()),
       currentEnergy: _energyService.currentEnergy,
       currentEps: _energyService.currentEPS,
       prestigeCount: prestige.prestigeCount,
@@ -74,8 +77,12 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
   void _subscribe() {
     _subscriptions.addAll([
       _statisticsService.statistics$.listen((stats) => add(StatisticsEvent.statsChanged(stats))),
-      _energyService.energy$.listen((energy) => add(StatisticsEvent.energyChanged(energy))),
-      _energyService.eps$.listen((eps) => add(StatisticsEvent.epsChanged(eps))),
+      _energyService.energy$
+          .throttleTime(_liveValueThrottle, trailing: true)
+          .listen((energy) => add(StatisticsEvent.energyChanged(energy))),
+      _energyService.eps$
+          .throttleTime(_liveValueThrottle, trailing: true)
+          .listen((eps) => add(StatisticsEvent.epsChanged(eps))),
       _prestigeService.prestigeState$.listen((prestige) => add(StatisticsEvent.prestigeChanged(prestige))),
       _cellsService.totalCellLevels$.listen((total) => add(StatisticsEvent.totalCellLevelsChanged(total))),
       _cellsService.totalProductionLevels$.listen(
@@ -94,7 +101,12 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) {
     if (!_watching) return;
-    emit(state.copyWith(stats: event.stats));
+    emit(
+      state.copyWith(
+        stats: event.stats,
+        daysSinceFirstLaunch: event.stats.daysSinceFirstLaunch(DateTime.now()),
+      ),
+    );
   }
 
   void _onEnergyChanged(_EnergyChanged event, Emitter<StatisticsState> emit) {

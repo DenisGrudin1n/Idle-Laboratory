@@ -75,7 +75,3 @@ extension StatisticsFormattersExt on AppLocalizations {
 extension StatisticsBigNumberExt on BigNumber {
   String statValue({required bool useScientific}) => format(compact: true, useScientific: useScientific);
 }
-
-extension StatisticsEpochExt on int {
-  int get daysSinceEpochMs => DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(this)).inDays;
-}

@@ -10,6 +10,7 @@ abstract class StatisticsState with _$StatisticsState {
     required BigNumber currentPrestigeMultiplier,
     required int totalCellLevels,
     required int totalProductionLevels,
+    required int daysSinceFirstLaunch,
   }) = _StatisticsState;
 
   factory StatisticsState.initial() => StatisticsState(
@@ -20,5 +21,6 @@ abstract class StatisticsState with _$StatisticsState {
         currentPrestigeMultiplier: BigNumber.zero(),
         totalCellLevels: 0,
         totalProductionLevels: 0,
+        daysSinceFirstLaunch: 0,
       );
 }
