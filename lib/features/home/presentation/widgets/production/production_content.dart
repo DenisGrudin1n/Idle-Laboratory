@@ -6,6 +6,7 @@ import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/core/widgets/app_scrollbar.dart';
 import 'package:idle_laboratory/core/widgets/energy_icon.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_model.dart';
@@ -17,8 +18,21 @@ import 'package:idle_laboratory/features/home/presentation/controllers/tutorial_
 import 'package:idle_laboratory/features/home/presentation/widgets/cells/animated_cell_graphic.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
-class ProductionContent extends StatelessWidget {
+class ProductionContent extends StatefulWidget {
   const ProductionContent({super.key});
+
+  @override
+  State<ProductionContent> createState() => _ProductionContentState();
+}
+
+class _ProductionContentState extends State<ProductionContent> {
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,23 +51,27 @@ class ProductionContent extends StatelessWidget {
                 builder: (context, data) {
                   final (cells, productionByCellId) = data;
                   final unlockedCells = cells.where((c) => !c.isLocked).toList();
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      childAspectRatio: 0.72,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
+                  return AppScrollbar(
+                    controller: _scrollController,
+                    child: GridView.builder(
+                      controller: _scrollController,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        childAspectRatio: 0.72,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemCount: unlockedCells.length,
+                      itemBuilder: (context, index) {
+                        final cell = unlockedCells[index];
+                        final entry = productionByCellId[cell.id] ?? CellProductionEntry.initial(cell.id);
+                        return _ProductionItem(
+                          key: index == 0 ? TutorialController.productionCellKey : null,
+                          cell: cell,
+                          entry: entry,
+                        );
+                      },
                     ),
-                    itemCount: unlockedCells.length,
-                    itemBuilder: (context, index) {
-                      final cell = unlockedCells[index];
-                      final entry = productionByCellId[cell.id] ?? CellProductionEntry.initial(cell.id);
-                      return _ProductionItem(
-                        key: index == 0 ? TutorialController.productionCellKey : null,
-                        cell: cell,
-                        entry: entry,
-                      );
-                    },
                   );
                 },
               ),
@@ -134,13 +152,13 @@ class _ProductionItem extends StatelessWidget {
     final cellId = cell.cellId;
     if (cellId == null) return const SizedBox.shrink();
 
-    final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
+    final pps = entry.productionPPS(cellId);
     final productionRateLabel = pps.format(compact: true);
     final atMaxAcceleration = entry.accelerationLevel >= GameBalance.maxAccelerationLevel;
     final accelerationCost = atMaxAcceleration
         ? BigNumber.zero()
         : GameBalance.calculateAccelerationUpgradeCost(cellId.order, entry.accelerationLevel);
-    final costLabel = atMaxAcceleration ? '—' : accelerationCost.format(compact: true);
+    final costLabel = atMaxAcceleration ? l10n.valueUnavailable : accelerationCost.format(compact: true);
 
     return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
@@ -163,10 +181,10 @@ class _ProductionItem extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('$productionRateLabel/s', style: context.styles.productionRate),
+                        Text(l10n.productionRatePerSecond(productionRateLabel), style: context.styles.productionRate),
                         const SizedBox(height: 2),
                         Text(
-                          '${l10n.lvl} ${entry.accelerationLevel}',
+                          l10n.spacedLabelValue(l10n.lvl, '${entry.accelerationLevel}'),
                           style: context.styles.productionAccelerationLevel,
                         ),
                       ],
@@ -214,7 +232,7 @@ class _ProductionItem extends StatelessWidget {
                 _buildAccelerateButton(
                   context,
                   label: l10n.accelerateMax,
-                  costLabel: atMaxAcceleration ? '—' : '',
+                  costLabel: atMaxAcceleration ? l10n.valueUnavailable : '',
                   accelerateMax: true,
                   onTap: atMaxAcceleration
                       ? null
@@ -236,6 +254,7 @@ class _ProductionItem extends StatelessWidget {
     bool accelerateMax = false,
   }) {
     final color = context.color;
+    final unavailable = context.l10n.valueUnavailable;
     return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
       selector: (state) => state.appVersion,
       builder: (context, appVersion) {
@@ -270,7 +289,7 @@ class _ProductionItem extends StatelessWidget {
                     style: context.styles.productionButtonLabel,
                   ),
                 ),
-                if (costLabel == '—' || !accelerateMax) const SizedBox(width: 4),
+                if (costLabel == unavailable || !accelerateMax) const SizedBox(width: 4),
                 Text(
                   costLabel,
                   maxLines: 1,

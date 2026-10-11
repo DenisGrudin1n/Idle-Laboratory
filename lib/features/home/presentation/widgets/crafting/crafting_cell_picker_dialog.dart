@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
@@ -132,7 +131,7 @@ class _PickerCellTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = context.color;
     final l10n = context.l10n;
-    final pps = GameBalance.calculateProductionPPS(cellId.order, entry.accelerationLevel);
+    final pps = entry.productionPPS(cellId);
     final productionRateLabel = pps.format(compact: true);
 
     return Material(
@@ -157,10 +156,14 @@ class _PickerCellTile extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('$productionRateLabel/s', style: context.styles.productionRate, maxLines: 1),
+                          Text(
+                            l10n.productionRatePerSecond(productionRateLabel),
+                            style: context.styles.productionRate,
+                            maxLines: 1,
+                          ),
                           const SizedBox(height: 2),
                           Text(
-                            '${l10n.lvl} ${entry.accelerationLevel}',
+                            l10n.spacedLabelValue(l10n.lvl, '${entry.accelerationLevel}'),
                             style: context.styles.productionAccelerationLevel,
                             maxLines: 1,
                           ),

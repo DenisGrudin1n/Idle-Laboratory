@@ -1,0 +1,149 @@
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:idle_laboratory/core/bloc/safe_bloc.dart';
+import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
+import 'package:idle_laboratory/features/home/domain/models/statistics_model/statistics_model.dart';
+import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
+import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
+
+part 'statistics_event.dart';
+part 'statistics_state.dart';
+part 'statistics_bloc.freezed.dart';
+
+@injectable
+class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
+  StatisticsBloc(this._statisticsService, this._energyService, this._prestigeService, this._cellsService)
+    : super(StatisticsState.initial()) {
+    on<_SetWatching>(_onSetWatching);
+    on<_SyncPlaytimeClock>(_onSyncPlaytimeClock);
+    on<_StatsChanged>(_onStatsChanged);
+    on<_EnergyChanged>(_onEnergyChanged);
+    on<_EpsChanged>(_onEpsChanged);
+    on<_PrestigeChanged>(_onPrestigeChanged);
+    on<_TotalCellLevelsChanged>(_onTotalCellLevelsChanged);
+    on<_TotalProductionLevelsChanged>(_onTotalProductionLevelsChanged);
+  }
+
+  final StatisticsService _statisticsService;
+  final EnergyService _energyService;
+  final PrestigeService _prestigeService;
+  final CellsService _cellsService;
+
+  bool _watching = false;
+
+  final List<StreamSubscription<Object?>> _subscriptions = [];
+
+  static const _liveValueThrottle = Duration(milliseconds: GameBalance.statisticsUiEmitThrottleMs);
+
+  Future<void> _onSetWatching(_SetWatching event, Emitter<StatisticsState> emit) async {
+    if (event.watching) {
+      if (_watching) return;
+      _watching = true;
+      _statisticsService.syncPlaytimeClock();
+      _subscribe();
+      emit(_snapshotFromServices());
+      return;
+    }
+    if (!_watching) return;
+    _watching = false;
+    await _unsubscribe();
+  }
+
+  void _onSyncPlaytimeClock(_SyncPlaytimeClock event, Emitter<StatisticsState> emit) {
+    _statisticsService.syncPlaytimeClock();
+    if (!_watching) return;
+    emit(_snapshotFromServices());
+  }
+
+  StatisticsState _snapshotFromServices() {
+    final prestige = _prestigeService.currentState;
+    final stats = _statisticsService.current;
+    return state.copyWith(
+      stats: stats,
+      daysSinceFirstLaunch: _statisticsService.daysSinceFirstLaunch,
+      currentEnergy: _energyService.currentEnergy,
+      currentEps: _energyService.currentEPS,
+      prestigeCount: prestige.prestigeCount,
+      currentPrestigeMultiplier: prestige.totalMultiplier,
+      totalCellLevels: _cellsService.totalCellLevels,
+      totalProductionLevels: _cellsService.totalProductionLevels,
+    );
+  }
+
+  void _subscribe() {
+    _subscriptions.addAll([
+      _statisticsService.statistics$.listen((stats) => add(StatisticsEvent.statsChanged(stats))),
+      _energyService.energy$
+          .throttleTime(_liveValueThrottle, trailing: true)
+          .listen((energy) => add(StatisticsEvent.energyChanged(energy))),
+      _energyService.eps$
+          .throttleTime(_liveValueThrottle, trailing: true)
+          .listen((eps) => add(StatisticsEvent.epsChanged(eps))),
+      _prestigeService.prestigeState$.listen((prestige) => add(StatisticsEvent.prestigeChanged(prestige))),
+      _cellsService.totalCellLevels$.listen((total) => add(StatisticsEvent.totalCellLevelsChanged(total))),
+      _cellsService.totalProductionLevels$.listen((total) => add(StatisticsEvent.totalProductionLevelsChanged(total))),
+    ]);
+  }
+
+  /// Detaches subscriptions synchronously before awaiting cancels, so a
+  /// concurrent `setWatching(true)` never has its fresh subscriptions cancelled.
+  Future<void> _unsubscribe() async {
+    final detached = List.of(_subscriptions);
+    _subscriptions.clear();
+    await Future.wait(detached.map((sub) => sub.cancel()));
+  }
+
+  void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(
+      state.copyWith(
+        stats: event.stats,
+        daysSinceFirstLaunch: _statisticsService.daysSinceFirstLaunch,
+      ),
+    );
+  }
+
+  void _onEnergyChanged(_EnergyChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(currentEnergy: event.energy));
+  }
+
+  void _onEpsChanged(_EpsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(currentEps: event.eps));
+  }
+
+  void _onPrestigeChanged(_PrestigeChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(
+      state.copyWith(
+        prestigeCount: event.prestige.prestigeCount,
+        currentPrestigeMultiplier: event.prestige.totalMultiplier,
+      ),
+    );
+  }
+
+  void _onTotalCellLevelsChanged(_TotalCellLevelsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(totalCellLevels: event.total));
+  }
+
+  void _onTotalProductionLevelsChanged(_TotalProductionLevelsChanged event, Emitter<StatisticsState> emit) {
+    if (!_watching) return;
+    emit(state.copyWith(totalProductionLevels: event.total));
+  }
+
+  @override
+  Future<void> close() async {
+    await _unsubscribe();
+    return super.close();
+  }
+}

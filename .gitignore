@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .DS_Store
+._*
 .atom/
 .build/
 .buildlog/
@@ -30,7 +31,11 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+/build
+
+# Platform build dirs; no trailing slash so local symlinks to external build dirs match too
+**/Flutter/ephemeral
+**/Pods
 /coverage/
 
 # Symbolication related
@@ -43,3 +48,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Generated Dart (run build_runner to regenerate)
+*.g.dart
+*.freezed.dart
+*.config.dart

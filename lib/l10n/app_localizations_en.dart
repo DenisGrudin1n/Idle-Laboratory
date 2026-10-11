@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get energyUnits => 'Energy Units (EU)';
 
   @override
+  String get eu => 'EU';
+
+  @override
   String get perSecond => 'EU/s';
 
   @override
@@ -25,6 +28,106 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get off => 'OFF';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get reset => 'Reset';
+
+  @override
+  String get valueUnavailable => '—';
+
+  @override
+  String amountWithUnit(String amount, String unit) {
+    return '$amount $unit';
+  }
+
+  @override
+  String signedAmountWithUnit(String amount, String unit) {
+    return '+$amount $unit';
+  }
+
+  @override
+  String labeledValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String spacedLabelValue(String label, String value) {
+    return '$label $value';
+  }
+
+  @override
+  String fieldLabel(String label) {
+    return '$label:';
+  }
+
+  @override
+  String quantityDelta(int count) {
+    return '+$count';
+  }
+
+  @override
+  String get plusSign => '+';
+
+  @override
+  String multiplierValue(String value) {
+    return '${value}x';
+  }
+
+  @override
+  String prestigeBonusLine(String multiplier, String bonusLabel) {
+    return '+ $multiplier $bonusLabel';
+  }
+
+  @override
+  String ratePerUnit(String amount, String unit) {
+    return '$amount / $unit';
+  }
+
+  @override
+  String productionRatePerSecond(String rate) {
+    return '$rate/s';
+  }
+
+  @override
+  String currentOverPeak(String current, String peak) {
+    return '$current / $peak';
+  }
+
+  @override
+  String durationStatMinutesSeconds(String minutes, String seconds) {
+    return '${minutes}m ${seconds}s';
+  }
+
+  @override
+  String durationStatHoursMinutes(String hours, String minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String durationStatDaysHours(String days, String hours) {
+    return '${days}d ${hours}h';
+  }
+
+  @override
+  String durationClockMinutesSeconds(String minutes, String seconds) {
+    return '$minutes:$seconds';
+  }
+
+  @override
+  String durationClockHoursMinutes(String hours, String minutes) {
+    return '${hours}h ${minutes}m';
+  }
+
+  @override
+  String durationClockDaysHours(String days, String hours) {
+    return '${days}d ${hours}h';
+  }
 
   @override
   String get cells => 'Cells';
@@ -241,6 +344,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get prestigeDescription => 'Reset progress for permanent EPS multiplier';
+
+  @override
+  String get prestigeResetTitle => 'Reset Prestige';
+
+  @override
+  String get prestigeResetConfirm => 'This will reset all prestige progress to zero. Continue?';
 
   @override
   String get tutorialWelcomeTitle => 'Welcome to Idle Laboratory!';
@@ -686,4 +795,103 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get researchBloodstoneOfDominionDesc =>
       'A legendary crowned gem at the apex of the research tree — said to grant the power to reshape destiny itself.';
+
+  @override
+  String get statsSectionTime => 'Time & Sessions';
+
+  @override
+  String get statsSectionEnergy => 'Energy';
+
+  @override
+  String get statsSectionCells => 'Cells';
+
+  @override
+  String get statsSectionProduction => 'Production';
+
+  @override
+  String get statsSectionCrafting => 'Crafting & Research';
+
+  @override
+  String get statsSectionPrestige => 'Prestige';
+
+  @override
+  String get statsTotalPlayTime => 'Total play time';
+
+  @override
+  String get statsSessionsStarted => 'Sessions started';
+
+  @override
+  String get statsLongestSession => 'Longest continuous session';
+
+  @override
+  String get statsFirstLaunchDate => 'First launch date';
+
+  @override
+  String get statsDaysSinceFirstLaunch => 'Days since first launch';
+
+  @override
+  String get statsLifetimeEnergyGenerated => 'Lifetime energy generated';
+
+  @override
+  String get statsLifetimeEnergySpent => 'Lifetime energy spent';
+
+  @override
+  String get statsPeakEnergy => 'Peak energy held';
+
+  @override
+  String get statsPeakEps => 'Peak EPS';
+
+  @override
+  String get statsCurrentEnergy => 'Current energy';
+
+  @override
+  String get statsCurrentEps => 'Current EPS';
+
+  @override
+  String get statsEnergyThisPrestigeRun => 'Energy earned this prestige run';
+
+  @override
+  String get statsLifetimeCellsProduced => 'Lifetime cells produced';
+
+  @override
+  String get statsLifetimeCellLevelUps => 'Lifetime cell level-ups';
+
+  @override
+  String get statsTotalCellLevels => 'Total cell levels (current / peak)';
+
+  @override
+  String get statsLifetimeProductionLevelUps => 'Lifetime production level-ups';
+
+  @override
+  String get statsTotalProductionLevels => 'Total production levels (current / peak)';
+
+  @override
+  String get statsLifetimeCraftsCompleted => 'Lifetime crafting reactions completed';
+
+  @override
+  String get statsLifetimeMaterialsCrafted => 'Lifetime materials crafted';
+
+  @override
+  String get statsLifetimeCraftEnergySpent => 'Lifetime EU spent on crafting';
+
+  @override
+  String get statsLifetimeCraftTime => 'Lifetime craft time spent';
+
+  @override
+  String get statsResearchTreeCompletion => 'Research tree completion';
+
+  @override
+  String get statsPrestigeCount => 'Prestige count';
+
+  @override
+  String get statsCurrentPrestigeMultiplier => 'Current prestige multiplier';
+
+  @override
+  String get statsHighestPrestigeMultiplier => 'Highest prestige multiplier';
+
+  @override
+  String get statsEnergyAtLastPrestige => 'Energy at last prestige';
+
+  @override
+  String get statsBestPrestigeRun => 'Best prestige run energy';
 }

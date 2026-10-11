@@ -5,23 +5,30 @@ import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/prestige_repository.dart';
 import 'package:idle_laboratory/features/home/domain/models/prestige_state_model/prestige_state_model.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class PrestigeService {
-  PrestigeService(this._energyService, this._prestigeRepository) {
+  PrestigeService(this._energyService, this._prestigeRepository, this._statisticsService) {
     _initializeState();
   }
 
   final EnergyService _energyService;
   final PrestigeRepository _prestigeRepository;
+  final StatisticsService _statisticsService;
   final BehaviorSubject<PrestigeStateModel> _prestigeStateSubject = BehaviorSubject<PrestigeStateModel>.seeded(
     PrestigeStateModel.initial(),
   );
+  final PublishSubject<void> _runResetSubject = PublishSubject<void>();
   StreamSubscription<BigNumber>? _energySubscription;
 
   Stream<PrestigeStateModel> get prestigeState$ => _prestigeStateSubject.stream;
+
+  /// Fires after prestige or a full prestige reset; run-scoped services that
+  /// cannot depend on [PrestigeService] directly (cycle) reset on it.
+  Stream<void> get runReset$ => _runResetSubject.stream;
   PrestigeStateModel get currentState => _prestigeStateSubject.value;
 
   void _initializeState() => _loadState()
@@ -54,9 +61,13 @@ class PrestigeService {
       isUnlocked: false,
       prestigeCount: oldState.prestigeCount + 1,
     );
+    _statisticsService.recordPrestige(
+      energyAtPrestige: currentEnergy,
+      newTotalMultiplier: newState.totalMultiplier,
+    );
     _prestigeStateSubject.add(newState);
+    _resetRun();
     await saveState(newState);
-    _energyService.reset();
   }
 
   BigNumber getEffectiveMultiplier() => currentState.totalMultiplier;
@@ -93,12 +104,20 @@ class PrestigeService {
   Future<void> reset() => guardAsync(() async {
     final initialState = PrestigeStateModel.initial();
     _prestigeStateSubject.add(initialState);
+    _resetRun();
     await saveState(initialState);
   });
+
+  void _resetRun() {
+    _energyService.reset();
+    _statisticsService.resetRun();
+    _runResetSubject.add(null);
+  }
 
   @disposeMethod
   void dispose() {
     _energySubscription?.cancel();
     _prestigeStateSubject.close();
+    _runResetSubject.close();
   }
 }

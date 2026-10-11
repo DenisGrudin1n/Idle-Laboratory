@@ -1,0 +1,247 @@
+import 'dart:async';
+
+import 'package:idle_laboratory/core/constants/game_balance.dart';
+import 'package:idle_laboratory/core/constants/game_errors.dart';
+import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/enums/research_material_id.dart';
+import 'package:idle_laboratory/core/extensions/research_material_meta_ext.dart';
+import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/core/utils/research_material_tree.dart';
+import 'package:idle_laboratory/features/home/domain/models/crafting_reaction_model/crafting_reaction_model.dart';
+import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
+import 'package:injectable/injectable.dart';
+import 'package:rxdart/rxdart.dart';
+
+/// Owns crafting recipes, affordability checks and the reaction loop
+/// (timer, resource spending, output, statistics).
+@lazySingleton
+class CraftingService {
+  CraftingService(
+    this._cellsService,
+    this._energyService,
+    this._storageService,
+    this._statisticsService,
+    PrestigeService prestigeService,
+  ) {
+    _runResetSubscription = prestigeService.runReset$.listen((_) => _resetReaction());
+  }
+
+  final CellsService _cellsService;
+  final EnergyService _energyService;
+  final StorageService _storageService;
+  final StatisticsService _statisticsService;
+  StreamSubscription<void>? _runResetSubscription;
+
+  final BehaviorSubject<CraftingReactionModel> _reactionSubject = BehaviorSubject<CraftingReactionModel>.seeded(
+    const CraftingReactionModel(),
+  );
+  Timer? _tickTimer;
+
+  static const _progressPerTick = GameBalance.craftingTickIntervalMs / 1000 / GameBalance.craftingDurationSeconds;
+
+  int get reactionDurationSeconds => GameBalance.craftingDurationSeconds;
+
+  /// Batch energy cost shown in the crafting panel and charged across [quantity] units.
+  int energyCostFor(int quantity) => GameBalance.craftingEnergyCostPerUnit * quantity;
+
+  BigNumber _energyCostAmount(int quantity) => BigNumber(energyCostFor(quantity).toDouble(), 0);
+
+  /// Cell stock spent to craft [quantity] units from [cellId].
+  BigNumber cellCostFor({required CellId cellId, required int quantity}) =>
+      GameBalance.calculateBaseTierResearchCraftCellCost(cellId.order) * BigNumber(quantity.toDouble(), 0);
+
+  Stream<CraftingReactionModel> get reaction$ => _reactionSubject.stream.distinct();
+
+  /// [reaction$] without per-tick progress updates, for off-screen listeners.
+  Stream<CraftingReactionModel> get reactionStatus$ =>
+      _reactionSubject.stream.distinct((a, b) => a.copyWith(progress: 0) == b.copyWith(progress: 0));
+  CraftingReactionModel get currentReaction => _reactionSubject.value;
+
+  /// Fires when energy, cell stock or inventory change, so callers can re-run [validate].
+  /// Throttled: energy and production tick every ~100ms.
+  Stream<void> get resourcesChanged$ => Rx.merge<Object?>([
+        _cellsService.production$,
+        _energyService.energy$,
+        _storageService.inventory$,
+      ])
+          .throttleTime(const Duration(milliseconds: GameBalance.craftingResourcesThrottleMs), trailing: true)
+          .map((_) {});
+
+  ResearchMaterialId? outputFor({CellId? cellId, ResearchMaterialId? reagent1Id, ResearchMaterialId? reagent2Id}) {
+    if (cellId != null) return cellId.baseResearchMaterial;
+    if (reagent1Id == null || reagent2Id == null) return null;
+    final p1 = ResearchMaterialTree.parentIndex(reagent1Id.index);
+    final p2 = ResearchMaterialTree.parentIndex(reagent2Id.index);
+    if (p1 == null || p1 != p2) return null;
+    return ResearchMaterialId.values[p1];
+  }
+
+  /// Returns a [GameErrors] code when a batch of [quantity] cannot be afforded,
+  /// or `null` when affordable / inputs incomplete.
+  String? validate({
+    required int quantity,
+    CellId? cellId,
+    ResearchMaterialId? reagent1Id,
+    ResearchMaterialId? reagent2Id,
+  }) {
+    final output = outputFor(cellId: cellId, reagent1Id: reagent1Id, reagent2Id: reagent2Id);
+    if (output == null) return null;
+    return _missingResources(quantity: quantity, cellId: cellId, reagent1Id: reagent1Id, reagent2Id: reagent2Id);
+  }
+
+  /// Starts a reaction for [quantity] units. Inputs are spent per unit on completion.
+  bool start({
+    required int quantity,
+    CellId? cellId,
+    ResearchMaterialId? reagent1Id,
+    ResearchMaterialId? reagent2Id,
+  }) {
+    if (currentReaction.isCrafting || quantity <= 0) return false;
+    final output = outputFor(cellId: cellId, reagent1Id: reagent1Id, reagent2Id: reagent2Id);
+    if (output == null) return false;
+    if (validate(quantity: quantity, cellId: cellId, reagent1Id: reagent1Id, reagent2Id: reagent2Id) != null) {
+      return false;
+    }
+
+    _reactionSubject.add(
+      CraftingReactionModel(
+        isCrafting: true,
+        remaining: quantity,
+        outputId: output,
+        cellId: cellId,
+        reagent1Id: reagent1Id,
+        reagent2Id: reagent2Id,
+      ),
+    );
+    _startTimer();
+    return true;
+  }
+
+  void stop() {
+    _stopTimer();
+    final reaction = currentReaction;
+    if (!reaction.isCrafting) return;
+    _reactionSubject.add(reaction.copyWith(isCrafting: false, progress: 0));
+  }
+
+  /// Prestige wipes the run's energy and cells, so an in-flight reaction is dropped.
+  void _resetReaction() {
+    _stopTimer();
+    if (currentReaction == const CraftingReactionModel()) return;
+    _reactionSubject.add(const CraftingReactionModel());
+  }
+
+  void _startTimer() {
+    _tickTimer?.cancel();
+    _tickTimer = Timer.periodic(const Duration(milliseconds: GameBalance.craftingTickIntervalMs), (_) => _tick());
+  }
+
+  void _stopTimer() {
+    _tickTimer?.cancel();
+    _tickTimer = null;
+  }
+
+  void _tick() {
+    final reaction = currentReaction;
+    final output = reaction.outputId;
+    if (!reaction.isCrafting || output == null) {
+      _stopTimer();
+      return;
+    }
+
+    final progress = reaction.progress + _progressPerTick;
+    if (progress < 1) {
+      _reactionSubject.add(reaction.copyWith(progress: progress));
+      return;
+    }
+
+    if (!_canAffordOneUnit(reaction)) {
+      stop();
+      return;
+    }
+
+    _spendOneUnit(reaction);
+    _storageService.addMaterial(output);
+    _statisticsService.recordCraftCompleted(
+      materialId: output,
+      energySpent: _energyCostAmount(1),
+      durationSeconds: reactionDurationSeconds,
+    );
+
+    final remaining = reaction.remaining - 1;
+    if (remaining <= 0) {
+      _stopTimer();
+      _reactionSubject.add(const CraftingReactionModel());
+      return;
+    }
+
+    final next = reaction.copyWith(remaining: remaining, progress: 0);
+    if (_canAffordOneUnit(next)) {
+      _reactionSubject.add(next);
+    } else {
+      _stopTimer();
+      _reactionSubject.add(next.copyWith(isCrafting: false));
+    }
+  }
+
+  bool _canAffordOneUnit(CraftingReactionModel reaction) =>
+      _missingResources(
+        quantity: 1,
+        cellId: reaction.cellId,
+        reagent1Id: reaction.reagent1Id,
+        reagent2Id: reaction.reagent2Id,
+      ) ==
+      null;
+
+  String? _missingResources({
+    required int quantity,
+    CellId? cellId,
+    ResearchMaterialId? reagent1Id,
+    ResearchMaterialId? reagent2Id,
+  }) {
+    if (_energyService.currentEnergy < _energyCostAmount(quantity)) {
+      return GameErrors.craftingNotEnoughEnergy;
+    }
+
+    if (cellId != null) {
+      final cellCost = cellCostFor(cellId: cellId, quantity: quantity);
+      final available = _cellsService.currentProduction[cellId.id]?.amount ?? BigNumber.zero();
+      return available < cellCost ? GameErrors.craftingNotEnoughMaterials : null;
+    }
+
+    if (reagent1Id != null && reagent2Id != null) {
+      final hasReagents = reagent1Id == reagent2Id
+          ? _storageService.hasMaterial(reagent1Id, count: quantity * 2)
+          : _storageService.hasMaterial(reagent1Id, count: quantity) &&
+              _storageService.hasMaterial(reagent2Id, count: quantity);
+      return hasReagents ? null : GameErrors.craftingNotEnoughMaterials;
+    }
+
+    return null;
+  }
+
+  void _spendOneUnit(CraftingReactionModel reaction) {
+    _energyService.trySpendEnergy(_energyCostAmount(1));
+    final cellId = reaction.cellId;
+    final reagent1Id = reaction.reagent1Id;
+    final reagent2Id = reaction.reagent2Id;
+    if (cellId != null) {
+      _cellsService.trySpendCells(cellId, cellCostFor(cellId: cellId, quantity: 1));
+    } else if (reagent1Id != null && reagent2Id != null) {
+      _storageService
+        ..trySpendMaterial(reagent1Id)
+        ..trySpendMaterial(reagent2Id);
+    }
+  }
+
+  @disposeMethod
+  void dispose() {
+    _runResetSubscription?.cancel();
+    _stopTimer();
+    _reactionSubject.close();
+  }
+}

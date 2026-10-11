@@ -1,0 +1,35 @@
+---
+description: UI, responsive layout, shared widgets, localisation
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# UI, Layout & Localisation
+
+## Responsive
+
+- Use `AppLayoutBloc` → `AppVersionEnum` (`mobile` | `tablet` | `desk`).
+- Breakpoints: desk width `> 1024`, tablet shortestSide `>= 600` (`GameConstants`).
+- **No** `flutter_screenutil` or global scaling packages.
+- Every new surface must work on phone **and** tablet/desktop/macOS.
+
+```dart
+BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
+  selector: (s) => s.appVersion,
+  builder: (context, appVersion) { /* Row vs Column, padding */ },
+)
+```
+
+## Shared chrome
+
+Prefer `lib/core/widgets/`: `SectionCard`, `AppBorderContainer`, `AppDivider`, `AppScrollbar`, `InfoRow`, `ActionButton`, `AmountTextField`, `AppDialog`, `ProgressBarWidget`.
+
+## Localisation
+
+- **No hardcoded user-facing strings** — `context.l10n` / `AppLocalizations`.
+- Add keys to `lib/l10n/app_en.arb`, then `flutter gen-l10n`.
+
+## Scaffolding
+
+- Prefer existing screen shell (`CellsScreen` + tab content) over ad-hoc raw layouts.
+- When introducing a new full screen later, keep one consistent scaffold wrapper; do not mix random `Scaffold` styles.

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_constants.dart';
+import 'package:idle_laboratory/core/constants/persistence_labels.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
+import 'package:idle_laboratory/core/exceptions/game_exceptions.dart';
 import 'package:idle_laboratory/core/extensions/cell_model_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/data/repositories/cell_repository.dart';
@@ -12,12 +14,19 @@ import 'package:idle_laboratory/features/home/domain/models/cell_model/cell_mode
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/domain/services/energy_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/prestige_service.dart';
+import 'package:idle_laboratory/features/home/domain/services/statistics_service.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rxdart/rxdart.dart';
 
 @lazySingleton
 class CellsService {
-  CellsService(this._cellRepository, this._productionRepository, this._energyService, this._prestigeService) {
+  CellsService(
+    this._cellRepository,
+    this._productionRepository,
+    this._energyService,
+    this._prestigeService,
+    this._statisticsService,
+  ) {
     _cellsSubject.add(_cellRepository.getDefaultCells());
     _init();
   }
@@ -26,6 +35,7 @@ class CellsService {
   final ProductionRepository _productionRepository;
   final EnergyService _energyService;
   final PrestigeService _prestigeService;
+  final StatisticsService _statisticsService;
 
   final BehaviorSubject<List<CellModel>> _cellsSubject = BehaviorSubject<List<CellModel>>();
   final BehaviorSubject<Map<String, BigNumber>> _cellEnergiesSubject = BehaviorSubject<Map<String, BigNumber>>.seeded(
@@ -36,7 +46,7 @@ class CellsService {
 
   StreamSubscription<List<CellModel>>? _progressionSubscription;
   StreamSubscription<BigNumber>? _epsCalculationSubscription;
-  StreamSubscription<int>? _prestigeCountSubscription;
+  StreamSubscription<void>? _runResetSubscription;
   Timer? _productionTimer;
 
   Stream<List<CellModel>> get cells$ => _cellsSubject.stream;
@@ -46,6 +56,20 @@ class CellsService {
   List<CellModel> get currentCells => _cellsSubject.hasValue ? _cellsSubject.value : _cellRepository.getDefaultCells();
   Map<String, BigNumber> get currentCellEnergies => _cellEnergiesSubject.value;
   Map<String, CellProductionEntry> get currentProduction => _productionSubject.value;
+
+  /// Sum of unlocked cell levels; emits only when the total changes.
+  Stream<int> get totalCellLevels$ => cells$.map(_totalCellLevelsOf).distinct();
+  int get totalCellLevels => _totalCellLevelsOf(currentCells);
+
+  /// Sum of production acceleration levels; emits only when the total changes.
+  Stream<int> get totalProductionLevels$ => production$.map(_totalProductionLevelsOf).distinct();
+  int get totalProductionLevels => _totalProductionLevelsOf(currentProduction);
+
+  static int _totalCellLevelsOf(List<CellModel> cells) =>
+      cells.fold<int>(0, (sum, cell) => sum + (cell.isLocked ? 0 : cell.level));
+
+  static int _totalProductionLevelsOf(Map<String, CellProductionEntry> production) =>
+      production.values.fold<int>(0, (sum, entry) => sum + entry.accelerationLevel);
 
   Future<void> _init() async {
     await _initializeCells();
@@ -101,6 +125,7 @@ class CellsService {
     final map = Map<String, CellProductionEntry>.from(_productionSubject.value);
     var changed = false;
     const dt = GameConstants.energyUpdateIntervalMs * 0.001;
+    final producedDeltas = <CellId, BigNumber>{};
 
     for (final cell in cells) {
       if (cell.isLocked) continue;
@@ -112,10 +137,14 @@ class CellsService {
       final delta = pps.multiplyByDouble(dt);
       entry = entry.copyWith(amount: entry.amount + delta);
       map[cell.id] = entry;
+      producedDeltas[cellEnum] = (producedDeltas[cellEnum] ?? BigNumber.zero()) + delta;
       changed = true;
     }
 
-    if (changed) _productionSubject.add(map);
+    if (changed) {
+      _productionSubject.add(map);
+      _statisticsService.recordProductionTick(producedDeltas);
+    }
   }
 
   void _setupEnergyReaction() =>
@@ -135,7 +164,7 @@ class CellsService {
 
     _saveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
       if (_pendingCellsToSave != null) {
-        _cellRepository.saveCells(_pendingCellsToSave!);
+        fireAndForget(_cellRepository.saveCells(_pendingCellsToSave!), label: PersistenceLabels.cellsAutosave);
         _pendingCellsToSave = null;
       }
       _saveTimer = null;
@@ -151,7 +180,7 @@ class CellsService {
 
     _productionSaveTimer = Timer(const Duration(milliseconds: GameBalance.energyAutoSaveDurationMs), () {
       if (_pendingProductionSave != null) {
-        _productionRepository.saveProduction(_pendingProductionSave!);
+        fireAndForget(_productionRepository.saveProduction(_pendingProductionSave!), label: PersistenceLabels.productionAutosave);
         _pendingProductionSave = null;
       }
       _productionSaveTimer = null;
@@ -166,11 +195,7 @@ class CellsService {
     ).listen(_energyService.updateEPS);
   }
 
-  void _setupPrestigeListener() => _prestigeCountSubscription = _prestigeService.prestigeState$
-      .map((s) => s.prestigeCount)
-      .distinct()
-      .skip(1)
-      .listen((_) => reset());
+  void _setupPrestigeListener() => _runResetSubscription = _prestigeService.runReset$.listen((_) => reset());
 
   List<CellModel> _processProgression(BigNumber totalEnergy) {
     var cells = currentCells;
@@ -200,19 +225,28 @@ class CellsService {
     if (changed) _cellEnergiesSubject.add(updatedEnergies);
   }
 
-  List<CellModel> _processLevelUps(List<CellModel> cells) => cells.map((cell) {
-    final cellEnergy = currentCellEnergies[cell.id];
-    if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
+  List<CellModel> _processLevelUps(List<CellModel> cells) {
+    var levelUps = 0;
+    final updated = cells.map((cell) {
+      final cellEnergy = currentCellEnergies[cell.id];
+      if (cellEnergy == null || !cell.canLevelUp(cellEnergy)) return cell;
 
-    final id = cell.cellId;
-    if (id == null) return cell;
+      final id = cell.cellId;
+      if (id == null) return cell;
 
-    final newLevel = GameBalance.calculateMaxLevel(id.order, cellEnergy);
-    if (newLevel <= cell.level) return cell;
+      final newLevel = GameBalance.calculateMaxLevel(id.order, cellEnergy);
+      if (newLevel <= cell.level) return cell;
 
-    final updatedCell = cell.copyWith(level: newLevel);
-    return updatedCell.copyWith(energyPerSecond: updatedCell.eps.format());
-  }).toList();
+      levelUps += newLevel - cell.level;
+      final updatedCell = cell.copyWith(level: newLevel);
+      return updatedCell.copyWith(energyPerSecond: updatedCell.eps.format());
+    }).toList();
+
+    if (levelUps > 0) {
+      _statisticsService.recordCellLevelUps(levelUps, totalCellLevels: _totalCellLevelsOf(updated));
+    }
+    return updated;
+  }
 
   BigNumber _calculateTotalEPS(List<CellModel> cells, Map<String, CellProductionEntry> production) {
     final baseEPS = cells.where((cell) => !cell.isLocked).fold(BigNumber.zero(), (total, cell) => total + cell.eps);
@@ -245,6 +279,7 @@ class CellsService {
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
+    _statisticsService.recordProductionLevelUps(1, totalProductionLevels: _totalProductionLevelsOf(map));
     return true;
   }
 
@@ -279,12 +314,13 @@ class CellsService {
     map[cellId] = entry;
     _productionSubject.add(map);
     _saveProductionThrottled(map);
+    _statisticsService.recordProductionLevelUps(levelsToGain, totalProductionLevels: _totalProductionLevelsOf(map));
     return true;
   }
 
-  void saveCells() => _cellRepository.saveCells(currentCells);
+  Future<void> saveCells() => _cellRepository.saveCells(currentCells);
 
-  void saveProduction() => _productionRepository.saveProduction(_productionSubject.value);
+  Future<void> saveProduction() => _productionRepository.saveProduction(_productionSubject.value);
 
   double getFillLevel(String cellId) {
     final cell = currentCells.cast<CellModel?>().firstWhere((c) => c?.id == cellId, orElse: () => null);
@@ -313,9 +349,9 @@ class CellsService {
     final defaultCells = _cellRepository.getDefaultCells();
     _cellsSubject.add(defaultCells);
     _cellEnergiesSubject.add({});
-    _cellRepository.saveCells(defaultCells);
+    fireAndForget(_cellRepository.saveCells(defaultCells), label: PersistenceLabels.cellsReset);
     _rebuildProductionMap(defaultCells, null);
-    saveProduction();
+    fireAndForget(saveProduction(), label: PersistenceLabels.productionReset);
     start();
   }
 
@@ -323,7 +359,7 @@ class CellsService {
   void dispose() {
     _progressionSubscription?.cancel();
     _epsCalculationSubscription?.cancel();
-    _prestigeCountSubscription?.cancel();
+    _runResetSubscription?.cancel();
     _saveTimer?.cancel();
     _productionSaveTimer?.cancel();
     _productionTimer?.cancel();

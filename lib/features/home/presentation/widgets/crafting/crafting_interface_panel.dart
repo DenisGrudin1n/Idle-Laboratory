@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout.dart';
 import 'package:idle_laboratory/core/constants/crafting_layout_metrics.dart';
-import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_errors.dart';
 import 'package:idle_laboratory/core/enums/app_version_enum.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/build_context_ext.dart';
+import 'package:idle_laboratory/core/extensions/statistics_formatters_ext.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/core/widgets/amount_text_field.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/crafting/crafting_bloc.dart';
@@ -31,6 +30,7 @@ class CraftingInterfacePanel extends StatefulWidget {
 
 class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   late final TextEditingController _quantityController;
+  CraftingBloc? _craftingBloc;
 
   @override
   void initState() {
@@ -40,14 +40,23 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final bloc = context.read<CraftingBloc>();
+    if (identical(_craftingBloc, bloc)) return;
+    _craftingBloc?.add(const CraftingEvent.setWatching(watching: false));
+    _craftingBloc = bloc;
+    bloc.add(const CraftingEvent.setWatching(watching: true));
+  }
+
+  @override
   void dispose() {
+    _craftingBloc?.add(const CraftingEvent.setWatching(watching: false));
     _quantityController.dispose();
     super.dispose();
   }
 
   static const _cellSlotIndex = 2;
-  static const _craftingEnergyCostPerUnit = 5;
-  static const _craftingDuration = '00:05';
 
   Future<void> _openCellPicker(BuildContext context, CellId? current, bool isCrafting) async {
     if (isCrafting) return;
@@ -175,15 +184,14 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
   Widget _buildActionColumn(BuildContext context, {required CraftingState state}) {
     final l10n = context.l10n;
     final color = context.color;
-
-    final totalEnergyCost = _craftingEnergyCostPerUnit * state.targetQuantity;
+    final crafting = context.read<CraftingBloc>();
+    final totalEnergyCost = crafting.energyCostFor(state.targetQuantity);
+    final duration = l10n.formatClockDuration(crafting.reactionDurationSeconds);
+    final selectedCellId = state.selectedCellId;
 
     String? cellAmount;
-    if (state.selectedCellId != null) {
-      cellAmount =
-          (GameBalance.calculateBaseTierResearchCraftCellCost(state.selectedCellId!.order) *
-                  BigNumber(state.targetQuantity.toDouble(), 0))
-              .format(compact: true);
+    if (selectedCellId != null) {
+      cellAmount = crafting.cellCostFor(cellId: selectedCellId, quantity: state.targetQuantity).format(compact: true);
     }
 
     final canStart = state.craftingMaterialId != null && !state.isCrafting && state.error == null;
@@ -209,7 +217,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                l10n.craftingCostWithAmount('$totalEnergyCost EU'),
+                l10n.craftingCostWithAmount(l10n.amountWithUnit('$totalEnergyCost', l10n.eu)),
                 style: context.styles.compactValue,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -244,13 +252,13 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('${state.targetQuantity}×', style: context.styles.compactAccentValue),
+                    Text(l10n.craftingQuantityMultiplier(state.targetQuantity), style: context.styles.compactAccentValue),
                     const SizedBox(width: 2),
                     SizedBox(width: 10, height: 10, child: ResearchMaterialSlotIcon(materialId: state.reagent1Id!)),
                     const SizedBox(width: 4),
-                    Text('+', style: context.styles.compactValue),
+                    Text(l10n.plusSign, style: context.styles.compactValue),
                     const SizedBox(width: 4),
-                    Text('${state.targetQuantity}×', style: context.styles.compactAccentValue),
+                    Text(l10n.craftingQuantityMultiplier(state.targetQuantity), style: context.styles.compactAccentValue),
                     const SizedBox(width: 2),
                     SizedBox(width: 10, height: 10, child: ResearchMaterialSlotIcon(materialId: state.reagent2Id!)),
                   ],
@@ -258,7 +266,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
               ],
               SizedBox(height: isMobile ? 2 : 6),
               Text(
-                l10n.craftingTimeWithDuration(_craftingDuration),
+                l10n.craftingTimeWithDuration(duration),
                 style: context.styles.compactValue,
                 textAlign: TextAlign.center,
               ),
@@ -314,7 +322,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
                   Padding(
                     padding: const EdgeInsets.only(top: 1),
                     child: Text(
-                      '${l10n.craftingTargetAmount}:',
+                      l10n.fieldLabel(l10n.craftingTargetAmount),
                       style: context.styles.compactSupporting.copyWith(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -366,6 +374,7 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
         }
       },
       child: BlocBuilder<CraftingBloc, CraftingState>(
+        buildWhen: (prev, curr) => prev.copyWith(craftingProgress: 0) != curr.copyWith(craftingProgress: 0),
         builder: (context, state) {
           return BlocSelector<AppLayoutBloc, AppLayoutState, AppVersionEnum>(
             selector: (state) => state.appVersion,
@@ -411,11 +420,14 @@ class _CraftingInterfacePanelState extends State<CraftingInterfacePanel> {
                   const SizedBox(height: 6),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: state.craftingProgress,
-                      minHeight: 5,
-                      backgroundColor: color.sectionBorder.withValues(alpha: 0.25),
-                      color: color.green.withValues(alpha: 0.85),
+                    child: BlocSelector<CraftingBloc, CraftingState, double>(
+                      selector: (state) => state.craftingProgress,
+                      builder: (context, progress) => LinearProgressIndicator(
+                        value: progress,
+                        minHeight: 5,
+                        backgroundColor: color.sectionBorder.withValues(alpha: 0.25),
+                        color: color.green.withValues(alpha: 0.85),
+                      ),
                     ),
                   ),
                 ],

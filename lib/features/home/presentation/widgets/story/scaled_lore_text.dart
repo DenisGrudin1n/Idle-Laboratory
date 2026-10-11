@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idle_laboratory/core/theme/theme_ext.dart';
-import 'package:idle_laboratory/core/utils/app_scroll_behavior.dart';
+import 'package:idle_laboratory/core/widgets/app_scrollbar.dart';
 
 /// Lore description — fixed size, scrolls when it does not fit.
 class LoreBodyText extends StatefulWidget {
@@ -33,25 +33,16 @@ class _LoreBodyTextState extends State<LoreBodyText> {
   @override
   Widget build(BuildContext context) {
     final color = context.color.primaryText.withValues(alpha: 0.92);
-    final sidePad = EdgeInsets.only(left: widget.scrollbarOnRight ? 0 : 14, right: widget.scrollbarOnRight ? 14 : 0);
 
-    return ScrollConfiguration(
-      behavior: const AppLoreScrollBehavior(),
-      child: Scrollbar(
+    return AppScrollbar(
+      controller: _controller,
+      scrollbarOrientation: widget.scrollbarOnRight ? ScrollbarOrientation.right : ScrollbarOrientation.left,
+      child: SingleChildScrollView(
         controller: _controller,
-        interactive: true,
-        thumbVisibility: true,
-        scrollbarOrientation: widget.scrollbarOnRight ? ScrollbarOrientation.right : ScrollbarOrientation.left,
-        child: Padding(
-          padding: sidePad,
-          child: SingleChildScrollView(
-            controller: _controller,
-            child: Text(
-              widget.text,
-              style: TextStyle(fontSize: widget.fontSize, height: 1.45, color: color),
-              textAlign: widget.centered ? TextAlign.center : TextAlign.start,
-            ),
-          ),
+        child: Text(
+          widget.text,
+          style: TextStyle(fontSize: widget.fontSize, height: 1.45, color: color),
+          textAlign: widget.centered ? TextAlign.center : TextAlign.start,
         ),
       ),
     );

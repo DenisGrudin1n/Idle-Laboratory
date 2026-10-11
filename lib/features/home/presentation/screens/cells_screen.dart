@@ -17,6 +17,7 @@ import 'package:idle_laboratory/features/home/presentation/widgets/cells/cell_co
 import 'package:idle_laboratory/features/home/presentation/widgets/crafting/crafting_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/main_navigation_bar.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/settings_toggle.dart';
+import 'package:idle_laboratory/features/home/presentation/widgets/statistics/statistics_content.dart';
 import 'package:idle_laboratory/features/home/presentation/widgets/story/story_lore_flow.dart';
 
 class CellsScreen extends StatefulWidget {
@@ -39,7 +40,7 @@ class _CellsScreenState extends State<CellsScreen> {
     MainNavigationTab.cells => const CellContent(),
     MainNavigationTab.crafting => const CraftingContent(),
     MainNavigationTab.settings => const SettingsToggle(),
-    MainNavigationTab.statistics => const SizedBox.shrink(),
+    MainNavigationTab.statistics => const StatisticsContent(),
     MainNavigationTab.achievements => const SizedBox.shrink(),
   };
 

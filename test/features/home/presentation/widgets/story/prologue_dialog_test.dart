@@ -8,7 +8,6 @@ import 'package:idle_laboratory/core/enums/story_beat_id.dart';
 import 'package:idle_laboratory/core/theme/app_theme.dart';
 import 'package:idle_laboratory/core/widgets/magician_sprite.dart';
 import 'package:idle_laboratory/core/widgets/section_card.dart';
-import 'package:idle_laboratory/features/home/domain/services/storage_service.dart';
 import 'package:idle_laboratory/features/home/domain/services/story_lore_service.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/app_layout/app_layout_bloc.dart';
 import 'package:idle_laboratory/features/home/presentation/blocs/story_lore/story_lore_bloc.dart';
@@ -20,13 +19,11 @@ class _MockAppLayoutBloc extends Mock implements AppLayoutBloc {}
 
 class _MockStoryLoreService extends Mock implements StoryLoreService {}
 
-class _MockStorageService extends Mock implements StorageService {}
-
 StoryLoreBloc _createStoryLoreBloc() {
   final storyLoreService = _MockStoryLoreService();
   when(() => storyLoreService.isBeatSeen(any())).thenReturn(false);
   when(storyLoreService.isEndingSeen).thenReturn(false);
-  return StoryLoreBloc(storyLoreService, _MockStorageService());
+  return StoryLoreBloc(storyLoreService);
 }
 
 Widget _wrap(Widget child, AppLayoutBloc layoutBloc, {Size size = const Size(390, 844)}) {
