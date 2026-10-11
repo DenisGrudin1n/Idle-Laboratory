@@ -84,8 +84,8 @@ This folder contains documentation, prompts, and roadmap details for the AI assi
 - [x] **Data Tracking** (Book-o-Stats style; expandable rows for per-type breakdowns):
   - **Time & sessions:** total play time (live adaptive tick + progressive format); sessions started (cold starts); longest continuous session (one process lifetime stretch — continues across inactive/paused/hidden, ends on terminate/dispose); first launch date; days since first launch (derived)
   - **Energy:** lifetime generated; lifetime spent; peak energy; peak EPS; current energy; current EPS; energy earned this prestige run
-  - **Cells:** lifetime produced (all + per type expandable); lifetime cell level-ups; total cell levels (snapshot + peak record)
-  - **Production:** lifetime stock generated (all + per type expandable); lifetime production level-ups; total production accel levels (snapshot + peak record)
+  - **Cells:** lifetime produced / stock (all + per type expandable); lifetime cell level-ups; total cell levels (snapshot + peak record)
+  - **Production:** lifetime production level-ups; total production accel levels (snapshot + peak record)
   - **Crafting & research:** reactions completed; materials crafted (all + per material expandable); lifetime EU spent on crafting; lifetime craft time; research tree completion % (derived)
   - **Prestige:** count; current multiplier (snapshot); highest multiplier reached; energy at last prestige; best prestige run energy
   - **Offline:** add stats here when Offline Progress ships (not tracked yet)

@@ -59,6 +59,8 @@ class AppLifecycleService with WidgetsBindingObserver {
 
   @disposeMethod
   void dispose() {
+    _statisticsService.pausePlaytime();
+    fireAndForget(_saveAll(), label: PersistenceLabels.lifecycleFlush);
     WidgetsBinding.instance.removeObserver(this);
   }
 }

@@ -77,7 +77,7 @@ class _StatisticsContentState extends State<StatisticsContent> {
                     gap,
                     _CellsSection(isMobile: isMobile, useScientific: useScientific),
                     gap,
-                    _ProductionSection(isMobile: isMobile, useScientific: useScientific),
+                    _ProductionSection(isMobile: isMobile),
                     gap,
                     _CraftingSection(isMobile: isMobile, useScientific: useScientific),
                     gap,
@@ -212,7 +212,13 @@ class _EnergySection extends StatelessWidget {
   }
 }
 
-typedef _CellsView = ({int levelUps, int totalLevels, int peakLevels});
+typedef _CellsView = ({
+  BigNumber lifetimeProduced,
+  Map<String, BigNumber> byType,
+  int levelUps,
+  int totalLevels,
+  int peakLevels,
+});
 
 class _CellsSection extends StatelessWidget {
   const _CellsSection({required this.isMobile, required this.useScientific});
@@ -225,6 +231,8 @@ class _CellsSection extends StatelessWidget {
     final l10n = context.l10n;
     return BlocSelector<StatisticsBloc, StatisticsState, _CellsView>(
       selector: (state) => (
+        lifetimeProduced: state.stats.lifetimeCellsProduced,
+        byType: state.stats.lifetimeCellsProducedByType,
         levelUps: state.stats.lifetimeCellLevelUps,
         totalLevels: state.totalCellLevels,
         peakLevels: state.stats.peakTotalCellLevels,
@@ -232,49 +240,6 @@ class _CellsSection extends StatelessWidget {
       builder: (context, view) {
         return StatisticsSection(
           title: l10n.statsSectionCells,
-          isMobile: isMobile,
-          children: [
-            StatisticsRow(label: l10n.statsLifetimeCellLevelUps, value: '${view.levelUps}', isMobile: isMobile),
-            StatisticsRow(
-              label: l10n.statsTotalCellLevels,
-              value: l10n.currentOverPeak('${view.totalLevels}', '${view.peakLevels}'),
-              isMobile: isMobile,
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-typedef _ProductionView = ({
-  BigNumber lifetimeProduced,
-  Map<String, BigNumber> byType,
-  int levelUps,
-  int totalLevels,
-  int peakLevels,
-});
-
-class _ProductionSection extends StatelessWidget {
-  const _ProductionSection({required this.isMobile, required this.useScientific});
-
-  final bool isMobile;
-  final bool useScientific;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    return BlocSelector<StatisticsBloc, StatisticsState, _ProductionView>(
-      selector: (state) => (
-        lifetimeProduced: state.stats.lifetimeCellsProduced,
-        byType: state.stats.lifetimeCellsProducedByType,
-        levelUps: state.stats.lifetimeProductionLevelUps,
-        totalLevels: state.totalProductionLevels,
-        peakLevels: state.stats.peakTotalProductionLevels,
-      ),
-      builder: (context, view) {
-        return StatisticsSection(
-          title: l10n.statsSectionProduction,
           isMobile: isMobile,
           children: [
             StatisticsExpandableRow(
@@ -290,6 +255,40 @@ class _ProductionSection extends StatelessWidget {
                   ),
               ],
             ),
+            StatisticsRow(label: l10n.statsLifetimeCellLevelUps, value: '${view.levelUps}', isMobile: isMobile),
+            StatisticsRow(
+              label: l10n.statsTotalCellLevels,
+              value: l10n.currentOverPeak('${view.totalLevels}', '${view.peakLevels}'),
+              isMobile: isMobile,
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+typedef _ProductionView = ({int levelUps, int totalLevels, int peakLevels});
+
+class _ProductionSection extends StatelessWidget {
+  const _ProductionSection({required this.isMobile});
+
+  final bool isMobile;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    return BlocSelector<StatisticsBloc, StatisticsState, _ProductionView>(
+      selector: (state) => (
+        levelUps: state.stats.lifetimeProductionLevelUps,
+        totalLevels: state.totalProductionLevels,
+        peakLevels: state.stats.peakTotalProductionLevels,
+      ),
+      builder: (context, view) {
+        return StatisticsSection(
+          title: l10n.statsSectionProduction,
+          isMobile: isMobile,
+          children: [
             StatisticsRow(label: l10n.statsLifetimeProductionLevelUps, value: '${view.levelUps}', isMobile: isMobile),
             StatisticsRow(
               label: l10n.statsTotalProductionLevels,

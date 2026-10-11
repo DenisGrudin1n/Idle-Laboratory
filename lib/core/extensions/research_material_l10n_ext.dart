@@ -1,29 +1,12 @@
-import 'package:idle_laboratory/core/constants/game_balance.dart';
-import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
 import 'package:idle_laboratory/core/extensions/cell_id_ext.dart';
-import 'package:idle_laboratory/core/utils/big_number.dart';
+import 'package:idle_laboratory/core/extensions/research_material_meta_ext.dart';
 import 'package:idle_laboratory/core/utils/research_material_tree.dart';
 import 'package:idle_laboratory/l10n/app_localizations.dart';
 
-extension CellIdResearchMaterial on CellId {
-  /// Base-tier research material crafted from this cell (bottom tree row).
-  ResearchMaterialId? get baseResearchMaterial =>
-      order < ResearchMaterialIdMeta.baseTierCount ? ResearchMaterialId.values[order] : null;
-}
+export 'package:idle_laboratory/core/extensions/research_material_meta_ext.dart';
 
-extension ResearchMaterialIdMeta on ResearchMaterialId {
-  static const baseTierCount = 16;
-
-  int get linearIndex => index;
-
-  bool get isBaseTier => index < baseTierCount;
-
-  CellId? get sourceCellId => isBaseTier ? CellId.values[index] : null;
-
-  BigNumber? get baseTierCraftCellCost =>
-      isBaseTier ? GameBalance.calculateBaseTierResearchCraftCellCost(index) : null;
-
+extension ResearchMaterialIdL10n on ResearchMaterialId {
   String displayName(AppLocalizations l10n) => switch (this) {
         ResearchMaterialId.energyCore => l10n.researchEnergyCore,
         ResearchMaterialId.heatShard => l10n.researchHeatShard,

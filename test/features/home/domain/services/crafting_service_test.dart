@@ -5,7 +5,7 @@ import 'package:idle_laboratory/core/constants/game_balance.dart';
 import 'package:idle_laboratory/core/constants/game_errors.dart';
 import 'package:idle_laboratory/core/enums/cell_id.dart';
 import 'package:idle_laboratory/core/enums/research_material_id.dart';
-import 'package:idle_laboratory/core/extensions/research_material_l10n_ext.dart';
+import 'package:idle_laboratory/core/extensions/research_material_meta_ext.dart';
 import 'package:idle_laboratory/core/utils/big_number.dart';
 import 'package:idle_laboratory/features/home/domain/models/cell_production_entry/cell_production_entry.dart';
 import 'package:idle_laboratory/features/home/domain/services/cells_service.dart';

@@ -69,6 +69,9 @@ class StatisticsService {
     return _current;
   }
 
+  /// Derived from [current.firstLaunchEpochMs] using the service clock.
+  int get daysSinceFirstLaunch => current.daysSinceFirstLaunch(_now());
+
   Future<void> _initialize() async {
     StatisticsModel loaded;
     try {

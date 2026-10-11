@@ -68,7 +68,7 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
     final stats = _statisticsService.current;
     return state.copyWith(
       stats: stats,
-      daysSinceFirstLaunch: stats.daysSinceFirstLaunch(DateTime.now()),
+      daysSinceFirstLaunch: _statisticsService.daysSinceFirstLaunch,
       currentEnergy: _energyService.currentEnergy,
       currentEps: _energyService.currentEPS,
       prestigeCount: prestige.prestigeCount,
@@ -103,7 +103,12 @@ class StatisticsBloc extends SafeBloc<StatisticsEvent, StatisticsState> {
 
   void _onStatsChanged(_StatsChanged event, Emitter<StatisticsState> emit) {
     if (!_watching) return;
-    emit(state.copyWith(stats: event.stats, daysSinceFirstLaunch: event.stats.daysSinceFirstLaunch(DateTime.now())));
+    emit(
+      state.copyWith(
+        stats: event.stats,
+        daysSinceFirstLaunch: _statisticsService.daysSinceFirstLaunch,
+      ),
+    );
   }
 
   void _onEnergyChanged(_EnergyChanged event, Emitter<StatisticsState> emit) {
